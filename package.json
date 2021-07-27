@@ -1,0 +1,19 @@
+{
+  "name": "webserver",
+  "version": "1.0.0",
+  "description": "foidsaoifhasiofhoaishfiosahfioashfiosah",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "mistertfy64",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "cheerio": "^1.0.0-rc.10",
+    "express": "^4.17.1",
+    "isomorphic-fetch": "^3.0.0",
+    "mongoose": "^5.13.2",
+    "mongoose-query-parser": "^1.2.1"
+  }
+}

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+
+        <title>Mathematical Base Defenders</title>
+
+        <link rel="stylesheet" type="text/css" href="/css/styles.css" />
+        <script src='https://www.google.com/recaptcha/api.js'></script>
+        <style>
+            .link-button {
+                border: none;
+                background: none;
+                font-family: "Computer Modern";
+                font-size: 24px;
+            }
+
+            .submit-button {
+                border-color: #149914;
+                border-radius: 4px;
+                background-color: #149414;
+                width: 450px;
+                border-style: solid;
+                height: 72px;
+                font-size: 48px;
+                font-family: "Computer Modern";
+                color: white;
+            }
+            
+            .registration-text-field {
+                border-color: #aaaaaa;
+                border-radius: 4px;
+                border-style: solid;
+                background-color: #aaaaaa;
+                width: 300px;
+                height: 48px;
+                font-size: 32px;
+                font-family: "Computer Modern";
+                color: black;
+            }
+        </style>
+
+    </head>
+
+    <body>
+
+        <!-- Header -->
+        <div style="font-size:24px;">
+            <span float=left;>
+                <button class="link-button" onClick="document.location.href='/'">Mathematical Base Defenders</button>
+                <span style="float:right;">
+                    <button class="link-button" style="float:right;" onClick="document.location='register'">Register</button>
+                    <br>
+                    <button class="link-button"style="float:right;" onClick="document.location='download'" >Download</button>
+                    <br>
+                    <button class="link-button" style="float:right;" >Community</button>
+                    <br>
+                    <button class="link-button" style="float:right;" onClick="document.location='statistics'" >Statistics</button>
+                    <br>
+                    <button class="link-button" style="float:right;" onClick="document.location='leaderboards'">Leaderboards</button>
+                    <br>
+                
+                    <button class="link-button" style="font-size:16px; float:right;">About</button>
+                    <br>
+                    <button class="link-button" style="font-size:16px; float:right;" onClick="document.location='privacy-policy'">Legal</button>
+                </span>
+            </span>
+        </div>
+        <br><br><br><br><br>
+
+        <!-- Content -->
+        <div style="display:flex;justify-content:center;align-items:center;">
+            <div style="font-size:24px;">
+
+                <div style="font-size:72px;">Register</div>
+                <div>SPECIAL OFFER: Register before August 2021 for a free permanent "Tester" rank!</div>
+                
+                <br>
+                <br>
+
+                <form method="POST">
+                    <input class="registration-text-field" type="text" id="username" name="username" placeholder="Username">
+                    <br><br>
+                    <input class="registration-text-field" type="text" id="email" name="email" placeholder="E-mail address">
+                    <br><br>
+                    <input class="registration-text-field" type="password" id="password" name="password" placeholder="Password">
+                    <br><br>
+                    
+                    By registering, you agree to the <a href="/privacy-policy">Privacy Policy</a>.
+
+                    <br><br>
+
+                
+                    <div class="g-recaptcha" data-sitekey="6LdEsX0bAAAAAFPNGhBTvdiVmZ43UCnrEWU_kps6">
+                    
+                    </div>
+
+                    <br><br>
+
+                    <input class="submit-button" type="submit">
+                </form>
+
+
+            </div>
+        </div>
+
+
+    </body>
+
+
+</html>

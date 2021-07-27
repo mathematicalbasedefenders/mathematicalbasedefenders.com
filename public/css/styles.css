@@ -1,0 +1,9 @@
+@font-face {
+    font-family: "Computer Modern";
+    src: url("../assets/cmunrm.ttf");
+}
+
+body {
+    font-family: "Computer Modern";
+    background-color: #eeeeee;
+}
