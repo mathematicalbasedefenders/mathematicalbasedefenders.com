@@ -20,7 +20,7 @@ const port = 8000;
 
 const saltRounds = 16;
 
-const credentials = require("./credentials");
+const credentials = require("./credentials/credentials.js");
 
 const uri = credentials.getMongooseURI();
 
