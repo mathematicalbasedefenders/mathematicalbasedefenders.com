@@ -20,7 +20,9 @@ const port = 8000;
 
 const saltRounds = 16;
 
-const uri = "mongodb+srv://mbddatabase:xpUtcPZz5LyEAq4FASU88932uJIFSNcnoASIUOFhwoiAHfiIOFHi8932@cluster1.6bi0m.mongodb.net/database1?retryWrites=true&w=majority";
+const credentials = require("./credentials");
+
+const uri = credentials.getMongooseURI();
 
 // DON'T FORGET TO CHANGE RECAPTCHA KEYS
 
