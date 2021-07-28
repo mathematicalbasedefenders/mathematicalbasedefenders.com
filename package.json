@@ -1,6 +1,6 @@
 {
-  "name": "webserver",
-  "version": "1.0.0",
+  "name": "mathematicalbasedefenderswebserver",
+  "version": "0.1.2",
   "description": "foidsaoifhasiofhoaishfiosahfioashfiosah",
   "main": "app.js",
   "scripts": {
@@ -15,5 +15,13 @@
     "isomorphic-fetch": "^3.0.0",
     "mongoose": "^5.13.2",
     "mongoose-query-parser": "^1.2.1"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mistertfy64/mathematicalbasedefenderswebserver.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mistertfy64/mathematicalbasedefenderswebserver/issues"
+  },
+  "homepage": "https://github.com/mistertfy64/mathematicalbasedefenderswebserver#readme"
 }

@@ -508,3 +508,8 @@ FodyWeavers.xsd
 
 # IMPORTANT LINE - DO NOT REMOVE!!!!!!!!!!!!!!!!!!!!
 credentials/
+
+
+
+# MacOS System files
+.DS_Store

@@ -67,26 +67,9 @@ const IDSchema = new Schema({
 
 const LeaderboardsSchema = new Schema({
 	_id: mongoose.Schema.Types.ObjectId,
-	rank1ID: String,
-	rank1Score: Number,
-	rank2ID: String,
-	rank2Score: Number,
-	rank3ID: String,
-	rank3Score: Number,
-	rank4ID: String,
-	rank4Score: Number,
-	rank5ID: String,
-	rank5Score: Number,
-	rank6ID: String,
-	rank6Score: Number,
-	rank7ID: String,
-	rank7Score: Number,
-	rank8ID: String,
-	rank8Score: Number,
-	rank9ID: String,
-	rank9Score: Number,
-	rank10ID: String,
-	rank10Score: Number,
+	rank: Number,
+	userIDOfHolder: String,
+	score: Number,
 });
 
 const UserModel = mongoose.model("UserModel", UserModelSchema, "users");
@@ -132,15 +115,25 @@ app.get("/statistics", (request, response) => {
 	});
 });
 
-app.get("/users", (request, response) => {
+app.get("/users", async (request, response) => {
+	let $ = cheerio.load(fs.readFileSync(__dirname + "/users.html"));
+
 	var query = url.parse(request.url, true).query;
 	var search = query.s;
-	UserModel.findOne({ userNumber: search }, function (error, result) {
+	var data = await UserModel.findOne({ userNumber: search }, function (error, result) {
 		if (error) {
 			console.log(error);
 		}
-		console.log(result == null ? "User #" + search + " doesn't exist yet! There are only " + count + " users registered." : "User #" + search + " is " + result.username + ".");
+		return result;
 	});
+
+	
+	$("#rank").html(calculateRank(data))
+	$("#user").html(data.username);
+
+	response.writeHead(200, { "Content-Type": "text/html" });
+	response.end($.html());
+	
 });
 
 app.get("/privacy-policy", (request, response) => {
@@ -151,11 +144,6 @@ app.get("/leaderboards", async (request, response) => {
 	let $ = cheerio.load(fs.readFileSync(__dirname + "/leaderboards.html"));
 
 	var allPlayersOnLeaderboardLoaded = false;
-
-	var usernames = {};
-	var scores = {};
-	var usernameDOMIDs = {};
-	var scoreDOMIDs = {};
 
 	for (var i = 1; i <= 50; i++) {
 		var data = await LeaderboardsModel.findOne({ rankNumber: i }, function (error2, result2) {
@@ -203,7 +191,8 @@ app.get("/leaderboards", async (request, response) => {
 			});
 
 			if (i == 1 || i == 2 || i == 3) {
-				$("#rank-" + i + "-username").html(playerData.username);
+				var playerURL = "https://mathematicalbasedefenders.com/users?s="+playerData.userNumber;
+				$("#rank-" + i + "-username").html("<a href="+playerURL+">"+playerData.username+"</a>");
 				$("#rank-" + i + "-score").html(data.score);
 			} else {
 				$("#leaderboards").append(
@@ -224,8 +213,11 @@ app.get("/leaderboards", async (request, response) => {
 				$("#rank-username").attr("id", "rank-" + i + "-username");
 				$("#rank-score").attr("id", "rank-" + i + "-score");
 
+				var playerURL = "https://mathematicalbasedefenders.com/users?s="+playerData.userNumber;
+
+
 				$("#rank-" + i + "-number").html("#" + i);
-				$("#rank-" + i + "-username").html(playerData.username);
+				$("#rank-" + i + "-username").html("<a href="+playerURL+">"+playerData.username+"</a>");
 				$("#rank-" + i + "-score").html(data.score);
 			}
 		}
@@ -239,7 +231,7 @@ app.get("/leaderboards", async (request, response) => {
 app.post("/register", async (request, response) => {
 	const responseKey = request.body["g-recaptcha-response"];
 
-	const reCaptchaSecretKey = "6LdEsX0bAAAAAI_Il7uNIXIVKIcO9gQEmOrp46oT";
+	const reCaptchaSecretKey = credentials.getReCAPTCHASecretKey();
 
 	const reCaptchaURL = `https://www.google.com/recaptcha/api/siteverify?secret=${reCaptchaSecretKey}&response=${responseKey}`;
 
@@ -384,6 +376,38 @@ app.post("/register", async (request, response) => {
 			response.end($.html());
 		});
 });
+
+
+// other functions
+
+// TODO: Add Developer rank
+function calculateRank(data){
+	if (data.username == "mistertfy64"){
+		return "Game Master";
+	} else if (data.membership.isAdministrator){
+		return "Administrator";
+	} else if (data.membership.isModerator){
+		return "Moderator";
+	} else if (data.membership.isContributor){
+		return "Contributor";
+	} else if (data.membership.isTester){
+		return "Tester";
+	} else if (data.membership.isDonator){
+		return "Donator";
+	} else {
+		// default rank
+		return "";
+	}
+
+}
+
+
+
+
+
+
+
+
 
 // start
 
