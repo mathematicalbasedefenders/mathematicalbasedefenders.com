@@ -151,6 +151,7 @@ app.get("/users", async (request, response) => {
 	} else if (rank == "Donator"){
 	
 	}
+
 	
 	
 	$("#rank").html(rank);
@@ -160,8 +161,7 @@ app.get("/users", async (request, response) => {
 
 
 	$("#player-join-date").html(data.creationTime);
-
-
+	$("#personal-best-score").html(data.personalBest);
 	response.writeHead(200, { "Content-Type": "text/html" });
 	response.end($.html());
 	
@@ -222,7 +222,7 @@ app.get("/leaderboards", async (request, response) => {
 			});
 
 			if (i == 1 || i == 2 || i == 3) {
-				var playerURL = "https://mathematicalbasedefenders.com/users?s="+playerData.userNumber;
+				var playerURL = "users?s="+playerData.userNumber;
 				$("#rank-" + i + "-username").html("<a href="+playerURL+">"+playerData.username+"</a>");
 				$("#rank-" + i + "-score").html(data.score);
 			} else {
