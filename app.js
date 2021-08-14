@@ -52,11 +52,13 @@ const UserModelSchema = new Schema({
 		gamesPlayed: Number,
 	},
 	membership: {
+		isDeveloper: Boolean,
 		isAdministrator: Boolean,
 		isModerator: Boolean,
 		isContributor: Boolean,
 		isTester: Boolean,
 		isDonator: Boolean,
+		specialRank: String,
 	},
 });
 
@@ -128,8 +130,37 @@ app.get("/users", async (request, response) => {
 	});
 
 	
-	$("#rank").html(calculateRank(data))
+	var rank = beautifyRank(calculateRank(data));
+	
+	var rankColor = "black";
+
+
+	// rank color
+	if (rank == "Game Master"){
+		rankColor = "#ecc500";
+	} else if (rank == "Developer"){
+		rankColor = "#ff0000";
+	} else if (rank == "Administrator"){
+		rankColor = "#da1717";
+	} else if (rank == "Moderator"){
+		rankColor = "#ff6800";
+	} else if (rank == "Contributor"){
+		rankColor = "#4070ff";
+	} else if (rank == "Tester"){
+		rankColor = "#0194ff"
+	} else if (rank == "Donator"){
+	
+	}
+	
+	
+	$("#rank").html(rank);
+	$("#rank").css("color", rankColor);
+	
 	$("#user").html(data.username);
+
+
+	$("#player-join-date").html(data.creationTime);
+
 
 	response.writeHead(200, { "Content-Type": "text/html" });
 	response.end($.html());
@@ -318,11 +349,13 @@ app.post("/register", async (request, response) => {
 															gamesPlayed: 0,
 														},
 														membership: {
+															isDeveloper: false,
 															isAdministrator: false,
 															isModerator: false,
 															isContributor: false,
 															isTester: true,
 															isDonator: false,
+															specialRank: "",
 														},
 													};
 
@@ -384,6 +417,8 @@ app.post("/register", async (request, response) => {
 function calculateRank(data){
 	if (data.username == "mistertfy64"){
 		return "Game Master";
+	} else if (data.membership.isDeveloper){
+		return "Developer";
 	} else if (data.membership.isAdministrator){
 		return "Administrator";
 	} else if (data.membership.isModerator){
@@ -399,6 +434,10 @@ function calculateRank(data){
 		return "";
 	}
 
+}
+
+function beautifyRank(rank){
+	return rank;
 }
 
 
