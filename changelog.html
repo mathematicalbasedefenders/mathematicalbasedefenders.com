@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>Mathematical Base Defenders</title>
+
+		<link rel="stylesheet" type="text/css" href="/css/styles.css" />
+		<script src="https://www.google.com/recaptcha/api.js"></script>
+		<style>
+			.link-button {
+				border: none;
+				background: none;
+				font-family: "Computer Modern Unicode Serif";
+				font-size: 24px;
+			}
+
+			.changelog-title-buttons {
+				width: 35vw;
+				height: 7vh;
+				background: none;
+				border: 1px solid black;
+				font-family: "Computer Modern Unicode Serif";
+				font-size: 24px;
+			}
+
+			.version-number-text {
+				font-size: 48px;
+			}
+
+			.version-release-date-text {
+				font-size: 24px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<!-- Header -->
+		<div style="font-size: 24px">
+			<span float="left;">
+				<div class="top-navigation-bar">
+					<span>
+						<button class="link-button" onClick="document.location.href='/'">Mathematical Base Defenders</button>
+						<button class="link-button" style="font-size: 32px; float: right" onClick="document.location='play'">Play</button>
+						<button class="link-button" style="float: right" onClick="document.location='register'">Register</button>
+						<button class="link-button" style="float: right" onClick="document.location='community'">Community</button>
+						<button class="link-button" style="float: right" onClick="document.location='statistics'">Statistics</button>
+						<button class="link-button" style="float: right" onClick="document.location='leaderboards'">Leaderboards</button>
+						<button class="link-button" style="float: right" onClick="document.location='changelog'">Changelog</button>
+						<button class="link-button" style="font-size: 16px; float: right" onClick="document.location='privacy-policy'">Legal</button>
+					</span>
+				</div>
+			</span>
+		</div>
+		<br /><br /><br /><br /><br />
+
+		<!-- Content -->
+		<div style="text-align: center">
+			<button id="website-changelog-selector-button" class="changelog-title-buttons" onClick="selectorButtonClicked('website')">Website</button><button id="game-changelog-selector-button" class="changelog-title-buttons" onClick="selectorButtonClicked('game')">Game</button>
+			<div id="website-changelog">
+                <div class="version-number-text">0.1.4</div>
+                <div class="version-release-date-text">22 September 2021</div>
+                Website "redesign".
+                <br>
+                New content.
+				Bug fixes.
+            </div>
+			<div id="game-changelog">
+				<div class="version-number-text">0.1.1</div>
+                <div class="version-release-date-text">23 September 2021</div>
+                Fixed a bug with restoring settings.
+				<div class="version-number-text">0.1.0</div>
+                <div class="version-release-date-text">22 September 2021</div>
+                Initial release of Mathematical Base Defenders.
+			</div>
+		</div>
+	</body>
+
+	<script>
+		document.getElementById("website-changelog").style.display = "none";
+		document.getElementById("game-changelog").style.display = "none";
+		function selectorButtonClicked(buttonClicked) {
+			switch (buttonClicked) {
+				case "website": {
+					document.getElementById("website-changelog-selector-button").style.backgroundColor = "black";
+					document.getElementById("website-changelog-selector-button").style.color = "white";
+					document.getElementById("game-changelog-selector-button").style.backgroundColor = "#eeeeee";
+					document.getElementById("game-changelog-selector-button").style.color = "black";
+					document.getElementById("website-changelog").style.display = "block";
+					document.getElementById("game-changelog").style.display = "none";
+					break;
+				}
+				case "game": {
+					document.getElementById("game-changelog-selector-button").style.backgroundColor = "black";
+					document.getElementById("game-changelog-selector-button").style.color = "white";
+					document.getElementById("website-changelog-selector-button").style.backgroundColor = "#eeeeee";
+					document.getElementById("website-changelog-selector-button").style.color = "black";
+					document.getElementById("website-changelog").style.display = "none";
+					document.getElementById("game-changelog").style.display = "block";
+					break;
+				}
+			}
+		}
+	</script>
+</html>

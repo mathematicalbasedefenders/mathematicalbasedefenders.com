@@ -36,7 +36,7 @@ mongoose.connection.on("connected", () => {
 var ObjectId = require("mongoose").Types.ObjectId;
 
 // other stuff
-app.use(express.urlencoded());
+app.use(express.urlencoded({ extended: true }));
 
 const UserModelSchema = new Schema({
 	username: String,
@@ -104,7 +104,6 @@ app.get("/statistics", (request, response) => {
 		if (error) {
 			console.log(error);
 		}
-		console.log("There are " + count + " users registered.");
 
 		let $ = cheerio.load(fs.readFileSync(__dirname + "/statistics.html"));
 
@@ -222,7 +221,7 @@ app.get("/leaderboards", async (request, response) => {
 			});
 
 			if (i == 1 || i == 2 || i == 3) {
-				var playerURL = "https://mathematicalbasedefenders.com/users?s="+playerData.userNumber;
+				var playerURL = "users?s="+playerData.userNumber;
 				$("#rank-" + i + "-username").html("<a href="+playerURL+">"+playerData.username+"</a>");
 				$("#rank-" + i + "-score").html(data.score);
 			} else {
@@ -244,7 +243,7 @@ app.get("/leaderboards", async (request, response) => {
 				$("#rank-username").attr("id", "rank-" + i + "-username");
 				$("#rank-score").attr("id", "rank-" + i + "-score");
 
-				var playerURL = "https://mathematicalbasedefenders.com/users?s="+playerData.userNumber;
+				var playerURL = "users?s="+playerData.userNumber;
 
 
 				$("#rank-" + i + "-number").html("#" + i);
@@ -257,6 +256,17 @@ app.get("/leaderboards", async (request, response) => {
 	response.writeHead(200, { "Content-Type": "text/html" });
 	response.end($.html());
 });
+
+app.get("/community", async (request, response) => {
+	response.sendFile(__dirname + "/community.html");
+
+});
+
+app.get("/changelog", async (request, response) => {
+	response.sendFile(__dirname + "/changelog.html");
+});
+
+
 
 // process registration data
 app.post("/register", async (request, response) => {
@@ -401,13 +411,6 @@ app.post("/register", async (request, response) => {
 				response.end($.html());
 			}
 		})
-		.catch((reCAPTCHAError) => {
-			let $ = cheerio.load(fs.readFileSync(__dirname + "/registrationfailed.html"));
-			$("#error-message").text("Internal error!");
-			console.log(reCAPTCHAError);
-			response.writeHead(200, { "Content-Type": "text/html" });
-			response.end($.html());
-		});
 });
 
 

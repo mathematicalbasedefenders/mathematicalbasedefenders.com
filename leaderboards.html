@@ -11,7 +11,7 @@
 			.link-button {
 				border: none;
 				background: none;
-				font-family: "Computer Modern";
+				font-family: "Computer Modern Unicode Serif";
 				font-size: 24px;
 			}
 
@@ -29,32 +29,21 @@
 	<body>
 		<!-- Header -->
 		<div style="font-size: 24px">
-			<span float="left;">
-				<button class="link-button" onClick="document.location.href='/'">Mathematical Base Defenders</button>
-				<span style="float: right">
-					<button class="link-button" style="float: right" onClick="document.location='register'">Register</button>
-					<br />
-					<button class="link-button" style="float: right" onClick="document.location='download'">Download</button>
-					<br />
-					<button class="link-button" style="float: right">Community</button>
-					<br />
-					<button class="link-button" style="float: right" onClick="document.location='statistics'">Statistics</button>
-					<br />
-					<button class="link-button" style="float: right" onClick="document.location='leaderboards'">Leaderboards</button>
-					<br />
-					<button class="link-button" style="font-size: 16px; float: right" onClick="document.location='privacy-policy'">Legal</button>
-				</span>
-			</span>
+			<button class="link-button" onClick="document.location.href='/'">Mathematical Base Defenders</button>
+			<button class="link-button" style="font-size: 32px; float: right" onClick="document.location='play'">Play</button>
+			<button class="link-button" style="float: right" onClick="document.location='register'">Register</button>
+			<button class="link-button" style="float: right" onClick="document.location='community'">Community</button>
+			<button class="link-button" style="float: right" onClick="document.location='statistics'">Statistics</button>
+			<button class="link-button" style="float: right" onClick="document.location='leaderboards'">Leaderboards</button>
+			<button class="link-button" style="float: right" onClick="document.location='changelog'">Changelog</button>
+			<button class="link-button" style="font-size: 16px; float: right" onClick="document.location='privacy-policy'">Legal</button>
 		</div>
 		<br /><br /><br /><br /><br />
 
 		<!-- Content -->
 		<br /><br /><br />
-		<p style="text-align:center;">
-		Click on a user to see their play data.
-	</p>
+		<p style="text-align: center">Click on a user to see their play data.</p>
 		<div style="display: flex; justify-content: center; align-items: center">
-
 			<table id="leaderboards" style="width: 80%">
 				<tr style="background-color: #ffd700; border: 1px #ffd700 solid">
 					<td width="20%" id="rank-1-number" style="font-size: 32px">World Record</td>
