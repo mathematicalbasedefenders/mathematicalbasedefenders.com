@@ -150,6 +150,7 @@ app.get("/users", async (request, response) => {
 	} else if (rank == "Donator"){
 	
 	}
+
 	
 	
 	$("#rank").html(rank);
@@ -159,8 +160,7 @@ app.get("/users", async (request, response) => {
 
 
 	$("#player-join-date").html(data.creationTime);
-
-
+	$("#personal-best-score").html(data.personalBest);
 	response.writeHead(200, { "Content-Type": "text/html" });
 	response.end($.html());
 	
