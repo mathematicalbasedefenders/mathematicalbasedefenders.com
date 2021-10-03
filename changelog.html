@@ -56,26 +56,55 @@
 		<!-- Content -->
 		<div style="text-align: center">
 			<button id="website-changelog-selector-button" class="changelog-title-buttons" onClick="selectorButtonClicked('website')">Website</button><button id="game-changelog-selector-button" class="changelog-title-buttons" onClick="selectorButtonClicked('game')">Game</button>
+			
 			<div id="website-changelog">
-                <div class="version-number-text">0.1.4</div>
-                <div class="version-release-date-text">22 September 2021</div>
-                Website "redesign".
-                <br>
-                New content.
+				<div class="version-number-text">0.1.5</div>
+				<div class="version-release-date-text">3 October 2021</div>
+				New content.
+				<br />
+				New About page.
+				<br>
 				Bug fixes.
-            </div>
+				<hr>
+				<div class="version-number-text">0.1.4</div>
+				<div class="version-release-date-text">22 September 2021</div>
+				Website "redesign".
+				<br />
+				New content.
+				<br />
+				Bug fixes.
+			</div>
 			<div id="game-changelog">
+				<div class="version-number-text">0.2.0</div>
+				<div class="version-release-date-text">23 September 2021</div>
+				New UI design.
+				<br>
+				You can know rebind keys. Note that one key can be used per tile, and each tile may can only have one key binded to it.
+				<hr>
 				<div class="version-number-text">0.1.1</div>
-                <div class="version-release-date-text">23 September 2021</div>
-                Fixed a bug with restoring settings.
+				<div class="version-release-date-text">23 September 2021</div>
+				Fixed a bug with restoring settings.
+				<hr>
 				<div class="version-number-text">0.1.0</div>
-                <div class="version-release-date-text">22 September 2021</div>
-                Initial release of Mathematical Base Defenders.
+				<div class="version-release-date-text">22 September 2021</div>
+				Initial release of Mathematical Base Defenders.
 			</div>
 		</div>
 	</body>
 
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-XVRB5TXW3K"></script>
 	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag() {
+			dataLayer.push(arguments);
+		}
+		gtag("js", new Date());
+
+		gtag("config", "G-XVRB5TXW3K");
+	</script>
+	<script>
+		
 		document.getElementById("website-changelog").style.display = "none";
 		document.getElementById("game-changelog").style.display = "none";
 		function selectorButtonClicked(buttonClicked) {

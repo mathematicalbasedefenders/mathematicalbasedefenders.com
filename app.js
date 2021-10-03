@@ -50,6 +50,7 @@ const UserModelSchema = new Schema({
 	},
 	statistics: {
 		gamesPlayed: Number,
+		personalBestScore: Number,
 	},
 	membership: {
 		isDeveloper: Boolean,
@@ -127,6 +128,9 @@ app.get("/users", async (request, response) => {
 		}
 		return result;
 	});
+	
+	// why?
+	var statistics = (JSON.parse(JSON.stringify(data.statistics))); 
 
 	
 	var rank = beautifyRank(calculateRank(data));
@@ -159,8 +163,9 @@ app.get("/users", async (request, response) => {
 	$("#user").html(data.username);
 
 
+
 	$("#player-join-date").html(data.creationTime);
-	$("#personal-best-score").html(data.personalBest);
+	$("#personal-best-score").html(statistics.personalBestScore);
 	response.writeHead(200, { "Content-Type": "text/html" });
 	response.end($.html());
 	
@@ -264,6 +269,10 @@ app.get("/community", async (request, response) => {
 
 app.get("/changelog", async (request, response) => {
 	response.sendFile(__dirname + "/changelog.html");
+});
+
+app.get("/about", async (request, response) => {
+	response.sendFile(__dirname + "/about.html");
 });
 
 
@@ -416,7 +425,6 @@ app.post("/register", async (request, response) => {
 
 // other functions
 
-// TODO: Add Developer rank
 function calculateRank(data){
 	if (data.username == "mistertfy64"){
 		return "Game Master";
