@@ -275,7 +275,9 @@ app.get("/about", async (request, response) => {
 	response.sendFile(__dirname + "/about.html");
 });
 
-
+app.get("/open-source-acknowledgements", async (request, response) => {
+	response.sendFile(__dirname + "/open-source-acknowledgements.html");
+});
 
 // process registration data
 app.post("/register", async (request, response) => {
@@ -415,7 +417,7 @@ app.post("/register", async (request, response) => {
 			} else {
 				let $ = cheerio.load(fs.readFileSync(__dirname + "/registrationfailed.html"));
 				$("#error-message").text("Complete the reCAPTCHA first!");
-				console.log(reCAPTCHAError);
+				console.log("reCaptcha Error");
 				response.writeHead(200, { "Content-Type": "text/html" });
 				response.end($.html());
 			}

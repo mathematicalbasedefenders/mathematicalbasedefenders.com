@@ -1,0 +1,35 @@
+@font-face {
+    font-family: "Computer Modern Unicode Serif";
+    src: url("../assets/fonts/computermodernunicodeserif.ttf");
+}
+
+body {
+    font-family: "Computer Modern Unicode Serif";
+    background-color: #eeeeee;
+}
+
+.link-button {
+    border: none;
+    background: none;
+    font-family: "Computer Modern Unicode Serif";
+    vertical-align: text-top;
+    font-size: 24px;
+    transition: all 0.2s;
+    opacity: 0.5;
+    text-decoration: none;
+    color: black;
+}
+
+.link-button + .link-button {
+    margin: 0.25vw;
+}
+
+
+.link-button.mathematical-base-defenders-logo {
+    opacity: 1;
+}
+
+
+.link-button:hover {
+    opacity: 1;
+}

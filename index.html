@@ -2,19 +2,15 @@
 
 <html>
 	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>Mathematical Base Defenders</title>
 
-		<link rel="stylesheet" type="text/css" href="/css/styles.css" />
+		<link rel="stylesheet" type="text/css" href="/css/global.css" />
 		<script src="https://www.google.com/recaptcha/api.js"></script>
 		<style>
-			.link-button {
-				border: none;
-				background: none;
-				font-family: "Computer Modern Unicode Serif";
-				font-size: 24px;
-			}
-
-			.download-button {
+			.play-button {
 				border-color: #149914;
 				border-radius: 4px;
 				background-color: #149414;
@@ -24,43 +20,49 @@
 				font-size: 48px;
 				font-family: "Computer Modern Unicode Serif";
 				color: white;
+				transition: all 0.2s;
 			}
+
+			.play-button:hover {
+				background-color: #17a717;
+				border-color: #17a717;
+			}
+
+
 		</style>
 	</head>
 
 	<body>
 		<!-- Header -->
-		<div style="font-size: 24px">
+		<div style="font-size: 28px">
 			<span float="left;">
-				
-                <div class="top-navigation-bar">
-
-                    <button class="link-button" onClick="document.location.href='/'">Mathematical Base Defenders</button>
-					<button class="link-button" style="font-size: 32px; float: right" onClick="document.location='play'">Play</button>
-					<button class="link-button" style="float: right" onClick="document.location='register'">Register</button>
-					<button class="link-button" style="float: right" onClick="document.location='community'">Community</button>
-					<button class="link-button" style="float: right" onClick="document.location='statistics'">Statistics</button>
-					<button class="link-button" style="float: right" onClick="document.location='leaderboards'">Leaderboards</button>
-                    <button class="link-button" style="float: right" onClick="document.location='changelog'">Changelog</button>
-					<button class="link-button" style="font-size: 16px; float: right" onClick="document.location='privacy-policy'">Legal</button>
-
-                </div>
-				
+				<div id="top-navigation-bar">
+					<input type="image" src="assets/images/mathematicalbasedefenders.png" style="height: 96px" class="link-button mathematical-base-defenders-logo" onClick="document.location.href='/'" />
+					<a class="link-button" style="font-size: 36px" href='play'>Play</a>
+					<a class="link-button" href='register'>Register</a>
+					<a class="link-button" href='community'>Community</a>
+					<a class="link-button" href='statistics'>Statistics</a>
+					<a class="link-button" href='leaderboards'>Leaderboards</a>
+					<a class="link-button" href='changelog'>Changelog</a>
+					<a class="link-button" href='about'>About</a>
+					<a class="link-button" href='open-source-acknowledgements'>Acknowledgements</a>
+					<a class="link-button" href='privacy-policy'>Legal</a>
+				</div>
 			</span>
 		</div>
-		<br /><br /><br /><br /><br />
+		<br /><br /><br />
 
 		<!-- Content -->
 		<div style="display: flex; justify-content: center; align-items: center">
 			<div style="font-size: 24px">
-				<div style="font-size: 72px">The Newest Way To Learn Math.<span style="font-size: 12px">(kind of)</span></div>
+				<div style="font-size: 48px">A competitive(?) multiplayer math game!!!!!!!!111111111!!!!1</span></div>
 				<br />
 				<br />
-				<div style="left: 15%; max-width: 400px; word-wrap: break-word">
-					Mathematical Base Defenders will probably be the worst game you have played in your life. Featuring near impossible gameplay, an extremely buggy program, and multiplayer (which is under development), you don't want to play this game. <br /><br />
-					Not to mention this game only covers basic arithmetic. <br /><br />
-					Register now for a special permanent "Tester" rank. <br />
-					<button class="download-button">Play</button><br /><span style="font-size: 16px">An account is not required to use the program.</span>
+				<div style="left: 15%; max-width: 600px; word-wrap: break-word">
+					Mathematical Base Defenders, as the name suggests, is a math-based game. (boohoo)<br /><br />
+					You defend your base from square-shaped enemies using square-shaped tiles.<br /><br />
+					Register now for a special permanent "Tester" rank. <br /><br>
+					<button class="play-button">Play</button><br /><span style="font-size: 16px">An account is not required to play, however registering for one is highly recommended.</span>
 				</div>
 			</div>
 		</div>

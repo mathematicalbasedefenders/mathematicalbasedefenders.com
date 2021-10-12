@@ -2,9 +2,12 @@
 
 <html>
 	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Mathematical Base Defenders</title>
 
-		<link rel="stylesheet" type="text/css" href="/css/styles.css" />
+		<link rel="stylesheet" type="text/css" href="/css/global.css" />
 		<script src="https://www.google.com/recaptcha/api.js"></script>
 
 		<style>
@@ -22,22 +25,43 @@
 			p {
 				margin: 0;
 			}
+
+			table,
+			th,
+			td {
+				border: 1px solid black;
+				border-collapse: collapse;
+			}
+
+			td {
+				padding: 3px 3px;
+			}
+
+			.score-multiplier-tables-container {
+				display: inline-block;
+			}
 		</style>
 	</head>
 
 	<body>
 		<!-- Header -->
-		<div style="font-size: 24px">
-			<button class="link-button" onClick="document.location.href='/'">Mathematical Base Defenders</button>
-			<button class="link-button" style="font-size: 32px; float: right" onClick="document.location='play'">Play</button>
-			<button class="link-button" style="float: right" onClick="document.location='register'">Register</button>
-			<button class="link-button" style="float: right" onClick="document.location='community'">Community</button>
-			<button class="link-button" style="float: right" onClick="document.location='statistics'">Statistics</button>
-			<button class="link-button" style="float: right" onClick="document.location='leaderboards'">Leaderboards</button>
-			<button class="link-button" style="float: right" onClick="document.location='changelog'">Changelog</button>
-			<button class="link-button" style="font-size: 16px; float: right" onClick="document.location='privacy-policy'">Legal</button>
+		<div style="font-size: 28px">
+			<span float="left;">
+				<div id="top-navigation-bar">
+					<input type="image" src="assets/images/mathematicalbasedefenders.png" style="height: 96px" class="link-button mathematical-base-defenders-logo" onClick="document.location.href='/'" />
+					<a class="link-button" style="font-size: 36px" href='play'>Play</a>
+					<a class="link-button" href='register'>Register</a>
+					<a class="link-button" href='community'>Community</a>
+					<a class="link-button" href='statistics'>Statistics</a>
+					<a class="link-button" href='leaderboards'>Leaderboards</a>
+					<a class="link-button" href='changelog'>Changelog</a>
+					<a class="link-button" href='about'>About</a>
+					<a class="link-button" href='open-source-acknowledgements'>Acknowledgements</a>
+					<a class="link-button" href='privacy-policy'>Legal</a>
+				</div>
+			</span>
 		</div>
-		<br /><br /><br /><br /><br />
+		<br /><br /><br />
 
 		<!-- Content -->
 
@@ -65,7 +89,68 @@
 					<hr />
 
 					<h2>Play</h2>
-					<p>You form an expression that when evaluated, matches one of the enemies' "requested values." (the number in the middle of the enemy). While you are doing that, the enemies will move towards your base. There are no power-ups or pauses.</p>
+					<p>
+						You form an expression that when evaluated, matches one of the enemies' "requested values." (the number in the middle of the enemy). While you are doing that, the enemies will move towards your base. There are no power-ups or
+						pauses.
+					</p>
+					<hr />
+
+					<h2>Scoring</h2>
+					<p>
+						You get points when you kill an enemy. You get more points if the problem's "length" is long enough, the enemy's position is far from the base, and you have killed multiple enemies in succession. (combo)
+						<br /><br />
+					</p>
+					<div id="score-multiplier-tables-container">
+						<table style="text-align: center">
+							<tr>
+								<td>Problem Length</td>
+								<td>Score Multiplier</td>
+							</tr>
+							<tr>
+								<td>6 or less</td>
+								<td>×1</td>
+							</tr>
+							<tr>
+								<td>7 to 13</td>
+								<td>×1+0.1(length-6)</td>
+							</tr>
+							<tr>
+								<td>14 or more</td>
+								<td>×1+0.2(length-9)</td>
+							</tr>
+						</table>
+						<br />
+						<table style="text-align: center">
+							<tr>
+								<td>Enemy's Position</td>
+								<td>Score Multiplier</td>
+							</tr>
+							<tr>
+								<td>Less than 50% from base</td>
+								<td>×1</td>
+							</tr>
+							<tr>
+								<td>50% or more from base</td>
+								<td>×1+0.1(sPosition-5)</td>
+							</tr>
+						</table>
+						<br />
+						<table style="text-align: center">
+							<tr>
+								<td>Combo</td>
+								<td>Score Multiplier</td>
+							</tr>
+							<tr>
+								<td>0</td>
+								<td>×1</td>
+							</tr>
+							<tr>
+								<td>1 or more</td>
+								<td>×1.1<sup>combo</sup></td>
+							</tr>
+						</table>
+					</div>
+					<hr />
 				</div>
 			</div>
 		</div>

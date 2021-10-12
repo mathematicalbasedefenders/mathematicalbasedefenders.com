@@ -1,110 +1,108 @@
 <!DOCTYPE html>
 
 <html>
-    <head>
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Mathematical Base Defenders</title>
 
-        <title>Mathematical Base Defenders</title>
+		<link rel="stylesheet" type="text/css" href="/css/global.css" />
+		<script src="https://www.google.com/recaptcha/api.js"></script>
+		<style>
+			.link-button {
+				border: none;
+				background: none;
+				font-family: "Computer Modern Unicode Serif";
+				font-size: 24px;
+			}
 
-        <link rel="stylesheet" type="text/css" href="/css/styles.css" />
-        <script src='https://www.google.com/recaptcha/api.js'></script>
-        <style>
-            .link-button {
-                border: none;
-                background: none;
-                font-family: "Computer Modern Unicode Serif";
-                font-size: 24px;
-            }
+			.submit-button {
+				border-color: #149914;
+				border-radius: 4px;
+				background-color: #149414;
+				width: 450px;
+				border-style: solid;
+				height: 72px;
+				font-size: 48px;
+				font-family: "Computer Modern Unicode Serif";
+				color: white;
+			}
 
-            .submit-button {
-                border-color: #149914;
-                border-radius: 4px;
-                background-color: #149414;
-                width: 450px;
-                border-style: solid;
-                height: 72px;
-                font-size: 48px;
-                font-family: "Computer Modern Unicode Serif";
-                color: white;
-            }
-            
-            .registration-text-field {
-                border-color: #aaaaaa;
-                border-radius: 4px;
-                border-style: solid;
-                background-color: #aaaaaa;
-                width: 300px;
-                height: 48px;
-                font-size: 32px;
-                font-family: "Computer Modern Unicode Serif";
-                color: black;
-            }
-        </style>
+			.registration-text-field {
+				border-color: #cccccc;
+				border-radius: 4px;
+				border-style: solid;
+				background-color: #cccccc;
+				width: 300px;
+				height: 24px;
+				font-size: 16px;
+				font-family: "Computer Modern Unicode Serif";
+				color: black;
+			}
+		</style>
+	</head>
 
-    </head>
+	<body>
+		<!-- Header -->
+		<div style="font-size: 28px">
+			<span float="left;">
+				<div id="top-navigation-bar">
+					<input type="image" src="assets/images/mathematicalbasedefenders.png" style="height: 96px" class="link-button mathematical-base-defenders-logo" onClick="document.location.href='/'" />
+					<a class="link-button" style="font-size: 36px" href='play'>Play</a>
+					<a class="link-button" href='register'>Register</a>
+					<a class="link-button" href='community'>Community</a>
+					<a class="link-button" href='statistics'>Statistics</a>
+					<a class="link-button" href='leaderboards'>Leaderboards</a>
+					<a class="link-button" href='changelog'>Changelog</a>
+					<a class="link-button" href='about'>About</a>
+					<a class="link-button" href='open-source-acknowledgements'>Acknowledgements</a>
+					<a class="link-button" href='privacy-policy'>Legal</a>
+				</div>
+			</span>
+		</div>
+		<br /><br /><br />
 
-    <body>
+		<!-- Content -->
+		<div style="display: flex; justify-content: center; align-items: center">
+			<div style="font-size: 20px; text-align: center">
+				<div style="font-size: 48px">Register</div>
+				<div>Register now for a free permanent "Tester" rank!</div>
 
-        <!-- Header -->
-        <div style="font-size:24px;">
-            <button class="link-button" onClick="document.location.href='/'">Mathematical Base Defenders</button>
-			<button class="link-button" style="font-size: 32px; float: right" onClick="document.location='play'">Play</button>
-			<button class="link-button" style="float: right" onClick="document.location='register'">Register</button>
-			<button class="link-button" style="float: right" onClick="document.location='community'">Community</button>
-			<button class="link-button" style="float: right" onClick="document.location='statistics'">Statistics</button>
-			<button class="link-button" style="float: right" onClick="document.location='leaderboards'">Leaderboards</button>
-			<button class="link-button" style="float: right" onClick="document.location='changelog'">Changelog</button>
-			<button class="link-button" style="font-size: 16px; float: right" onClick="document.location='privacy-policy'">Legal</button>
-        </div>
-        <br><br><br><br><br>
+				<br />
 
-        <!-- Content -->
-        <div style="display:flex;justify-content:center;align-items:center;">
-            <div style="font-size:24px;">
+				<form method="POST">
+					<input class="registration-text-field" type="text" id="username" name="username" placeholder="Username" />
+					<br /><br />
+					<input class="registration-text-field" type="text" id="email" name="email" placeholder="E-mail address" />
+					<br /><br />
+					<input class="registration-text-field" type="password" id="password" name="password" placeholder="Password" />
+					<br /><br />
 
-                <div style="font-size:72px;">Register</div>
-                <div>SPECIAL OFFER: Register before August 2021 for a free permanent "Tester" rank!</div>
-                
-                <br>
-                <br>
+					By registering, you agree to the <a href="/privacy-policy">Privacy Policy</a>.
 
-                <form method="POST">
-                    <input class="registration-text-field" type="text" id="username" name="username" placeholder="Username">
-                    <br><br>
-                    <input class="registration-text-field" type="text" id="email" name="email" placeholder="E-mail address">
-                    <br><br>
-                    <input class="registration-text-field" type="password" id="password" name="password" placeholder="Password">
-                    <br><br>
-                    
-                    By registering, you agree to the <a href="/privacy-policy">Privacy Policy</a>.
+					<br /><br />
 
-                    <br><br>
+					<div style="display: flex; justify-content: center; align-items: center">
+						<div class="g-recaptcha" data-sitekey="6Lc_7sYbAAAAAKsdpVLSzL_Y7f22zBZSc4k78JOs"></div>
+					</div>
 
-                
-                    <div class="g-recaptcha" data-sitekey="6Lc_7sYbAAAAAKsdpVLSzL_Y7f22zBZSc4k78JOs">
-                    
-                    </div>
+					<br />
 
-                    <br><br>
+					<input class="submit-button" type="submit" />
+				</form>
+			</div>
+		</div>
+	</body>
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-XVRB5TXW3K"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag() {
+			dataLayer.push(arguments);
+		}
+		gtag("js", new Date());
 
-                    <input class="submit-button" type="submit">
-                </form>
-
-
-            </div>
-        </div>
-
-
-    </body>
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XVRB5TXW3K"></script>
-<script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag() {
-        dataLayer.push(arguments);
-    }
-    gtag("js", new Date());
-
-    gtag("config", "G-XVRB5TXW3K");
-</script>
-
+		gtag("config", "G-XVRB5TXW3K");
+	</script>
 </html>
