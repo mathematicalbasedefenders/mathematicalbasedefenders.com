@@ -2,9 +2,9 @@
 
 <html>
 	<head>
-		<meta charset="UTF-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Mathematical Base Defenders</title>
 
 		<link rel="stylesheet" type="text/css" href="/css/global.css" />
@@ -18,7 +18,7 @@
 			}
 
 			.changelog-title-buttons {
-				width: 35vw;
+				width: 30vw;
 				height: 7vh;
 				background: none;
 				border: 1px solid black;
@@ -26,11 +26,17 @@
 				font-size: 24px;
 			}
 
-			.version-number-text {
+			h3 {
+				font-style: normal;
+				font-weight: normal;
+				margin: 0;
 				font-size: 48px;
 			}
 
-			.version-release-date-text {
+			h4 {
+				font-weight: normal;
+				margin: 0;
+				font-style: normal;
 				font-size: 24px;
 			}
 		</style>
@@ -42,55 +48,104 @@
 			<span float="left;">
 				<div id="top-navigation-bar">
 					<input type="image" src="assets/images/mathematicalbasedefenders.png" style="height: 96px" class="link-button mathematical-base-defenders-logo" onClick="document.location.href='/'" />
-					<a class="link-button" style="font-size: 36px" href='play'>Play</a>
-					<a class="link-button" href='register'>Register</a>
-					<a class="link-button" href='community'>Community</a>
-					<a class="link-button" href='statistics'>Statistics</a>
-					<a class="link-button" href='leaderboards'>Leaderboards</a>
-					<a class="link-button" href='changelog'>Changelog</a>
-					<a class="link-button" href='about'>About</a>
-					<a class="link-button" href='open-source-acknowledgements'>Acknowledgements</a>
-					<a class="link-button" href='privacy-policy'>Legal</a>
+					<a class="link-button" style="font-size: 36px" href="play">Play</a>
+					<a class="link-button" href="register">Register</a>
+					<a class="link-button" href="community">Community</a>
+					<a class="link-button" href="statistics">Statistics</a>
+					<a class="link-button" href="leaderboards">Leaderboards</a>
+					<a class="link-button" href="about">About</a>
 				</div>
 			</span>
 		</div>
-		<br /><br /><br />
 
 		<!-- Content -->
-		<div style="text-align: center">
-			<button id="website-changelog-selector-button" class="changelog-title-buttons" onClick="selectorButtonClicked('website')">Website</button><button id="game-changelog-selector-button" class="changelog-title-buttons" onClick="selectorButtonClicked('game')">Game</button>
-			
-			<div id="website-changelog">
-				<div class="version-number-text">0.1.5</div>
-				<div class="version-release-date-text">3 October 2021</div>
-				New content.
-				<br />
-				New About page.
-				<br>
-				Bug fixes.
-				<hr>
-				<div class="version-number-text">0.1.4</div>
-				<div class="version-release-date-text">22 September 2021</div>
-				Website "redesign".
-				<br />
-				New content.
-				<br />
-				Bug fixes.
+		<div id="content-wrapper">
+			<div style="text-align: center; font-size: 20px">
+				<p style="text-align: center; font-size: 48px">Changelog</p>
+
+				<button id="website-changelog-selector-button" class="changelog-title-buttons" onClick="selectorButtonClicked('website')">Website</button
+				><button id="game-changelog-selector-button" class="changelog-title-buttons" onClick="selectorButtonClicked('game')">Game</button>
+				<div style="display: flex; justify-content: center; align-items: center">
+					<div style="left: 15%; width: 70%; max-width: 1200px; word-wrap: break-word">
+						<div id="website-changelog">
+							<h3>0.2.0</h3>
+							<h4>23 October 2021</h4>
+							Bottom toolbar
+							<br />
+							Email verification
+							<br />
+							<hr />
+							<h3>0.1.6</h3>
+							<h4>3 October 2021</h4>
+							New content.
+							<br />
+							New About page.
+							<br />
+							Bug fixes.
+							<hr />
+							<h3>0.1.5</h3>
+							<h4>3 October 2021</h4>
+							New content.
+							<br />
+							New About page.
+							<br />
+							Bug fixes.
+							<hr />
+							<h3>0.1.4</h3>
+							<h4>22 September 2021</h4>
+							Website "redesign".
+							<br />
+							New content.
+							<br />
+							Bug fixes.
+						</div>
+						<div id="game-changelog">
+							<h3>0.2.1</h3>
+							<h4>23 October 2021</h4>
+							Bug fixes. Improvements.
+							<br />
+							<hr />
+							<h3>0.2.0</h3>
+							<h4>23 September 2021</h4>
+							New UI design.
+							<br />
+							You can know rebind keys. Note that one key can be used per tile, and each tile may can only have one key binded to it.
+							<hr />
+							<h3>0.1.1</h3>
+							<h4>23 September 2021</h4>
+							Fixed a bug with restoring settings.
+							<hr />
+							<h3>0.1.0</h3>
+							<h4>22 September 2021</h4>
+							Initial release of Mathematical Base Defenders.
+						</div>
+					</div>
+				</div>
 			</div>
-			<div id="game-changelog">
-				<div class="version-number-text">0.2.0</div>
-				<div class="version-release-date-text">23 September 2021</div>
-				New UI design.
-				<br>
-				You can know rebind keys. Note that one key can be used per tile, and each tile may can only have one key binded to it.
-				<hr>
-				<div class="version-number-text">0.1.1</div>
-				<div class="version-release-date-text">23 September 2021</div>
-				Fixed a bug with restoring settings.
-				<hr>
-				<div class="version-number-text">0.1.0</div>
-				<div class="version-release-date-text">22 September 2021</div>
-				Initial release of Mathematical Base Defenders.
+		</div>
+		<!-- Footer -->
+		<div id="bottom-navigation-bar-wrapper">
+			<div id="bottom-navigation-bar">
+				<div id="bottom-navigation-bar-left-text">
+					©
+					<a href="https://mistertfy64.com" style="color: transparent" title="Mathematical Base Defenders' creator's personal website">
+						<img style="vertical-align: middle" src="assets/images/mistertfy64.svg" height="32px" />
+					</a>
+					2021 &nbsp;
+					<a class="bottom-navigation-bar-text" href="changelog">Changelog</a>
+					<a class="bottom-navigation-bar-text" href="privacy-policy">Legal</a>
+					<a class="bottom-navigation-bar-text" href="open-source-acknowledgements">Acknowledgements</a>
+					<div id="bottom-navigation-bar-right-text">
+						<a href="https://patreon.com/mistertfy64" style="color: transparent" title="Donate"> <img style="vertical-align: middle" src="assets/images/patreon.png" height="32px" /> </a>&nbsp;
+						<a href="https://discord.gg/pDTZvrTXm9" style="color: transparent" title="Discord Server"> <img style="vertical-align: middle" src="assets/images/discord.svg" height="32px" /> </a>&nbsp;
+						<a href="https://github.com/mathematicalbasedefenders/issuetracker" style="color: transparent" title="GitHub Issue Tracker"> <img style="vertical-align: middle" src="assets/images/github.png" height="32px" /> </a>&nbsp;
+						<a href="https://facebook.com/mathematicalbasedefenders" style="color: transparent" title="Facebook"> <img style="vertical-align: middle" src="assets/images/facebook.png" height="32px" /> </a>&nbsp;
+						<a href="https://twitter.com/MathematicalBD" style="color: transparent" title="Twitter"> <img style="vertical-align: middle" src="assets/images/twitter.png" height="32px" /> </a>&nbsp;
+						<a href="https://instagram.com/mathematicalbasedefenders" style="color: transparent" title="Instagram">
+							<img style="vertical-align: middle" src="assets/images/instagram.png" height="32px" />
+						</a>
+					</div>
+				</div>
 			</div>
 		</div>
 	</body>
@@ -107,7 +162,6 @@
 		gtag("config", "G-XVRB5TXW3K");
 	</script>
 	<script>
-		
 		document.getElementById("website-changelog").style.display = "none";
 		document.getElementById("game-changelog").style.display = "none";
 		function selectorButtonClicked(buttonClicked) {

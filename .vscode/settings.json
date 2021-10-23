@@ -1,6 +1,10 @@
 {
     "cSpell.words": [
         "gtag",
+        "signup",
+        "uuidv",
         "XVRB"
-    ]
+    ],
+    "python.linting.pylintEnabled": true,
+    "python.linting.enabled": true
 }

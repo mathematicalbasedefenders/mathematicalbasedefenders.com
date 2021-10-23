@@ -49,108 +49,126 @@
 			<span float="left;">
 				<div id="top-navigation-bar">
 					<input type="image" src="assets/images/mathematicalbasedefenders.png" style="height: 96px" class="link-button mathematical-base-defenders-logo" onClick="document.location.href='/'" />
-					<a class="link-button" style="font-size: 36px" href='play'>Play</a>
-					<a class="link-button" href='register'>Register</a>
-					<a class="link-button" href='community'>Community</a>
-					<a class="link-button" href='statistics'>Statistics</a>
-					<a class="link-button" href='leaderboards'>Leaderboards</a>
-					<a class="link-button" href='changelog'>Changelog</a>
-					<a class="link-button" href='about'>About</a>
-					<a class="link-button" href='open-source-acknowledgements'>Acknowledgements</a>
-					<a class="link-button" href='privacy-policy'>Legal</a>
+					<a class="link-button" style="font-size: 36px" href="play">Play</a>
+					<a class="link-button" href="register">Register</a>
+					<a class="link-button" href="community">Community</a>
+					<a class="link-button" href="statistics">Statistics</a>
+					<a class="link-button" href="leaderboards">Leaderboards</a>
+					<a class="link-button" href="about">About</a>
 				</div>
 			</span>
 		</div>
-		<br /><br /><br />
 
 		<!-- Content -->
+		<div id="content-wrapper">
+			<div style="display: flex; justify-content: center; align-items: center">
+				<div style="left: 15%; width: 70%; max-width: 1200px; word-wrap: break-word">
+					<div style="font-size: 20px">
+						<div style="background-color: #e42e2e; color: white; font-size: 36px">Mathematical Base Defenders focuses on speed (how fast you can do math problems), not knowledge (how much you know about math.)</div>
 
-		<div style="display: flex; justify-content: center; align-items: center">
-			<div style="left: 15%; max-width: 1200px; word-wrap: break-word">
-				<div style="font-size: 20px">
-					<div style="background-color: #a50000; color: white; font-size: 48px">
-						Mathematical Base Defenders is a game.<br />
-						<div style="font-size: 24px">Which means that</div>
-						Mathematical Base Defenders is NOT a substitute for a math tutor.<br />Mathematical Base Defenders is NOT where you can learn new math topics.<br />
-					</div>
-
-					<br />
-					Last revised: 3 October 2021
-					<br />
-					<strong>THINGS ARE SUBJECT TO CHANGE WITHOUT NOTICE.</strong>
-					<br />
-					<br />
-					<h2>About</h2>
-					<p>Mathematical Base Defenders is a speed/math game where you can play alone, or with other players (coming soon).</p>
-					<hr />
-
-					<h2>Objective</h2>
-					<p>The objective of Mathematical Base Defenders is to form problems for the enemies by using tiles to match the enemy's "value" before they reach the base.</p>
-					<hr />
-
-					<h2>Play</h2>
-					<p>
-						You form an expression that when evaluated, matches one of the enemies' "requested values." (the number in the middle of the enemy). While you are doing that, the enemies will move towards your base. There are no power-ups or
-						pauses.
-					</p>
-					<hr />
-
-					<h2>Scoring</h2>
-					<p>
-						You get points when you kill an enemy. You get more points if the problem's "length" is long enough, the enemy's position is far from the base, and you have killed multiple enemies in succession. (combo)
-						<br /><br />
-					</p>
-					<div id="score-multiplier-tables-container">
-						<table style="text-align: center">
-							<tr>
-								<td>Problem Length</td>
-								<td>Score Multiplier</td>
-							</tr>
-							<tr>
-								<td>6 or less</td>
-								<td>×1</td>
-							</tr>
-							<tr>
-								<td>7 to 13</td>
-								<td>×1+0.1(length-6)</td>
-							</tr>
-							<tr>
-								<td>14 or more</td>
-								<td>×1+0.2(length-9)</td>
-							</tr>
-						</table>
 						<br />
-						<table style="text-align: center">
-							<tr>
-								<td>Enemy's Position</td>
-								<td>Score Multiplier</td>
-							</tr>
-							<tr>
-								<td>Less than 50% from base</td>
-								<td>×1</td>
-							</tr>
-							<tr>
-								<td>50% or more from base</td>
-								<td>×1+0.1(sPosition-5)</td>
-							</tr>
-						</table>
+						Last revised: 3 October 2021
 						<br />
-						<table style="text-align: center">
-							<tr>
-								<td>Combo</td>
-								<td>Score Multiplier</td>
-							</tr>
-							<tr>
-								<td>0</td>
-								<td>×1</td>
-							</tr>
-							<tr>
-								<td>1 or more</td>
-								<td>×1.1<sup>combo</sup></td>
-							</tr>
-						</table>
+						<strong>THINGS ARE SUBJECT TO CHANGE WITHOUT NOTICE.</strong>
+						<br />
+						<br />
+						<h2>About</h2>
+						<p>Mathematical Base Defenders is a speed/math game where you can play alone, or with other players (coming soon).</p>
+						<hr />
+
+						<h2>Objective</h2>
+						<p>The objective of Mathematical Base Defenders is to form problems for the enemies by using tiles to match the enemy's "value" before they reach the base.</p>
+						<hr />
+
+						<h2>Play</h2>
+						<p>
+							You form an expression that when evaluated, matches one of the enemies' "requested values." (the number in the middle of the enemy). While you are doing that, the enemies will move towards your base. There are no power-ups
+							or pauses.
+						</p>
+						<hr />
+
+						<h2>Scoring</h2>
+						<p>
+							You get points when you kill an enemy. You get more points if the problem's "length" is long enough, the enemy's position is far from the base, and you have killed multiple enemies in succession. (combo)
+							<br /><br />
+						</p>
+						<div id="score-multiplier-tables-container">
+							<table style="text-align: center">
+								<tr>
+									<td>Problem Length</td>
+									<td>Score Multiplier</td>
+								</tr>
+								<tr>
+									<td>6 or less</td>
+									<td>×1</td>
+								</tr>
+								<tr>
+									<td>7 to 13</td>
+									<td>×1+0.1(length-6)</td>
+								</tr>
+								<tr>
+									<td>14 or more</td>
+									<td>×1+0.2(length-9)</td>
+								</tr>
+							</table>
+							<br />
+							<table style="text-align: center">
+								<tr>
+									<td>Enemy's Position</td>
+									<td>Score Multiplier</td>
+								</tr>
+								<tr>
+									<td>Less than 50% from base</td>
+									<td>×1</td>
+								</tr>
+								<tr>
+									<td>50% or more from base</td>
+									<td>×1+0.1(sPosition-5)</td>
+								</tr>
+							</table>
+							<br />
+							<table style="text-align: center">
+								<tr>
+									<td>Combo</td>
+									<td>Score Multiplier</td>
+								</tr>
+								<tr>
+									<td>0</td>
+									<td>×1</td>
+								</tr>
+								<tr>
+									<td>1 or more</td>
+									<td>×1.1<sup>combo</sup></td>
+								</tr>
+							</table>
+						</div>
+						<hr />
 					</div>
-					<hr />
+				</div>
+			</div>
+		</div>
+		<!-- Footer -->
+		<div id="bottom-navigation-bar-wrapper">
+			<div id="bottom-navigation-bar">
+				<div id="bottom-navigation-bar-left-text">
+					©
+					<a href="https://mistertfy64.com" style="color: transparent" title="Mathematical Base Defenders' creator's personal website">
+						<img style="vertical-align: middle" src="assets/images/mistertfy64.svg" height="32px" />
+					</a>
+					2021 &nbsp;
+					<a class="bottom-navigation-bar-text" href="changelog">Changelog</a>
+					<a class="bottom-navigation-bar-text" href="privacy-policy">Legal</a>
+					<a class="bottom-navigation-bar-text" href="open-source-acknowledgements">Acknowledgements</a>
+					<div id="bottom-navigation-bar-right-text">
+						<a href="https://patreon.com/mistertfy64" style="color: transparent" title="Donate"> <img style="vertical-align: middle" src="assets/images/patreon.png" height="32px" /> </a>&nbsp;
+						<a href="https://discord.gg/pDTZvrTXm9" style="color: transparent" title="Discord Server"> <img style="vertical-align: middle" src="assets/images/discord.svg" height="32px" /> </a>&nbsp;
+						<a href="https://github.com/mathematicalbasedefenders/issuetracker" style="color: transparent" title="GitHub Issue Tracker"> <img style="vertical-align: middle" src="assets/images/github.png" height="32px" /> </a>&nbsp;
+						<a href="https://facebook.com/mathematicalbasedefenders" style="color: transparent" title="Facebook"> <img style="vertical-align: middle" src="assets/images/facebook.png" height="32px" /> </a>&nbsp;
+						<a href="https://twitter.com/MathematicalBD" style="color: transparent" title="Twitter"> <img style="vertical-align: middle" src="assets/images/twitter.png" height="32px" /> </a>&nbsp;
+						<a href="https://instagram.com/mathematicalbasedefenders" style="color: transparent" title="Instagram">
+							<img style="vertical-align: middle" src="assets/images/instagram.png" height="32px" />
+						</a>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -166,6 +184,4 @@
 
 		gtag("config", "G-XVRB5TXW3K");
 	</script>
-	<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-	<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </html>
