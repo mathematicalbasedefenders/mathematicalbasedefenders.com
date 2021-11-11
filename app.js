@@ -15,9 +15,9 @@ const chalk = require("chalk");
 
 const app = express();
 
-const port = 8000;
+const PORT = 8000;
 
-const saltRounds = 16;
+const SALT_ROUNDS = 16;
 
 const credentials = require("./credentials/credentials.js");
 
@@ -48,6 +48,17 @@ const PendingUserSchema = new Schema({
 	hashedPassword: String,
 	emailConfirmationLink: String,
 	emailConfirmationCode: String,
+	expiresAt: {
+		type: Date,
+		default: new Date(Date.now() + 1800000).getTime(),
+		expires: 1800,
+	},
+});
+
+const PendingPasswordResetSchema = new Schema({
+	emailAddress: String,
+	passwordResetConfirmationLink: String,
+	passwordResetConfirmationCode: String,
 	expiresAt: {
 		type: Date,
 		default: new Date(Date.now() + 1800000).getTime(),
@@ -92,8 +103,12 @@ const LeaderboardsSchema = new Schema({
 	score: Number,
 });
 
-PendingUserSchema.index({expiresAt: 1},{expireAfterSeconds: 1800});
+PendingUserSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 1800 });
+PendingPasswordResetSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 1800 });
+
 const PendingUserModel = mongoose.model("PendingUserModel", PendingUserSchema, "pendingUsers");
+const PendingPasswordResetModel = mongoose.model("PendingPasswordResetSchema", PendingPasswordResetSchema, "pendingPasswordResets");
+
 const UserModel = mongoose.model("UserModel", UserSchema, "users");
 const MetadataModel = mongoose.model("IDModel", IDSchema, "metadata");
 const LeaderboardsModel = mongoose.model("LeaderboardsModel", LeaderboardsSchema, "leaderboards");
@@ -142,16 +157,30 @@ app.get("/users", async (request, response) => {
 	let $ = cheerio.load(fs.readFileSync(__dirname + "/users.html"));
 
 	let query = url.parse(request.url, true).query;
-	let search = query.s;
-	let data = await UserModel.findOne({ userNumber: search }, function (error, result) {
+	let username = query.username;
+	let number = query.number;
+
+	let data;
+
+	if (username){
+		data = await UserModel.findOne({ username: username }, function (error, result) {
+			if (error) {
+				console.log(chalk.redBright(error.stack));
+			}
+			return result;
+		});	
+	} else {
+	data = await UserModel.findOne({ userNumber: number }, function (error, result) {
 		if (error) {
 			console.log(chalk.redBright(error.stack));
 		}
 		return result;
 	});
+}
 
 	// why?
-	var statistics = JSON.parse(JSON.stringify(data.statistics));
+	if (data){
+		var statistics = JSON.parse(JSON.stringify(data.statistics));
 
 	var rank = beautifyRank(calculateRank(data));
 
@@ -182,6 +211,12 @@ app.get("/users", async (request, response) => {
 	$("#personal-best-score").html(statistics.personalBestScore);
 	response.writeHead(200, { "Content-Type": "text/html" });
 	response.end($.html());
+	} else {
+		$("#user").html("Player not found!");
+		response.writeHead(200, { "Content-Type": "text/html" });
+		response.end($.html());
+	}
+	
 });
 
 app.get("/privacy-policy", (request, response) => {
@@ -239,7 +274,7 @@ app.get("/leaderboards", async (request, response) => {
 			});
 
 			if (i == 1 || i == 2 || i == 3) {
-				var playerURL = "users?s=" + playerData.userNumber;
+				var playerURL = "users?username=" + playerData.username;
 				$("#rank-" + i + "-username").html("<a href=" + playerURL + ">" + playerData.username + "</a>");
 				$("#rank-" + i + "-score").html(data.score);
 			} else {
@@ -261,7 +296,7 @@ app.get("/leaderboards", async (request, response) => {
 				$("#rank-username").attr("id", "rank-" + i + "-username");
 				$("#rank-score").attr("id", "rank-" + i + "-score");
 
-				var playerURL = "users?s=" + playerData.userNumber;
+				var playerURL = "users?username=" + playerData.username;
 
 				$("#rank-" + i + "-number").html("#" + i);
 				$("#rank-" + i + "-username").html("<a href=" + playerURL + ">" + playerData.username + "</a>");
@@ -282,76 +317,71 @@ app.get("/confirm-email-address", async (request, response) => {
 	let code = query.code;
 
 	var pendingUserRecord = await PendingUserModel.findOne({ emailAddress: email });
-	if (pendingUserRecord["emailConfirmationCode"] == code) {
+	if (pendingUserRecord) {
+		if (pendingUserRecord["emailConfirmationCode"] == code) {
+			let metadataDocument = await MetadataModel.findOne({}); // REPLACE THIS WITH 60eea62aea5b87780e18dc6f FOR PRODUCTION
+			let stringifiedJSON = JSON.stringify(metadataDocument);
+			let object = JSON.parse(stringifiedJSON);
+			let userCount = object["usersRegistered"];
 
-		let metadataDocument = await MetadataModel.findOne({ _id: new ObjectId("60eea62aea5b87780e18dc6f") }); // REPLACE THIS WITH 60eea62aea5b87780e18dc6f FOR PRODUCTION
-		let stringifiedJSON = JSON.stringify(metadataDocument);
-		let object = JSON.parse(stringifiedJSON);
-		let userCount = object["usersRegistered"];
+			console.log("There are " + userCount + " users registered.");
 
+			let dataToSave = {
+				username: pendingUserRecord["username"],
+				usernameInAllLowercase: pendingUserRecord["usernameInAllLowercase"],
+				emailAddress: pendingUserRecord["emailAddress"],
+				hashedPassword: pendingUserRecord["hashedPassword"],
+				userNumber: userCount + 1,
+				creationDateAndTime: Date.now(),
+				statistics: {
+					gamesPlayed: 0,
+				},
+				membership: {
+					isDeveloper: false,
+					isAdministrator: false,
+					isModerator: false,
+					isContributor: false,
+					isTester: true,
+					isDonator: false,
+					specialRank: "",
+				},
+			};
 
-		console.log("There are " + userCount + " users registered.");
+			const userModelToSave = new UserModel(dataToSave);
 
-		let dataToSave = {
-			username: pendingUserRecord["username"],
-			usernameInAllLowercase: pendingUserRecord["usernameInAllLowercase"],
-			emailAddress: pendingUserRecord["emailAddress"],
-			hashedPassword: pendingUserRecord["hashedPassword"],
-			userNumber: userCount + 1,
-			creationDateAndTime: Date.now(),
-			statistics: {
-				gamesPlayed: 0,
-			},
-			membership: {
-				isDeveloper: false,
-				isAdministrator: false,
-				isModerator: false,
-				isContributor: false,
-				isTester: true,
-				isDonator: false,
-				specialRank: "",
-			},
-		};
+			MetadataModel.findOneAndUpdate({ documentIsMetadata: true }, { $inc: { usersRegistered: 1 } }, { returnOriginal: false, new: true }, (error3, response3) => {
+				if (error3) {
+					$("#message").text("Internal error!");
+					console.log(error3);
+					response.writeHead(200, { "Content-Type": "text/html" });
+					response.end($.html());
+					return;
+				} else {
+					console.log("There are now " + (userCount + 1) + " users registered.");
+					userModelToSave.save((error4) => {
+						if (error4) {
+							$("#message").text("Internal error!");
+							console.log(error4);
+							response.writeHead(200, { "Content-Type": "text/html" });
+							response.end($.html());
+							return;
+						}
+					});
+				}
+			});
 
-		const userModelToSave = new UserModel(dataToSave);
+			console.log(`User ${pendingUserRecord["username"]} validated!`);
+			$("#message").text(`User ${pendingUserRecord["username"]} validated! You may now log in!`);
 
-		MetadataModel.findOneAndUpdate({ documentIsMetadata: true }, { $inc: { usersRegistered: 1 } }, { returnOriginal: false, new: true }, (error3, response3) => {
-			if (error3) {
-				$("#message").text("Internal error!");
-				console.log(error3);
-				response.writeHead(200, { "Content-Type": "text/html" });
-				response.end($.html());
-				return;
-			} else {
-				console.log("There are now " + (userCount + 1) + " users registered.");
-				userModelToSave.save((error4) => {
-					if (error4) {
-						$("#message").text("Internal error!");
-						console.log(error4);
-						response.writeHead(200, { "Content-Type": "text/html" });
-						response.end($.html());
-						return;
-					}
-				});
-			}
-		});
-
-
-
-
-		console.log(`User ${pendingUserRecord["username"]} validated!`);
-		$("#message").text(`User ${pendingUserRecord["username"]} validated! You may now log in!`);
-
-		PendingUserModel.deleteOne({emailAddress: email}, (error) => {
-			if (error){
-				console.log(chalk.redBright(error.stack));
-			}
-		})
-
-
-	} else {
-		console.log(chalk.magentaBright("Failed to verify a user!"));
-		$("#message").text(`Failed to verify the user!`);
+			PendingUserModel.deleteOne({ emailAddress: email }, (error) => {
+				if (error) {
+					console.log(chalk.redBright(error.stack));
+				}
+			});
+		} else {
+			console.log(chalk.magentaBright("Failed to verify a user!"));
+			$("#message").text(`Failed to verify the user!`);
+		}
 	}
 	response.writeHead(200, { "Content-Type": "text/html" });
 	response.end($.html());
@@ -373,6 +403,26 @@ app.get("/open-source-acknowledgements", async (request, response) => {
 	response.sendFile(__dirname + "/open-source-acknowledgements.html");
 });
 
+app.get("/forgot-password", async (request, response) => {
+	response.sendFile(__dirname + "/forgot-password.html");
+});
+
+app.get("/change-password", async (request, response) => {
+	let query = url.parse(request.url, true).query;
+	let email = query.email;
+	let code = query.code;
+	var pendingPasswordResetRecord = await PendingPasswordResetModel.findOne({ emailAddress: email });
+	if (pendingPasswordResetRecord) {
+		if (pendingPasswordResetRecord["passwordResetConfirmationCode"] == code) {
+			response.sendFile(__dirname + "/change-password.html");
+		} else {
+			response.redirect("/?resetpasswordonpage=fail");
+		}
+	} else {
+		response.redirect("/?resetpasswordonpage=fail");
+	}
+});
+
 // process registration data
 app.post("/register", async (request, response) => {
 	const responseKey = request.body["g-recaptcha-response"];
@@ -391,7 +441,7 @@ app.post("/register", async (request, response) => {
 	var emailIsNotAvailable2 = await PendingUserModel.findOne({ emailAddress: desiredEmail }).select(desiredEmail);
 	var usernameIsNotAvailable2 = await PendingUserModel.findOne({ usernameInAllLowercase: desiredUsernameInAllLowercase }).select(desiredUsernameInAllLowercase);
 
-	var metadataDocument = await MetadataModel.findOne({ _id: new ObjectId("60eea62aea5b87780e18dc6f") }); // REPLACE THIS WITH 60eea62aea5b87780e18dc6f FOR PRODUCTION
+	var metadataDocument = await MetadataModel.findOne({}); // REPLACE THIS WITH 60eea62aea5b87780e18dc6f FOR PRODUCTION
 
 	fetch(reCaptchaURL, { method: "post" })
 		.then((response) => response.json())
@@ -424,12 +474,10 @@ app.post("/register", async (request, response) => {
 								response.writeHead(200, { "Content-Type": "text/html" });
 								response.end($.html());
 							} else {
-
-
 								let plaintextPassword = request.body.password;
 								if (
 									plaintextPassword.length < 8 ||
-									plaintextPassword.length > 256 ||
+									plaintextPassword.length > 64 ||
 									plaintextPassword == "" ||
 									plaintextPassword == null ||
 									plaintextPassword.includes(" ") ||
@@ -441,7 +489,7 @@ app.post("/register", async (request, response) => {
 									response.end($.html());
 								} else {
 									var hashedPasswordToSave;
-									bcrypt.genSalt(saltRounds, function (error1, salt) {
+									bcrypt.genSalt(SALT_ROUNDS, function (error1, salt) {
 										if (error1) {
 											let $ = cheerio.load(fs.readFileSync(__dirname + "/registration-failed.html"));
 											$("#error-message").text("Internal error!");
@@ -477,16 +525,12 @@ app.post("/register", async (request, response) => {
 															response.writeHead(200, { "Content-Type": "text/html" });
 															response.end($.html());
 														} else {
-															console.log("New Unconfirmed User: " + desiredUsername + " (" + desiredEmail + ")");
-															response.redirect("/");
-														}
-													});
-													let transporter = nodemailer.createTransport(credentials.getNodemailerOptionsObject());
-													let message = {
-														from: "Mathematical Base Defenders Support <support@mathematicalbasedefenders.com>",
-														to: desiredEmail,
-														subject: "Email Confirmation for Mathematical Base Defenders",
-														html: `
+															let transporter = nodemailer.createTransport(credentials.getNodemailerOptionsObject());
+															let message = {
+																from: "Mathematical Base Defenders Support <support@mathematicalbasedefenders.com>",
+																to: desiredEmail,
+																subject: "Email Confirmation for Mathematical Base Defenders",
+																html: `
 														<p>
 															Thanks for signing up for Mathematical Base Defenders!
 															<br>
@@ -497,12 +541,21 @@ app.post("/register", async (request, response) => {
 															This link will expire in 30 minutes. After that, your account will be deleted and you may sign up again. If the link doesn't work, feel free to copy and paste the link. If you need help, please reply to this e-mail.
 														</p>
 														`,
-													};
-													transporter.sendMail(message, (error, information) => {
-														if (error) {
-															console.log(chalk.redBright(error.stack));
-														} else {
-															console.log("Successfully sent verification message to " + desiredEmail + "!");
+															};
+															transporter.sendMail(message, (error, information) => {
+																if (error) {
+																	console.log(chalk.redBright(error.stack));
+																	let $ = cheerio.load(fs.readFileSync(__dirname + "/registration-failed.html"));
+																	$("#error-message").text("Internal error!");
+																	console.log(chalk.redBright(error4.stack));
+																	response.writeHead(200, { "Content-Type": "text/html" });
+																	response.end($.html());
+																} else {
+																	console.log("Successfully sent verification message to " + desiredEmail + "!");
+																	console.log("New Unconfirmed User: " + desiredUsername + " (" + desiredEmail + ")");
+																	response.redirect("/?signup=success");
+																}
+															});
 														}
 													});
 												}
@@ -523,6 +576,129 @@ app.post("/register", async (request, response) => {
 			}
 		});
 });
+
+// process password reset request
+
+app.post("/forgot-password", async (request, response) => {
+	const responseKey = request.body["g-recaptcha-response"];
+	const reCaptchaSecretKey = credentials.getReCAPTCHASecretKey(); // REPLACE ME!!!!!!!!!!!!!!!!!!!!!!!!!!!!! credentials.getReCAPTCHASecretKey();
+	const reCaptchaURL = `https://www.google.com/recaptcha/api/siteverify?secret=${reCaptchaSecretKey}&response=${responseKey}`;
+
+	let desiredEmail = request.body.email;
+	let passwordResetConfirmationCode = uuidv4();
+
+	fetch(reCaptchaURL, { method: "post" })
+		.then((response) => response.json())
+		.then((google_response) => {
+			if (google_response.success == true) {
+				let dataToSave = {
+					emailAddress: desiredEmail,
+					passwordResetConfirmationLink: `https://mathematicalbasedefenders.com/change-password?email=${desiredEmail}&code=${passwordResetConfirmationCode}`,
+					passwordResetConfirmationCode: passwordResetConfirmationCode,
+					expiresAt: new Date(Date.now() + 1800000).getTime(),
+				};
+				let pendingPasswordResetToSave = new PendingPasswordResetModel(dataToSave);
+				pendingPasswordResetToSave.save((error4) => {
+					if (error4) {
+						console.log(chalk.red(error4.stack));
+						response.redirect("/?resetpassword=fail");
+					} else {
+						let transporter = nodemailer.createTransport(credentials.getNodemailerOptionsObject());
+						let message = {
+							from: "Mathematical Base Defenders Support <support@mathematicalbasedefenders.com>",
+							to: desiredEmail,
+							subject: "Password Reset Confirmation for Mathematical Base Defenders",
+							html: `
+							<p>
+								Someone requested a password reset for your Mathematical Base Defenders account.
+								<br>
+								If this is you, and you want continue with the procedure, please click this link.
+								<br>
+								<a href=https://mathematicalbasedefenders.com/change-password/?email={desiredEmail}?code=${passwordResetConfirmationCode}>https://mathematicalbasedefenders.com/change-password?email=${desiredEmail}&code=${passwordResetConfirmationCode}</a>
+								<br>
+								This link will expire in 30 minutes. After that, you may request a new password reset link. If the link doesn't work, feel free to copy and paste the link. If you need help, please reply to this e-mail.
+							</p>
+							`,
+						};
+						transporter.sendMail(message, (error, information) => {
+							if (error) {
+								console.log(chalk.redBright(error.stack));
+								response.redirect("/?resetpassword=fail");
+							} else {
+								response.redirect("/?resetpassword=success");
+							}
+						});
+					}
+				});
+			} else {
+				response.redirect("/?resetpassword=fail");
+			}
+		});
+});
+
+// process password reset request on page
+app.post("/change-password", async (request, response) => {
+	let query = url.parse(request.url, true).query;
+	let email = query.email;
+	let code = query.code;
+	let newPassword = request.body.password;
+	let confirmNewPassword = request.body["confirm-password"];
+
+	let record = await PendingPasswordResetModel.find({ $and: [{ emailAddress: email }, { code: code }] });
+
+	if (record) {
+		if (!(newPassword.length < 8 || newPassword.length > 64 || newPassword == "" || newPassword == null || newPassword.includes(" ") || !/^[0-9a-zA-Z!"#$%&'()*+,-.:;<=>?@^_`{|}~]*$/.test(newPassword)|| newPassword != confirmNewPassword))  {
+			bcrypt.genSalt(SALT_ROUNDS, function (error1, salt) {
+				if (error1) {
+					console.log(chalk.redBright(error1.stack));
+					response.redirect("/?resetpasswordonpage=fail");
+				} else {
+					bcrypt.hash(newPassword, salt, async function (error2, hash) {
+						if (error2) {
+							console.log(chalk.redBright(error2.stack));
+							response.redirect("/?resetpasswordonpage=fail");
+						} else {
+							PendingPasswordResetModel.deleteOne({ emailAddress: email }, (error3, response3) => {
+								if (error3) {
+									console.log(chalk.redBright(error3.stack));
+									response.redirect("/?resetpasswordonpage=fail");
+								} else {
+									UserModel.findOneAndUpdate({ emailAddress: email }, { hashedPassword: hash }, { useFindAndModify: true, new: true }, (error, response2) => {
+										if (error) {
+											console.log(chalk.redBright(error.stack));
+											response.redirect("/?resetpasswordonpage=fail");
+										} else {
+											console.log("Successfully changed password for a user!");
+											response.redirect("/?resetpasswordonpage=success");
+										}
+									});
+								}
+							});
+						}
+					});
+				}
+			});
+		} else {
+			response.redirect("/?resetpasswordonpage=fail");
+		}
+	} else {
+		response.redirect("/?resetpasswordonpage=fail");
+	}
+});
+
+
+
+
+// PUT THIS LAST (404 page)
+
+app.get('*', function(req, res){
+	res.status(404).sendFile(__dirname + "/404.html");
+  });
+
+
+
+
+
 
 // other functions
 
@@ -553,6 +729,6 @@ function beautifyRank(rank) {
 
 // start
 
-app.listen(port, () => {
-	console.log(`App listening at http://localhost:${port}`);
+app.listen(PORT, () => {
+	console.log(`App listening at http://localhost:${PORT}`);
 });

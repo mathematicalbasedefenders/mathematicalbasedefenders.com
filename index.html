@@ -38,13 +38,9 @@
 					<input type="image" src="assets/images/mathematicalbasedefenders.png" style="height: 96px" class="link-button mathematical-base-defenders-logo" onClick="document.location.href='/'" />
 					<a class="link-button" style="font-size: 36px" href="play">Play</a>
 					<a class="link-button" href="register">Register</a>
-					<a class="link-button" href="community">Community</a>
 					<a class="link-button" href="statistics">Statistics</a>
 					<a class="link-button" href="leaderboards">Leaderboards</a>
-					<a class="link-button" href="changelog">Changelog</a>
 					<a class="link-button" href="about">About</a>
-					<a class="link-button" href="open-source-acknowledgements">Acknowledgements</a>
-					<a class="link-button" href="privacy-policy">Legal</a>
 				</div>
 			</span>
 		</div>
@@ -113,15 +109,23 @@
 			
 			// do
 			if (key == "signup" && value == "success"){
-				showBanner();				
+				showBanner("Sign up successful! Please check your e-mail for a verification link! Failure to click the verification link in 30 minutes will delete your account! (You may sign up again if that happens.)");				
+			} else if (key == "resetpassword"){
+				if (value == "success"){
+					showBanner("Successfully sent the password reset link your e-mail! The link is only valid for 30 minutes!");
+				} else {
+					showBanner("Failed to send a password reset link!");
+				}
+			} else if (key == "resetpasswordonpage"){
+				showBanner(value == success ? "Successfully reset password! ": "Failed to reset password!")
 			}
 
 
 		}
 	</script>
 	<script>
-		function showBanner(){
-			alert("Sign up successful! Please check your e-mail for a verification link! Failure to click the verification link in 30 minutes will delete your account! (You may sign up again if that happens.)");
+		function showBanner(message){
+			alert(message);
 		}
 	</script>
 	<script>
