@@ -188,11 +188,11 @@ app.get("/users", async (request, response) => {
 
 	// rank color
 	if (rank == "Game Master") {
-		rankColor = "#ecc500";
+		rankColor = "#ff0000";
 	} else if (rank == "Developer") {
 		rankColor = "#ff0000";
 	} else if (rank == "Administrator") {
-		rankColor = "#da1717";
+		rankColor = "#ff0000";
 	} else if (rank == "Moderator") {
 		rankColor = "#ff6800";
 	} else if (rank == "Contributor") {
