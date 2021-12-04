@@ -1,5 +1,7 @@
 #!/usr/bin/env nodejs
 const http = require("http");
+const https = require("https");
+
 const fs = require("fs");
 const querystring = require("querystring");
 const url = require("url");
@@ -8,10 +10,9 @@ const cheerio = require("cheerio");
 const fetch = require("isomorphic-fetch");
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const { v4: uuidv4 } = require("uuid");
+const { v: uuidv4 } = require("uuid");
 const nodemailer = require("nodemailer");
 const express = require("express");
-const chalk = require("chalk");
 
 const app = express();
 
@@ -37,6 +38,7 @@ mongoose.connection.on("connected", () => {
 });
 
 var ObjectId = require("mongoose").Types.ObjectId;
+const { resolve } = require("path");
 
 // other stuff
 app.use(express.urlencoded({ extended: true }));
@@ -113,6 +115,13 @@ const UserModel = mongoose.model("UserModel", UserSchema, "users");
 const MetadataModel = mongoose.model("IDModel", IDSchema, "metadata");
 const LeaderboardsModel = mongoose.model("LeaderboardsModel", LeaderboardsSchema, "leaderboards");
 
+const repositoriesUsed = {
+	bcrypt: "https://github.com/kelektiv/node.bcrypt.js",
+	cheerio: "https://github.com/cheeriojs/cheerio",
+	express: "",
+	
+};
+
 app.use(express.static(__dirname + "/public"));
 
 // pages
@@ -139,7 +148,7 @@ app.get("/register", (request, response) => {
 app.get("/statistics", (request, response) => {
 	UserModel.countDocuments({}, function (error, count) {
 		if (error) {
-			console.log(chalk.redBright(error.stack));
+			console.error(error.stack);
 		}
 
 		let $ = cheerio.load(fs.readFileSync(__dirname + "/statistics.html"));
@@ -162,61 +171,60 @@ app.get("/users", async (request, response) => {
 
 	let data;
 
-	if (username){
+	if (username) {
 		data = await UserModel.findOne({ username: username }, function (error, result) {
 			if (error) {
-				console.log(chalk.redBright(error.stack));
+				console.error(error.stack);
 			}
 			return result;
-		});	
+		});
 	} else {
-	data = await UserModel.findOne({ userNumber: number }, function (error, result) {
-		if (error) {
-			console.log(chalk.redBright(error.stack));
-		}
-		return result;
-	});
-}
-
-	// why?
-	if (data){
-		var statistics = JSON.parse(JSON.stringify(data.statistics));
-
-	var rank = beautifyRank(calculateRank(data));
-
-	var rankColor = "black";
-
-	// rank color
-	if (rank == "Game Master") {
-		rankColor = "#ff0000";
-	} else if (rank == "Developer") {
-		rankColor = "#ff0000";
-	} else if (rank == "Administrator") {
-		rankColor = "#ff0000";
-	} else if (rank == "Moderator") {
-		rankColor = "#ff6800";
-	} else if (rank == "Contributor") {
-		rankColor = "#4070ff";
-	} else if (rank == "Tester") {
-		rankColor = "#0194ff";
-	} else if (rank == "Donator") {
+		data = await UserModel.findOne({ userNumber: number }, function (error, result) {
+			if (error) {
+				console.error(error.stack);
+			}
+			return result;
+		});
 	}
 
-	$("#rank").html(rank);
-	$("#rank").css("color", rankColor);
+	// why?
+	if (data) {
+		var statistics = JSON.parse(JSON.stringify(data.statistics));
 
-	$("#user").html(data.username);
+		var rank = beautifyRank(calculateRank(data));
 
-	$("#player-join-date").html(data.creationDateAndTime);
-	$("#personal-best-score").html(statistics.personalBestScore);
-	response.writeHead(200, { "Content-Type": "text/html" });
-	response.end($.html());
+		var rankColor = "black";
+
+		// rank color
+		if (rank == "Game Master") {
+			rankColor = "#ff0000";
+		} else if (rank == "Developer") {
+			rankColor = "#ff0000";
+		} else if (rank == "Administrator") {
+			rankColor = "#ff0000";
+		} else if (rank == "Moderator") {
+			rankColor = "#ff6800";
+		} else if (rank == "Contributor") {
+			rankColor = "#4070ff";
+		} else if (rank == "Tester") {
+			rankColor = "#0194ff";
+		} else if (rank == "Donator") {
+		}
+
+		$("#rank").html(rank);
+		$("#rank").css("color", rankColor);
+
+		$("#user").html(data.username);
+
+		$("#player-join-date").html(data.creationDateAndTime);
+		$("#personal-best-score").html(statistics.personalBestScore);
+		response.writeHead(200, { "Content-Type": "text/html" });
+		response.end($.html());
 	} else {
 		$("#user").html("Player not found!");
 		response.writeHead(200, { "Content-Type": "text/html" });
 		response.end($.html());
 	}
-	
 });
 
 app.get("/privacy-policy", (request, response) => {
@@ -375,7 +383,7 @@ app.get("/confirm-email-address", async (request, response) => {
 
 			PendingUserModel.deleteOne({ emailAddress: email }, (error) => {
 				if (error) {
-					console.log(chalk.redBright(error.stack));
+					console.error(error.stack);
 				}
 			});
 		} else {
@@ -400,7 +408,20 @@ app.get("/about", async (request, response) => {
 });
 
 app.get("/open-source-acknowledgements", async (request, response) => {
-	response.sendFile(__dirname + "/open-source-acknowledgements.html");
+	let $ = cheerio.load(fs.readFileSync(__dirname + "/open-source-acknowledgements.html"));
+	let licenses;
+	await loadAcknowledgements().then((result) => {
+		licenses = result;
+	});
+	let index = -1;
+for (license in licenses) {
+	index++;
+	$("#license-container").append(`<a href=${repositoriesUsed[license]}><h2>${license}</h2></a>`);
+			$("#license-container").append(`<pre>${licenses[license]}</pre>`);
+			$("#license-container").append(`<hr>`);
+		}
+	response.writeHead(200, { "Content-Type": "text/html" });
+	response.end($.html());
 });
 
 app.get("/forgot-password", async (request, response) => {
@@ -493,7 +514,7 @@ app.post("/register", async (request, response) => {
 										if (error1) {
 											let $ = cheerio.load(fs.readFileSync(__dirname + "/registration-failed.html"));
 											$("#error-message").text("Internal error!");
-											console.log(chalk.redBright(error1.stack));
+											console.error(error1.stack);
 											response.writeHead(200, { "Content-Type": "text/html" });
 											response.end($.html());
 										} else {
@@ -501,7 +522,7 @@ app.post("/register", async (request, response) => {
 												if (error2) {
 													let $ = cheerio.load(fs.readFileSync(__dirname + "/registration-failed.html"));
 													$("#error-message").text("Internal error!");
-													console.log(chalk.redBright(error2.stack));
+													console.error(error2.stack);
 													response.writeHead(200, { "Content-Type": "text/html" });
 													response.end($.html());
 												} else {
@@ -521,7 +542,7 @@ app.post("/register", async (request, response) => {
 														if (error4) {
 															let $ = cheerio.load(fs.readFileSync(__dirname + "/registration-failed.html"));
 															$("#error-message").text("Internal error!");
-															console.log(chalk.redBright(error4.stack));
+															console.error(error4.stack);
 															response.writeHead(200, { "Content-Type": "text/html" });
 															response.end($.html());
 														} else {
@@ -544,10 +565,10 @@ app.post("/register", async (request, response) => {
 															};
 															transporter.sendMail(message, (error, information) => {
 																if (error) {
-																	console.log(chalk.redBright(error.stack));
+																	console.error(error.stack);
 																	let $ = cheerio.load(fs.readFileSync(__dirname + "/registration-failed.html"));
 																	$("#error-message").text("Internal error!");
-																	console.log(chalk.redBright(error4.stack));
+																	console.error(error4.stack);
 																	response.writeHead(200, { "Content-Type": "text/html" });
 																	response.end($.html());
 																} else {
@@ -622,7 +643,7 @@ app.post("/forgot-password", async (request, response) => {
 						};
 						transporter.sendMail(message, (error, information) => {
 							if (error) {
-								console.log(chalk.redBright(error.stack));
+								console.error(error.stack);
 								response.redirect("/?resetpassword=fail");
 							} else {
 								response.redirect("/?resetpassword=success");
@@ -647,25 +668,25 @@ app.post("/change-password", async (request, response) => {
 	let record = await PendingPasswordResetModel.find({ $and: [{ emailAddress: email }, { code: code }] });
 
 	if (record) {
-		if (!(newPassword.length < 8 || newPassword.length > 64 || newPassword == "" || newPassword == null || newPassword.includes(" ") || !/^[0-9a-zA-Z!"#$%&'()*+,-.:;<=>?@^_`{|}~]*$/.test(newPassword)|| newPassword != confirmNewPassword))  {
+		if (!(newPassword.length < 8 || newPassword.length > 64 || newPassword == "" || newPassword == null || newPassword.includes(" ") || !/^[0-9a-zA-Z!"#$%&'()*+,-.:;<=>?@^_`{|}~]*$/.test(newPassword) || newPassword != confirmNewPassword)) {
 			bcrypt.genSalt(SALT_ROUNDS, function (error1, salt) {
 				if (error1) {
-					console.log(chalk.redBright(error1.stack));
+					console.error(error1.stack);
 					response.redirect("/?resetpasswordonpage=fail");
 				} else {
 					bcrypt.hash(newPassword, salt, async function (error2, hash) {
 						if (error2) {
-							console.log(chalk.redBright(error2.stack));
+							console.error(error2.stack);
 							response.redirect("/?resetpasswordonpage=fail");
 						} else {
 							PendingPasswordResetModel.deleteOne({ emailAddress: email }, (error3, response3) => {
 								if (error3) {
-									console.log(chalk.redBright(error3.stack));
+									console.error(error3.stack);
 									response.redirect("/?resetpasswordonpage=fail");
 								} else {
 									UserModel.findOneAndUpdate({ emailAddress: email }, { hashedPassword: hash }, { useFindAndModify: true, new: true }, (error, response2) => {
 										if (error) {
-											console.log(chalk.redBright(error.stack));
+											console.error(error.stack);
 											response.redirect("/?resetpasswordonpage=fail");
 										} else {
 											console.log("Successfully changed password for a user!");
@@ -686,19 +707,11 @@ app.post("/change-password", async (request, response) => {
 	}
 });
 
-
-
-
 // PUT THIS LAST (404 page)
 
-app.get('*', function(req, res){
+app.get("*", function (req, res) {
 	res.status(404).sendFile(__dirname + "/404.html");
-  });
-
-
-
-
-
+});
 
 // other functions
 
@@ -726,6 +739,37 @@ function calculateRank(data) {
 function beautifyRank(rank) {
 	return rank;
 }
+
+async function getLicenseForRepository(repositoryLink, callback) {
+	repositoryLink = repositoryLink.replace("https://github.com/", "https://raw.githubusercontent.com/");
+	repositoryLink += "/master/LICENSE";
+	let license;
+	return new Promise(async (resolve, reject) => {
+		await https.get(repositoryLink, (response) => {
+			response.on("data", (chunk) => {
+				license = chunk.toString("utf-8");
+				resolve(license);
+			});
+		});
+	});
+}
+
+async function loadAcknowledgements() {
+	// FIXME: wtf am i even doing
+	let licenses = {};
+	let index = -1;
+	return new Promise(async (resolve, reject) => {
+		for (let repository in repositoriesUsed) {
+			index++;
+			console.log("#1:" + index);
+			await getLicenseForRepository(repositoriesUsed[repository]).then((data) => {
+				licenses[repository] = data;
+			});
+		}
+		resolve(licenses);
+	});
+}
+// https://github.com/kelektiv/node.bcrypt.js/ --> https://raw.githubusercontent.com/kelektiv/node.bcrypt.js/master/LICENSE
 
 // start
 
