@@ -13,6 +13,7 @@ const Schema = mongoose.Schema;
 const { v: uuidv4 } = require("uuid");
 const nodemailer = require("nodemailer");
 const express = require("express");
+const xss = require("xss")
 
 const app = express();
 
@@ -23,12 +24,6 @@ const SALT_ROUNDS = 16;
 const credentials = require("./credentials/credentials.js");
 
 const uri = credentials.getMongooseURI();
-
-// Color guide:
-// Bright Red = Internal error (error)
-// Bright Magenta = "User-generated" error
-
-// DON'T FORGET TO CHANGE RECAPTCHA KEYS
 
 // mongoose
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -118,8 +113,20 @@ const LeaderboardsModel = mongoose.model("LeaderboardsModel", LeaderboardsSchema
 const repositoriesUsed = {
 	bcrypt: "https://github.com/kelektiv/node.bcrypt.js",
 	cheerio: "https://github.com/cheeriojs/cheerio",
-	express: "",
-	
+	express: "https://github.com/expressjs/express",
+	fontfaceobserver: "https://github.com/bramstein/fontfaceobserver",
+	isomorphicFetch: "https://github.com/matthew-andrews/isomorphic-fetch",
+	lodash: "https://github.com/lodash/lodash",
+	lzString: "https://github.com/pieroxy/lz-string",
+	mathExpressionEvaluator: "https://github.com/bugwheels94/math-expression-evaluator",
+	mongoose: "https://github.com/Automattic/mongoose",
+	mongooseQueryParser: "https://github.com/leodinas-hao/mongoose-query-parser",
+	mpath: "https://github.com/aheckmann/mpath",
+	pixijs: "https://github.com/pixijs/pixijs",
+	nodemailer: "https://github.com/nodemailer/nodemailer",
+	socket_DOT_io: "https://github.com/socketio/socket.io",
+	uuid: "https://github.com/uuidjs/uuid",
+	xss: "https://github.com/leizongmin/js-xss",
 };
 
 app.use(express.static(__dirname + "/public"));
@@ -408,20 +415,7 @@ app.get("/about", async (request, response) => {
 });
 
 app.get("/open-source-acknowledgements", async (request, response) => {
-	let $ = cheerio.load(fs.readFileSync(__dirname + "/open-source-acknowledgements.html"));
-	let licenses;
-	await loadAcknowledgements().then((result) => {
-		licenses = result;
-	});
-	let index = -1;
-for (license in licenses) {
-	index++;
-	$("#license-container").append(`<a href=${repositoriesUsed[license]}><h2>${license}</h2></a>`);
-			$("#license-container").append(`<pre>${licenses[license]}</pre>`);
-			$("#license-container").append(`<hr>`);
-		}
-	response.writeHead(200, { "Content-Type": "text/html" });
-	response.end($.html());
+	response.sendFile(__dirname + "/open-source-acknowledgements.html");
 });
 
 app.get("/forgot-password", async (request, response) => {
@@ -452,9 +446,9 @@ app.post("/register", async (request, response) => {
 
 	const reCaptchaURL = `https://www.google.com/recaptcha/api/siteverify?secret=${reCaptchaSecretKey}&response=${responseKey}`;
 
-	let desiredUsername = request.body.username;
-	let desiredEmail = request.body.email;
-	let desiredUsernameInAllLowercase = request.body.username.toLowerCase();
+	let desiredUsername = xss(request.body.username);
+	let desiredEmail = xss(request.body.email);
+	let desiredUsernameInAllLowercase = xss(request.body.username).toLowerCase();
 
 	// var usernameIsAvailable1 = await UserModel.findOne({ username: desiredUsername }).select(desiredUsername);
 	var emailIsNotAvailable1 = await UserModel.findOne({ emailAddress: desiredEmail }).select(desiredEmail);
@@ -707,6 +701,23 @@ app.post("/change-password", async (request, response) => {
 	}
 });
 
+// FIXME: Unsafe?
+app.post("/fetch-open-source-licenses", async (request, response) => {
+	let licenses;
+	await loadAcknowledgements().then((result) => {
+		licenses = result;
+	});
+	let index = -1;
+	let thingsToAppend = [];
+	for (license in licenses) {
+		index++;
+		thingsToAppend.push(`<a href=${repositoriesUsed[license]}><h2>${license.replace("_DOT_", ".").replace(/([A-Z])/g, "-$1").toLowerCase()}</h2></a>`);
+		thingsToAppend.push(`<pre>${licenses[license]}</pre>`);
+		thingsToAppend.push(`<hr>`);
+	}
+	response.json(thingsToAppend);
+});
+
 // PUT THIS LAST (404 page)
 
 app.get("*", function (req, res) {
@@ -748,6 +759,22 @@ async function getLicenseForRepository(repositoryLink, callback) {
 		await https.get(repositoryLink, (response) => {
 			response.on("data", (chunk) => {
 				license = chunk.toString("utf-8");
+				if (license == "404: Not Found") {
+					resolve(getLicenseWithDifferentFileNameForRepository(repositoryLink));
+				} else {
+					resolve(license);
+				}
+			});
+		});
+	});
+}
+async function getLicenseWithDifferentFileNameForRepository(repositoryLink, callback) {
+	repositoryLink += ".md";
+	let license;
+	return new Promise(async (resolve, reject) => {
+		await https.get(repositoryLink, (response) => {
+			response.on("data", (chunk) => {
+				license = chunk.toString("utf-8");
 				resolve(license);
 			});
 		});
@@ -761,7 +788,6 @@ async function loadAcknowledgements() {
 	return new Promise(async (resolve, reject) => {
 		for (let repository in repositoriesUsed) {
 			index++;
-			console.log("#1:" + index);
 			await getLicenseForRepository(repositoriesUsed[repository]).then((data) => {
 				licenses[repository] = data;
 			});
@@ -769,7 +795,6 @@ async function loadAcknowledgements() {
 		resolve(licenses);
 	});
 }
-// https://github.com/kelektiv/node.bcrypt.js/ --> https://raw.githubusercontent.com/kelektiv/node.bcrypt.js/master/LICENSE
 
 // start
 

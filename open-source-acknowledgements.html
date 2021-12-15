@@ -56,7 +56,7 @@
 				<div style="left: 15%; max-width: 1200px; width: 70%">
 					<div style="font-size: 20px">
 						<div id="license-container">
-							
+							<span id="loading-text">Loading...</span>
 						</div>
 					</div>
 				</div>
@@ -87,6 +87,15 @@
 				</div>
 			</div>
 		</div>
-		<script></script>
+		<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+		<script>
+			$.post("/fetch-open-source-licenses", ((data, status) => {
+				console.log(data);
+				$("#loading-text").text("");
+				for (let content of data){
+					$("#license-container").append(content);
+				}
+			}))
+		</script>
 	</body>
 </html>
