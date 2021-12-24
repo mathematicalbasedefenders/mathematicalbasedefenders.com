@@ -117,12 +117,12 @@ const repositoriesUsed = {
 	fontfaceobserver: "https://github.com/bramstein/fontfaceobserver",
 	isomorphicFetch: "https://github.com/matthew-andrews/isomorphic-fetch",
 	lodash: "https://github.com/lodash/lodash",
-	lzString: "https://github.com/pieroxy/lz-string",
 	mathExpressionEvaluator: "https://github.com/bugwheels94/math-expression-evaluator",
 	mongoose: "https://github.com/Automattic/mongoose",
 	mongooseQueryParser: "https://github.com/leodinas-hao/mongoose-query-parser",
 	mpath: "https://github.com/aheckmann/mpath",
-	pixijs: "https://github.com/pixijs/pixijs",
+	objectSizeof: "shttps://github.com/miktam/sizeof",
+	pixi_DOT_js: "https://github.com/pixijs/pixijs",
 	nodemailer: "https://github.com/nodemailer/nodemailer",
 	socket_DOT_io: "https://github.com/socketio/socket.io",
 	uuid: "https://github.com/uuidjs/uuid",
@@ -394,7 +394,7 @@ app.get("/confirm-email-address", async (request, response) => {
 				}
 			});
 		} else {
-			console.log(chalk.magentaBright("Failed to verify a user!"));
+			console.log("Failed to verify a user!");
 			$("#message").text(`Failed to verify the user!`);
 		}
 	}
@@ -448,7 +448,8 @@ app.post("/register", async (request, response) => {
 
 	let desiredUsername = xss(request.body.username);
 	let desiredEmail = xss(request.body.email);
-	let desiredUsernameInAllLowercase = xss(request.body.username).toLowerCase();
+	let desiredUsernameInAllLowercase = xss(request.body.username);
+	desiredUsernameInAllLowercase = desiredUsernameInAllLowercase.toLowerCase();
 
 	// var usernameIsAvailable1 = await UserModel.findOne({ username: desiredUsername }).select(desiredUsername);
 	var emailIsNotAvailable1 = await UserModel.findOne({ emailAddress: desiredEmail }).select(desiredEmail);
@@ -489,7 +490,7 @@ app.post("/register", async (request, response) => {
 								response.writeHead(200, { "Content-Type": "text/html" });
 								response.end($.html());
 							} else {
-								let plaintextPassword = request.body.password;
+								let plaintextPassword = xss(request.body.password);
 								if (
 									plaintextPassword.length < 8 ||
 									plaintextPassword.length > 64 ||
@@ -585,7 +586,7 @@ app.post("/register", async (request, response) => {
 			} else {
 				let $ = cheerio.load(fs.readFileSync(__dirname + "/registration-failed.html"));
 				$("#error-message").text("Complete the reCAPTCHA first!");
-				console.log(chalk.magentaBright("reCaptcha Error"));
+				console.log("reCaptcha Error");
 				response.writeHead(200, { "Content-Type": "text/html" });
 				response.end($.html());
 			}
@@ -596,10 +597,10 @@ app.post("/register", async (request, response) => {
 
 app.post("/forgot-password", async (request, response) => {
 	const responseKey = request.body["g-recaptcha-response"];
-	const reCaptchaSecretKey = credentials.getReCAPTCHASecretKey(); // REPLACE ME!!!!!!!!!!!!!!!!!!!!!!!!!!!!! credentials.getReCAPTCHASecretKey();
+	const reCaptchaSecretKey = credentials.getReCAPTCHASecretKey();
 	const reCaptchaURL = `https://www.google.com/recaptcha/api/siteverify?secret=${reCaptchaSecretKey}&response=${responseKey}`;
 
-	let desiredEmail = request.body.email;
+	let desiredEmail = xss(request.body.email);
 	let passwordResetConfirmationCode = uuidv4();
 
 	fetch(reCaptchaURL, { method: "post" })
@@ -615,7 +616,7 @@ app.post("/forgot-password", async (request, response) => {
 				let pendingPasswordResetToSave = new PendingPasswordResetModel(dataToSave);
 				pendingPasswordResetToSave.save((error4) => {
 					if (error4) {
-						console.log(chalk.red(error4.stack));
+						console.log(error4.stack);
 						response.redirect("/?resetpassword=fail");
 					} else {
 						let transporter = nodemailer.createTransport(credentials.getNodemailerOptionsObject());
@@ -656,7 +657,7 @@ app.post("/change-password", async (request, response) => {
 	let query = url.parse(request.url, true).query;
 	let email = query.email;
 	let code = query.code;
-	let newPassword = request.body.password;
+	let newPassword = xss(request.body.password);
 	let confirmNewPassword = request.body["confirm-password"];
 
 	let record = await PendingPasswordResetModel.find({ $and: [{ emailAddress: email }, { code: code }] });
@@ -784,10 +785,8 @@ async function getLicenseWithDifferentFileNameForRepository(repositoryLink, call
 async function loadAcknowledgements() {
 	// FIXME: wtf am i even doing
 	let licenses = {};
-	let index = -1;
 	return new Promise(async (resolve, reject) => {
 		for (let repository in repositoriesUsed) {
-			index++;
 			await getLicenseForRepository(repositoriesUsed[repository]).then((data) => {
 				licenses[repository] = data;
 			});
