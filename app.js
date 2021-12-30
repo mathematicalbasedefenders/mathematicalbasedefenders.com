@@ -121,7 +121,7 @@ const repositoriesUsed = {
 	mongoose: "https://github.com/Automattic/mongoose",
 	mongooseQueryParser: "https://github.com/leodinas-hao/mongoose-query-parser",
 	mpath: "https://github.com/aheckmann/mpath",
-	objectSizeof: "shttps://github.com/miktam/sizeof",
+	objectSizeof: "https://github.com/miktam/sizeof",
 	pixi_DOT_js: "https://github.com/pixijs/pixijs",
 	nodemailer: "https://github.com/nodemailer/nodemailer",
 	socket_DOT_io: "https://github.com/socketio/socket.io",
@@ -334,7 +334,7 @@ app.get("/confirm-email-address", async (request, response) => {
 	var pendingUserRecord = await PendingUserModel.findOne({ emailAddress: email });
 	if (pendingUserRecord) {
 		if (pendingUserRecord["emailConfirmationCode"] == code) {
-			let metadataDocument = await MetadataModel.findOne({}); // REPLACE THIS WITH 60eea62aea5b87780e18dc6f FOR PRODUCTION
+			let metadataDocument = await MetadataModel.findOne({});
 			let stringifiedJSON = JSON.stringify(metadataDocument);
 			let object = JSON.parse(stringifiedJSON);
 			let userCount = object["usersRegistered"];
