@@ -1,5 +1,4 @@
 #!/usr/bin/env nodejs
-const http = require("http");
 const https = require("https");
 
 const fs = require("fs");
@@ -173,8 +172,8 @@ app.get("/users", async (request, response) => {
 	let $ = cheerio.load(fs.readFileSync(__dirname + "/users.html"));
 
 	let query = url.parse(request.url, true).query;
-	let username = query.username;
-	let number = query.number;
+	let username = xss(query.username);
+	let number = xss(query.number);
 
 	let data;
 
@@ -328,8 +327,8 @@ app.get("/confirm-email-address", async (request, response) => {
 	let $ = cheerio.load(fs.readFileSync(__dirname + "/confirm-email-address.html"));
 
 	let query = url.parse(request.url, true).query;
-	let email = query.email;
-	let code = query.code;
+	let email = xss(query.email);
+	let code = xss(query.code);
 
 	var pendingUserRecord = await PendingUserModel.findOne({ emailAddress: email });
 	if (pendingUserRecord) {
@@ -424,8 +423,8 @@ app.get("/forgot-password", async (request, response) => {
 
 app.get("/change-password", async (request, response) => {
 	let query = url.parse(request.url, true).query;
-	let email = query.email;
-	let code = query.code;
+	let email = xss(query.email);
+	let code = xss(query.code);
 	var pendingPasswordResetRecord = await PendingPasswordResetModel.findOne({ emailAddress: email });
 	if (pendingPasswordResetRecord) {
 		if (pendingPasswordResetRecord["passwordResetConfirmationCode"] == code) {
@@ -440,16 +439,16 @@ app.get("/change-password", async (request, response) => {
 
 // process registration data
 app.post("/register", async (request, response) => {
-	const responseKey = request.body["g-recaptcha-response"];
+	const responseKey = xss(request.body["g-recaptcha-response"]);
 
-	const reCaptchaSecretKey = credentials.getReCAPTCHASecretKey(); // REPLACE ME!!!!!!!!!!!!!!!!!!!!!!!!!!!!! credentials.getReCAPTCHASecretKey();
+	const reCaptchaSecretKey = xss(credentials.getReCAPTCHASecretKey()); // REPLACE ME!!!!!!!!!!!!!!!!!!!!!!!!!!!!! credentials.getReCAPTCHASecretKey();
 
-	const reCaptchaURL = `https://www.google.com/recaptcha/api/siteverify?secret=${reCaptchaSecretKey}&response=${responseKey}`;
+	const reCaptchaURL = xss(`https://www.google.com/recaptcha/api/siteverify?secret=${reCaptchaSecretKey}&response=${responseKey}`);
 
 	let desiredUsername = xss(request.body.username);
 	let desiredEmail = xss(request.body.email);
 	let desiredUsernameInAllLowercase = xss(request.body.username);
-	desiredUsernameInAllLowercase = desiredUsernameInAllLowercase.toLowerCase();
+	desiredUsernameInAllLowercase = xss(desiredUsernameInAllLowercase.toLowerCase());
 
 	// var usernameIsAvailable1 = await UserModel.findOne({ username: desiredUsername }).select(desiredUsername);
 	var emailIsNotAvailable1 = await UserModel.findOne({ emailAddress: desiredEmail }).select(desiredEmail);
@@ -546,7 +545,7 @@ app.post("/register", async (request, response) => {
 																from: "Mathematical Base Defenders Support <support@mathematicalbasedefenders.com>",
 																to: desiredEmail,
 																subject: "Email Confirmation for Mathematical Base Defenders",
-																html: `
+																html: xss(`
 														<p>
 															Thanks for signing up for Mathematical Base Defenders!
 															<br>
@@ -556,7 +555,7 @@ app.post("/register", async (request, response) => {
 															<br>
 															This link will expire in 30 minutes. After that, your account will be deleted and you may sign up again. If the link doesn't work, feel free to copy and paste the link. If you need help, please reply to this e-mail.
 														</p>
-														`,
+														`),
 															};
 															transporter.sendMail(message, (error, information) => {
 																if (error) {
@@ -596,12 +595,12 @@ app.post("/register", async (request, response) => {
 // process password reset request
 
 app.post("/forgot-password", async (request, response) => {
-	const responseKey = request.body["g-recaptcha-response"];
-	const reCaptchaSecretKey = credentials.getReCAPTCHASecretKey();
-	const reCaptchaURL = `https://www.google.com/recaptcha/api/siteverify?secret=${reCaptchaSecretKey}&response=${responseKey}`;
+	const responseKey = xss(request.body["g-recaptcha-response"]);
+	const reCaptchaSecretKey = xss(credentials.getReCAPTCHASecretKey());
+	const reCaptchaURL = xss(`https://www.google.com/recaptcha/api/siteverify?secret=${reCaptchaSecretKey}&response=${responseKey}`);
 
 	let desiredEmail = xss(request.body.email);
-	let passwordResetConfirmationCode = uuidv4();
+	let passwordResetConfirmationCode = xss(uuidv4());
 
 	fetch(reCaptchaURL, { method: "post" })
 		.then((response) => response.json())
@@ -624,7 +623,7 @@ app.post("/forgot-password", async (request, response) => {
 							from: "Mathematical Base Defenders Support <support@mathematicalbasedefenders.com>",
 							to: desiredEmail,
 							subject: "Password Reset Confirmation for Mathematical Base Defenders",
-							html: `
+							html: xss(`
 							<p>
 								Someone requested a password reset for your Mathematical Base Defenders account.
 								<br>
@@ -634,7 +633,7 @@ app.post("/forgot-password", async (request, response) => {
 								<br>
 								This link will expire in 30 minutes. After that, you may request a new password reset link. If the link doesn't work, feel free to copy and paste the link. If you need help, please reply to this e-mail.
 							</p>
-							`,
+							`),
 						};
 						transporter.sendMail(message, (error, information) => {
 							if (error) {
@@ -655,10 +654,10 @@ app.post("/forgot-password", async (request, response) => {
 // process password reset request on page
 app.post("/change-password", async (request, response) => {
 	let query = url.parse(request.url, true).query;
-	let email = query.email;
-	let code = query.code;
+	let email = xss(query.email);
+	let code = xss(query.code);
 	let newPassword = xss(request.body.password);
-	let confirmNewPassword = request.body["confirm-password"];
+	let confirmNewPassword = xss(request.body["confirm-password"]);
 
 	let record = await PendingPasswordResetModel.find({ $and: [{ emailAddress: email }, { code: code }] });
 
@@ -798,5 +797,5 @@ async function loadAcknowledgements() {
 // start
 
 app.listen(PORT, () => {
-	console.log(`App listening at http://localhost:${PORT}`);
+	console.log(`App listening at https://localhost:${PORT}`);
 });
