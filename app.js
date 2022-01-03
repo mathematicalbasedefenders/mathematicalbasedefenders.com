@@ -548,17 +548,17 @@ app.post("/register", async (request, response) => {
 																from: "Mathematical Base Defenders Support <support@mathematicalbasedefenders.com>",
 																to: desiredEmail,
 																subject: "Email Confirmation for Mathematical Base Defenders",
-																html: xss(`
+																html: `
 														<p>
 															Thanks for signing up for Mathematical Base Defenders!
 															<br>
 															In order to fully activate your account, please click the activation link below.
 															<br>
-															<a href=https://mathematicalbasedefenders.com/confirm-email-address?email=${desiredEmail}&code=${emailConfirmationCode}>https://mathematicalbasedefenders.com/confirm-email-address?email=${desiredEmail}&code=${emailConfirmationCode}</a>
+															<a href=https://mathematicalbasedefenders.com/confirm-email-address?email=${xss(desiredEmail)}&code=${xss(emailConfirmationCode)}>https://mathematicalbasedefenders.com/confirm-email-address?email=${xss(desiredEmail)}&code=${xss(emailConfirmationCode)}</a>
 															<br>
 															This link will expire in 30 minutes. After that, your account will be deleted and you may sign up again. If the link doesn't work, feel free to copy and paste the link. If you need help, please reply to this e-mail.
 														</p>
-														`),
+														`,
 															};
 															transporter.sendMail(message, (error, information) => {
 																if (error) {
@@ -626,17 +626,17 @@ app.post("/forgot-password", async (request, response) => {
 							from: "Mathematical Base Defenders Support <support@mathematicalbasedefenders.com>",
 							to: desiredEmail,
 							subject: "Password Reset Confirmation for Mathematical Base Defenders",
-							html: xss(`
+							html: `
 							<p>
 								Someone requested a password reset for your Mathematical Base Defenders account.
 								<br>
 								If this is you, and you want continue with the procedure, please click this link.
 								<br>
-								<a href=https://mathematicalbasedefenders.com/change-password/?email={desiredEmail}?code=${passwordResetConfirmationCode}>https://mathematicalbasedefenders.com/change-password?email=${desiredEmail}&code=${passwordResetConfirmationCode}</a>
+								<a href=https://mathematicalbasedefenders.com/change-password/?email={desiredEmail}?code=${xss(passwordResetConfirmationCode)}>https://mathematicalbasedefenders.com/change-password?email=${xss(desiredEmail)}&code=${xss(passwordResetConfirmationCode)}</a>
 								<br>
 								This link will expire in 30 minutes. After that, you may request a new password reset link. If the link doesn't work, feel free to copy and paste the link. If you need help, please reply to this e-mail.
 							</p>
-							`),
+							`,
 						};
 						transporter.sendMail(message, (error, information) => {
 							if (error) {
