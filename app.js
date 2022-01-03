@@ -449,7 +449,6 @@ app.post("/register", async (request, response) => {
 	const reCaptchaURL = xss(`https://www.google.com/recaptcha/api/siteverify?secret=${reCaptchaSecretKey}&response=${responseKey}`);
 
 	let desiredUsername = xss(request.body.username);
-	console.log(desiredUsername);
 	let desiredEmail = xss(request.body.email);
 	let desiredUsernameInAllLowercase = xss(request.body.username);
 	desiredUsernameInAllLowercase = xss(desiredUsernameInAllLowercase.toLowerCase());
