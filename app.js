@@ -14,9 +14,12 @@ const nodemailer = require("nodemailer");
 const express = require("express");
 const xss = require("xss")
 
+
+const log = require("server/core/log.js");
+
 const app = express();
 
-const PORT = 8000;
+const PORT = 8080;
 
 const SALT_ROUNDS = 16;
 
@@ -28,7 +31,7 @@ const uri = credentials.getMongooseURI();
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
 mongoose.connection.on("connected", () => {
-	console.log("Successfully connected to mongoose.");
+	console.log(log.addMetadata("Successfully connected to mongoose.", "info"));
 });
 
 var ObjectId = require("mongoose").Types.ObjectId;
@@ -154,7 +157,7 @@ app.get("/register", (request, response) => {
 app.get("/statistics", (request, response) => {
 	UserModel.countDocuments({}, function (error, count) {
 		if (error) {
-			console.error(error.stack);
+			console.error(log.addMetadata(error.stack, "error"));
 		}
 
 		let $ = cheerio.load(fs.readFileSync(__dirname + "/statistics.html"));
@@ -180,7 +183,7 @@ app.get("/users", async (request, response) => {
 	if (username) {
 		data = await UserModel.findOne({ username: username }, function (error, result) {
 			if (error) {
-				console.error(error.stack);
+				console.error(log.addMetadata(error.stack, "error"));
 			}
 			return result;
 		});
@@ -188,7 +191,7 @@ app.get("/users", async (request, response) => {
 		if (isNaN(number)){response.redirect("/");return;}
 		data = await UserModel.findOne({ userNumber: number }, function (error, result) {
 			if (error) {
-				console.error(error.stack);
+				console.error(log.addMetadata(error.stack, "error"));
 			}
 			return result;
 		});
@@ -339,7 +342,7 @@ app.get("/confirm-email-address", async (request, response) => {
 			let object = JSON.parse(stringifiedJSON);
 			let userCount = object["usersRegistered"];
 
-			console.log("There are " + userCount + " users registered.");
+			console.log(log.addMetadata("There are " + userCount + " users registered.", "info"));
 
 			let dataToSave = {
 				username: pendingUserRecord["username"],
@@ -367,16 +370,16 @@ app.get("/confirm-email-address", async (request, response) => {
 			MetadataModel.findOneAndUpdate({ documentIsMetadata: true }, { $inc: { usersRegistered: 1 } }, { returnOriginal: false, new: true }, (error3, response3) => {
 				if (error3) {
 					$("#message").text("Internal error!");
-					console.log(error3);
+					console.log(log.addMetadata(error3, "info"));
 					response.writeHead(200, { "Content-Type": "text/html" });
 					response.end($.html());
 					return;
 				} else {
-					console.log("There are now " + (userCount + 1) + " users registered.");
+					console.log(log.addMetadata("There are now " + (userCount + 1) + " users registered.", "info"));
 					userModelToSave.save((error4) => {
 						if (error4) {
 							$("#message").text("Internal error!");
-							console.log(error4);
+							console.log(log.addMetadata(error4, "info"));
 							response.writeHead(200, { "Content-Type": "text/html" });
 							response.end($.html());
 							return;
@@ -385,16 +388,16 @@ app.get("/confirm-email-address", async (request, response) => {
 				}
 			});
 
-			console.log(`User ${pendingUserRecord["username"]} validated!`);
+			console.log(log.addMetadata(`User ${pendingUserRecord["username"]} validated!`, "info"));
 			$("#message").text(`User ${pendingUserRecord["username"]} validated! You may now log in!`);
 
 			PendingUserModel.deleteOne({ emailAddress: email }, (error) => {
 				if (error) {
-					console.error(error.stack);
+					console.error(log.addMetadata(error.stack, "error"));
 				}
 			});
 		} else {
-			console.log("Failed to verify a user!");
+			console.log(log.addMetadata("Failed to verify a user!", "info"));
 			$("#message").text(`Failed to verify the user!`);
 		}
 	}
@@ -511,7 +514,7 @@ app.post("/register", async (request, response) => {
 										if (error1) {
 											let $ = cheerio.load(fs.readFileSync(__dirname + "/registration-failed.html"));
 											$("#error-message").text("Internal error!");
-											console.error(error1.stack);
+											console.error(log.addMetadata(error1.stack, "error"));
 											response.writeHead(200, { "Content-Type": "text/html" });
 											response.end($.html());
 										} else {
@@ -519,7 +522,7 @@ app.post("/register", async (request, response) => {
 												if (error2) {
 													let $ = cheerio.load(fs.readFileSync(__dirname + "/registration-failed.html"));
 													$("#error-message").text("Internal error!");
-													console.error(error2.stack);
+													console.error(log.addMetadata(error2.stack, "error"));
 													response.writeHead(200, { "Content-Type": "text/html" });
 													response.end($.html());
 												} else {
@@ -539,7 +542,7 @@ app.post("/register", async (request, response) => {
 														if (error4) {
 															let $ = cheerio.load(fs.readFileSync(__dirname + "/registration-failed.html"));
 															$("#error-message").text("Internal error!");
-															console.error(error4.stack);
+															console.error(log.addMetadata(error4.stack, "error"));
 															response.writeHead(200, { "Content-Type": "text/html" });
 															response.end($.html());
 														} else {
@@ -562,15 +565,15 @@ app.post("/register", async (request, response) => {
 															};
 															transporter.sendMail(message, (error, information) => {
 																if (error) {
-																	console.error(error.stack);
+																	console.error(log.addMetadata(error.stack, "error"));
 																	let $ = cheerio.load(fs.readFileSync(__dirname + "/registration-failed.html"));
 																	$("#error-message").text("Internal error!");
-																	console.error(error4.stack);
+																	console.error(log.addMetadata(error4.stack, "error"));
 																	response.writeHead(200, { "Content-Type": "text/html" });
 																	response.end($.html());
 																} else {
-																	console.log("Successfully sent verification message to " + desiredEmail + "!");
-																	console.log("New Unconfirmed User: " + desiredUsername + " (" + desiredEmail + ")");
+																	console.log(log.addMetadata("Successfully sent verification message to " + desiredEmail + "!", "info"));
+																	console.log(log.addMetadata("New Unconfirmed User: " + desiredUsername + " (" + desiredEmail + ")", "info"));
 																	response.redirect("/?signup=success");
 																}
 															});
@@ -588,7 +591,7 @@ app.post("/register", async (request, response) => {
 			} else {
 				let $ = cheerio.load(fs.readFileSync(__dirname + "/registration-failed.html"));
 				$("#error-message").text("Complete the reCAPTCHA first!");
-				console.log("reCaptcha Error");
+				console.log(log.addMetadata("reCaptcha Error", "info"));
 				response.writeHead(200, { "Content-Type": "text/html" });
 				response.end($.html());
 			}
@@ -618,7 +621,7 @@ app.post("/forgot-password", async (request, response) => {
 				let pendingPasswordResetToSave = new PendingPasswordResetModel(dataToSave);
 				pendingPasswordResetToSave.save((error4) => {
 					if (error4) {
-						console.log(error4.stack);
+						console.log(log.addMetadata(error4.stack, "info"));
 						response.redirect("/?resetpassword=fail");
 					} else {
 						let transporter = nodemailer.createTransport(credentials.getNodemailerOptionsObject());
@@ -640,7 +643,7 @@ app.post("/forgot-password", async (request, response) => {
 						};
 						transporter.sendMail(message, (error, information) => {
 							if (error) {
-								console.error(error.stack);
+								console.error(log.addMetadata(error.stack, "error"));
 								response.redirect("/?resetpassword=fail");
 							} else {
 								response.redirect("/?resetpassword=success");
@@ -668,25 +671,25 @@ app.post("/change-password", async (request, response) => {
 		if (!(newPassword.length < 8 || newPassword.length > 64 || newPassword == "" || newPassword == null || newPassword.includes(" ") || !/^[0-9a-zA-Z!"#$%&'()*+,-.:;<=>?@^_`{|}~]*$/.test(newPassword) || newPassword != confirmNewPassword)) {
 			bcrypt.genSalt(SALT_ROUNDS, function (error1, salt) {
 				if (error1) {
-					console.error(error1.stack);
+					console.error(log.addMetadata(error1.stack, "error"));
 					response.redirect("/?resetpasswordonpage=fail");
 				} else {
 					bcrypt.hash(newPassword, salt, async function (error2, hash) {
 						if (error2) {
-							console.error(error2.stack);
+							console.error(log.addMetadata(error2.stack, "error"));
 							response.redirect("/?resetpasswordonpage=fail");
 						} else {
 							PendingPasswordResetModel.deleteOne({ emailAddress: email }, (error3, response3) => {
 								if (error3) {
-									console.error(error3.stack);
+									console.error(log.addMetadata(error3.stack, "error"));
 									response.redirect("/?resetpasswordonpage=fail");
 								} else {
 									UserModel.findOneAndUpdate({ emailAddress: email }, { hashedPassword: hash }, { useFindAndModify: true, new: true }, (error, response2) => {
 										if (error) {
-											console.error(error.stack);
+											console.error(log.addMetadata(error.stack, "error"));
 											response.redirect("/?resetpasswordonpage=fail");
 										} else {
-											console.log("Successfully changed password for a user!");
+											console.log(log.addMetadata("Successfully changed password for a user!", "info"));
 											response.redirect("/?resetpasswordonpage=success");
 										}
 									});
@@ -800,5 +803,5 @@ async function loadAcknowledgements() {
 // start
 
 app.listen(PORT, () => {
-	console.log(`App listening at https://localhost:${PORT}`);
+	console.log(log.addMetadata(`App listening at https://localhost:${PORT}`, "info"));
 });
