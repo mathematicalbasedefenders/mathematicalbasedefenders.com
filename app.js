@@ -13,7 +13,7 @@ const { v4: uuidv4 } = require("uuid");
 const nodemailer = require("nodemailer");
 const express = require("express");
 const xss = require("xss")
-
+const mongoDBSanitize = require("mongo-sanitize");
 
 const log = require("server/core/log.js");
 
@@ -122,6 +122,7 @@ const repositoriesUsed = {
 	mathExpressionEvaluator: "https://github.com/bugwheels94/math-expression-evaluator",
 	mongoose: "https://github.com/Automattic/mongoose",
 	mongooseQueryParser: "https://github.com/leodinas-hao/mongoose-query-parser",
+	mongoSanitize = "https://github.com/vkarpov15/mongo-sanitize",
 	mpath: "https://github.com/aheckmann/mpath",
 	objectSizeof: "https://github.com/miktam/sizeof",
 	pixi_DOT_js: "https://github.com/pixijs/pixijs",
@@ -175,8 +176,8 @@ app.get("/users", async (request, response) => {
 	let $ = cheerio.load(fs.readFileSync(__dirname + "/users.html"));
 
 	let query = url.parse(request.url, true).query;
-	let username = xss(query.username);
-	let number = xss(query.number);
+	let username = xss(mongoDBSanitize(query.username));
+	let number = xss(mongoDBSanitize(query.number));
 
 	let data;
 
@@ -331,8 +332,8 @@ app.get("/confirm-email-address", async (request, response) => {
 	let $ = cheerio.load(fs.readFileSync(__dirname + "/confirm-email-address.html"));
 
 	let query = url.parse(request.url, true).query;
-	let email = xss(query.email);
-	let code = xss(query.code);
+	let email = xss(mongoDBSanitize(query.email));
+	let code = xss(mongoDBSanitize(query.code));
 
 	var pendingUserRecord = await PendingUserModel.findOne({ emailAddress: email });
 	if (pendingUserRecord) {
@@ -427,8 +428,8 @@ app.get("/forgot-password", async (request, response) => {
 
 app.get("/change-password", async (request, response) => {
 	let query = url.parse(request.url, true).query;
-	let email = xss(query.email);
-	let code = xss(query.code);
+	let email = xss(mongoDBSanitize(query.email));
+	let code = xss(mongoDBSanitize(query.code));
 	var pendingPasswordResetRecord = await PendingPasswordResetModel.findOne({ emailAddress: email });
 	if (pendingPasswordResetRecord) {
 		if (pendingPasswordResetRecord["passwordResetConfirmationCode"] == code) {
@@ -451,9 +452,9 @@ app.post("/register", async (request, response) => {
 
 	const reCaptchaURL = xss(`https://www.google.com/recaptcha/api/siteverify?secret=${reCaptchaSecretKey}&response=${responseKey}`);
 
-	let desiredUsername = xss(request.body.username);
-	let desiredEmail = xss(request.body.email);
-	let desiredUsernameInAllLowercase = xss(request.body.username);
+	let desiredUsername = xss(mongoDBSanitize(request.body.username));
+	let desiredEmail = xss(mongoDBSanitize(request.body.email));
+	let desiredUsernameInAllLowercase = xss(mongoDBSanitize(request.body.username));
 	desiredUsernameInAllLowercase = xss(desiredUsernameInAllLowercase.toLowerCase());
 
 	// var usernameIsAvailable1 = await UserModel.findOne({ username: desiredUsername }).select(desiredUsername);
@@ -462,7 +463,7 @@ app.post("/register", async (request, response) => {
 	var emailIsNotAvailable2 = await PendingUserModel.findOne({ emailAddress: desiredEmail }).select(desiredEmail);
 	var usernameIsNotAvailable2 = await PendingUserModel.findOne({ usernameInAllLowercase: desiredUsernameInAllLowercase }).select(desiredUsernameInAllLowercase);
 
-	var metadataDocument = await MetadataModel.findOne({}); // REPLACE THIS WITH 60eea62aea5b87780e18dc6f FOR PRODUCTION
+	var metadataDocument = await MetadataModel.findOne({});
 
 	fetch(reCaptchaURL, { method: "post" })
 		.then((response) => response.json())
@@ -495,7 +496,7 @@ app.post("/register", async (request, response) => {
 								response.writeHead(200, { "Content-Type": "text/html" });
 								response.end($.html());
 							} else {
-								let plaintextPassword = xss(request.body.password);
+								let plaintextPassword = xss(mongoDBSanitize(request.body.password));
 								if (
 									plaintextPassword.length < 8 ||
 									plaintextPassword.length > 64 ||
@@ -605,7 +606,7 @@ app.post("/forgot-password", async (request, response) => {
 	const reCaptchaSecretKey = xss(credentials.getReCAPTCHASecretKey());
 	const reCaptchaURL = xss(`https://www.google.com/recaptcha/api/siteverify?secret=${reCaptchaSecretKey}&response=${responseKey}`);
 
-	let desiredEmail = xss(request.body.email);
+	let desiredEmail = xss(mongoDBSanitize(request.body.email));
 	let passwordResetConfirmationCode = xss(uuidv4());
 
 	fetch(reCaptchaURL, { method: "post" })
@@ -660,15 +661,15 @@ app.post("/forgot-password", async (request, response) => {
 // process password reset request on page
 app.post("/change-password", async (request, response) => {
 	let query = url.parse(request.url, true).query;
-	let email = xss(query.email);
-	let code = xss(query.code);
-	let newPassword = xss(request.body.password);
-	let confirmNewPassword = xss(request.body["confirm-password"]);
+	let email = xss(mongoDBSanitize(query.email));
+	let code = xss(mongoDBSanitize(query.code));
+	let newPassword = xss(mongoDBSanitize(request.body.password));
+	let confirmNewPassword = xss(mongoDBSanitize(request.body["confirm-password"]));
 
 	let record = await PendingPasswordResetModel.find({ $and: [{ emailAddress: email }, { code: code }] });
 
 	if (record) {
-		if (!(newPassword.length < 8 || newPassword.length > 64 || newPassword == "" || newPassword == null || newPassword.includes(" ") || !/^[0-9a-zA-Z!"#$%&'()*+,-.:;<=>?@^_`{|}~]*$/.test(newPassword) || newPassword != confirmNewPassword)) {
+		if (!(newPassword.length < 8 || newPassword.length > 64 || newPassword == "" || newPassword == null || newPassword.includes(" ") || !/^[0-9a-zA-Z!"#%&'()*+,-.:;<=>?@^_`{|}~]*$/.test(newPassword) || newPassword != confirmNewPassword)) {
 			bcrypt.genSalt(SALT_ROUNDS, function (error1, salt) {
 				if (error1) {
 					console.error(log.addMetadata(error1.stack, "error"));

@@ -13,6 +13,7 @@
     "cheerio": "^1.0.0-rc.10",
     "express": "^4.17.1",
     "isomorphic-fetch": "^3.0.0",
+    "mongo-sanitize": "^1.1.0",
     "mongoose": "^5.13.12",
     "mongoose-query-parser": "^1.2.1",
     "mpath": "^0.8.4",
