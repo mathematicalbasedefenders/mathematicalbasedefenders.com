@@ -15,7 +15,7 @@ const express = require("express");
 const xss = require("xss")
 const mongoDBSanitize = require("mongo-sanitize");
 
-const log = require("server/core/log.js");
+const log = require("./server/core/log.js");
 
 const app = express();
 
@@ -122,7 +122,7 @@ const repositoriesUsed = {
 	mathExpressionEvaluator: "https://github.com/bugwheels94/math-expression-evaluator",
 	mongoose: "https://github.com/Automattic/mongoose",
 	mongooseQueryParser: "https://github.com/leodinas-hao/mongoose-query-parser",
-	mongoSanitize = "https://github.com/vkarpov15/mongo-sanitize",
+	mongoSanitize: "https://github.com/vkarpov15/mongo-sanitize",
 	mpath: "https://github.com/aheckmann/mpath",
 	objectSizeof: "https://github.com/miktam/sizeof",
 	pixi_DOT_js: "https://github.com/pixijs/pixijs",
