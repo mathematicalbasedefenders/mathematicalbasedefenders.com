@@ -1,88 +1,82 @@
 @font-face {
-	font-family: "Computer Modern Unicode Serif";
-	src: url("../assets/fonts/computermodernunicodeserif.ttf");
+    font-family: "Computer Modern Unicode Serif";
+    src: url("../assets/fonts/computermodernunicodeserif.ttf");
 }
 
 body {
-	font-family: "Computer Modern Unicode Serif";
-	background-color: #eeeeee;
-	margin:0;
-    padding:0;
-
-
+    font-family: "Computer Modern Unicode Serif";
+    background-color: #eeeeee;
+    margin: 0;
+    padding: 0;
 }
 
 #content-wrapper {
-	min-height: calc(100vh - 160px);
+    min-height: calc(100vh - 160px);
 }
 
 .link-button {
-	border: none;
-	background: none;
-	font-family: "Computer Modern Unicode Serif";
-	vertical-align: text-top;
-	font-size: 24px;
-	transition: all 0.2s;
-	opacity: 0.5;
-	text-decoration: none;
-	color: black;
+    border: none;
+    background: none;
+    font-family: "Computer Modern Unicode Serif";
+    vertical-align: text-top;
+    font-size: 24px;
+    transition: all 0.2s;
+    opacity: 0.5;
+    text-decoration: none;
+    color: black;
 }
 
 .link-button + .link-button {
-	margin: 0.25vw;
+    margin: 0.25vw;
 }
 
 .link-button.mathematical-base-defenders-logo {
-	opacity: 1;
+    opacity: 1;
 }
 
 .link-button:hover {
-	opacity: 1;
+    opacity: 1;
 }
 
 #top-navigation-bar {
-	position: 0.5vw;
-	margin: 0.5vw;
+    position: 0.5vw;
+    margin: 0.5vw;
 }
 
-
 #bottom-navigation-bar-wrapper {
-	position: relative;
-
+    position: relative;
 }
 
 #bottom-navigation-bar {
-	position: relative;
-	background-color: #303030;
-	font-size: 20px;
-	padding-top: 10px;
-	padding-bottom: 10px;
-	bottom: 0;
-	overflow:auto; 
-	text-decoration: none;
-	color: white;
-	bottom: 0;
+    position: relative;
+    background-color: #303030;
+    font-size: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    bottom: 0;
+    overflow: auto;
+    text-decoration: none;
+    color: white;
+    bottom: 0;
 }
 
 #bottom-navigation-bar-left-text {
-	vertical-align: middle;
-	color: white;
-	margin-left: 0.5vw;
-	user-select: none;
-
+    vertical-align: middle;
+    color: white;
+    margin-left: 0.5vw;
+    user-select: none;
 }
 
 #bottom-navigation-bar-right-text {
-	vertical-align: middle;
-	color: white;
-	margin-right: 0.5vw;
-	user-select: none;
-float:right;
-top:0;
+    vertical-align: middle;
+    color: white;
+    margin-right: 0.5vw;
+    user-select: none;
+    float: right;
+    top: 0;
 }
 
 .bottom-navigation-bar-text {
-	text-decoration: none;
-	color: white;
-
+    text-decoration: none;
+    color: white;
 }

@@ -1,138 +1,136 @@
 <!DOCTYPE html>
 
 <html>
-	<head>
-		<meta charset="UTF-8" />
-		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Mathematical Base Defenders</title>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Register | Mathematical Base Defenders</title>
 
-		<link rel="stylesheet" type="text/css" href="/css/global.css" />
-		<script src="https://www.google.com/recaptcha/api.js"></script>
-		<style>
-			.link-button {
-				border: none;
-				background: none;
-				font-family: "Computer Modern Unicode Serif";
-				font-size: 24px;
-			}
+        <link rel="stylesheet" type="text/css" href="/css/global.css" />
+        <script src="https://www.google.com/recaptcha/api.js"></script>
+        <style>
+            .link-button {
+                border: none;
+                background: none;
+                font-family: "Computer Modern Unicode Serif";
+                font-size: 24px;
+            }
 
-			.submit-button {
-				border-color: #149914;
-				border-radius: 4px;
-				background-color: #149414;
-				width: 450px;
-				border-style: solid;
-				height: 72px;
-				font-size: 48px;
-				font-family: "Computer Modern Unicode Serif";
-				color: white;
-				transition: all 0.2s;
-			}
+            .submit-button {
+                border-color: #149914;
+                border-radius: 4px;
+                background-color: #149414;
+                width: 450px;
+                border-style: solid;
+                height: 72px;
+                font-size: 48px;
+                font-family: "Computer Modern Unicode Serif";
+                color: white;
+                transition: all 0.2s;
+            }
 
-			.submit-button:hover {
-				background-color: #17a717;
-				border-color: #17a717;
-			}
+            .submit-button:hover {
+                background-color: #17a717;
+                border-color: #17a717;
+            }
 
-			.registration-text-field {
-				border-color: #cccccc;
-				border-radius: 4px;
-				border-style: solid;
-				background-color: #cccccc;
-				width: 300px;
-				height: 24px;
-				font-size: 16px;
-				font-family: "Computer Modern Unicode Serif";
-				color: black;
-			}
-		</style>
-	</head>
+            .registration-text-field {
+                border-color: #cccccc;
+                border-radius: 4px;
+                border-style: solid;
+                background-color: #cccccc;
+                width: 300px;
+                height: 24px;
+                font-size: 16px;
+                font-family: "Computer Modern Unicode Serif";
+                color: black;
+            }
+        </style>
+    </head>
 
-	<body>
-		<!-- Header -->
-		<div style="font-size: 28px">
-			<span float="left;">
-				<div id="top-navigation-bar">
-					<input type="image" src="assets/images/mathematicalbasedefenders.png" style="height: 96px" class="link-button mathematical-base-defenders-logo" onClick="document.location.href='/'" />
-					<a class="link-button" style="font-size: 36px" href="play">Play</a>
-					<a class="link-button" href="register">Register</a>
+    <body>
+        <!-- Header -->
+        <div style="font-size: 28px">
+            <span float="left;">
+                <div id="top-navigation-bar">
+                    <input type="image" src="assets/images/mathematicalbasedefenders.png" style="height: 96px" class="link-button mathematical-base-defenders-logo" onClick="document.location.href='/'" />
+                    <a class="link-button" style="font-size: 36px" href="play">Play</a>
+                    <a class="link-button" href="register">Register</a>
 
-					<a class="link-button" href="statistics">Statistics</a>
-					<a class="link-button" href="leaderboards">Leaderboards</a>
-					<a class="link-button" href="about">About</a>
-				</div>
-			</span>
-		</div>
+                    <a class="link-button" href="statistics">Statistics</a>
+                    <a class="link-button" href="leaderboards">Leaderboards</a>
+                    <a class="link-button" href="about">About</a>
+                </div>
+            </span>
+        </div>
 
-		<!-- Content -->
-		<div id="content-wrapper">
-			<div style="display: flex; justify-content: center; align-items: center">
-				<div style="font-size: 20px; text-align: center">
-					<div style="font-size: 48px">Register</div>
-					<div>Register now for a free permanent "Tester" rank!</div>
+        <!-- Content -->
+        <div id="content-wrapper">
+            <div style="display: flex; justify-content: center; align-items: center">
+                <div style="font-size: 20px; text-align: center">
+                    <div style="font-size: 48px">Register</div>
+                    <div>Register now for a free permanent "Tester" rank!</div>
 
-					<br />
+                    <br />
 
-					<form method="POST">
-						<input class="registration-text-field" type="text" id="username" name="username" placeholder="Username" />
-						<br /><br />
-						<input class="registration-text-field" type="text" id="email" name="email" placeholder="E-mail address" />
-						<br /><br />
-						<input class="registration-text-field" type="password" id="password" name="password" placeholder="Password" />
-						<br /><br />
+                    <form method="POST">
+                        <input class="registration-text-field" type="text" id="username" name="username" placeholder="Username" />
+                        <br /><br />
+                        <input class="registration-text-field" type="text" id="email" name="email" placeholder="E-mail address" />
+                        <br /><br />
+                        <input class="registration-text-field" type="password" id="password" name="password" placeholder="Password" />
+                        <br /><br />
 
-						By registering, you agree to the <a href="/privacy-policy">Privacy Policy</a>.
+                        By registering, you agree to the
+                        <a href="/privacy-policy">Privacy Policy</a>.
 
-						<br /><br />
+                        <br /><br />
 
-						<div style="display: flex; justify-content: center; align-items: center">
-							<!-- REPLACE ME!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! (6Lc_7sYbAAAAAKsdpVLSzL_Y7f22zBZSc4k78JOs) -->
-							<div class="g-recaptcha" data-sitekey="6Lc_7sYbAAAAAKsdpVLSzL_Y7f22zBZSc4k78JOs"></div>
-						</div>
+                        <div style="display: flex; justify-content: center; align-items: center">
+    
+                            <div class="g-recaptcha" data-sitekey="6Lc_7sYbAAAAAKsdpVLSzL_Y7f22zBZSc4k78JOs"></div>
+                        </div>
 
-						<br />
+                        <br />
 
-						<input class="submit-button" type="submit" />
-					</form>
-				</div>
-			</div>
-		</div>
-		<!-- Footer -->
-		<div id="bottom-navigation-bar-wrapper">
-			<div id="bottom-navigation-bar">
-				<div id="bottom-navigation-bar-left-text">
-					©
-					<a href="https://mistertfy64.com" style="color: transparent" title="Mathematical Base Defenders' creator's personal website">
-						<img style="vertical-align: middle" src="assets/images/mistertfy64.svg" height="32px" />
-					</a>
-					2021 &nbsp;
-					<a class="bottom-navigation-bar-text" href="changelog">Changelog</a>
-					<a class="bottom-navigation-bar-text" href="privacy-policy">Legal</a>
-					<a class="bottom-navigation-bar-text" href="open-source-acknowledgements">Acknowledgements</a>
-					<div id="bottom-navigation-bar-right-text">
-						<a href="https://patreon.com/mistertfy64" style="color: transparent" title="Donate"> <img style="vertical-align: middle" src="assets/images/patreon.png" height="32px" /> </a>&nbsp;
-						<a href="https://discord.gg/pDTZvrTXm9" style="color: transparent" title="Discord Server"> <img style="vertical-align: middle" src="assets/images/discord.svg" height="32px" /> </a>&nbsp;
-						<a href="https://github.com/mathematicalbasedefenders/issuetracker" style="color: transparent" title="GitHub Issue Tracker"> <img style="vertical-align: middle" src="assets/images/github.png" height="32px" /> </a>&nbsp;
-						<a href="https://facebook.com/mathematicalbasedefenders" style="color: transparent" title="Facebook"> <img style="vertical-align: middle" src="assets/images/facebook.png" height="32px" /> </a>&nbsp;
-						<a href="https://twitter.com/MathematicalBD" style="color: transparent" title="Twitter"> <img style="vertical-align: middle" src="assets/images/twitter.png" height="32px" /> </a>&nbsp;
-						<a href="https://instagram.com/mathematicalbasedefenders" style="color: transparent" title="Instagram">
-							<img style="vertical-align: middle" src="assets/images/instagram.png" height="32px" />
-						</a>
-					</div>
-				</div>
-			</div>
-		</div>
-	</body>
-	<!-- Global site tag (gtag.js) - Google Analytics -->
-	<script async src="https://www.googletagmanager.com/gtag/js?id=G-XVRB5TXW3K"></script>
-	<script>
-		window.dataLayer = window.dataLayer || [];
-		function gtag() {
-			dataLayer.push(arguments);
-		}
-		gtag("js", new Date());
+                        <input class="submit-button" type="submit" />
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- Footer -->
+        <div id="bottom-navigation-bar-wrapper">
+            <div id="bottom-navigation-bar">
+                <div id="bottom-navigation-bar-left-text">
+                    ©
+                    <a href="https://mistertfy64.com" style="color: transparent" title="Mathematical Base Defenders' creator's personal website">
+                        <img style="vertical-align: middle" src="assets/images/mistertfy64.svg" height="32px" />
+                    </a>
+                    2021-2022 &nbsp;
+                    <a class="bottom-navigation-bar-text" href="changelog">Changelog</a>
+                    <a class="bottom-navigation-bar-text" href="privacy-policy">Legal</a>
+                    <a class="bottom-navigation-bar-text" href="open-source-acknowledgements">Acknowledgements</a>
+                    <a class="bottom-navigation-bar-text" href="attributions">Attributions</a>
+                    <div id="bottom-navigation-bar-right-text">
+                        <a href="https://patreon.com/mistertfy64" style="color: transparent" title="Donate"> <img style="vertical-align: middle" src="assets/images/patreon.png" height="32px" /> </a>&nbsp; <a href="https://discord.gg/pDTZvrTXm9" style="color: transparent" title="Discord Server"> <img style="vertical-align: middle" src="assets/images/discord.svg" height="32px" /> </a>&nbsp; <a href="https://github.com/mathematicalbasedefenders/issuetracker" style="color: transparent" title="GitHub Issue Tracker"> <img style="vertical-align: middle" src="assets/images/github.png" height="32px" /> </a>&nbsp; <a href="https://facebook.com/mathematicalbasedefenders" style="color: transparent" title="Facebook"> <img style="vertical-align: middle" src="assets/images/facebook.png" height="32px" /> </a>&nbsp; <a href="https://twitter.com/MathematicalBD" style="color: transparent" title="Twitter"> <img style="vertical-align: middle" src="assets/images/twitter.png" height="32px" /> </a>&nbsp;
+                        <a href="https://instagram.com/mathematicalbasedefenders" style="color: transparent" title="Instagram">
+                            <img style="vertical-align: middle" src="assets/images/instagram.png" height="32px" />
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XVRB5TXW3K"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag("js", new Date());
 
-		gtag("config", "G-XVRB5TXW3K");
-	</script>
+        gtag("config", "G-XVRB5TXW3K");
+    </script>
 </html>

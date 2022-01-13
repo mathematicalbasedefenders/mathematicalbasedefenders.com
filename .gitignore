@@ -506,6 +506,15 @@ FodyWeavers.xsd
 .idea/
 *.sln.iml
 
+
+
+
+
+
+# I PUT THESE MYSELF
+
+
+
 # IMPORTANT LINE - DO NOT REMOVE!!!!!!!!!!!!!!!!!!!!
 credentials/
 
@@ -514,3 +523,7 @@ credentials/
 # MacOS System files
 .DS_Store
 .dccache
+
+
+# prettier
+.prettierrc

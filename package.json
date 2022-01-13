@@ -1,32 +1,32 @@
 {
-  "name": "mathematicalbasedefenderswebserver",
-  "version": "0.2.6",
-  "description": "foidsaoifhasiofhoaishfiosahfioashfiosah",
-  "main": "app.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "mistertfy64",
-  "license": "ISC",
-  "dependencies": {
-    "bcrypt": "^5.0.1",
-    "cheerio": "^1.0.0-rc.10",
-    "express": "^4.17.1",
-    "isomorphic-fetch": "^3.0.0",
-    "mongo-sanitize": "^1.1.0",
-    "mongoose": "^5.13.12",
-    "mongoose-query-parser": "^1.2.1",
-    "mpath": "^0.8.4",
-    "nodemailer": "^6.7.0",
-    "uuid": "^8.3.2",
-    "xss": "^1.0.10"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/mistertfy64/mathematicalbasedefenderswebserver.git"
-  },
-  "bugs": {
-    "url": "https://github.com/mistertfy64/mathematicalbasedefenderswebserver/issues"
-  },
-  "homepage": "https://github.com/mistertfy64/mathematicalbasedefenderswebserver#readme"
+    "name": "mathematicalbasedefenderswebserver",
+    "version": "0.2.6",
+    "description": "foidsaoifhasiofhoaishfiosahfioashfiosah",
+    "main": "app.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "mistertfy64",
+    "license": "ISC",
+    "dependencies": {
+        "bcrypt": "^5.0.1",
+        "cheerio": "^1.0.0-rc.10",
+        "express": "^4.17.1",
+        "isomorphic-fetch": "^3.0.0",
+        "mongo-sanitize": "^1.1.0",
+        "mongoose": "^5.13.12",
+        "mongoose-query-parser": "^1.2.1",
+        "mpath": "^0.8.4",
+        "nodemailer": "^6.7.0",
+        "uuid": "^8.3.2",
+        "xss": "^1.0.10"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/mistertfy64/mathematicalbasedefenderswebserver.git"
+    },
+    "bugs": {
+        "url": "https://github.com/mistertfy64/mathematicalbasedefenderswebserver/issues"
+    },
+    "homepage": "https://github.com/mistertfy64/mathematicalbasedefenderswebserver#readme"
 }
