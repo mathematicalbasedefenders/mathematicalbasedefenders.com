@@ -13,13 +13,11 @@ const { v4: uuidv4 } = require("uuid");
 const nodemailer = require("nodemailer");
 const express = require("express");
 const xss = require("xss");
-const mongoDBSanitize = require("mongo-sanitize");
+const mongoDBSanitize = require("express-mongo-sanitize");
 const marked = require("marked");
 const { JSDOM } = require("jsdom");
 const createDOMPurify = require("dompurify");
 const favicon = require("serve-favicon");
-const mongoSanitize = require('express-mongo-sanitize');
-
 
 const defaultWindow = new JSDOM("").window;
 const DOMPurify = createDOMPurify(defaultWindow);
@@ -50,9 +48,7 @@ const { resolve } = require("path");
 app.use(favicon(__dirname + "/public/assets/images/favicon.ico"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname + "/public"));
-app.use(mongoSanitize())
-
-
+app.use(mongoDBSanitize());
 
 const PendingUserSchema = new Schema({
     username: String,
@@ -159,7 +155,6 @@ app.get("/play", (request, response) => {
     response.sendFile(__dirname + "/play.html");
 });
 
-
 app.get("/login", (request, response) => {
     response.sendFile(__dirname + "/login.html");
 });
@@ -193,12 +188,12 @@ app.get("/users", async (request, response) => {
     let $ = cheerio.load(fs.readFileSync(__dirname + "/users.html"));
 
     let query = url.parse(request.url, true).query;
-    let username = xss(mongoDBSanitize(query.username));
-    let number = xss(mongoDBSanitize(query.number));
-
-    console.log(username);
+    let username = xss(mongoDBSanitize.sanitize(stripDollarSignsAndDots(query.username)));
+    let number = xss(mongoDBSanitize.sanitize(stripDollarSignsAndDots(query.number)));
 
     let data;
+
+    console.log(username);
 
     if (username) {
         data = await UserModel.findOne({ username: username }, function (error, result) {
@@ -224,7 +219,7 @@ app.get("/users", async (request, response) => {
     if (data) {
         let statistics = JSON.parse(JSON.stringify(data.statistics));
 
-        let leaderboardRank = await LeaderboardsModel.findOne({ userIDOfHolder: data["_id"]});
+        let leaderboardRank = await LeaderboardsModel.findOne({ userIDOfHolder: data["_id"] });
         leaderboardRank = JSON.parse(JSON.stringify(leaderboardRank)).rankNumber;
 
         let rank = calculateRank(data);
@@ -239,28 +234,22 @@ app.get("/users", async (request, response) => {
         $("#user").html(data.username);
 
         let creationDateAndTime = data.creationDateAndTime;
-        let progressToNextLevelText = 100*getProgressToNextLevel(statistics.totalExperiencePoints).toFixed(2) + "% to next level";
+        let progressToNextLevelText = 100 * getProgressToNextLevel(statistics.totalExperiencePoints).toFixed(2) + "% to next level";
 
-        if (progressToNextLevelText.indexOf("NaN%") > -1){progressToNextLevelText = "0% to next level"}
-
+        if (progressToNextLevelText.indexOf("NaN%") > -1) {
+            progressToNextLevelText = "0% to next level";
+        }
 
         $("#player-join-date").html(new Date(creationDateAndTime).toUTCString());
-        
+
         // personal best
         $("#personal-best-score").html(statistics.personalBestScore);
         $("#global-rank").html(leaderboardRank ? `Global #${leaderboardRank}` : "");
-
 
         // experience points
         $("#total-experience-points").html(statistics.totalExperiencePoints);
         $("#current-level").html("Level " + getLevel(statistics.totalExperiencePoints).toString());
         $("#progress-to-next-level").html(progressToNextLevelText);
-
-
-
-
-
-
 
         response.writeHead(200, { "Content-Type": "text/html" });
         response.end($.html());
@@ -365,8 +354,8 @@ app.get("/confirm-email-address", async (request, response) => {
     let $ = cheerio.load(fs.readFileSync(__dirname + "/confirm-email-address.html"));
 
     let query = url.parse(request.url, true).query;
-    let email = xss(mongoDBSanitize(query.email));
-    let code = xss(mongoDBSanitize(query.code));
+    let email = xss(mongoDBSanitize.sanitize(query.email));
+    let code = xss(mongoDBSanitize.sanitize(stripDollarSignsAndDots(query.code)));
 
     var pendingUserRecord = await PendingUserModel.findOne({
         emailAddress: email,
@@ -463,8 +452,8 @@ app.get("/forgot-password", async (request, response) => {
 
 app.get("/change-password", async (request, response) => {
     let query = url.parse(request.url, true).query;
-    let email = xss(mongoDBSanitize(query.email));
-    let code = xss(mongoDBSanitize(query.code));
+    let email = xss(mongoDBSanitize.sanitize(query.email));
+    let code = xss(mongoDBSanitize.sanitize(stripDollarSignsAndDots(query.code)));
     var pendingPasswordResetRecord = await PendingPasswordResetModel.findOne({
         emailAddress: email,
     });
@@ -486,9 +475,9 @@ app.post("/register", async (request, response) => {
     const reCaptchaSecretKey = xss(credentials.getReCAPTCHASecretKey());
     const reCaptchaURL = xss(`https://www.google.com/recaptcha/api/siteverify?secret=${reCaptchaSecretKey}&response=${responseKey}`);
 
-    let desiredUsername = xss(mongoDBSanitize(request.body.username));
-    let desiredEmail = xss(mongoDBSanitize(request.body.email));
-    let desiredUsernameInAllLowercase = xss(mongoDBSanitize(request.body.username));
+    let desiredUsername = xss(mongoDBSanitize.sanitize(stripDollarSignsAndDots(request.body.username)));
+    let desiredEmail = xss(mongoDBSanitize.sanitize(request.body.email));
+    let desiredUsernameInAllLowercase = xss(mongoDBSanitize.sanitize(stripDollarSignsAndDots(request.body.username)));
     desiredUsernameInAllLowercase = xss(desiredUsernameInAllLowercase.toLowerCase());
 
     // var usernameIsAvailable1 = await UserModel.findOne({ username: desiredUsername }).select(desiredUsername);
@@ -538,7 +527,7 @@ app.post("/register", async (request, response) => {
                                 response.writeHead(200, { "Content-Type": "text/html" });
                                 response.end($.html());
                             } else {
-                                let plaintextPassword = xss(mongoDBSanitize(request.body.password));
+                                let plaintextPassword = xss(mongoDBSanitize.sanitize(request.body.password));
                                 if (plaintextPassword.length < 8 || plaintextPassword.length > 64 || plaintextPassword == "" || plaintextPassword == null || plaintextPassword.includes(" ") || !/^[0-9a-zA-Z!"#$%&'()*+,-.:;<=>?@^_`{|}~]*$/.test(plaintextPassword)) {
                                     let $ = cheerio.load(fs.readFileSync(__dirname + "/registration-failed.html"));
                                     $("#error-message").text("Password invalid!");
@@ -647,7 +636,7 @@ app.post("/forgot-password", async (request, response) => {
     const reCaptchaSecretKey = xss(credentials.getReCAPTCHASecretKey());
     const reCaptchaURL = xss(`https://www.google.com/recaptcha/api/siteverify?secret=${reCaptchaSecretKey}&response=${responseKey}`);
 
-    let desiredEmail = xss(mongoDBSanitize(request.body.email));
+    let desiredEmail = xss(mongoDBSanitize.sanitize(request.body.email));
     let passwordResetConfirmationCode = xss(uuidv4());
 
     fetch(reCaptchaURL, { method: "post" })
@@ -702,10 +691,10 @@ app.post("/forgot-password", async (request, response) => {
 // process password reset request on page
 app.post("/change-password", async (request, response) => {
     let query = url.parse(request.url, true).query;
-    let email = xss(mongoDBSanitize(query.email));
-    let code = xss(mongoDBSanitize(query.code));
-    let newPassword = xss(mongoDBSanitize(request.body.password));
-    let confirmNewPassword = xss(mongoDBSanitize(request.body["confirm-password"]));
+    let email = xss(mongoDBSanitize.sanitize(query.email));
+    let code = xss(mongoDBSanitize.sanitize(stripDollarSignsAndDots(query.code)));
+    let newPassword = xss(mongoDBSanitize.sanitize(request.body.password));
+    let confirmNewPassword = xss(mongoDBSanitize.sanitize(request.body["confirm-password"]));
 
     let record = await PendingPasswordResetModel.find({
         $and: [{ emailAddress: email }, { code: code }],
@@ -911,28 +900,29 @@ function getRankColor(rank) {
     return "#000000";
 }
 
-
-function getLevel(experiencePoints){
+function getLevel(experiencePoints) {
     let currentLevel = 0;
-    while ((500*Math.pow(currentLevel+1,0.75)) <= experiencePoints){
-        experiencePoints -= 500*Math.pow(currentLevel+1,0.75);
+    while (500 * Math.pow(currentLevel + 1, 0.75) <= experiencePoints) {
+        experiencePoints -= 500 * Math.pow(currentLevel + 1, 0.75);
         currentLevel++;
     }
     return currentLevel;
-
 }
 
-function getProgressToNextLevel(experiencePoints){
+function getProgressToNextLevel(experiencePoints) {
     let currentLevel = 0;
-    while ((500*Math.pow(currentLevel+1,0.75)) <= experiencePoints){
-        experiencePoints -= 500*Math.pow(currentLevel+1,0.75);
+    while (500 * Math.pow(currentLevel + 1, 0.75) <= experiencePoints) {
+        experiencePoints -= 500 * Math.pow(currentLevel + 1, 0.75);
         currentLevel++;
     }
-    return (experiencePoints/(500*Math.pow(currentLevel+1,0.75)));
+    return experiencePoints / (500 * Math.pow(currentLevel + 1, 0.75));
+}
 
-
-
-
+function stripDollarSignsAndDots(string) {
+    if (string === undefined || string == null) {
+        return "";
+    }
+    return string.replace(/\$|\./g, "");
 }
 
 // start
