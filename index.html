@@ -30,7 +30,7 @@
         </style>
     </head>
 
-    <body onload="pickAndShowGameDescription();checkURLQueryParameters();">
+    <body>
         <!-- Header -->
         <div style="font-size: 28px">
             <span float="left;">
@@ -93,30 +93,37 @@
             document.getElementById("game-description").innerHTML = descriptions[Math.floor(Math.random() * descriptions.length)];
         }
     </script>
+
     <script>
         function checkURLQueryParameters() {
-            let url = window.location.href;
-            let query = url.substring(url.indexOf("?") + 1);
-            let key = query.substring(0, query.indexOf("="));
-            let value = query.substring(query.indexOf("=") + 1);
+            let url = new URL(window.location.href);
+            let signup = url.searchParams.get("signup");
+            let resetPassword = url.searchParams.get("resetpassword");
+            let resetPasswordOnPage = url.searchParams.get("resetpasswordonpage");
 
-            // do
-            if (key == "signup" && value == "success") {
-                showBanner("Sign up successful! Please check your e-mail for a verification link! Failure to click the verification link in 30 minutes will delete your account! (You may sign up again if that happens.)");
-            } else if (key == "resetpassword") {
-                if (value == "success") {
-                    showBanner("Successfully sent the password reset link your e-mail! The link is only valid for 30 minutes!");
+            if (signup != null) {
+                if (signup == "success") {
+                    alert("Sign up successful! Please check your e-mail for a verification link! Failure to click the verification link in 30 minutes will delete your account! (You may sign up again if that happens.)");
                 } else {
-                    showBanner("Failed to send a password reset link!");
+                    alert("Failed to sign you up!");
                 }
-            } else if (key == "resetpasswordonpage") {
-                showBanner(value == success ? "Successfully reset password! " : "Failed to reset password!");
             }
-        }
-    </script>
-    <script>
-        function showBanner(message) {
-            alert(message);
+
+            if (resetPassword != null) {
+                if (resetPassword == "success") {
+                    alert("Successfully sent the password reset link your e-mail! The link is only valid for 30 minutes!");
+                } else {
+                    alert("Failed to send a password reset link!");
+                }
+            }
+
+            if (resetPasswordOnPage != null) {
+                if (resetPasswordOnPage == "success") {
+                    alert("Successfully reset password!");
+                } else {
+                    alert("Failed to reset password!");
+                }
+            }
         }
     </script>
     <script>
@@ -127,5 +134,9 @@
         gtag("js", new Date());
 
         gtag("config", "G-XVRB5TXW3K");
+    </script>
+    <script>
+        pickAndShowGameDescription();
+        checkURLQueryParameters();
     </script>
 </html>

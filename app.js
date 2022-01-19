@@ -14,6 +14,15 @@ const nodemailer = require("nodemailer");
 const express = require("express");
 const xss = require("xss");
 const mongoDBSanitize = require("mongo-sanitize");
+const marked = require("marked");
+const { JSDOM } = require("jsdom");
+const createDOMPurify = require("dompurify");
+const favicon = require("serve-favicon");
+const mongoSanitize = require('express-mongo-sanitize');
+
+
+const defaultWindow = new JSDOM("").window;
+const DOMPurify = createDOMPurify(defaultWindow);
 
 const log = require("./server/core/log.js");
 
@@ -38,7 +47,12 @@ var ObjectId = require("mongoose").Types.ObjectId;
 const { resolve } = require("path");
 
 // other stuff
+app.use(favicon(__dirname + "/public/assets/images/favicon.ico"));
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static(__dirname + "/public"));
+app.use(mongoSanitize())
+
+
 
 const PendingUserSchema = new Schema({
     username: String,
@@ -115,24 +129,26 @@ const LeaderboardsModel = mongoose.model("LeaderboardsModel", LeaderboardsSchema
 const repositoriesUsed = {
     bcrypt: "https://github.com/kelektiv/node.bcrypt.js",
     cheerio: "https://github.com/cheeriojs/cheerio",
+    dompurify: "https://github.com/cure53/DOMPurify",
     express: "https://github.com/expressjs/express",
     fontfaceobserver: "https://github.com/bramstein/fontfaceobserver",
     isomorphicFetch: "https://github.com/matthew-andrews/isomorphic-fetch",
+    jsdom: "https://github.com/jsdom/jsdom",
     lodash: "https://github.com/lodash/lodash",
+    marked: "https://github.com/markedjs/marked",
     mathExpressionEvaluator: "https://github.com/bugwheels94/math-expression-evaluator",
     mongoose: "https://github.com/Automattic/mongoose",
     mongooseQueryParser: "https://github.com/leodinas-hao/mongoose-query-parser",
     mongoSanitize: "https://github.com/vkarpov15/mongo-sanitize",
     mpath: "https://github.com/aheckmann/mpath",
+    nodemailer: "https://github.com/nodemailer/nodemailer",
     objectSizeof: "https://github.com/miktam/sizeof",
     pixi_DOT_js: "https://github.com/pixijs/pixijs",
-    nodemailer: "https://github.com/nodemailer/nodemailer",
+    serveFavicon: "https://github.com/expressjs/serve-favicon",
     socket_DOT_io: "https://github.com/socketio/socket.io",
     uuid: "https://github.com/uuidjs/uuid",
     xss: "https://github.com/leizongmin/js-xss",
 };
-
-app.use(express.static(__dirname + "/public"));
 
 // pages
 app.get("/", (request, response) => {
@@ -143,9 +159,6 @@ app.get("/play", (request, response) => {
     response.sendFile(__dirname + "/play.html");
 });
 
-app.get("/download", (request, response) => {
-    response.sendFile(__dirname + "/download.html");
-});
 
 app.get("/login", (request, response) => {
     response.sendFile(__dirname + "/login.html");
@@ -183,6 +196,8 @@ app.get("/users", async (request, response) => {
     let username = xss(mongoDBSanitize(query.username));
     let number = xss(mongoDBSanitize(query.number));
 
+    console.log(username);
+
     let data;
 
     if (username) {
@@ -207,35 +222,46 @@ app.get("/users", async (request, response) => {
 
     // why?
     if (data) {
-        var statistics = JSON.parse(JSON.stringify(data.statistics));
+        let statistics = JSON.parse(JSON.stringify(data.statistics));
 
-        var rank = beautifyRank(calculateRank(data));
+        let leaderboardRank = await LeaderboardsModel.findOne({ userIDOfHolder: data["_id"]});
+        leaderboardRank = JSON.parse(JSON.stringify(leaderboardRank)).rankNumber;
 
-        var rankColor = "black";
+        let rank = calculateRank(data);
 
-        // rank color
-        if (rank == "Game Master") {
-            rankColor = "#ff0000";
-        } else if (rank == "Developer") {
-            rankColor = "#ff0000";
-        } else if (rank == "Administrator") {
-            rankColor = "#ff0000";
-        } else if (rank == "Moderator") {
-            rankColor = "#ff6800";
-        } else if (rank == "Contributor") {
-            rankColor = "#4070ff";
-        } else if (rank == "Tester") {
-            rankColor = "#0194ff";
-        } else if (rank == "Donator") {
-        }
+        let rankColor = "black";
+
+        rankColor = getRankColor(rank);
 
         $("#rank").html(rank);
         $("#rank").css("color", rankColor);
 
         $("#user").html(data.username);
 
-        $("#player-join-date").html(data.creationDateAndTime);
+        let creationDateAndTime = data.creationDateAndTime;
+        let progressToNextLevelText = 100*getProgressToNextLevel(statistics.totalExperiencePoints).toFixed(2) + "% to next level";
+
+        if (progressToNextLevelText.indexOf("NaN%") > -1){progressToNextLevelText = "0% to next level"}
+
+
+        $("#player-join-date").html(new Date(creationDateAndTime).toUTCString());
+        
+        // personal best
         $("#personal-best-score").html(statistics.personalBestScore);
+        $("#global-rank").html(leaderboardRank ? `Global #${leaderboardRank}` : "");
+
+
+        // experience points
+        $("#total-experience-points").html(statistics.totalExperiencePoints);
+        $("#current-level").html("Level " + getLevel(statistics.totalExperiencePoints).toString());
+        $("#progress-to-next-level").html(progressToNextLevelText);
+
+
+
+
+
+
+
         response.writeHead(200, { "Content-Type": "text/html" });
         response.end($.html());
     } else {
@@ -301,7 +327,7 @@ app.get("/leaderboards", async (request, response) => {
 
             if (i == 1 || i == 2 || i == 3) {
                 var playerURL = "users?username=" + playerData.username;
-                $("#rank-" + i + "-username").html("<a href=" + playerURL + ">" + playerData.username + "</a>");
+                $("#rank-" + i + "-username").html(`<a href=${playerURL} style="color:${getRankColor(calculateRank(playerData))}">` + playerData.username + "</a>");
                 $("#rank-" + i + "-score").html(data.score);
             } else {
                 $("#leaderboards").append(
@@ -325,7 +351,7 @@ app.get("/leaderboards", async (request, response) => {
                 var playerURL = "users?username=" + playerData.username;
 
                 $("#rank-" + i + "-number").html("#" + i);
-                $("#rank-" + i + "-username").html("<a href=" + playerURL + ">" + playerData.username + "</a>");
+                $("#rank-" + i + "-username").html(`<a href=${playerURL} style="color:${getRankColor(calculateRank(playerData))}">` + playerData.username + "</a>");
                 $("#rank-" + i + "-score").html(data.score);
             }
         }
@@ -457,8 +483,7 @@ app.get("/change-password", async (request, response) => {
 app.post("/register", async (request, response) => {
     const responseKey = xss(request.body["g-recaptcha-response"]);
 
-    const reCaptchaSecretKey = xss(credentials.getReCAPTCHASecretKey()); // REPLACE ME!!!!!!!!!!!!!!!!!!!!!!!!!!!!! credentials.getReCAPTCHASecretKey();
-
+    const reCaptchaSecretKey = xss(credentials.getReCAPTCHASecretKey());
     const reCaptchaURL = xss(`https://www.google.com/recaptcha/api/siteverify?secret=${reCaptchaSecretKey}&response=${responseKey}`);
 
     let desiredUsername = xss(mongoDBSanitize(request.body.username));
@@ -748,6 +773,24 @@ app.post("/fetch-open-source-licenses", async (request, response) => {
     response.json(thingsToAppend);
 });
 
+app.post("/fetch-game-changelog", async (request, response) => {
+    let changelog;
+    await loadChangelog("game").then((result) => {
+        changelog = result;
+    });
+    changelog = DOMPurify.sanitize(changelog);
+    response.send(changelog);
+});
+
+app.post("/fetch-website-changelog", async (request, response) => {
+    let changelog;
+    await loadChangelog("website").then((result) => {
+        changelog = result;
+    });
+    changelog = DOMPurify.sanitize(changelog);
+    response.send(changelog);
+});
+
 // PUT THIS LAST (404 page)
 
 app.get("*", function (req, res) {
@@ -758,6 +801,7 @@ app.get("*", function (req, res) {
 
 function calculateRank(data) {
     if (data.username == "mistertfy64") {
+        // hardcode
         return "Game Master";
     } else if (data.membership.isDeveloper) {
         return "Developer";
@@ -775,10 +819,6 @@ function calculateRank(data) {
         // default rank
         return "";
     }
-}
-
-function beautifyRank(rank) {
-    return rank;
 }
 
 async function getLicenseForRepository(repositoryLink, callback) {
@@ -822,6 +862,77 @@ async function loadAcknowledgements() {
         }
         resolve(licenses);
     });
+}
+
+async function loadChangelog(service) {
+    let fileURL;
+    switch (service) {
+        case "game": {
+            fileURL = "https://raw.githubusercontent.com/mathematicalbasedefenders/information/main/GAME_CHANGELOG.md";
+            break;
+        }
+        case "website": {
+            fileURL = "https://raw.githubusercontent.com/mathematicalbasedefenders/information/main/WEBSITE_CHANGELOG.md";
+            break;
+        }
+        default: {
+            return "";
+        }
+    }
+    return new Promise(async (resolve, reject) => {
+        let data = "";
+        await https.get(fileURL, (response) => {
+            response.on("data", (chunk) => {
+                data += chunk.toString("utf-8");
+            });
+            response.on("end", function () {
+                resolve(marked.parse(data));
+            });
+        });
+    });
+}
+
+function getRankColor(rank) {
+    if (rank == "Game Master") {
+        return "#ff0000";
+    } else if (rank == "Developer") {
+        return "#ff0000";
+    } else if (rank == "Administrator") {
+        return "#ff0000";
+    } else if (rank == "Moderator") {
+        return "#ff6800";
+    } else if (rank == "Contributor") {
+        return "#4070ff";
+    } else if (rank == "Tester") {
+        return "#0194ff";
+    } else if (rank == "Donator") {
+        return "#00dd00";
+    }
+    return "#000000";
+}
+
+
+function getLevel(experiencePoints){
+    let currentLevel = 0;
+    while ((500*Math.pow(currentLevel+1,0.75)) <= experiencePoints){
+        experiencePoints -= 500*Math.pow(currentLevel+1,0.75);
+        currentLevel++;
+    }
+    return currentLevel;
+
+}
+
+function getProgressToNextLevel(experiencePoints){
+    let currentLevel = 0;
+    while ((500*Math.pow(currentLevel+1,0.75)) <= experiencePoints){
+        experiencePoints -= 500*Math.pow(currentLevel+1,0.75);
+        currentLevel++;
+    }
+    return (experiencePoints/(500*Math.pow(currentLevel+1,0.75)));
+
+
+
+
 }
 
 // start

@@ -80,3 +80,27 @@ body {
     text-decoration: none;
     color: white;
 }
+
+.information-box {
+    border-radius: 5px;
+    border-color: #aaaaaa;
+    border-style: solid;
+    padding: 10px 10px;
+    display: inline-block;
+}
+
+.information-box.fit-to-content {
+    width: fit-content;
+}
+
+.text-field {
+    border-color: #aaaaaa;
+    border-radius: 4px;
+    border-style: solid;
+    background-color: #aaaaaa;
+    width: 500px;
+    height: 32px;
+    font-size: 24px;
+    font-family: "Computer Modern Unicode Serif";
+    color: black;
+}

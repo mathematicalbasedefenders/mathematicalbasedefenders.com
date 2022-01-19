@@ -11,22 +11,28 @@
     "dependencies": {
         "bcrypt": "^5.0.1",
         "cheerio": "^1.0.0-rc.10",
+        "dompurify": "^2.3.4",
         "express": "^4.17.1",
+        "express-mongo-sanitize": "^2.2.0",
         "isomorphic-fetch": "^3.0.0",
+        "jsdom": "^19.0.0",
+        "marked": "^4.0.10",
         "mongo-sanitize": "^1.1.0",
         "mongoose": "^5.13.12",
         "mongoose-query-parser": "^1.2.1",
         "mpath": "^0.8.4",
         "nodemailer": "^6.7.0",
+        "serve-favicon": "^2.5.0",
         "uuid": "^8.3.2",
         "xss": "^1.0.10"
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/mistertfy64/mathematicalbasedefenderswebserver.git"
+        "url": "git+https://github.com/mistertfy64/mathematicalbasedefenders.com.git"
     },
     "bugs": {
-        "url": "https://github.com/mistertfy64/mathematicalbasedefenderswebserver/issues"
+        "url": "https://github.com/mistertfy64/mathematicalbasedefenders.com/issues"
     },
-    "homepage": "https://github.com/mistertfy64/mathematicalbasedefenderswebserver#readme"
+    "homepage": "https://github.com/mistertfy64/mathematicalbasedefenders.com#readme",
+    "devDependencies": {}
 }

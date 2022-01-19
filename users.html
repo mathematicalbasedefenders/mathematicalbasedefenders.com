@@ -41,18 +41,29 @@
                 <div>
                     <div style="display: flex; justify-content: center; align-items: center">
                         <div style="left: 15%; width: 70%; max-width: 1200px; word-wrap: break-word">
-                            <span style="font-size: 32px" id="rank"></span>&nbsp;<span style="font-size: 32px" id="user"></span><span style="font-size: 16px; vertical-align: baseline">'s play data</span>
+                            <span style="font-size: 32px" id="rank"></span>&nbsp;<span style="font-size: 32px" id="user"></span><span style="font-size: 32px">'s play data</span>
                             <br />
-                            <hr />
+                            <hr>
+                            <span style="font-size: 28px">General</span>
+                            <br>
+                            <div class="information-box fit-to-content"><span style="font-size: 24px">Total Experience Points </span><br /><span style="font-size: 48px" id="total-experience-points">???</span><br><span style="font-size: 16px" id="current-level">Level ???</span> | <span style="font-size: 16px" id="progress-to-next-level">???% to next level</span></div>
 
+                            <hr />
                             <span style="font-size: 28px">Standard</span>
-                            <br />
-                            <div style="font-size: 20px">Personal Best: <span id="personal-best-score">???</span></div>
+                            <br>
+                            <div class="information-box fit-to-content"><span style="font-size: 24px">Personal Best </span><br /><span style="font-size: 48px" id="personal-best-score">???</span><br><span style="font-size: 16px" id="global-rank"></span></div>
                             <hr />
 
-                            <span style="font-size: 28px">Meta</span>
+                            <span style="font-size: 28px">Metadata</span>
                             <br />
-                            <div style="font-size: 20px">Join Date: <span id="player-join-date">???</span></div>
+                            <div class="information-box fit-to-content">
+                                <div style="font-size: 24px">
+                                    Join Date
+                                    <br />
+                                    <span id="player-join-date" style="font-size: 48px;">???</span>
+                                </div>
+
+                            </div>
                             <hr />
                         </div>
                     </div>
@@ -86,17 +97,17 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-XVRB5TXW3K"></script>
     <script>
-        window.onload = () => {
-            let query = new URL(document.location).searchParams;
+        function checkURLQueryParameters() {
+            let url = new URL(window.location.href);
+            let username = url.searchParams.get("username");
+            let number = url.searchParams.get("number");
 
-            if (query.username) {
-                $("title").text("User " + query.username);
-            } else if (query.number) {
-                $("title").text("User #" + query.number);
+            if (username != null) {
+                document.title = "User " + username + " | Mathematical Base Defenders";
+            } else if (number != null) {
+                document.title = "User #" + number + " | Mathematical Base Defenders";
             }
-
-            $("title").text($("title").text() + " | Mathematical Base Defenders");
-        };
+        }
     </script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -106,5 +117,8 @@
         gtag("js", new Date());
 
         gtag("config", "G-XVRB5TXW3K");
+    </script>
+    <script>
+        checkURLQueryParameters();
     </script>
 </html>
