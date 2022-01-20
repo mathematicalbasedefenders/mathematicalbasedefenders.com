@@ -187,36 +187,41 @@ app.get("/statistics", (request, response) => {
 app.get("/users", async (request, response) => {
     let $ = cheerio.load(fs.readFileSync(__dirname + "/users.html"));
 
-    let query = url.parse(request.url, true).query;
-    let username = xss(mongoDBSanitize.sanitize(stripDollarSignsAndDots(query.username)));
-    let number = xss(mongoDBSanitize.sanitize(stripDollarSignsAndDots(query.number)));
-
+    let query = mongoDBSanitize.sanitize(url.parse(request.url, true)).query;
+    let username = xss(mongoDBSanitize.sanitize(query.username));
+    let number = xss(mongoDBSanitize.sanitize(query.number));
     let data;
+    let invalid = false;
 
-    console.log(username);
+    if (!/^[0-9a-zA-Z_]+$/.test(username)) {
+        invalid = true;
+    }
+    if (isNaN(number)) {
+        invalid = true;
+    }
 
     if (username) {
-        data = await UserModel.findOne({ username: username }, function (error, result) {
-            if (error) {
-                console.error(log.addMetadata(error.stack, "error"));
-            }
-            return result;
-        });
-    } else {
-        if (isNaN(number)) {
-            response.redirect("/");
-            return;
+        if (!invalid) {
+            data = await UserModel.findOne({ username: username }, function (error, result) {
+                if (error) {
+                    console.error(log.addMetadata(error.stack, "error"));
+                }
+                return result;
+            });
         }
-        data = await UserModel.findOne({ userNumber: number }, function (error, result) {
-            if (error) {
-                console.error(log.addMetadata(error.stack, "error"));
-            }
-            return result;
-        });
+    } else {
+        if (!invalid) {
+            data = await UserModel.findOne({ userNumber: number }, function (error, result) {
+                if (error) {
+                    console.error(log.addMetadata(error.stack, "error"));
+                }
+                return result;
+            });
+        }
     }
 
     // why?
-    if (data) {
+    if (data || !invalid) {
         let statistics = JSON.parse(JSON.stringify(data.statistics));
 
         let leaderboardRank = await LeaderboardsModel.findOne({ userIDOfHolder: data["_id"] });
@@ -355,7 +360,7 @@ app.get("/confirm-email-address", async (request, response) => {
 
     let query = url.parse(request.url, true).query;
     let email = xss(mongoDBSanitize.sanitize(query.email));
-    let code = xss(mongoDBSanitize.sanitize(stripDollarSignsAndDots(query.code)));
+    let code = xss(mongoDBSanitize.sanitize(query.code));
 
     var pendingUserRecord = await PendingUserModel.findOne({
         emailAddress: email,
@@ -453,7 +458,7 @@ app.get("/forgot-password", async (request, response) => {
 app.get("/change-password", async (request, response) => {
     let query = url.parse(request.url, true).query;
     let email = xss(mongoDBSanitize.sanitize(query.email));
-    let code = xss(mongoDBSanitize.sanitize(stripDollarSignsAndDots(query.code)));
+    let code = xss(mongoDBSanitize.sanitize(query.code));
     var pendingPasswordResetRecord = await PendingPasswordResetModel.findOne({
         emailAddress: email,
     });
@@ -475,9 +480,9 @@ app.post("/register", async (request, response) => {
     const reCaptchaSecretKey = xss(credentials.getReCAPTCHASecretKey());
     const reCaptchaURL = xss(`https://www.google.com/recaptcha/api/siteverify?secret=${reCaptchaSecretKey}&response=${responseKey}`);
 
-    let desiredUsername = xss(mongoDBSanitize.sanitize(stripDollarSignsAndDots(request.body.username)));
+    let desiredUsername = xss(mongoDBSanitize.sanitize(request.body.username));
     let desiredEmail = xss(mongoDBSanitize.sanitize(request.body.email));
-    let desiredUsernameInAllLowercase = xss(mongoDBSanitize.sanitize(stripDollarSignsAndDots(request.body.username)));
+    let desiredUsernameInAllLowercase = xss(mongoDBSanitize.sanitize(request.body.username));
     desiredUsernameInAllLowercase = xss(desiredUsernameInAllLowercase.toLowerCase());
 
     // var usernameIsAvailable1 = await UserModel.findOne({ username: desiredUsername }).select(desiredUsername);
@@ -692,7 +697,7 @@ app.post("/forgot-password", async (request, response) => {
 app.post("/change-password", async (request, response) => {
     let query = url.parse(request.url, true).query;
     let email = xss(mongoDBSanitize.sanitize(query.email));
-    let code = xss(mongoDBSanitize.sanitize(stripDollarSignsAndDots(query.code)));
+    let code = xss(mongoDBSanitize.sanitize(query.code));
     let newPassword = xss(mongoDBSanitize.sanitize(request.body.password));
     let confirmNewPassword = xss(mongoDBSanitize.sanitize(request.body["confirm-password"]));
 
@@ -916,13 +921,6 @@ function getProgressToNextLevel(experiencePoints) {
         currentLevel++;
     }
     return experiencePoints / (500 * Math.pow(currentLevel + 1, 0.75));
-}
-
-function stripDollarSignsAndDots(string) {
-    if (string === undefined || string == null) {
-        return "";
-    }
-    return string.replace(/\$|\./g, "");
 }
 
 // start
