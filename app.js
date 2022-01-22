@@ -2,7 +2,6 @@
 const https = require("https");
 
 const fs = require("fs");
-const querystring = require("querystring");
 const url = require("url");
 const bcrypt = require("bcrypt");
 const cheerio = require("cheerio");
@@ -18,6 +17,9 @@ const marked = require("marked");
 const { JSDOM } = require("jsdom");
 const createDOMPurify = require("dompurify");
 const favicon = require("serve-favicon");
+const rateLimit = require("express-rate-limit");
+const licenseChecker = require("license-checker");
+const helmet = require("helmet");
 
 const defaultWindow = new JSDOM("").window;
 const DOMPurify = createDOMPurify(defaultWindow);
@@ -34,6 +36,52 @@ const credentials = require("./credentials/credentials.js");
 
 const uri = credentials.getMongooseURI();
 
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 100,
+    standardHeaders: true,
+    legacyHeaders: false,
+});
+
+let licenses = {};
+
+let getLicenses = async () => {
+    return await new Promise((resolve, reject) => {
+        licenseChecker.init(
+            {
+                start: __dirname,
+            },
+            function (error, packages) {
+                if (error) {
+                    console.log(log.addMetadata(error, "error"));
+                } else {
+                    let licensesToReturn = {};
+                    let moduleNames = [];
+                    for (key of Object.keys(packages)) {
+                        let toAdd = key;
+                        toAdd = toAdd.replace(/^(@[a-z0-9-~][a-z0-9-._~]*\/)?([a-z0-9-~][a-z0-9-._~]*)(@[\d\.]*)(-rc\.[0-9]*)?$/g, "$1$2");
+                        moduleNames.push(toAdd);
+                    }
+                    moduleNames = moduleNames.filter((moduleName) => {
+                        return !(moduleName.indexOf("mathematicalbasedefenders.com") > -1);
+                    });
+                    for (let moduleName of moduleNames) {
+                        licensesToReturn[moduleName.toString()] = {
+                            homepage: getRepositoryLink(__dirname + "/node_modules/" + moduleName + "/package.json"),
+                            license: readLicenseFile(__dirname + "/node_modules/" + moduleName),
+                        };
+                    }
+                    resolve(licensesToReturn);
+                }
+            }
+        );
+    });
+};
+
+getLicenses().then((value) => {
+    licenses = value;
+});
+
 // mongoose
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
@@ -49,6 +97,8 @@ app.use(favicon(__dirname + "/public/assets/images/favicon.ico"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname + "/public"));
 app.use(mongoDBSanitize());
+app.use(limiter);
+app.use(helmet());
 
 const PendingUserSchema = new Schema({
     username: String,
@@ -122,30 +172,6 @@ const UserModel = mongoose.model("UserModel", UserSchema, "users");
 const MetadataModel = mongoose.model("IDModel", IDSchema, "metadata");
 const LeaderboardsModel = mongoose.model("LeaderboardsModel", LeaderboardsSchema, "leaderboards");
 
-const repositoriesUsed = {
-    bcrypt: "https://github.com/kelektiv/node.bcrypt.js",
-    cheerio: "https://github.com/cheeriojs/cheerio",
-    dompurify: "https://github.com/cure53/DOMPurify",
-    express: "https://github.com/expressjs/express",
-    fontfaceobserver: "https://github.com/bramstein/fontfaceobserver",
-    isomorphicFetch: "https://github.com/matthew-andrews/isomorphic-fetch",
-    jsdom: "https://github.com/jsdom/jsdom",
-    lodash: "https://github.com/lodash/lodash",
-    marked: "https://github.com/markedjs/marked",
-    mathExpressionEvaluator: "https://github.com/bugwheels94/math-expression-evaluator",
-    mongoose: "https://github.com/Automattic/mongoose",
-    mongooseQueryParser: "https://github.com/leodinas-hao/mongoose-query-parser",
-    mongoSanitize: "https://github.com/vkarpov15/mongo-sanitize",
-    mpath: "https://github.com/aheckmann/mpath",
-    nodemailer: "https://github.com/nodemailer/nodemailer",
-    objectSizeof: "https://github.com/miktam/sizeof",
-    pixi_DOT_js: "https://github.com/pixijs/pixijs",
-    serveFavicon: "https://github.com/expressjs/serve-favicon",
-    socket_DOT_io: "https://github.com/socketio/socket.io",
-    uuid: "https://github.com/uuidjs/uuid",
-    xss: "https://github.com/leizongmin/js-xss",
-};
-
 // pages
 app.get("/", (request, response) => {
     response.sendFile(__dirname + "/index.html");
@@ -153,10 +179,6 @@ app.get("/", (request, response) => {
 
 app.get("/play", (request, response) => {
     response.sendFile(__dirname + "/play.html");
-});
-
-app.get("/login", (request, response) => {
-    response.sendFile(__dirname + "/login.html");
 });
 
 app.get("/register", (request, response) => {
@@ -199,6 +221,9 @@ app.get("/users", async (request, response) => {
     if (isNaN(number)) {
         invalid = true;
     }
+    if (!username && !number) {
+        invalid = true;
+    }
 
     if (username) {
         if (!invalid) {
@@ -221,7 +246,7 @@ app.get("/users", async (request, response) => {
     }
 
     // why?
-    if (data || !invalid) {
+    if (data && !invalid) {
         let statistics = JSON.parse(JSON.stringify(data.statistics));
 
         let leaderboardRank = await LeaderboardsModel.findOne({ userIDOfHolder: data["_id"] });
@@ -259,7 +284,7 @@ app.get("/users", async (request, response) => {
         response.writeHead(200, { "Content-Type": "text/html" });
         response.end($.html());
     } else {
-        $("#user").html("Player not found!");
+        $("#user-data").html("Player not found!");
         response.writeHead(200, { "Content-Type": "text/html" });
         response.end($.html());
     }
@@ -433,10 +458,6 @@ app.get("/confirm-email-address", async (request, response) => {
     }
     response.writeHead(200, { "Content-Type": "text/html" });
     response.end($.html());
-});
-
-app.get("/community", async (request, response) => {
-    response.sendFile(__dirname + "/community.html");
 });
 
 app.get("/changelog", async (request, response) => {
@@ -745,26 +766,25 @@ app.post("/change-password", async (request, response) => {
     }
 });
 
-// FIXME: Unsafe?
 app.post("/fetch-open-source-licenses", async (request, response) => {
-    let licenses;
-    await loadAcknowledgements().then((result) => {
-        licenses = result;
-    });
-    let index = -1;
-    let thingsToAppend = [];
-    for (license in licenses) {
-        index++;
-        thingsToAppend.push(
-            `<a href=${repositoriesUsed[license]}><h2>${license
-                .replace("_DOT_", ".")
-                .replace(/([A-Z])/g, "-$1")
-                .toLowerCase()}</h2></a>`
-        );
-        thingsToAppend.push(`<pre>${licenses[license]}</pre>`);
-        thingsToAppend.push(`<hr>`);
+    let licensesToShow = {};
+    for (let key in licenses) {
+        licensesToShow[key.toString()] = {}
+        let homepage = await licenses[key]["homepage"];
+        if (homepage) {
+            licensesToShow[key.toString()]["homepage"] = homepage;
+        } else {
+            licensesToShow[key.toString()]["homepage"] = "";
+        }
+        let license = await licenses[key]["license"];
+        if (license) {
+            licensesToShow[key.toString()]["license"] = license;
+        } else {
+            licensesToShow[key.toString()]["license"] = "(No license found.)";
+        }
     }
-    response.json(thingsToAppend);
+    response.send(JSON.stringify(licensesToShow));
+
 });
 
 app.post("/fetch-game-changelog", async (request, response) => {
@@ -793,6 +813,37 @@ app.get("*", function (req, res) {
 
 // other functions
 
+async function getRepositoryLink(path) {
+    return new Promise((resolve, reject) => {
+        fs.readFile(path, "utf8", function (error, data) {
+            if (error) {
+                resolve("(No repository link found.)");
+            }
+            resolve(JSON.parse(data).homepage);
+        });
+    });
+}
+
+async function readLicenseFile(path) {
+    return new Promise((resolve, reject) => {
+        path += "/LICENSE";
+        fs.readFile(path, "utf8", function (error, data) {
+            if (error) {
+                path += ".md";
+                resolve(new Promise((resolve, reject) => {
+                    fs.readFile(path, "utf8", function (error, data) {
+                        if (error) {
+                            resolve("(No LICENSE file found.)");
+                        }
+                        resolve(data);
+                    });
+                }));
+            }
+            resolve(data);
+        });
+    });
+}
+
 function calculateRank(data) {
     if (data.username == "mistertfy64") {
         // hardcode
@@ -815,48 +866,6 @@ function calculateRank(data) {
     }
 }
 
-async function getLicenseForRepository(repositoryLink, callback) {
-    repositoryLink = repositoryLink.replace("https://github.com/", "https://raw.githubusercontent.com/");
-    repositoryLink += "/master/LICENSE";
-    let license;
-    return new Promise(async (resolve, reject) => {
-        await https.get(repositoryLink, (response) => {
-            response.on("data", (chunk) => {
-                license = chunk.toString("utf-8");
-                if (license == "404: Not Found") {
-                    resolve(getLicenseWithDifferentFileNameForRepository(repositoryLink));
-                } else {
-                    resolve(license);
-                }
-            });
-        });
-    });
-}
-async function getLicenseWithDifferentFileNameForRepository(repositoryLink, callback) {
-    repositoryLink += ".md";
-    let license;
-    return new Promise(async (resolve, reject) => {
-        await https.get(repositoryLink, (response) => {
-            response.on("data", (chunk) => {
-                license = chunk.toString("utf-8");
-                resolve(license);
-            });
-        });
-    });
-}
-
-async function loadAcknowledgements() {
-    // FIXME: wtf am i even doing
-    let licenses = {};
-    return new Promise(async (resolve, reject) => {
-        for (let repository in repositoriesUsed) {
-            await getLicenseForRepository(repositoriesUsed[repository]).then((data) => {
-                licenses[repository] = data;
-            });
-        }
-        resolve(licenses);
-    });
-}
 
 async function loadChangelog(service) {
     let fileURL;
