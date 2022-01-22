@@ -1,7 +1,7 @@
 {
-    "name": "mathematicalbasedefenderswebserver",
+    "name": "mathematicalbasedefenders.com",
     "version": "0.2.6",
-    "description": "foidsaoifhasiofhoaishfiosahfioashfiosah",
+    "description": "Website for Mathematical Base Defenders.",
     "main": "app.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1"
@@ -9,21 +9,32 @@
     "author": "mistertfy64",
     "license": "ISC",
     "dependencies": {
-        "bcrypt": "^5.0.1",
+        "bcrypt": "^5.0.0",
         "cheerio": "^1.0.0-rc.10",
         "dompurify": "^2.3.4",
         "express": "^4.17.1",
         "express-mongo-sanitize": "^2.2.0",
-        "isomorphic-fetch": "^3.0.0",
+        "express-rate-limit": "^6.1.0",
+        "fontfaceobserver": "^2.1.0",
+        "helmet": "^5.0.1",
+        "isomorphic-fetch": "^1.7.0",
+        "jquery": "^3.6.0",
         "jsdom": "^19.0.0",
+        "license-checker": "^25.0.1",
+        "lodash": "^4.17.21",
         "marked": "^4.0.10",
+        "math-expression-evaluator": "^1.3.8",
         "mongo-sanitize": "^1.1.0",
         "mongoose": "^5.13.12",
         "mongoose-query-parser": "^1.2.1",
         "mpath": "^0.8.4",
         "nodemailer": "^6.7.0",
+        "object-sizeof": "^1.6.1",
+        "pixi.js": "^6.2.1",
         "serve-favicon": "^2.5.0",
+        "socket.io": "^4.4.1",
         "uuid": "^8.3.2",
+        "validate-npm-package-name": "^3.0.0",
         "xss": "^1.0.10"
     },
     "repository": {
@@ -33,6 +44,5 @@
     "bugs": {
         "url": "https://github.com/mistertfy64/mathematicalbasedefenders.com/issues"
     },
-    "homepage": "https://github.com/mistertfy64/mathematicalbasedefenders.com#readme",
-    "devDependencies": {}
+    "homepage": "https://github.com/mistertfy64/mathematicalbasedefenders.com#readme"
 }

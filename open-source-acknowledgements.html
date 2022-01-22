@@ -50,7 +50,7 @@
 
         <div id="content-wrapper">
             <p style="font-size: 48px; text-align: center">Open Source Acknowledgements</p>
-            <p style="font-size: 20px; text-align: center">Click on the module's name to go to its repository.</p>
+            <p style="font-size: 20px; text-align: center">Click on a module's name to go to its repository.</p>
             <br /><br />
             <div style="display: flex; justify-content: center; align-items: center">
                 <div style="left: 15%; max-width: 1200px; width: 70%">
@@ -88,8 +88,17 @@
         <script>
             $.post("/fetch-open-source-licenses", (data, status) => {
                 $("#loading-text").text("");
-                for (let content of data) {
-                    $("#license-container").append(content);
+
+                data = JSON.parse(data);
+                console.log(data);
+                for (let content in data) {
+                    if (data[content].homepage == "") {
+                        $("#license-container").append(`<h2>${content}</h2>`);
+                    } else {
+                        $("#license-container").append(`<h2><a href="${data[content].homepage}">${content}</a></h2>`);
+                    }
+                    $("#license-container").append(`<pre>${data[content].license}</pre>`);
+                    $("#license-container").append(`<hr>`);
                 }
             });
         </script>
