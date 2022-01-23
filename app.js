@@ -98,7 +98,19 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname + "/public"));
 app.use(mongoDBSanitize());
 app.use(limiter);
-app.use(helmet());
+app.use(
+    helmet({
+        contentSecurityPolicy: {
+            directives: {
+                ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+                "connect-src": ["'self'", "'unsafe-inline'", "https://www.googletagmanager.com", "https://www.google-analytics.com"],
+                "script-src": ["'self'", "'unsafe-inline'", "code.jquery.com", "www.googletagmanager.com", "https://www.google.com/recaptcha/", "https://www.gstatic.com/recaptcha/"],
+                "frame-src": ["'self'", "'unsafe-inline'", "https://www.google.com/recaptcha/", "https://recaptcha.google.com/recaptcha/"],
+                "script-src-attr": ["'self'", "'unsafe-inline'"],
+            },
+        },
+    })
+);
 
 const PendingUserSchema = new Schema({
     username: String,
@@ -769,7 +781,7 @@ app.post("/change-password", async (request, response) => {
 app.post("/fetch-open-source-licenses", async (request, response) => {
     let licensesToShow = {};
     for (let key in licenses) {
-        licensesToShow[key.toString()] = {}
+        licensesToShow[key.toString()] = {};
         let homepage = await licenses[key]["homepage"];
         if (homepage) {
             licensesToShow[key.toString()]["homepage"] = homepage;
@@ -784,7 +796,6 @@ app.post("/fetch-open-source-licenses", async (request, response) => {
         }
     }
     response.send(JSON.stringify(licensesToShow));
-
 });
 
 app.post("/fetch-game-changelog", async (request, response) => {
@@ -830,14 +841,16 @@ async function readLicenseFile(path) {
         fs.readFile(path, "utf8", function (error, data) {
             if (error) {
                 path += ".md";
-                resolve(new Promise((resolve, reject) => {
-                    fs.readFile(path, "utf8", function (error, data) {
-                        if (error) {
-                            resolve("(No LICENSE file found.)");
-                        }
-                        resolve(data);
-                    });
-                }));
+                resolve(
+                    new Promise((resolve, reject) => {
+                        fs.readFile(path, "utf8", function (error, data) {
+                            if (error) {
+                                resolve("(No LICENSE file found.)");
+                            }
+                            resolve(data);
+                        });
+                    })
+                );
             }
             resolve(data);
         });
@@ -865,7 +878,6 @@ function calculateRank(data) {
         return "";
     }
 }
-
 
 async function loadChangelog(service) {
     let fileURL;
