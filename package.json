@@ -1,6 +1,6 @@
 {
     "name": "mathematicalbasedefenders.com",
-    "version": "0.2.6",
+    "version": "0.2.8",
     "description": "Website for Mathematical Base Defenders.",
     "main": "app.js",
     "scripts": {
@@ -10,7 +10,10 @@
     "license": "ISC",
     "dependencies": {
         "bcrypt": "^5.0.0",
+        "body-parser": "^1.19.1",
         "cheerio": "^1.0.0-rc.10",
+        "cookie-parser": "^1.4.6",
+        "csurf": "^1.11.0",
         "dompurify": "^2.3.4",
         "express": "^4.17.1",
         "express-mongo-sanitize": "^2.2.0",

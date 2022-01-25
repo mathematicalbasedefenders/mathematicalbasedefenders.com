@@ -1,26 +1,30 @@
 #!/usr/bin/env nodejs
 const https = require("https");
 
-const fs = require("fs");
-const url = require("url");
-const bcrypt = require("bcrypt");
-const cheerio = require("cheerio");
-const fetch = require("isomorphic-fetch");
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
-const { v4: uuidv4 } = require("uuid");
-const nodemailer = require("nodemailer");
-const express = require("express");
-const xss = require("xss");
-const mongoDBSanitize = require("express-mongo-sanitize");
-const marked = require("marked");
-const { JSDOM } = require("jsdom");
-const createDOMPurify = require("dompurify");
-const favicon = require("serve-favicon");
-const rateLimit = require("express-rate-limit");
-const licenseChecker = require("license-checker");
-const helmet = require("helmet");
 
+const bcrypt = require("bcrypt");
+const bodyParser = require('body-parser')
+const cheerio = require("cheerio");
+const cookieParser = require("cookie-parser");
+const createDOMPurify = require("dompurify");
+const csurf = require("csurf");
+const express = require("express");
+const favicon = require("serve-favicon");
+const fetch = require("isomorphic-fetch");
+const fs = require("fs");
+const helmet = require("helmet");
+const licenseChecker = require("license-checker");
+const marked = require("marked");
+const mongoDBSanitize = require("express-mongo-sanitize");
+const mongoose = require("mongoose");
+const nodemailer = require("nodemailer");
+const rateLimit = require("express-rate-limit");
+const url = require("url");
+const xss = require("xss");
+const { JSDOM } = require("jsdom");
+const { v4: uuidv4 } = require("uuid");
+
+const Schema = mongoose.Schema;
 const defaultWindow = new JSDOM("").window;
 const DOMPurify = createDOMPurify(defaultWindow);
 
@@ -43,7 +47,10 @@ const limiter = rateLimit({
     legacyHeaders: false,
 });
 
-let licenses = {};
+const csrfProtection = csurf({ cookie: true });
+const parseForm = bodyParser.urlencoded({ extended: false });
+
+var licenses = {};
 
 let getLicenses = async () => {
     return await new Promise((resolve, reject) => {
@@ -111,6 +118,9 @@ app.use(
         },
     })
 );
+
+app.use(cookieParser())
+
 
 const PendingUserSchema = new Schema({
     username: String,
@@ -193,7 +203,8 @@ app.get("/play", (request, response) => {
     response.sendFile(__dirname + "/play.html");
 });
 
-app.get("/register", (request, response) => {
+app.get("/register", csrfProtection, (request, response) => {
+    response.cookie("csrfToken", request.csrfToken());
     response.sendFile(__dirname + "/register.html");
 });
 
@@ -484,32 +495,38 @@ app.get("/open-source-acknowledgements", async (request, response) => {
     response.sendFile(__dirname + "/open-source-acknowledgements.html");
 });
 
-app.get("/forgot-password", async (request, response) => {
+app.get("/forgot-password", csrfProtection, async (request, response) => {
+    response.cookie("csrfToken", request.csrfToken());
     response.sendFile(__dirname + "/forgot-password.html");
 });
 
-app.get("/change-password", async (request, response) => {
+app.get("/change-password", csrfProtection, async (request, response) => {
+    response.cookie("csrfToken", request.csrfToken());
     let query = url.parse(request.url, true).query;
     let email = xss(mongoDBSanitize.sanitize(query.email));
     let code = xss(mongoDBSanitize.sanitize(query.code));
     var pendingPasswordResetRecord = await PendingPasswordResetModel.findOne({
         emailAddress: email,
     });
+
+
+
     if (pendingPasswordResetRecord) {
         if (pendingPasswordResetRecord["passwordResetConfirmationCode"] == code) {
             response.sendFile(__dirname + "/change-password.html");
         } else {
+        
             response.redirect("/?resetpasswordonpage=fail");
         }
     } else {
+    
         response.redirect("/?resetpasswordonpage=fail");
     }
 });
 
 // process registration data
-app.post("/register", async (request, response) => {
+app.post("/register", parseForm, csrfProtection, async (request, response) => {
     const responseKey = xss(request.body["g-recaptcha-response"]);
-
     const reCaptchaSecretKey = xss(credentials.getReCAPTCHASecretKey());
     const reCaptchaURL = xss(`https://www.google.com/recaptcha/api/siteverify?secret=${reCaptchaSecretKey}&response=${responseKey}`);
 
@@ -669,7 +686,7 @@ app.post("/register", async (request, response) => {
 
 // process password reset request
 
-app.post("/forgot-password", async (request, response) => {
+app.post("/forgot-password", parseForm, csrfProtection, async (request, response) => {
     const responseKey = xss(request.body["g-recaptcha-response"]);
     const reCaptchaSecretKey = xss(credentials.getReCAPTCHASecretKey());
     const reCaptchaURL = xss(`https://www.google.com/recaptcha/api/siteverify?secret=${reCaptchaSecretKey}&response=${responseKey}`);
@@ -727,12 +744,14 @@ app.post("/forgot-password", async (request, response) => {
 });
 
 // process password reset request on page
-app.post("/change-password", async (request, response) => {
+app.post("/change-password", parseForm, csrfProtection, async (request, response) => {
     let query = url.parse(request.url, true).query;
     let email = xss(mongoDBSanitize.sanitize(query.email));
     let code = xss(mongoDBSanitize.sanitize(query.code));
     let newPassword = xss(mongoDBSanitize.sanitize(request.body.password));
     let confirmNewPassword = xss(mongoDBSanitize.sanitize(request.body["confirm-password"]));
+
+ 
 
     let record = await PendingPasswordResetModel.find({
         $and: [{ emailAddress: email }, { code: code }],

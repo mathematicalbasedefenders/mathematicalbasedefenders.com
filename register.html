@@ -71,6 +71,7 @@
                         <br /><br />
                         <input class="text-field" type="password" id="password" name="password" placeholder="Password" />
                         <br /><br />
+                        <input type="hidden" name="_csrf" value="">
 
                         By registering, you agree to the
                         <a href="/privacy-policy">Privacy Policy</a>.
@@ -122,5 +123,8 @@
         gtag("js", new Date());
 
         gtag("config", "G-XVRB5TXW3K");
+    </script>
+    <script>
+        document.getElementsByName("_csrf")[0].value = document.cookie.split(";").filter((element) => {return element.indexOf("csrfToken") > -1})[0].substring(11);
     </script>
 </html>
