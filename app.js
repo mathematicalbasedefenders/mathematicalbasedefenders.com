@@ -118,7 +118,6 @@ app.use(
         },
     })
 );
-
 app.use(cookieParser())
 
 
@@ -233,8 +232,8 @@ app.get("/users", async (request, response) => {
     let $ = cheerio.load(fs.readFileSync(__dirname + "/users.html"));
 
     let query = mongoDBSanitize.sanitize(url.parse(request.url, true)).query;
-    let username = xss(mongoDBSanitize.sanitize(query.username));
-    let number = xss(mongoDBSanitize.sanitize(query.number));
+    let username = DOMPurify.sanitize(mongoDBSanitize.sanitize(query.username));
+    let number = DOMPurify.sanitize(mongoDBSanitize.sanitize(query.number));
     let data;
     let invalid = false;
 
@@ -407,8 +406,8 @@ app.get("/confirm-email-address", async (request, response) => {
     let $ = cheerio.load(fs.readFileSync(__dirname + "/confirm-email-address.html"));
 
     let query = url.parse(request.url, true).query;
-    let email = xss(mongoDBSanitize.sanitize(query.email));
-    let code = xss(mongoDBSanitize.sanitize(query.code));
+    let email = DOMPurify.sanitize(mongoDBSanitize.sanitize(query.email));
+    let code = DOMPurify.sanitize(mongoDBSanitize.sanitize(query.code));
 
     var pendingUserRecord = await PendingUserModel.findOne({
         emailAddress: email,
@@ -503,8 +502,8 @@ app.get("/forgot-password", csrfProtection, async (request, response) => {
 app.get("/change-password", csrfProtection, async (request, response) => {
     response.cookie("csrfToken", request.csrfToken());
     let query = url.parse(request.url, true).query;
-    let email = xss(mongoDBSanitize.sanitize(query.email));
-    let code = xss(mongoDBSanitize.sanitize(query.code));
+    let email = DOMPurify.sanitize(mongoDBSanitize.sanitize(query.email));
+    let code = DOMPurify.sanitize(mongoDBSanitize.sanitize(query.code));
     var pendingPasswordResetRecord = await PendingPasswordResetModel.findOne({
         emailAddress: email,
     });
@@ -526,14 +525,14 @@ app.get("/change-password", csrfProtection, async (request, response) => {
 
 // process registration data
 app.post("/register", parseForm, csrfProtection, async (request, response) => {
-    const responseKey = xss(request.body["g-recaptcha-response"]);
-    const reCaptchaSecretKey = xss(credentials.getReCAPTCHASecretKey());
-    const reCaptchaURL = xss(`https://www.google.com/recaptcha/api/siteverify?secret=${reCaptchaSecretKey}&response=${responseKey}`);
+    const responseKey = DOMPurify.sanitize(request.body["g-recaptcha-response"]);
+    const reCaptchaSecretKey = DOMPurify.sanitize(credentials.getReCAPTCHASecretKey());
+    const reCaptchaURL = DOMPurify.sanitize(`https://www.google.com/recaptcha/api/siteverify?secret=${reCaptchaSecretKey}&response=${responseKey}`);
 
-    let desiredUsername = xss(mongoDBSanitize.sanitize(request.body.username));
-    let desiredEmail = xss(mongoDBSanitize.sanitize(request.body.email));
-    let desiredUsernameInAllLowercase = xss(mongoDBSanitize.sanitize(request.body.username));
-    desiredUsernameInAllLowercase = xss(desiredUsernameInAllLowercase.toLowerCase());
+    let desiredUsername = DOMPurify.sanitize(mongoDBSanitize.sanitize(request.body.username));
+    let desiredEmail = DOMPurify.sanitize(mongoDBSanitize.sanitize(request.body.email));
+    let desiredUsernameInAllLowercase = DOMPurify.sanitize(mongoDBSanitize.sanitize(request.body.username));
+    desiredUsernameInAllLowercase = DOMPurify.sanitize(desiredUsernameInAllLowercase.toLowerCase());
 
     // var usernameIsAvailable1 = await UserModel.findOne({ username: desiredUsername }).select(desiredUsername);
     var emailIsNotAvailable1 = await UserModel.findOne({
@@ -582,7 +581,7 @@ app.post("/register", parseForm, csrfProtection, async (request, response) => {
                                 response.writeHead(200, { "Content-Type": "text/html" });
                                 response.end($.html());
                             } else {
-                                let plaintextPassword = xss(mongoDBSanitize.sanitize(request.body.password));
+                                let plaintextPassword = DOMPurify.sanitize(mongoDBSanitize.sanitize(request.body.password));
                                 if (plaintextPassword.length < 8 || plaintextPassword.length > 64 || plaintextPassword == "" || plaintextPassword == null || plaintextPassword.includes(" ") || !/^[0-9a-zA-Z!"#$%&'()*+,-.:;<=>?@^_`{|}~]*$/.test(plaintextPassword)) {
                                     let $ = cheerio.load(fs.readFileSync(__dirname + "/registration-failed.html"));
                                     $("#error-message").text("Password invalid!");
@@ -641,7 +640,7 @@ app.post("/register", parseForm, csrfProtection, async (request, response) => {
 															<br>
 															In order to fully activate your account, please click the activation link below.
 															<br>
-															<a href=https://mathematicalbasedefenders.com/confirm-email-address?email=${xss(desiredEmail)}&code=${xss(emailConfirmationCode)}>https://mathematicalbasedefenders.com/confirm-email-address?email=${xss(desiredEmail)}&code=${xss(emailConfirmationCode)}</a>
+															<a href=https://mathematicalbasedefenders.com/confirm-email-address?email=${DOMPurify.sanitize(desiredEmail)}&code=${DOMPurify.sanitize(emailConfirmationCode)}>https://mathematicalbasedefenders.com/confirm-email-address?email=${DOMPurify.sanitize(desiredEmail)}&code=${DOMPurify.sanitize(emailConfirmationCode)}</a>
 															<br>
 															This link will expire in 30 minutes. After that, your account will be deleted and you may sign up again. If the link doesn't work, feel free to copy and paste the link. If you need help, please reply to this e-mail.
 														</p>
@@ -687,12 +686,12 @@ app.post("/register", parseForm, csrfProtection, async (request, response) => {
 // process password reset request
 
 app.post("/forgot-password", parseForm, csrfProtection, async (request, response) => {
-    const responseKey = xss(request.body["g-recaptcha-response"]);
-    const reCaptchaSecretKey = xss(credentials.getReCAPTCHASecretKey());
-    const reCaptchaURL = xss(`https://www.google.com/recaptcha/api/siteverify?secret=${reCaptchaSecretKey}&response=${responseKey}`);
+    const responseKey = DOMPurify.sanitize(request.body["g-recaptcha-response"]);
+    const reCaptchaSecretKey = DOMPurify.sanitize(credentials.getReCAPTCHASecretKey());
+    const reCaptchaURL = DOMPurify.sanitize(`https://www.google.com/recaptcha/api/siteverify?secret=${reCaptchaSecretKey}&response=${responseKey}`);
 
-    let desiredEmail = xss(mongoDBSanitize.sanitize(request.body.email));
-    let passwordResetConfirmationCode = xss(uuidv4());
+    let desiredEmail = DOMPurify.sanitize(mongoDBSanitize.sanitize(request.body.email));
+    let passwordResetConfirmationCode = DOMPurify.sanitize(uuidv4());
 
     fetch(reCaptchaURL, { method: "post" })
         .then((response) => response.json())
@@ -721,7 +720,7 @@ app.post("/forgot-password", parseForm, csrfProtection, async (request, response
 								<br>
 								If this is you, and you want continue with the procedure, please click this link.
 								<br>
-								<a href=https://mathematicalbasedefenders.com/change-password/?email={desiredEmail}?code=${xss(passwordResetConfirmationCode)}>https://mathematicalbasedefenders.com/change-password?email=${xss(desiredEmail)}&code=${xss(passwordResetConfirmationCode)}</a>
+								<a href=https://mathematicalbasedefenders.com/change-password/?email={desiredEmail}?code=${DOMPurify.sanitize(passwordResetConfirmationCode)}>https://mathematicalbasedefenders.com/change-password?email=${DOMPurify.sanitize(desiredEmail)}&code=${DOMPurify.sanitize(passwordResetConfirmationCode)}</a>
 								<br>
 								This link will expire in 30 minutes. After that, you may request a new password reset link. If the link doesn't work, feel free to copy and paste the link. If you need help, please reply to this e-mail.
 							</p>
@@ -746,10 +745,10 @@ app.post("/forgot-password", parseForm, csrfProtection, async (request, response
 // process password reset request on page
 app.post("/change-password", parseForm, csrfProtection, async (request, response) => {
     let query = url.parse(request.url, true).query;
-    let email = xss(mongoDBSanitize.sanitize(query.email));
-    let code = xss(mongoDBSanitize.sanitize(query.code));
-    let newPassword = xss(mongoDBSanitize.sanitize(request.body.password));
-    let confirmNewPassword = xss(mongoDBSanitize.sanitize(request.body["confirm-password"]));
+    let email = DOMPurify.sanitize(mongoDBSanitize.sanitize(query.email));
+    let code = DOMPurify.sanitize(mongoDBSanitize.sanitize(query.code));
+    let newPassword = DOMPurify.sanitize(mongoDBSanitize.sanitize(request.body.password));
+    let confirmNewPassword = DOMPurify.sanitize(mongoDBSanitize.sanitize(request.body["confirm-password"]));
 
  
 
@@ -962,6 +961,13 @@ function getProgressToNextLevel(experiencePoints) {
     }
     return experiencePoints / (500 * Math.pow(currentLevel + 1, 0.75));
 }
+
+// stuff that needs to be at the end
+app.use((error, request, response, next) => {
+    console.error(log.addMetadata(error.stack, "error"));
+    response.status(500);
+    response.sendFile(__dirname + "/error.html");
+})
 
 // start
 
