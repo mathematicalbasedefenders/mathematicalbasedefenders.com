@@ -1,9 +1,8 @@
 #!/usr/bin/env nodejs
 const https = require("https");
 
-
 const bcrypt = require("bcrypt");
-const bodyParser = require('body-parser')
+const bodyParser = require("body-parser");
 const cheerio = require("cheerio");
 const cookieParser = require("cookie-parser");
 const createDOMPurify = require("dompurify");
@@ -118,8 +117,7 @@ app.use(
         },
     })
 );
-app.use(cookieParser())
-
+app.use(cookieParser());
 
 const PendingUserSchema = new Schema({
     username: String,
@@ -158,7 +156,8 @@ const UserSchema = new Schema({
     },
     statistics: {
         gamesPlayed: Number,
-        personalBestScore: Number,
+        easyModePersonalBestScore: Number,
+        standardModePersonalBestScore: Number,
     },
     membership: {
         isDeveloper: Boolean,
@@ -176,9 +175,16 @@ const IDSchema = new Schema({
     usersRegistered: Number,
 });
 
-const LeaderboardsSchema = new Schema({
+const EasyModeLeaderboardsRecordSchema = new Schema({
     _id: mongoose.Schema.Types.ObjectId,
-    rank: Number,
+    rankNumber: Number,
+    userIDOfHolder: String,
+    score: Number,
+});
+
+const StandardModeLeaderboardsRecordSchema = new Schema({
+    _id: mongoose.Schema.Types.ObjectId,
+    rankNumber: Number,
     userIDOfHolder: String,
     score: Number,
 });
@@ -187,11 +193,13 @@ PendingUserSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 1800 });
 PendingPasswordResetSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 1800 });
 
 const PendingUserModel = mongoose.model("PendingUserModel", PendingUserSchema, "pendingUsers");
-const PendingPasswordResetModel = mongoose.model("PendingPasswordResetSchema", PendingPasswordResetSchema, "pendingPasswordResets");
+const PendingPasswordResetModel = mongoose.model("PendingPasswordResetModel", PendingPasswordResetSchema, "pendingPasswordResets");
 
 const UserModel = mongoose.model("UserModel", UserSchema, "users");
 const MetadataModel = mongoose.model("IDModel", IDSchema, "metadata");
-const LeaderboardsModel = mongoose.model("LeaderboardsModel", LeaderboardsSchema, "leaderboards");
+
+const EasyModeLeaderboardsRecordModel = mongoose.model("EasyModeLeaderboardsRecordModel", EasyModeLeaderboardsRecordSchema, "easyModeLeaderboardsRecords");
+const StandardModeLeaderboardsRecordModel = mongoose.model("StandardModeLeaderboardsRecordModel", StandardModeLeaderboardsRecordSchema, "standardModeLeaderboardsRecords");
 
 // pages
 app.get("/", (request, response) => {
@@ -271,8 +279,18 @@ app.get("/users", async (request, response) => {
     if (data && !invalid) {
         let statistics = JSON.parse(JSON.stringify(data.statistics));
 
-        let leaderboardRank = await LeaderboardsModel.findOne({ userIDOfHolder: data["_id"] });
-        leaderboardRank = JSON.parse(JSON.stringify(leaderboardRank)).rankNumber;
+
+
+        let easyModeLeaderboardRank = await EasyModeLeaderboardsRecordModel.findOne({ userIDOfHolder: data["_id"] });
+        let standardModeLeaderboardRank = await StandardModeLeaderboardsRecordModel.findOne({ userIDOfHolder: data["_id"] });
+
+
+        if (easyModeLeaderboardRank) {
+            easyModeLeaderboardRank = JSON.parse(JSON.stringify(easyModeLeaderboardRank)).rankNumber;
+        }
+        if (standardModeLeaderboardRank) {
+            standardModeLeaderboardRank = JSON.parse(JSON.stringify(standardModeLeaderboardRank)).rankNumber;
+        }
 
         let rank = calculateRank(data);
 
@@ -295,8 +313,12 @@ app.get("/users", async (request, response) => {
         $("#player-join-date").html(new Date(creationDateAndTime).toUTCString());
 
         // personal best
-        $("#personal-best-score").html(statistics.personalBestScore);
-        $("#global-rank").html(leaderboardRank ? `Global #${leaderboardRank}` : "");
+        $("#easy-mode-personal-best-score").html(statistics.easyModePersonalBestScore);
+        $("#easy-mode-global-rank").html(easyModeLeaderboardRank ? `Global #${easyModeLeaderboardRank}` : "");
+
+        // standard mode personal best
+        $("#standard-mode-personal-best-score").html(statistics.standardModePersonalBestScore);
+        $("#standard-mode-global-rank").html(standardModeLeaderboardRank ? `Global #${standardModeLeaderboardRank}` : "");
 
         // experience points
         $("#total-experience-points").html(statistics.totalExperiencePoints);
@@ -319,60 +341,113 @@ app.get("/privacy-policy", (request, response) => {
 app.get("/leaderboards", async (request, response) => {
     let $ = cheerio.load(fs.readFileSync(__dirname + "/leaderboards.html"));
 
-    var allPlayersOnLeaderboardLoaded = false;
+    // TODO: Refactor me!
 
-    for (var i = 1; i <= 50; i++) {
-        var data = await LeaderboardsModel.findOne({ rankNumber: i }, function (error2, result2) {
-            return result2;
-        });
+    let query = mongoDBSanitize.sanitize(url.parse(request.url, true)).query;
+    let mode = DOMPurify.sanitize(mongoDBSanitize.sanitize(query.mode));
 
-        data = JSON.parse(JSON.stringify(data));
+    if (mode == "easy") {
+        $("#title").text("Leaderboards (Easy Mode)");
 
-        var userIDOfHolderAsString = data.userIDOfHolder.toString();
+        let allPlayersOnLeaderboardsLoaded = false;
 
-        if ("???" == userIDOfHolderAsString) {
-            allPlayersOnLeaderboardLoaded = true;
-        }
-
-        if (allPlayersOnLeaderboardLoaded) {
-            if (i == 1 || i == 2 || i == 3) {
-                $("#rank-" + i + "-username").html("???");
-                $("#rank-" + i + "-score").html("???");
-            } else {
-                $("#leaderboards").append(
-                    `<tr>
-						<td width="20%" id="rank-number" style="font-size:16px;">
-							#
-						</td>
-						<td class="username-field" id="rank-username" width="40%" style=" font-size:16px; text-align:center;">
-							???
-						</td>
-						<td class="score-field" id="rank-score" width="20%" style="font-size:16px;text-align:right;">
-							???
-						</td>
-					</tr>`
-                );
-
-                $("#rank-number").attr("id", "rank-" + i + "-number");
-                $("#rank-username").attr("id", "rank-" + i + "-username");
-                $("#rank-score").attr("id", "rank-" + i + "-score");
-
-                $("#rank-" + i + "-number").html("#" + i);
-                $("#rank-" + i + "-username").html("???");
-                $("#rank-" + i + "-score").html("???");
-            }
-        } else {
-            var playerData = await UserModel.findById(data.userIDOfHolder, function (error2, result2) {
+        for (var i = 1; i <= 50; i++) {
+            let data = await EasyModeLeaderboardsRecordModel.findOne({ rankNumber: i }, function (error2, result2) {
                 return result2;
             });
+            data = JSON.parse(JSON.stringify(data));
+            let userIDOfHolderAsString = data.userIDOfHolder.toString();
 
-            if (i == 1 || i == 2 || i == 3) {
-                var playerURL = "users?username=" + playerData.username;
-                $("#rank-" + i + "-username").html(`<a href=${playerURL} style="color:${getRankColor(calculateRank(playerData))}">` + playerData.username + "</a>");
-                $("#rank-" + i + "-score").html(data.score);
+            if ("???" == userIDOfHolderAsString) {
+                allPlayersOnLeaderboardsLoaded = true;
+            }
+
+            if (allPlayersOnLeaderboardsLoaded) {
+                if (i == 1 || i == 2 || i == 3) {
+                    $("#rank-" + i + "-username").html("???");
+                    $("#rank-" + i + "-score").html("???");
+                } else {
+                    $("#leaderboards").append(
+                        `<tr>
+                            <td width="20%" id="rank-number" style="font-size:16px;">
+                                #
+                            </td>
+                            <td class="username-field" id="rank-username" width="40%" style=" font-size:16px; text-align:center;">
+                                ???
+                            </td>
+                            <td class="score-field" id="rank-score" width="20%" style="font-size:16px;text-align:right;">
+                                ???
+                            </td>
+                        </tr>`
+                    );
+
+                    $("#rank-number").attr("id", "rank-" + i + "-number");
+                    $("#rank-username").attr("id", "rank-" + i + "-username");
+                    $("#rank-score").attr("id", "rank-" + i + "-score");
+
+                    $("#rank-" + i + "-number").html("#" + i);
+                    $("#rank-" + i + "-username").html("???");
+                    $("#rank-" + i + "-score").html("???");
+                }
             } else {
-                $("#leaderboards").append(
-                    `<tr>
+                var playerData = await UserModel.findById(data.userIDOfHolder, function (error2, result2) {
+                    return result2;
+                });
+
+                if (i == 1 || i == 2 || i == 3) {
+                    var playerURL = "users?username=" + playerData.username;
+                    $("#rank-" + i + "-username").html(`<a href=${playerURL} style="color:${getRankColor(calculateRank(playerData))}">` + playerData.username + "</a>");
+                    $("#rank-" + i + "-score").html(data.score);
+                } else {
+                    $("#leaderboards").append(
+                        `<tr>
+                            <td width="20%" id="rank-number" style="font-size:16px;">
+                                #
+                            </td>
+                            <td class="username-field" id="rank-username" width="40%" style=" font-size:16px; text-align:center;">
+                                ???
+                            </td>
+                            <td class="score-field" id="rank-score" width="20%" style="font-size:16px;text-align:right;">
+                                ???
+                            </td>
+                        </tr>`
+                    );
+
+                    $("#rank-number").attr("id", "rank-" + i + "-number");
+                    $("#rank-username").attr("id", "rank-" + i + "-username");
+                    $("#rank-score").attr("id", "rank-" + i + "-score");
+
+                    var playerURL = "users?username=" + playerData.username;
+
+                    $("#rank-" + i + "-number").html("#" + i);
+                    $("#rank-" + i + "-username").html(`<a href=${playerURL} style="color:${getRankColor(calculateRank(playerData))}">` + playerData.username + "</a>");
+                    $("#rank-" + i + "-score").html(data.score);
+                }
+            }
+        }
+    } else if (mode == "standard") {
+        let allPlayersOnLeaderboardsLoaded = false;
+
+        $("#title").text("Leaderboards (Standard Mode)");
+
+        for (var i = 1; i <= 50; i++) {
+            let data = await StandardModeLeaderboardsRecordModel.findOne({ rankNumber: i }, function (error2, result2) {
+                return result2;
+            });
+            data = JSON.parse(JSON.stringify(data));
+            let userIDOfHolderAsString = data.userIDOfHolder.toString();
+
+            if ("???" == userIDOfHolderAsString) {
+                allPlayersOnLeaderboardsLoaded = true;
+            }
+
+            if (allPlayersOnLeaderboardsLoaded) {
+                if (i == 1 || i == 2 || i == 3) {
+                    $("#rank-" + i + "-username").html("???");
+                    $("#rank-" + i + "-score").html("???");
+                } else {
+                    $("#leaderboards").append(
+                        `<tr>
 						<td width="20%" id="rank-number" style="font-size:16px;">
 							#
 						</td>
@@ -383,19 +458,54 @@ app.get("/leaderboards", async (request, response) => {
 							???
 						</td>
 					</tr>`
-                );
+                    );
 
-                $("#rank-number").attr("id", "rank-" + i + "-number");
-                $("#rank-username").attr("id", "rank-" + i + "-username");
-                $("#rank-score").attr("id", "rank-" + i + "-score");
+                    $("#rank-number").attr("id", "rank-" + i + "-number");
+                    $("#rank-username").attr("id", "rank-" + i + "-username");
+                    $("#rank-score").attr("id", "rank-" + i + "-score");
 
-                var playerURL = "users?username=" + playerData.username;
+                    $("#rank-" + i + "-number").html("#" + i);
+                    $("#rank-" + i + "-username").html("???");
+                    $("#rank-" + i + "-score").html("???");
+                }
+            } else {
+                var playerData = await UserModel.findById(data.userIDOfHolder, function (error2, result2) {
+                    return result2;
+                });
 
-                $("#rank-" + i + "-number").html("#" + i);
-                $("#rank-" + i + "-username").html(`<a href=${playerURL} style="color:${getRankColor(calculateRank(playerData))}">` + playerData.username + "</a>");
-                $("#rank-" + i + "-score").html(data.score);
+                if (i == 1 || i == 2 || i == 3) {
+                    var playerURL = "users?username=" + playerData.username;
+                    $("#rank-" + i + "-username").html(`<a href=${playerURL} style="color:${getRankColor(calculateRank(playerData))}">` + playerData.username + "</a>");
+                    $("#rank-" + i + "-score").html(data.score);
+                } else {
+                    $("#leaderboards").append(
+                        `<tr>
+						<td width="20%" id="rank-number" style="font-size:16px;">
+							#
+						</td>
+						<td class="username-field" id="rank-username" width="40%" style=" font-size:16px; text-align:center;">
+							???
+						</td>
+						<td class="score-field" id="rank-score" width="20%" style="font-size:16px;text-align:right;">
+							???
+						</td>
+					</tr>`
+                    );
+
+                    $("#rank-number").attr("id", "rank-" + i + "-number");
+                    $("#rank-username").attr("id", "rank-" + i + "-username");
+                    $("#rank-score").attr("id", "rank-" + i + "-score");
+
+                    var playerURL = "users?username=" + playerData.username;
+
+                    $("#rank-" + i + "-number").html("#" + i);
+                    $("#rank-" + i + "-username").html(`<a href=${playerURL} style="color:${getRankColor(calculateRank(playerData))}">` + playerData.username + "</a>");
+                    $("#rank-" + i + "-score").html(data.score);
+                }
             }
         }
+    } else {
+        $("#title").text("Mode does not exist!");
     }
 
     response.writeHead(200, { "Content-Type": "text/html" });
@@ -508,17 +618,13 @@ app.get("/change-password", csrfProtection, async (request, response) => {
         emailAddress: email,
     });
 
-
-
     if (pendingPasswordResetRecord) {
         if (pendingPasswordResetRecord["passwordResetConfirmationCode"] == code) {
             response.sendFile(__dirname + "/change-password.html");
         } else {
-        
             response.redirect("/?resetpasswordonpage=fail");
         }
     } else {
-    
         response.redirect("/?resetpasswordonpage=fail");
     }
 });
@@ -750,8 +856,6 @@ app.post("/change-password", parseForm, csrfProtection, async (request, response
     let newPassword = DOMPurify.sanitize(mongoDBSanitize.sanitize(request.body.password));
     let confirmNewPassword = DOMPurify.sanitize(mongoDBSanitize.sanitize(request.body["confirm-password"]));
 
- 
-
     let record = await PendingPasswordResetModel.find({
         $and: [{ emailAddress: email }, { code: code }],
     });
@@ -967,7 +1071,7 @@ app.use((error, request, response, next) => {
     console.error(log.addMetadata(error.stack, "error"));
     response.status(500);
     response.sendFile(__dirname + "/error.html");
-})
+});
 
 // start
 
