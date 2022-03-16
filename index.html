@@ -10,6 +10,26 @@
         <link rel="stylesheet" type="text/css" href="/css/global.css" />
         <script src="https://www.google.com/recaptcha/api.js"></script>
         <style>
+            #notification {
+                top: -15%;
+                width: 100%;
+                height: 7.5%;
+                background-color: black;
+                color: white;
+                z-index: 10;
+                position: absolute;
+                text-align: center;
+            }
+
+            #notification-text-wrapper {
+                font-size: 2.5vmin;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 100%;
+                height: 100%;
+            }
+
             .play-button {
                 border-color: #149914;
                 border-radius: 4px;
@@ -31,6 +51,11 @@
     </head>
 
     <body>
+        <!-- Notification -->
+        <div id="notification">
+            <div id="notification-text-wrapper"></div>
+        </div>
+
         <!-- Header -->
         <div style="font-size: 28px">
             <span float="left;">
@@ -49,10 +74,10 @@
         <div id="content-wrapper">
             <div style="display: flex; justify-content: center; align-items: center">
                 <div style="font-size: 24px">
-                    <div id="game-description" style="font-size: 48px"></div>
-                    <br />
-                    <br />
-                    <div style="left: 15%; max-width: 600px; word-wrap: break-word">
+                    <div style="left: 15%; max-width: 1200px; word-wrap: break-word">
+                        <div id="game-description" style="font-size: 48px"></div>
+                        <br />
+                        <br />
                         Mathematical Base Defenders, as the name suggests, is a math-based game. (boohoo)<br /><br />
                         You defend your base from square-shaped enemies using square-shaped tiles.<br /><br />
                         Register now for a special permanent "Tester" rank. <br /><br />
@@ -87,6 +112,7 @@
     </body>
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-XVRB5TXW3K"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script>
         function pickAndShowGameDescription() {
             let descriptions = ["A competitive(?) multiplayer math game!!!!!!!!111111111!!!!1", "Defend your base from square-shaped enemies using square-shaped tiles!", "The hardest math game that only involves basic calculations????", "The worst math game ever?", "The most feature-creep math game ever?", "A math game you can't use a calculator on???"];
@@ -97,33 +123,66 @@
     <script>
         function checkURLQueryParameters() {
             let url = new URL(window.location.href);
-            let signup = url.searchParams.get("signup");
-            let resetPassword = url.searchParams.get("resetpassword");
-            let resetPasswordOnPage = url.searchParams.get("resetpasswordonpage");
+            let registered = url.searchParams.get("registered");
+            let sentPasswordResetLink = url.searchParams.get("sentpasswordresetlink");
+            let changedPassword = url.searchParams.get("changedpassword");
+            let verifiedEmail = url.searchParams.get("verifiedemail");
+            let erroroccurred = url.searchParams.get("erroroccurred");
 
-            if (signup != null) {
-                if (signup == "success") {
-                    alert("Sign up successful! Please check your e-mail for a verification link! Failure to click the verification link in 30 minutes will delete your account! (You may sign up again if that happens.)");
-                } else {
-                    alert("Failed to sign you up!");
+
+            if (erroroccurred != null){
+                if (erroroccurred == "true"){
+                    showSlideDownNotification("An error has occurred!", "#ff2222");
+                    return;
                 }
             }
 
-            if (resetPassword != null) {
-                if (resetPassword == "success") {
-                    alert("Successfully sent the password reset link your e-mail! The link is only valid for 30 minutes!");
-                } else {
-                    alert("Failed to send a password reset link!");
+            if (registered != null) {
+                if (registered == "true") {
+                    showSlideDownNotification("Successfully registered! Check your email for a confirmation link! The link is valid for only 30 minutes!", "#259125");
+                    return;
                 }
             }
 
-            if (resetPasswordOnPage != null) {
-                if (resetPasswordOnPage == "success") {
-                    alert("Successfully reset password!");
-                } else {
-                    alert("Failed to reset password!");
+            if (sentPasswordResetLink != null) {
+                if (sentPasswordResetLink == "true") {
+                    showSlideDownNotification("Successfully sent you a password reset link! Check your email for the link! The link is valid for only 30 minutes!", "#259125");
+                    return;
                 }
             }
+
+            if (changedPassword != null) {
+                if (changedPassword == "true") {
+                    showSlideDownNotification("Successfully changed your password!", "#259125");
+                    return;
+                }
+            }
+
+            if (verifiedEmail != null){
+                if (verifiedEmail == "true"){
+                    showSlideDownNotification("Successfully verified e-mail! You may now log in!", "#259125");
+                return;}
+                
+            }
+        }
+
+        function showSlideDownNotification(message, backgroundColor) {
+            $("#notification-text-wrapper").text(message);
+            $("#notification").css({ "background-color": backgroundColor });
+            $("#notification")
+                .animate(
+                    {
+                        top: "0%",
+                    },
+                    500
+                )
+                .delay(2000)
+                .animate(
+                    {
+                        top: "-15%",
+                    },
+                    500
+                );
         }
     </script>
     <script>

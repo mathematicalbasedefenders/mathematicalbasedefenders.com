@@ -279,11 +279,8 @@ app.get("/users", async (request, response) => {
     if (data && !invalid) {
         let statistics = JSON.parse(JSON.stringify(data.statistics));
 
-
-
         let easyModeLeaderboardRank = await EasyModeLeaderboardsRecordModel.findOne({ userIDOfHolder: data["_id"] });
         let standardModeLeaderboardRank = await StandardModeLeaderboardsRecordModel.findOne({ userIDOfHolder: data["_id"] });
-
 
         if (easyModeLeaderboardRank) {
             easyModeLeaderboardRank = JSON.parse(JSON.stringify(easyModeLeaderboardRank)).rankNumber;
@@ -345,6 +342,11 @@ app.get("/leaderboards", async (request, response) => {
 
     let query = mongoDBSanitize.sanitize(url.parse(request.url, true)).query;
     let mode = DOMPurify.sanitize(mongoDBSanitize.sanitize(query.mode));
+
+    if (!mode) {
+        response.redirect("/leaderboards?mode=standard");
+        return;
+    }
 
     if (mode == "easy") {
         $("#title").text("Leaderboards (Easy Mode)");
@@ -506,6 +508,7 @@ app.get("/leaderboards", async (request, response) => {
         }
     } else {
         $("#title").text("Mode does not exist!");
+        $("#leaderboards-wrapper").html("");
     }
 
     response.writeHead(200, { "Content-Type": "text/html" });
@@ -519,9 +522,10 @@ app.get("/confirm-email-address", async (request, response) => {
     let email = DOMPurify.sanitize(mongoDBSanitize.sanitize(query.email));
     let code = DOMPurify.sanitize(mongoDBSanitize.sanitize(query.code));
 
-    var pendingUserRecord = await PendingUserModel.findOne({
+    let pendingUserRecord = await PendingUserModel.findOne({
         emailAddress: email,
     });
+
     if (pendingUserRecord) {
         if (pendingUserRecord["emailConfirmationCode"] == code) {
             let metadataDocument = await MetadataModel.findOne({});
@@ -556,19 +560,15 @@ app.get("/confirm-email-address", async (request, response) => {
 
             MetadataModel.findOneAndUpdate({ documentIsMetadata: true }, { $inc: { usersRegistered: 1 } }, { returnOriginal: false, new: true }, (error3, response3) => {
                 if (error3) {
-                    $("#message").text("Internal error!");
                     console.log(log.addMetadata(error3, "info"));
-                    response.writeHead(200, { "Content-Type": "text/html" });
-                    response.end($.html());
+                    response.redirect("/?erroroccurred=true");
                     return;
                 } else {
                     console.log(log.addMetadata("There are now " + (userCount + 1) + " users registered.", "info"));
                     userModelToSave.save((error4) => {
                         if (error4) {
-                            $("#message").text("Internal error!");
                             console.log(log.addMetadata(error4, "info"));
-                            response.writeHead(200, { "Content-Type": "text/html" });
-                            response.end($.html());
+                            response.redirect("/?erroroccurred=true");
                             return;
                         }
                     });
@@ -576,20 +576,19 @@ app.get("/confirm-email-address", async (request, response) => {
             });
 
             console.log(log.addMetadata(`User ${pendingUserRecord["username"]} validated!`, "info"));
-            $("#message").text(`User ${pendingUserRecord["username"]} validated! You may now log in!`);
-
             PendingUserModel.deleteOne({ emailAddress: email }, (error) => {
                 if (error) {
                     console.error(log.addMetadata(error.stack, "error"));
                 }
             });
+            response.redirect("/?verifiedemail=true");
         } else {
             console.log(log.addMetadata("Failed to verify a user!", "info"));
-            $("#message").text(`Failed to verify the user!`);
+            response.redirect("/?erroroccurred=true");
         }
+    } else {
+        response.redirect("/?erroroccurred=true");
     }
-    response.writeHead(200, { "Content-Type": "text/html" });
-    response.end($.html());
 });
 
 app.get("/changelog", async (request, response) => {
@@ -622,10 +621,10 @@ app.get("/change-password", csrfProtection, async (request, response) => {
         if (pendingPasswordResetRecord["passwordResetConfirmationCode"] == code) {
             response.sendFile(__dirname + "/change-password.html");
         } else {
-            response.redirect("/?resetpasswordonpage=fail");
+            response.redirect("?erroroccurred=true");
         }
     } else {
-        response.redirect("/?resetpasswordonpage=fail");
+        response.redirect("?erroroccurred=true");
     }
 });
 
@@ -641,16 +640,16 @@ app.post("/register", parseForm, csrfProtection, async (request, response) => {
     desiredUsernameInAllLowercase = DOMPurify.sanitize(desiredUsernameInAllLowercase.toLowerCase());
 
     // var usernameIsAvailable1 = await UserModel.findOne({ username: desiredUsername }).select(desiredUsername);
-    var emailIsNotAvailable1 = await UserModel.findOne({
+    let emailIsNotAvailable1 = await UserModel.findOne({
         emailAddress: desiredEmail,
     }).select(desiredEmail);
-    var usernameIsNotAvailable1 = await UserModel.findOne({
+    let usernameIsNotAvailable1 = await UserModel.findOne({
         usernameInAllLowercase: desiredUsernameInAllLowercase,
     }).select(desiredUsernameInAllLowercase);
-    var emailIsNotAvailable2 = await PendingUserModel.findOne({
+    let emailIsNotAvailable2 = await PendingUserModel.findOne({
         emailAddress: desiredEmail,
     }).select(desiredEmail);
-    var usernameIsNotAvailable2 = await PendingUserModel.findOne({
+    let usernameIsNotAvailable2 = await PendingUserModel.findOne({
         usernameInAllLowercase: desiredUsernameInAllLowercase,
     }).select(desiredUsernameInAllLowercase);
 
@@ -662,56 +661,38 @@ app.post("/register", parseForm, csrfProtection, async (request, response) => {
             if (google_response.success == true) {
                 if (usernameIsNotAvailable1 || usernameIsNotAvailable2) {
                     // registration failed - username already taken
-                    let $ = cheerio.load(fs.readFileSync(__dirname + "/registration-failed.html"));
-                    $("#error-message").text("Username " + desiredUsername + " already taken!");
-                    response.writeHead(200, { "Content-Type": "text/html" });
-                    response.end($.html());
+                    response.redirect("?erroroccurred=true&errorreason=usernamealreadytaken");
+                    return;
                 } else {
                     if (!/^[0-9a-zA-Z_]+$/.test(desiredUsername) || desiredUsername.length > 32 || desiredUsername.length < 3 || desiredUsername == "" || desiredUsername == null) {
                         // registration failed - username not valid
-                        let $ = cheerio.load(fs.readFileSync(__dirname + "/registration-failed.html"));
-                        $("#error-message").text("Username can only be 3 to 32 characters long and can only contain letters, numbers, or underscores!");
-                        response.writeHead(200, { "Content-Type": "text/html" });
-                        response.end($.html());
+                        response.redirect("?erroroccurred=true&errorreason=usernamenotvalid");
+                        return;
                     } else {
                         if (!/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(desiredEmail) || desiredEmail == "" || desiredEmail == null) {
-                            let $ = cheerio.load(fs.readFileSync(__dirname + "/registration-failed.html"));
-                            $("#error-message").text("E-mail address not valid!");
-                            response.writeHead(200, { "Content-Type": "text/html" });
-                            response.end($.html());
+                            response.redirect("?erroroccurred=true&errorreason=emailnotvalid");
+                            return;
                         } else {
                             if (emailIsNotAvailable1 || emailIsNotAvailable2) {
                                 // registration failed - email already taken
-                                let $ = cheerio.load(fs.readFileSync(__dirname + "/registration-failed.html"));
-                                $("#error-message").text("E-mail address already taken!");
-                                response.writeHead(200, { "Content-Type": "text/html" });
-                                response.end($.html());
+                                response.redirect("?erroroccurred=true&errorreason=emailalreadytaken");
+                                return;
                             } else {
                                 let plaintextPassword = DOMPurify.sanitize(mongoDBSanitize.sanitize(request.body.password));
                                 if (plaintextPassword.length < 8 || plaintextPassword.length > 64 || plaintextPassword == "" || plaintextPassword == null || plaintextPassword.includes(" ") || !/^[0-9a-zA-Z!"#$%&'()*+,-.:;<=>?@^_`{|}~]*$/.test(plaintextPassword)) {
-                                    let $ = cheerio.load(fs.readFileSync(__dirname + "/registration-failed.html"));
-                                    $("#error-message").text("Password invalid!");
-                                    response.writeHead(200, { "Content-Type": "text/html" });
-                                    response.end($.html());
+                                    response.redirect("?erroroccurred=true&errorreason=passwordnotvalid");
+                                    return;
                                 } else {
                                     var hashedPasswordToSave;
                                     bcrypt.genSalt(SALT_ROUNDS, function (error1, salt) {
                                         if (error1) {
-                                            let $ = cheerio.load(fs.readFileSync(__dirname + "/registration-failed.html"));
-                                            $("#error-message").text("Internal error!");
-                                            console.error(log.addMetadata(error1.stack, "error"));
-                                            response.writeHead(200, { "Content-Type": "text/html" });
-                                            response.end($.html());
+                                            response.redirect("?erroroccurred=true&errorreason=internalerror");
+                                            return;
                                         } else {
                                             bcrypt.hash(plaintextPassword, salt, function (error2, hash) {
                                                 if (error2) {
-                                                    let $ = cheerio.load(fs.readFileSync(__dirname + "/registration-failed.html"));
-                                                    $("#error-message").text("Internal error!");
-                                                    console.error(log.addMetadata(error2.stack, "error"));
-                                                    response.writeHead(200, {
-                                                        "Content-Type": "text/html",
-                                                    });
-                                                    response.end($.html());
+                                                    response.redirect("?erroroccurred=true&errorreason=internalerror");
+                                                    return;
                                                 } else {
                                                     hashedPasswordToSave = hash;
                                                     emailConfirmationCode = uuidv4();
@@ -727,13 +708,8 @@ app.post("/register", parseForm, csrfProtection, async (request, response) => {
                                                     const pendingUserModelToSave = new PendingUserModel(dataToSave);
                                                     pendingUserModelToSave.save((error4) => {
                                                         if (error4) {
-                                                            let $ = cheerio.load(fs.readFileSync(__dirname + "/registration-failed.html"));
-                                                            $("#error-message").text("Internal error!");
-                                                            console.error(log.addMetadata(error4.stack, "error"));
-                                                            response.writeHead(200, {
-                                                                "Content-Type": "text/html",
-                                                            });
-                                                            response.end($.html());
+                                                            response.redirect("?erroroccurred=true&errorreason=internalerror");
+                                                            return;
                                                         } else {
                                                             let transporter = nodemailer.createTransport(credentials.getNodemailerOptionsObject());
                                                             let message = {
@@ -755,13 +731,8 @@ app.post("/register", parseForm, csrfProtection, async (request, response) => {
                                                             transporter.sendMail(message, (error, information) => {
                                                                 if (error) {
                                                                     console.error(log.addMetadata(error.stack, "error"));
-                                                                    let $ = cheerio.load(fs.readFileSync(__dirname + "/registration-failed.html"));
-                                                                    $("#error-message").text("Internal error!");
-                                                                    console.error(log.addMetadata(error4.stack, "error"));
-                                                                    response.writeHead(200, {
-                                                                        "Content-Type": "text/html",
-                                                                    });
-                                                                    response.end($.html());
+                                                                    response.redirect("?erroroccurred=true&errorreason=internalerror");
+                                                                    return;
                                                                 } else {
                                                                     console.log(log.addMetadata("Successfully sent verification message to " + desiredEmail + "!", "info"));
                                                                     console.log(log.addMetadata("New Unconfirmed User: " + desiredUsername + " (" + desiredEmail + ")", "info"));
@@ -780,11 +751,8 @@ app.post("/register", parseForm, csrfProtection, async (request, response) => {
                     }
                 }
             } else {
-                let $ = cheerio.load(fs.readFileSync(__dirname + "/registration-failed.html"));
-                $("#error-message").text("Complete the reCAPTCHA first!");
-                console.log(log.addMetadata("reCaptcha Error", "info"));
-                response.writeHead(200, { "Content-Type": "text/html" });
-                response.end($.html());
+                response.redirect("?erroroccurred=true&errorreason=captchanotcomplete");
+                return;
             }
         });
 });
@@ -799,6 +767,11 @@ app.post("/forgot-password", parseForm, csrfProtection, async (request, response
     let desiredEmail = DOMPurify.sanitize(mongoDBSanitize.sanitize(request.body.email));
     let passwordResetConfirmationCode = DOMPurify.sanitize(uuidv4());
 
+    let playerData = await UserModel.findOne({
+        emailAddress: desiredEmail,
+    })
+
+    if (playerData){
     fetch(reCaptchaURL, { method: "post" })
         .then((response) => response.json())
         .then((google_response) => {
@@ -835,17 +808,21 @@ app.post("/forgot-password", parseForm, csrfProtection, async (request, response
                         transporter.sendMail(message, (error, information) => {
                             if (error) {
                                 console.error(log.addMetadata(error.stack, "error"));
-                                response.redirect("/?resetpassword=fail");
+                                response.redirect("?erroroccurred=true");
                             } else {
-                                response.redirect("/?resetpassword=success");
+                                response.redirect("/?sentpasswordresetlink=true");
                             }
                         });
                     }
                 });
             } else {
-                response.redirect("/?resetpassword=fail");
+                response.redirect("?resetpassword=fail");
             }
         });
+    } else {
+        console.error(log.addMetadata(`No user with e-mail address ${desiredEmail} found!`, "error"));
+        response.redirect("?erroroccurred=true");
+    }
 });
 
 // process password reset request on page
@@ -865,25 +842,25 @@ app.post("/change-password", parseForm, csrfProtection, async (request, response
             bcrypt.genSalt(SALT_ROUNDS, function (error1, salt) {
                 if (error1) {
                     console.error(log.addMetadata(error1.stack, "error"));
-                    response.redirect("/?resetpasswordonpage=fail");
+                    response.redirect("?erroroccurred=true");
                 } else {
                     bcrypt.hash(newPassword, salt, async function (error2, hash) {
                         if (error2) {
                             console.error(log.addMetadata(error2.stack, "error"));
-                            response.redirect("/?resetpasswordonpage=fail");
+                            response.redirect("?erroroccurred=true");
                         } else {
                             PendingPasswordResetModel.deleteOne({ emailAddress: email }, (error3, response3) => {
                                 if (error3) {
                                     console.error(log.addMetadata(error3.stack, "error"));
-                                    response.redirect("/?resetpasswordonpage=fail");
+                                    response.redirect("?erroroccurred=true");
                                 } else {
                                     UserModel.findOneAndUpdate({ emailAddress: email }, { hashedPassword: hash }, { useFindAndModify: true, new: true }, (error, response2) => {
                                         if (error) {
                                             console.error(log.addMetadata(error.stack, "error"));
-                                            response.redirect("/?resetpasswordonpage=fail");
+                                            response.redirect("?erroroccurred=true");
                                         } else {
                                             console.log(log.addMetadata("Successfully changed password for a user!", "info"));
-                                            response.redirect("/?resetpasswordonpage=success");
+                                            response.redirect("/?changedPassword=true");
                                         }
                                     });
                                 }
@@ -893,10 +870,10 @@ app.post("/change-password", parseForm, csrfProtection, async (request, response
                 }
             });
         } else {
-            response.redirect("/?resetpasswordonpage=fail");
+            response.redirect("?erroroccurred=true");
         }
     } else {
-        response.redirect("/?resetpasswordonpage=fail");
+        response.redirect("/?erroroccurred=true");
     }
 });
 
@@ -1077,4 +1054,7 @@ app.use((error, request, response, next) => {
 
 app.listen(PORT, () => {
     console.log(log.addMetadata(`App listening at https://localhost:${PORT}`, "info"));
+    if (credentials.getWhetherTestingCredentialsAreUsed()) {
+        console.log(log.addMetadata(`WARNING: Using testing credentials.`, "info"));
+    }
 });
