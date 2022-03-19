@@ -47,6 +47,11 @@
                 background-color: #17a717;
                 border-color: #17a717;
             }
+
+            #award-emblem-container {
+                margin-right: 50%;
+                text-align:center;
+            }
         </style>
     </head>
 
@@ -74,7 +79,7 @@
         <div id="content-wrapper">
             <div style="display: flex; justify-content: center; align-items: center">
                 <div style="font-size: 24px">
-                    <div style="left: 15%; max-width: 1200px; word-wrap: break-word">
+                    <div style="left: 15%; max-width: 90vw; word-wrap: break-word">
                         <div id="game-description" style="font-size: 48px"></div>
                         <br />
                         <br />
@@ -82,6 +87,13 @@
                         You defend your base from square-shaped enemies using square-shaped tiles.<br /><br />
                         Register now for a special permanent "Tester" rank. <br /><br />
                         <button onClick="document.location='https://play.mathematicalbasedefenders.com'" class="play-button">Play</button><br /><span style="font-size: 16px">An account is not required to play, however registering for one is highly recommended.</span>
+                        <br><br>
+                        <div style="left:15%;width: 100%">
+                            <div id="award-emblem-container">
+                                <img src="assets/images/nsc2021awardemblem.png" style="height: 300px" /><br />
+                                <p style="margin:0;"><a style="font-size: 12px" href="https://www.facebook.com/groups/NSCThailand/permalink/4258670394147302/">Want proof?</a></p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -129,9 +141,8 @@
             let verifiedEmail = url.searchParams.get("verifiedemail");
             let erroroccurred = url.searchParams.get("erroroccurred");
 
-
-            if (erroroccurred != null){
-                if (erroroccurred == "true"){
+            if (erroroccurred != null) {
+                if (erroroccurred == "true") {
                     showSlideDownNotification("An error has occurred!", "#ff2222");
                     return;
                 }
@@ -158,11 +169,11 @@
                 }
             }
 
-            if (verifiedEmail != null){
-                if (verifiedEmail == "true"){
+            if (verifiedEmail != null) {
+                if (verifiedEmail == "true") {
                     showSlideDownNotification("Successfully verified e-mail! You may now log in!", "#259125");
-                return;}
-                
+                    return;
+                }
             }
         }
 
