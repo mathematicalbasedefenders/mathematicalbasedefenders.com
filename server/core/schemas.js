@@ -10,7 +10,7 @@ const UserModelSchema = new Schema({
     statistics: {
         personalBestScore: Number,
         gamesPlayed: Number,
-        totalExperiencePoints: Number,
+        totalExperiencePoints: Number
     },
     membership: {
         isDeveloper: Boolean,
@@ -19,8 +19,8 @@ const UserModelSchema = new Schema({
         isContributor: Boolean,
         isTester: Boolean,
         isDonator: Boolean,
-        specialRank: String,
-    },
+        specialRank: String
+    }
 });
 
 const UserModel = mongoose.model("UserModel", UserModelSchema, "users");
@@ -28,10 +28,14 @@ const UserModel = mongoose.model("UserModel", UserModelSchema, "users");
 const LeaderboardsSchema = new Schema({
     rankNumber: Number,
     userIDOfHolder: String,
-    score: Number,
+    score: Number
 });
 
-const LeaderboardsModel = mongoose.model("LeaderboardsModel", LeaderboardsSchema, "leaderboards");
+const LeaderboardsModel = mongoose.model(
+    "LeaderboardsModel",
+    LeaderboardsSchema,
+    "leaderboards"
+);
 
 function getUserModel() {
     return UserModel;
@@ -43,5 +47,5 @@ function getLeaderboardsModel() {
 
 module.exports = {
     getUserModel,
-    getLeaderboardsModel,
+    getLeaderboardsModel
 };

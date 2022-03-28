@@ -1,7 +1,7 @@
 const logLevels = {
     ERROR: "error",
     INFO: "info",
-    DEBUG: "debug",
+    DEBUG: "debug"
 };
 
 function addMetadata(message, level) {
@@ -32,5 +32,5 @@ function addMetadata(message, level) {
 }
 
 module.exports = {
-    addMetadata,
+    addMetadata
 };

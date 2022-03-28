@@ -43,7 +43,7 @@ const limiter = rateLimit({
     windowMs: 15 * 60 * 1000,
     max: 100,
     standardHeaders: true,
-    legacyHeaders: false,
+    legacyHeaders: false
 });
 
 const csrfProtection = csurf({ cookie: true });
@@ -55,7 +55,7 @@ let getLicenses = async () => {
     return await new Promise((resolve, reject) => {
         licenseChecker.init(
             {
-                start: __dirname,
+                start: __dirname
             },
             function (error, packages) {
                 if (error) {
@@ -65,16 +65,30 @@ let getLicenses = async () => {
                     let moduleNames = [];
                     for (key of Object.keys(packages)) {
                         let toAdd = key;
-                        toAdd = toAdd.replace(/^(@[a-z0-9-~][a-z0-9-._~]*\/)?([a-z0-9-~][a-z0-9-._~]*)(@[\d\.]*)(-rc\.[0-9]*)?$/g, "$1$2");
+                        toAdd = toAdd.replace(
+                            /^(@[a-z0-9-~][a-z0-9-._~]*\/)?([a-z0-9-~][a-z0-9-._~]*)(@[\d\.]*)(-rc\.[0-9]*)?$/g,
+                            "$1$2"
+                        );
                         moduleNames.push(toAdd);
                     }
                     moduleNames = moduleNames.filter((moduleName) => {
-                        return !(moduleName.indexOf("mathematicalbasedefenders.com") > -1);
+                        return !(
+                            moduleName.indexOf(
+                                "mathematicalbasedefenders.com"
+                            ) > -1
+                        );
                     });
                     for (let moduleName of moduleNames) {
                         licensesToReturn[moduleName.toString()] = {
-                            homepage: getRepositoryLink(__dirname + "/node_modules/" + moduleName + "/package.json"),
-                            license: readLicenseFile(__dirname + "/node_modules/" + moduleName),
+                            homepage: getRepositoryLink(
+                                __dirname +
+                                    "/node_modules/" +
+                                    moduleName +
+                                    "/package.json"
+                            ),
+                            license: readLicenseFile(
+                                __dirname + "/node_modules/" + moduleName
+                            )
                         };
                     }
                     resolve(licensesToReturn);
@@ -109,12 +123,29 @@ app.use(
         contentSecurityPolicy: {
             directives: {
                 ...helmet.contentSecurityPolicy.getDefaultDirectives(),
-                "connect-src": ["'self'", "'unsafe-inline'", "https://www.googletagmanager.com", "https://www.google-analytics.com"],
-                "script-src": ["'self'", "'unsafe-inline'", "code.jquery.com", "www.googletagmanager.com", "https://www.google.com/recaptcha/", "https://www.gstatic.com/recaptcha/"],
-                "frame-src": ["'self'", "'unsafe-inline'", "https://www.google.com/recaptcha/", "https://recaptcha.google.com/recaptcha/"],
-                "script-src-attr": ["'self'", "'unsafe-inline'"],
-            },
-        },
+                "connect-src": [
+                    "'self'",
+                    "'unsafe-inline'",
+                    "https://www.googletagmanager.com",
+                    "https://www.google-analytics.com"
+                ],
+                "script-src": [
+                    "'self'",
+                    "'unsafe-inline'",
+                    "code.jquery.com",
+                    "www.googletagmanager.com",
+                    "https://www.google.com/recaptcha/",
+                    "https://www.gstatic.com/recaptcha/"
+                ],
+                "frame-src": [
+                    "'self'",
+                    "'unsafe-inline'",
+                    "https://www.google.com/recaptcha/",
+                    "https://recaptcha.google.com/recaptcha/"
+                ],
+                "script-src-attr": ["'self'", "'unsafe-inline'"]
+            }
+        }
     })
 );
 app.use(cookieParser());
@@ -129,8 +160,8 @@ const PendingUserSchema = new Schema({
     expiresAt: {
         type: Date,
         default: new Date(Date.now() + 1800000).getTime(),
-        expires: 1800,
-    },
+        expires: 1800
+    }
 });
 
 const PendingPasswordResetSchema = new Schema({
@@ -140,8 +171,8 @@ const PendingPasswordResetSchema = new Schema({
     expiresAt: {
         type: Date,
         default: new Date(Date.now() + 1800000).getTime(),
-        expires: 1800,
-    },
+        expires: 1800
+    }
 });
 
 const UserSchema = new Schema({
@@ -152,12 +183,12 @@ const UserSchema = new Schema({
     userNumber: Number,
     creationDateAndTime: {
         type: Date,
-        default: Date.now(),
+        default: Date.now()
     },
     statistics: {
         gamesPlayed: Number,
         easyModePersonalBestScore: Number,
-        standardModePersonalBestScore: Number,
+        standardModePersonalBestScore: Number
     },
     membership: {
         isDeveloper: Boolean,
@@ -166,40 +197,59 @@ const UserSchema = new Schema({
         isContributor: Boolean,
         isTester: Boolean,
         isDonator: Boolean,
-        specialRank: String,
-    },
+        specialRank: String
+    }
 });
 
 const IDSchema = new Schema({
     _id: mongoose.Schema.Types.ObjectId,
-    usersRegistered: Number,
+    usersRegistered: Number
 });
 
 const EasyModeLeaderboardsRecordSchema = new Schema({
     _id: mongoose.Schema.Types.ObjectId,
     rankNumber: Number,
     userIDOfHolder: String,
-    score: Number,
+    score: Number
 });
 
 const StandardModeLeaderboardsRecordSchema = new Schema({
     _id: mongoose.Schema.Types.ObjectId,
     rankNumber: Number,
     userIDOfHolder: String,
-    score: Number,
+    score: Number
 });
 
 PendingUserSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 1800 });
-PendingPasswordResetSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 1800 });
+PendingPasswordResetSchema.index(
+    { expiresAt: 1 },
+    { expireAfterSeconds: 1800 }
+);
 
-const PendingUserModel = mongoose.model("PendingUserModel", PendingUserSchema, "pendingUsers");
-const PendingPasswordResetModel = mongoose.model("PendingPasswordResetModel", PendingPasswordResetSchema, "pendingPasswordResets");
+const PendingUserModel = mongoose.model(
+    "PendingUserModel",
+    PendingUserSchema,
+    "pendingUsers"
+);
+const PendingPasswordResetModel = mongoose.model(
+    "PendingPasswordResetModel",
+    PendingPasswordResetSchema,
+    "pendingPasswordResets"
+);
 
 const UserModel = mongoose.model("UserModel", UserSchema, "users");
 const MetadataModel = mongoose.model("IDModel", IDSchema, "metadata");
 
-const EasyModeLeaderboardsRecordModel = mongoose.model("EasyModeLeaderboardsRecordModel", EasyModeLeaderboardsRecordSchema, "easyModeLeaderboardsRecords");
-const StandardModeLeaderboardsRecordModel = mongoose.model("StandardModeLeaderboardsRecordModel", StandardModeLeaderboardsRecordSchema, "standardModeLeaderboardsRecords");
+const EasyModeLeaderboardsRecordModel = mongoose.model(
+    "EasyModeLeaderboardsRecordModel",
+    EasyModeLeaderboardsRecordSchema,
+    "easyModeLeaderboardsRecords"
+);
+const StandardModeLeaderboardsRecordModel = mongoose.model(
+    "StandardModeLeaderboardsRecordModel",
+    StandardModeLeaderboardsRecordSchema,
+    "standardModeLeaderboardsRecords"
+);
 
 // pages
 app.get("/", (request, response) => {
@@ -257,21 +307,27 @@ app.get("/users", async (request, response) => {
 
     if (username) {
         if (!invalid) {
-            data = await UserModel.findOne({ username: username }, function (error, result) {
-                if (error) {
-                    console.error(log.addMetadata(error.stack, "error"));
+            data = await UserModel.findOne(
+                { username: username },
+                function (error, result) {
+                    if (error) {
+                        console.error(log.addMetadata(error.stack, "error"));
+                    }
+                    return result;
                 }
-                return result;
-            });
+            );
         }
     } else {
         if (!invalid) {
-            data = await UserModel.findOne({ userNumber: number }, function (error, result) {
-                if (error) {
-                    console.error(log.addMetadata(error.stack, "error"));
+            data = await UserModel.findOne(
+                { userNumber: number },
+                function (error, result) {
+                    if (error) {
+                        console.error(log.addMetadata(error.stack, "error"));
+                    }
+                    return result;
                 }
-                return result;
-            });
+            );
         }
     }
 
@@ -279,14 +335,24 @@ app.get("/users", async (request, response) => {
     if (data && !invalid) {
         let statistics = JSON.parse(JSON.stringify(data.statistics));
 
-        let easyModeLeaderboardRank = await EasyModeLeaderboardsRecordModel.findOne({ userIDOfHolder: data["_id"] });
-        let standardModeLeaderboardRank = await StandardModeLeaderboardsRecordModel.findOne({ userIDOfHolder: data["_id"] });
+        let easyModeLeaderboardRank =
+            await EasyModeLeaderboardsRecordModel.findOne({
+                userIDOfHolder: data["_id"]
+            });
+        let standardModeLeaderboardRank =
+            await StandardModeLeaderboardsRecordModel.findOne({
+                userIDOfHolder: data["_id"]
+            });
 
         if (easyModeLeaderboardRank) {
-            easyModeLeaderboardRank = JSON.parse(JSON.stringify(easyModeLeaderboardRank)).rankNumber;
+            easyModeLeaderboardRank = JSON.parse(
+                JSON.stringify(easyModeLeaderboardRank)
+            ).rankNumber;
         }
         if (standardModeLeaderboardRank) {
-            standardModeLeaderboardRank = JSON.parse(JSON.stringify(standardModeLeaderboardRank)).rankNumber;
+            standardModeLeaderboardRank = JSON.parse(
+                JSON.stringify(standardModeLeaderboardRank)
+            ).rankNumber;
         }
 
         let rank = calculateRank(data);
@@ -301,25 +367,44 @@ app.get("/users", async (request, response) => {
         $("#user").html(data.username);
 
         let creationDateAndTime = data.creationDateAndTime;
-        let progressToNextLevelText = 100 * getProgressToNextLevel(statistics.totalExperiencePoints).toFixed(2) + "% to next level";
+        let progressToNextLevelText =
+            100 *
+                getProgressToNextLevel(
+                    statistics.totalExperiencePoints
+                ).toFixed(2) +
+            "% to next level";
 
         if (progressToNextLevelText.indexOf("NaN%") > -1) {
             progressToNextLevelText = "0% to next level";
         }
 
-        $("#player-join-date").html(new Date(creationDateAndTime).toUTCString());
+        $("#player-join-date").html(
+            new Date(creationDateAndTime).toUTCString()
+        );
 
         // personal best
-        $("#easy-mode-personal-best-score").html(statistics.easyModePersonalBestScore);
-        $("#easy-mode-global-rank").html(easyModeLeaderboardRank ? `Global #${easyModeLeaderboardRank}` : "");
+        $("#easy-mode-personal-best-score").html(
+            statistics.easyModePersonalBestScore
+        );
+        $("#easy-mode-global-rank").html(
+            easyModeLeaderboardRank ? `Global #${easyModeLeaderboardRank}` : ""
+        );
 
         // standard mode personal best
-        $("#standard-mode-personal-best-score").html(statistics.standardModePersonalBestScore);
-        $("#standard-mode-global-rank").html(standardModeLeaderboardRank ? `Global #${standardModeLeaderboardRank}` : "");
+        $("#standard-mode-personal-best-score").html(
+            statistics.standardModePersonalBestScore
+        );
+        $("#standard-mode-global-rank").html(
+            standardModeLeaderboardRank
+                ? `Global #${standardModeLeaderboardRank}`
+                : ""
+        );
 
         // experience points
         $("#total-experience-points").html(statistics.totalExperiencePoints);
-        $("#current-level").html("Level " + getLevel(statistics.totalExperiencePoints).toString());
+        $("#current-level").html(
+            "Level " + getLevel(statistics.totalExperiencePoints).toString()
+        );
         $("#progress-to-next-level").html(progressToNextLevelText);
 
         response.writeHead(200, { "Content-Type": "text/html" });
@@ -354,9 +439,12 @@ app.get("/leaderboards", async (request, response) => {
         let allPlayersOnLeaderboardsLoaded = false;
 
         for (var i = 1; i <= 50; i++) {
-            let data = await EasyModeLeaderboardsRecordModel.findOne({ rankNumber: i }, function (error2, result2) {
-                return result2;
-            });
+            let data = await EasyModeLeaderboardsRecordModel.findOne(
+                { rankNumber: i },
+                function (error2, result2) {
+                    return result2;
+                }
+            );
             data = JSON.parse(JSON.stringify(data));
             let userIDOfHolderAsString = data.userIDOfHolder.toString();
 
@@ -392,13 +480,22 @@ app.get("/leaderboards", async (request, response) => {
                     $("#rank-" + i + "-score").html("???");
                 }
             } else {
-                var playerData = await UserModel.findById(data.userIDOfHolder, function (error2, result2) {
-                    return result2;
-                });
+                var playerData = await UserModel.findById(
+                    data.userIDOfHolder,
+                    function (error2, result2) {
+                        return result2;
+                    }
+                );
 
                 if (i == 1 || i == 2 || i == 3) {
                     var playerURL = "users?username=" + playerData.username;
-                    $("#rank-" + i + "-username").html(`<a href=${playerURL} style="color:${getRankColor(calculateRank(playerData))}">` + playerData.username + "</a>");
+                    $("#rank-" + i + "-username").html(
+                        `<a href=${playerURL} style="color:${getRankColor(
+                            calculateRank(playerData)
+                        )}">` +
+                            playerData.username +
+                            "</a>"
+                    );
                     $("#rank-" + i + "-score").html(data.score);
                 } else {
                     $("#leaderboards").append(
@@ -422,7 +519,13 @@ app.get("/leaderboards", async (request, response) => {
                     var playerURL = "users?username=" + playerData.username;
 
                     $("#rank-" + i + "-number").html("#" + i);
-                    $("#rank-" + i + "-username").html(`<a href=${playerURL} style="color:${getRankColor(calculateRank(playerData))}">` + playerData.username + "</a>");
+                    $("#rank-" + i + "-username").html(
+                        `<a href=${playerURL} style="color:${getRankColor(
+                            calculateRank(playerData)
+                        )}">` +
+                            playerData.username +
+                            "</a>"
+                    );
                     $("#rank-" + i + "-score").html(data.score);
                 }
             }
@@ -433,9 +536,12 @@ app.get("/leaderboards", async (request, response) => {
         $("#title").text("Leaderboards (Standard Mode)");
 
         for (var i = 1; i <= 50; i++) {
-            let data = await StandardModeLeaderboardsRecordModel.findOne({ rankNumber: i }, function (error2, result2) {
-                return result2;
-            });
+            let data = await StandardModeLeaderboardsRecordModel.findOne(
+                { rankNumber: i },
+                function (error2, result2) {
+                    return result2;
+                }
+            );
             data = JSON.parse(JSON.stringify(data));
             let userIDOfHolderAsString = data.userIDOfHolder.toString();
 
@@ -471,13 +577,22 @@ app.get("/leaderboards", async (request, response) => {
                     $("#rank-" + i + "-score").html("???");
                 }
             } else {
-                var playerData = await UserModel.findById(data.userIDOfHolder, function (error2, result2) {
-                    return result2;
-                });
+                var playerData = await UserModel.findById(
+                    data.userIDOfHolder,
+                    function (error2, result2) {
+                        return result2;
+                    }
+                );
 
                 if (i == 1 || i == 2 || i == 3) {
                     var playerURL = "users?username=" + playerData.username;
-                    $("#rank-" + i + "-username").html(`<a href=${playerURL} style="color:${getRankColor(calculateRank(playerData))}">` + playerData.username + "</a>");
+                    $("#rank-" + i + "-username").html(
+                        `<a href=${playerURL} style="color:${getRankColor(
+                            calculateRank(playerData)
+                        )}">` +
+                            playerData.username +
+                            "</a>"
+                    );
                     $("#rank-" + i + "-score").html(data.score);
                 } else {
                     $("#leaderboards").append(
@@ -501,7 +616,13 @@ app.get("/leaderboards", async (request, response) => {
                     var playerURL = "users?username=" + playerData.username;
 
                     $("#rank-" + i + "-number").html("#" + i);
-                    $("#rank-" + i + "-username").html(`<a href=${playerURL} style="color:${getRankColor(calculateRank(playerData))}">` + playerData.username + "</a>");
+                    $("#rank-" + i + "-username").html(
+                        `<a href=${playerURL} style="color:${getRankColor(
+                            calculateRank(playerData)
+                        )}">` +
+                            playerData.username +
+                            "</a>"
+                    );
                     $("#rank-" + i + "-score").html(data.score);
                 }
             }
@@ -516,14 +637,16 @@ app.get("/leaderboards", async (request, response) => {
 });
 
 app.get("/confirm-email-address", async (request, response) => {
-    let $ = cheerio.load(fs.readFileSync(__dirname + "/confirm-email-address.html"));
+    let $ = cheerio.load(
+        fs.readFileSync(__dirname + "/confirm-email-address.html")
+    );
 
     let query = url.parse(request.url, true).query;
     let email = DOMPurify.sanitize(mongoDBSanitize.sanitize(query.email));
     let code = DOMPurify.sanitize(mongoDBSanitize.sanitize(query.code));
 
     let pendingUserRecord = await PendingUserModel.findOne({
-        emailAddress: email,
+        emailAddress: email
     });
 
     if (pendingUserRecord) {
@@ -533,17 +656,23 @@ app.get("/confirm-email-address", async (request, response) => {
             let object = JSON.parse(stringifiedJSON);
             let userCount = object["usersRegistered"];
 
-            console.log(log.addMetadata("There are " + userCount + " users registered.", "info"));
+            console.log(
+                log.addMetadata(
+                    "There are " + userCount + " users registered.",
+                    "info"
+                )
+            );
 
             let dataToSave = {
                 username: pendingUserRecord["username"],
-                usernameInAllLowercase: pendingUserRecord["usernameInAllLowercase"],
+                usernameInAllLowercase:
+                    pendingUserRecord["usernameInAllLowercase"],
                 emailAddress: pendingUserRecord["emailAddress"],
                 hashedPassword: pendingUserRecord["hashedPassword"],
                 userNumber: userCount + 1,
                 creationDateAndTime: Date.now(),
                 statistics: {
-                    gamesPlayed: 0,
+                    gamesPlayed: 0
                 },
                 membership: {
                     isDeveloper: false,
@@ -552,30 +681,47 @@ app.get("/confirm-email-address", async (request, response) => {
                     isContributor: false,
                     isTester: true,
                     isDonator: false,
-                    specialRank: "",
-                },
+                    specialRank: ""
+                }
             };
 
             const userModelToSave = new UserModel(dataToSave);
 
-            MetadataModel.findOneAndUpdate({ documentIsMetadata: true }, { $inc: { usersRegistered: 1 } }, { returnOriginal: false, new: true }, (error3, response3) => {
-                if (error3) {
-                    console.log(log.addMetadata(error3, "info"));
-                    response.redirect("/?erroroccurred=true");
-                    return;
-                } else {
-                    console.log(log.addMetadata("There are now " + (userCount + 1) + " users registered.", "info"));
-                    userModelToSave.save((error4) => {
-                        if (error4) {
-                            console.log(log.addMetadata(error4, "info"));
-                            response.redirect("/?erroroccurred=true");
-                            return;
-                        }
-                    });
+            MetadataModel.findOneAndUpdate(
+                { documentIsMetadata: true },
+                { $inc: { usersRegistered: 1 } },
+                { returnOriginal: false, new: true },
+                (error3, response3) => {
+                    if (error3) {
+                        console.log(log.addMetadata(error3, "info"));
+                        response.redirect("/?erroroccurred=true");
+                        return;
+                    } else {
+                        console.log(
+                            log.addMetadata(
+                                "There are now " +
+                                    (userCount + 1) +
+                                    " users registered.",
+                                "info"
+                            )
+                        );
+                        userModelToSave.save((error4) => {
+                            if (error4) {
+                                console.log(log.addMetadata(error4, "info"));
+                                response.redirect("/?erroroccurred=true");
+                                return;
+                            }
+                        });
+                    }
                 }
-            });
+            );
 
-            console.log(log.addMetadata(`User ${pendingUserRecord["username"]} validated!`, "info"));
+            console.log(
+                log.addMetadata(
+                    `User ${pendingUserRecord["username"]} validated!`,
+                    "info"
+                )
+            );
             PendingUserModel.deleteOne({ emailAddress: email }, (error) => {
                 if (error) {
                     console.error(log.addMetadata(error.stack, "error"));
@@ -614,11 +760,13 @@ app.get("/change-password", csrfProtection, async (request, response) => {
     let email = DOMPurify.sanitize(mongoDBSanitize.sanitize(query.email));
     let code = DOMPurify.sanitize(mongoDBSanitize.sanitize(query.code));
     var pendingPasswordResetRecord = await PendingPasswordResetModel.findOne({
-        emailAddress: email,
+        emailAddress: email
     });
 
     if (pendingPasswordResetRecord) {
-        if (pendingPasswordResetRecord["passwordResetConfirmationCode"] == code) {
+        if (
+            pendingPasswordResetRecord["passwordResetConfirmationCode"] == code
+        ) {
             response.sendFile(__dirname + "/change-password.html");
         } else {
             response.redirect("?erroroccurred=true");
@@ -630,27 +778,41 @@ app.get("/change-password", csrfProtection, async (request, response) => {
 
 // process registration data
 app.post("/register", parseForm, csrfProtection, async (request, response) => {
-    const responseKey = DOMPurify.sanitize(request.body["g-recaptcha-response"]);
-    const reCaptchaSecretKey = DOMPurify.sanitize(credentials.getReCAPTCHASecretKey());
-    const reCaptchaURL = DOMPurify.sanitize(`https://www.google.com/recaptcha/api/siteverify?secret=${reCaptchaSecretKey}&response=${responseKey}`);
+    const responseKey = DOMPurify.sanitize(
+        request.body["g-recaptcha-response"]
+    );
+    const reCaptchaSecretKey = DOMPurify.sanitize(
+        credentials.getReCAPTCHASecretKey()
+    );
+    const reCaptchaURL = DOMPurify.sanitize(
+        `https://www.google.com/recaptcha/api/siteverify?secret=${reCaptchaSecretKey}&response=${responseKey}`
+    );
 
-    let desiredUsername = DOMPurify.sanitize(mongoDBSanitize.sanitize(request.body.username));
-    let desiredEmail = DOMPurify.sanitize(mongoDBSanitize.sanitize(request.body.email));
-    let desiredUsernameInAllLowercase = DOMPurify.sanitize(mongoDBSanitize.sanitize(request.body.username));
-    desiredUsernameInAllLowercase = DOMPurify.sanitize(desiredUsernameInAllLowercase.toLowerCase());
+    let desiredUsername = DOMPurify.sanitize(
+        mongoDBSanitize.sanitize(request.body.username)
+    );
+    let desiredEmail = DOMPurify.sanitize(
+        mongoDBSanitize.sanitize(request.body.email)
+    );
+    let desiredUsernameInAllLowercase = DOMPurify.sanitize(
+        mongoDBSanitize.sanitize(request.body.username)
+    );
+    desiredUsernameInAllLowercase = DOMPurify.sanitize(
+        desiredUsernameInAllLowercase.toLowerCase()
+    );
 
     // var usernameIsAvailable1 = await UserModel.findOne({ username: desiredUsername }).select(desiredUsername);
     let emailIsNotAvailable1 = await UserModel.findOne({
-        emailAddress: desiredEmail,
+        emailAddress: desiredEmail
     }).select(desiredEmail);
     let usernameIsNotAvailable1 = await UserModel.findOne({
-        usernameInAllLowercase: desiredUsernameInAllLowercase,
+        usernameInAllLowercase: desiredUsernameInAllLowercase
     }).select(desiredUsernameInAllLowercase);
     let emailIsNotAvailable2 = await PendingUserModel.findOne({
-        emailAddress: desiredEmail,
+        emailAddress: desiredEmail
     }).select(desiredEmail);
     let usernameIsNotAvailable2 = await PendingUserModel.findOne({
-        usernameInAllLowercase: desiredUsernameInAllLowercase,
+        usernameInAllLowercase: desiredUsernameInAllLowercase
     }).select(desiredUsernameInAllLowercase);
 
     var metadataDocument = await MetadataModel.findOne({});
@@ -661,97 +823,211 @@ app.post("/register", parseForm, csrfProtection, async (request, response) => {
             if (google_response.success == true) {
                 if (usernameIsNotAvailable1 || usernameIsNotAvailable2) {
                     // registration failed - username already taken
-                    response.redirect("?erroroccurred=true&errorreason=usernamealreadytaken");
+                    response.redirect(
+                        "?erroroccurred=true&errorreason=usernamealreadytaken"
+                    );
                     return;
                 } else {
-                    if (!/^[0-9a-zA-Z_]+$/.test(desiredUsername) || desiredUsername.length > 32 || desiredUsername.length < 3 || desiredUsername == "" || desiredUsername == null) {
+                    if (
+                        !/^[0-9a-zA-Z_]+$/.test(desiredUsername) ||
+                        desiredUsername.length > 32 ||
+                        desiredUsername.length < 3 ||
+                        desiredUsername == "" ||
+                        desiredUsername == null
+                    ) {
                         // registration failed - username not valid
-                        response.redirect("?erroroccurred=true&errorreason=usernamenotvalid");
+                        response.redirect(
+                            "?erroroccurred=true&errorreason=usernamenotvalid"
+                        );
                         return;
                     } else {
-                        if (!/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(desiredEmail) || desiredEmail == "" || desiredEmail == null) {
-                            response.redirect("?erroroccurred=true&errorreason=emailnotvalid");
+                        if (
+                            !/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(
+                                desiredEmail
+                            ) ||
+                            desiredEmail == "" ||
+                            desiredEmail == null
+                        ) {
+                            response.redirect(
+                                "?erroroccurred=true&errorreason=emailnotvalid"
+                            );
                             return;
                         } else {
                             if (emailIsNotAvailable1 || emailIsNotAvailable2) {
                                 // registration failed - email already taken
-                                response.redirect("?erroroccurred=true&errorreason=emailalreadytaken");
+                                response.redirect(
+                                    "?erroroccurred=true&errorreason=emailalreadytaken"
+                                );
                                 return;
                             } else {
-                                let plaintextPassword = DOMPurify.sanitize(mongoDBSanitize.sanitize(request.body.password));
-                                if (plaintextPassword.length < 8 || plaintextPassword.length > 64 || plaintextPassword == "" || plaintextPassword == null || plaintextPassword.includes(" ") || !/^[0-9a-zA-Z!"#$%&'()*+,-.:;<=>?@^_`{|}~]*$/.test(plaintextPassword)) {
-                                    response.redirect("?erroroccurred=true&errorreason=passwordnotvalid");
+                                let plaintextPassword = DOMPurify.sanitize(
+                                    mongoDBSanitize.sanitize(
+                                        request.body.password
+                                    )
+                                );
+                                if (
+                                    plaintextPassword.length < 8 ||
+                                    plaintextPassword.length > 64 ||
+                                    plaintextPassword == "" ||
+                                    plaintextPassword == null ||
+                                    plaintextPassword.includes(" ") ||
+                                    !/^[0-9a-zA-Z!"#$%&'()*+,-.:;<=>?@^_`{|}~]*$/.test(
+                                        plaintextPassword
+                                    )
+                                ) {
+                                    response.redirect(
+                                        "?erroroccurred=true&errorreason=passwordnotvalid"
+                                    );
                                     return;
                                 } else {
                                     var hashedPasswordToSave;
-                                    bcrypt.genSalt(SALT_ROUNDS, function (error1, salt) {
-                                        if (error1) {
-                                            response.redirect("?erroroccurred=true&errorreason=internalerror");
-                                            return;
-                                        } else {
-                                            bcrypt.hash(plaintextPassword, salt, function (error2, hash) {
-                                                if (error2) {
-                                                    response.redirect("?erroroccurred=true&errorreason=internalerror");
-                                                    return;
-                                                } else {
-                                                    hashedPasswordToSave = hash;
-                                                    emailConfirmationCode = uuidv4();
-                                                    let dataToSave = {
-                                                        username: desiredUsername,
-                                                        usernameInAllLowercase: desiredUsernameInAllLowercase,
-                                                        emailAddress: desiredEmail,
-                                                        hashedPassword: hashedPasswordToSave,
-                                                        emailConfirmationLink: `https://mathematicalbasedefenders.com/confirm-email-address?email=${desiredEmail}&code=${emailConfirmationCode}`,
-                                                        emailConfirmationCode: emailConfirmationCode,
-                                                        expiresAt: new Date(Date.now() + 1800000).getTime(),
-                                                    };
-                                                    const pendingUserModelToSave = new PendingUserModel(dataToSave);
-                                                    pendingUserModelToSave.save((error4) => {
-                                                        if (error4) {
-                                                            response.redirect("?erroroccurred=true&errorreason=internalerror");
+                                    bcrypt.genSalt(
+                                        SALT_ROUNDS,
+                                        function (error1, salt) {
+                                            if (error1) {
+                                                response.redirect(
+                                                    "?erroroccurred=true&errorreason=internalerror"
+                                                );
+                                                return;
+                                            } else {
+                                                bcrypt.hash(
+                                                    plaintextPassword,
+                                                    salt,
+                                                    function (error2, hash) {
+                                                        if (error2) {
+                                                            response.redirect(
+                                                                "?erroroccurred=true&errorreason=internalerror"
+                                                            );
                                                             return;
                                                         } else {
-                                                            let transporter = nodemailer.createTransport(credentials.getNodemailerOptionsObject());
-                                                            let message = {
-                                                                from: "Mathematical Base Defenders Support <support@mathematicalbasedefenders.com>",
-                                                                to: desiredEmail,
-                                                                subject: "Email Confirmation for Mathematical Base Defenders",
-                                                                html: `
+                                                            hashedPasswordToSave =
+                                                                hash;
+                                                            emailConfirmationCode =
+                                                                uuidv4();
+                                                            let dataToSave = {
+                                                                username:
+                                                                    desiredUsername,
+                                                                usernameInAllLowercase:
+                                                                    desiredUsernameInAllLowercase,
+                                                                emailAddress:
+                                                                    desiredEmail,
+                                                                hashedPassword:
+                                                                    hashedPasswordToSave,
+                                                                emailConfirmationLink: `https://mathematicalbasedefenders.com/confirm-email-address?email=${desiredEmail}&code=${emailConfirmationCode}`,
+                                                                emailConfirmationCode:
+                                                                    emailConfirmationCode,
+                                                                expiresAt:
+                                                                    new Date(
+                                                                        Date.now() +
+                                                                            1800000
+                                                                    ).getTime()
+                                                            };
+                                                            const pendingUserModelToSave =
+                                                                new PendingUserModel(
+                                                                    dataToSave
+                                                                );
+                                                            pendingUserModelToSave.save(
+                                                                (error4) => {
+                                                                    if (
+                                                                        error4
+                                                                    ) {
+                                                                        response.redirect(
+                                                                            "?erroroccurred=true&errorreason=internalerror"
+                                                                        );
+                                                                        return;
+                                                                    } else {
+                                                                        let transporter =
+                                                                            nodemailer.createTransport(
+                                                                                credentials.getNodemailerOptionsObject()
+                                                                            );
+                                                                        let message =
+                                                                            {
+                                                                                from: "Mathematical Base Defenders Support <support@mathematicalbasedefenders.com>",
+                                                                                to: desiredEmail,
+                                                                                subject:
+                                                                                    "Email Confirmation for Mathematical Base Defenders",
+                                                                                html: `
 														<p>
 															Thanks for signing up for Mathematical Base Defenders!
 															<br>
 															In order to fully activate your account, please click the activation link below.
 															<br>
-															<a href=https://mathematicalbasedefenders.com/confirm-email-address?email=${DOMPurify.sanitize(desiredEmail)}&code=${DOMPurify.sanitize(emailConfirmationCode)}>https://mathematicalbasedefenders.com/confirm-email-address?email=${DOMPurify.sanitize(desiredEmail)}&code=${DOMPurify.sanitize(emailConfirmationCode)}</a>
+															<a href=https://mathematicalbasedefenders.com/confirm-email-address?email=${DOMPurify.sanitize(
+                                                                desiredEmail
+                                                            )}&code=${DOMPurify.sanitize(
+                                                                                    emailConfirmationCode
+                                                                                )}>https://mathematicalbasedefenders.com/confirm-email-address?email=${DOMPurify.sanitize(
+                                                                                    desiredEmail
+                                                                                )}&code=${DOMPurify.sanitize(
+                                                                                    emailConfirmationCode
+                                                                                )}</a>
 															<br>
 															This link will expire in 30 minutes. After that, your account will be deleted and you may sign up again. If the link doesn't work, feel free to copy and paste the link. If you need help, please reply to this e-mail.
 														</p>
-														`,
-                                                            };
-                                                            transporter.sendMail(message, (error, information) => {
-                                                                if (error) {
-                                                                    console.error(log.addMetadata(error.stack, "error"));
-                                                                    response.redirect("?erroroccurred=true&errorreason=internalerror");
-                                                                    return;
-                                                                } else {
-                                                                    console.log(log.addMetadata("Successfully sent verification message to " + desiredEmail + "!", "info"));
-                                                                    console.log(log.addMetadata("New Unconfirmed User: " + desiredUsername + " (" + desiredEmail + ")", "info"));
-                                                                    response.redirect("/?signup=success");
+														`
+                                                                            };
+                                                                        transporter.sendMail(
+                                                                            message,
+                                                                            (
+                                                                                error,
+                                                                                information
+                                                                            ) => {
+                                                                                if (
+                                                                                    error
+                                                                                ) {
+                                                                                    console.error(
+                                                                                        log.addMetadata(
+                                                                                            error.stack,
+                                                                                            "error"
+                                                                                        )
+                                                                                    );
+                                                                                    response.redirect(
+                                                                                        "?erroroccurred=true&errorreason=internalerror"
+                                                                                    );
+                                                                                    return;
+                                                                                } else {
+                                                                                    console.log(
+                                                                                        log.addMetadata(
+                                                                                            "Successfully sent verification message to " +
+                                                                                                desiredEmail +
+                                                                                                "!",
+                                                                                            "info"
+                                                                                        )
+                                                                                    );
+                                                                                    console.log(
+                                                                                        log.addMetadata(
+                                                                                            "New Unconfirmed User: " +
+                                                                                                desiredUsername +
+                                                                                                " (" +
+                                                                                                desiredEmail +
+                                                                                                ")",
+                                                                                            "info"
+                                                                                        )
+                                                                                    );
+                                                                                    response.redirect(
+                                                                                        "/?signup=success"
+                                                                                    );
+                                                                                }
+                                                                            }
+                                                                        );
+                                                                    }
                                                                 }
-                                                            });
+                                                            );
                                                         }
-                                                    });
-                                                }
-                                            });
+                                                    }
+                                                );
+                                            }
                                         }
-                                    });
+                                    );
                                 }
                             }
                         }
                     }
                 }
             } else {
-                response.redirect("?erroroccurred=true&errorreason=captchanotcomplete");
+                response.redirect(
+                    "?erroroccurred=true&errorreason=captchanotcomplete"
+                );
                 return;
             }
         });
@@ -759,123 +1035,225 @@ app.post("/register", parseForm, csrfProtection, async (request, response) => {
 
 // process password reset request
 
-app.post("/forgot-password", parseForm, csrfProtection, async (request, response) => {
-    const responseKey = DOMPurify.sanitize(request.body["g-recaptcha-response"]);
-    const reCaptchaSecretKey = DOMPurify.sanitize(credentials.getReCAPTCHASecretKey());
-    const reCaptchaURL = DOMPurify.sanitize(`https://www.google.com/recaptcha/api/siteverify?secret=${reCaptchaSecretKey}&response=${responseKey}`);
+app.post(
+    "/forgot-password",
+    parseForm,
+    csrfProtection,
+    async (request, response) => {
+        const responseKey = DOMPurify.sanitize(
+            request.body["g-recaptcha-response"]
+        );
+        const reCaptchaSecretKey = DOMPurify.sanitize(
+            credentials.getReCAPTCHASecretKey()
+        );
+        const reCaptchaURL = DOMPurify.sanitize(
+            `https://www.google.com/recaptcha/api/siteverify?secret=${reCaptchaSecretKey}&response=${responseKey}`
+        );
 
-    let desiredEmail = DOMPurify.sanitize(mongoDBSanitize.sanitize(request.body.email));
-    let passwordResetConfirmationCode = DOMPurify.sanitize(uuidv4());
+        let desiredEmail = DOMPurify.sanitize(
+            mongoDBSanitize.sanitize(request.body.email)
+        );
+        let passwordResetConfirmationCode = DOMPurify.sanitize(uuidv4());
 
-    let playerData = await UserModel.findOne({
-        emailAddress: desiredEmail,
-    })
+        let playerData = await UserModel.findOne({
+            emailAddress: desiredEmail
+        });
 
-    if (playerData){
-    fetch(reCaptchaURL, { method: "post" })
-        .then((response) => response.json())
-        .then((google_response) => {
-            if (google_response.success == true) {
-                let dataToSave = {
-                    emailAddress: desiredEmail,
-                    passwordResetConfirmationLink: `https://mathematicalbasedefenders.com/change-password?email=${desiredEmail}&code=${passwordResetConfirmationCode}`,
-                    passwordResetConfirmationCode: passwordResetConfirmationCode,
-                    expiresAt: new Date(Date.now() + 1800000).getTime(),
-                };
-                let pendingPasswordResetToSave = new PendingPasswordResetModel(dataToSave);
-                pendingPasswordResetToSave.save((error4) => {
-                    if (error4) {
-                        console.log(log.addMetadata(error4.stack, "info"));
-                        response.redirect("/?resetpassword=fail");
-                    } else {
-                        let transporter = nodemailer.createTransport(credentials.getNodemailerOptionsObject());
-                        let message = {
-                            from: "Mathematical Base Defenders Support <support@mathematicalbasedefenders.com>",
-                            to: desiredEmail,
-                            subject: "Password Reset Confirmation for Mathematical Base Defenders",
-                            html: `
+        if (playerData) {
+            fetch(reCaptchaURL, { method: "post" })
+                .then((response) => response.json())
+                .then((google_response) => {
+                    if (google_response.success == true) {
+                        let dataToSave = {
+                            emailAddress: desiredEmail,
+                            passwordResetConfirmationLink: `https://mathematicalbasedefenders.com/change-password?email=${desiredEmail}&code=${passwordResetConfirmationCode}`,
+                            passwordResetConfirmationCode:
+                                passwordResetConfirmationCode,
+                            expiresAt: new Date(Date.now() + 1800000).getTime()
+                        };
+                        let pendingPasswordResetToSave =
+                            new PendingPasswordResetModel(dataToSave);
+                        pendingPasswordResetToSave.save((error4) => {
+                            if (error4) {
+                                console.log(
+                                    log.addMetadata(error4.stack, "info")
+                                );
+                                response.redirect("/?resetpassword=fail");
+                            } else {
+                                let transporter = nodemailer.createTransport(
+                                    credentials.getNodemailerOptionsObject()
+                                );
+                                let message = {
+                                    from: "Mathematical Base Defenders Support <support@mathematicalbasedefenders.com>",
+                                    to: desiredEmail,
+                                    subject:
+                                        "Password Reset Confirmation for Mathematical Base Defenders",
+                                    html: `
 							<p>
 								Someone requested a password reset for your Mathematical Base Defenders account.
 								<br>
 								If this is you, and you want continue with the procedure, please click this link.
 								<br>
-								<a href=https://mathematicalbasedefenders.com/change-password/?email={desiredEmail}?code=${DOMPurify.sanitize(passwordResetConfirmationCode)}>https://mathematicalbasedefenders.com/change-password?email=${DOMPurify.sanitize(desiredEmail)}&code=${DOMPurify.sanitize(passwordResetConfirmationCode)}</a>
+								<a href=https://mathematicalbasedefenders.com/change-password/?email={desiredEmail}?code=${DOMPurify.sanitize(
+                                    passwordResetConfirmationCode
+                                )}>https://mathematicalbasedefenders.com/change-password?email=${DOMPurify.sanitize(
+                                        desiredEmail
+                                    )}&code=${DOMPurify.sanitize(
+                                        passwordResetConfirmationCode
+                                    )}</a>
 								<br>
 								This link will expire in 30 minutes. After that, you may request a new password reset link. If the link doesn't work, feel free to copy and paste the link. If you need help, please reply to this e-mail.
 							</p>
-							`,
-                        };
-                        transporter.sendMail(message, (error, information) => {
-                            if (error) {
-                                console.error(log.addMetadata(error.stack, "error"));
-                                response.redirect("?erroroccurred=true");
-                            } else {
-                                response.redirect("/?sentpasswordresetlink=true");
+							`
+                                };
+                                transporter.sendMail(
+                                    message,
+                                    (error, information) => {
+                                        if (error) {
+                                            console.error(
+                                                log.addMetadata(
+                                                    error.stack,
+                                                    "error"
+                                                )
+                                            );
+                                            response.redirect(
+                                                "?erroroccurred=true"
+                                            );
+                                        } else {
+                                            response.redirect(
+                                                "/?sentpasswordresetlink=true"
+                                            );
+                                        }
+                                    }
+                                );
                             }
                         });
+                    } else {
+                        response.redirect("?resetpassword=fail");
+                    }
+                });
+        } else {
+            console.error(
+                log.addMetadata(
+                    `No user with e-mail address ${desiredEmail} found!`,
+                    "error"
+                )
+            );
+            response.redirect("?erroroccurred=true");
+        }
+    }
+);
+
+// process password reset request on page
+app.post(
+    "/change-password",
+    parseForm,
+    csrfProtection,
+    async (request, response) => {
+        let query = url.parse(request.url, true).query;
+        let email = DOMPurify.sanitize(mongoDBSanitize.sanitize(query.email));
+        let code = DOMPurify.sanitize(mongoDBSanitize.sanitize(query.code));
+        let newPassword = DOMPurify.sanitize(
+            mongoDBSanitize.sanitize(request.body.password)
+        );
+        let confirmNewPassword = DOMPurify.sanitize(
+            mongoDBSanitize.sanitize(request.body["confirm-password"])
+        );
+
+        let record = await PendingPasswordResetModel.find({
+            $and: [{ emailAddress: email }, { code: code }]
+        });
+
+        if (record) {
+            if (
+                !(
+                    newPassword.length < 8 ||
+                    newPassword.length > 64 ||
+                    newPassword == "" ||
+                    newPassword == null ||
+                    newPassword.includes(" ") ||
+                    !/^[0-9a-zA-Z!"#%&'()*+,-.:;<=>?@^_`{|}~]*$/.test(
+                        newPassword
+                    ) ||
+                    newPassword != confirmNewPassword
+                )
+            ) {
+                bcrypt.genSalt(SALT_ROUNDS, function (error1, salt) {
+                    if (error1) {
+                        console.error(log.addMetadata(error1.stack, "error"));
+                        response.redirect("?erroroccurred=true");
+                    } else {
+                        bcrypt.hash(
+                            newPassword,
+                            salt,
+                            async function (error2, hash) {
+                                if (error2) {
+                                    console.error(
+                                        log.addMetadata(error2.stack, "error")
+                                    );
+                                    response.redirect("?erroroccurred=true");
+                                } else {
+                                    PendingPasswordResetModel.deleteOne(
+                                        { emailAddress: email },
+                                        (error3, response3) => {
+                                            if (error3) {
+                                                console.error(
+                                                    log.addMetadata(
+                                                        error3.stack,
+                                                        "error"
+                                                    )
+                                                );
+                                                response.redirect(
+                                                    "?erroroccurred=true"
+                                                );
+                                            } else {
+                                                UserModel.findOneAndUpdate(
+                                                    { emailAddress: email },
+                                                    { hashedPassword: hash },
+                                                    {
+                                                        useFindAndModify: true,
+                                                        new: true
+                                                    },
+                                                    (error, response2) => {
+                                                        if (error) {
+                                                            console.error(
+                                                                log.addMetadata(
+                                                                    error.stack,
+                                                                    "error"
+                                                                )
+                                                            );
+                                                            response.redirect(
+                                                                "?erroroccurred=true"
+                                                            );
+                                                        } else {
+                                                            console.log(
+                                                                log.addMetadata(
+                                                                    "Successfully changed password for a user!",
+                                                                    "info"
+                                                                )
+                                                            );
+                                                            response.redirect(
+                                                                "/?changedPassword=true"
+                                                            );
+                                                        }
+                                                    }
+                                                );
+                                            }
+                                        }
+                                    );
+                                }
+                            }
+                        );
                     }
                 });
             } else {
-                response.redirect("?resetpassword=fail");
+                response.redirect("?erroroccurred=true");
             }
-        });
-    } else {
-        console.error(log.addMetadata(`No user with e-mail address ${desiredEmail} found!`, "error"));
-        response.redirect("?erroroccurred=true");
-    }
-});
-
-// process password reset request on page
-app.post("/change-password", parseForm, csrfProtection, async (request, response) => {
-    let query = url.parse(request.url, true).query;
-    let email = DOMPurify.sanitize(mongoDBSanitize.sanitize(query.email));
-    let code = DOMPurify.sanitize(mongoDBSanitize.sanitize(query.code));
-    let newPassword = DOMPurify.sanitize(mongoDBSanitize.sanitize(request.body.password));
-    let confirmNewPassword = DOMPurify.sanitize(mongoDBSanitize.sanitize(request.body["confirm-password"]));
-
-    let record = await PendingPasswordResetModel.find({
-        $and: [{ emailAddress: email }, { code: code }],
-    });
-
-    if (record) {
-        if (!(newPassword.length < 8 || newPassword.length > 64 || newPassword == "" || newPassword == null || newPassword.includes(" ") || !/^[0-9a-zA-Z!"#%&'()*+,-.:;<=>?@^_`{|}~]*$/.test(newPassword) || newPassword != confirmNewPassword)) {
-            bcrypt.genSalt(SALT_ROUNDS, function (error1, salt) {
-                if (error1) {
-                    console.error(log.addMetadata(error1.stack, "error"));
-                    response.redirect("?erroroccurred=true");
-                } else {
-                    bcrypt.hash(newPassword, salt, async function (error2, hash) {
-                        if (error2) {
-                            console.error(log.addMetadata(error2.stack, "error"));
-                            response.redirect("?erroroccurred=true");
-                        } else {
-                            PendingPasswordResetModel.deleteOne({ emailAddress: email }, (error3, response3) => {
-                                if (error3) {
-                                    console.error(log.addMetadata(error3.stack, "error"));
-                                    response.redirect("?erroroccurred=true");
-                                } else {
-                                    UserModel.findOneAndUpdate({ emailAddress: email }, { hashedPassword: hash }, { useFindAndModify: true, new: true }, (error, response2) => {
-                                        if (error) {
-                                            console.error(log.addMetadata(error.stack, "error"));
-                                            response.redirect("?erroroccurred=true");
-                                        } else {
-                                            console.log(log.addMetadata("Successfully changed password for a user!", "info"));
-                                            response.redirect("/?changedPassword=true");
-                                        }
-                                    });
-                                }
-                            });
-                        }
-                    });
-                }
-            });
         } else {
-            response.redirect("?erroroccurred=true");
+            response.redirect("/?erroroccurred=true");
         }
-    } else {
-        response.redirect("/?erroroccurred=true");
     }
-});
+);
 
 app.post("/fetch-open-source-licenses", async (request, response) => {
     let licensesToShow = {};
@@ -982,11 +1360,13 @@ async function loadChangelog(service) {
     let fileURL;
     switch (service) {
         case "game": {
-            fileURL = "https://raw.githubusercontent.com/mathematicalbasedefenders/information/main/GAME_CHANGELOG.md";
+            fileURL =
+                "https://raw.githubusercontent.com/mathematicalbasedefenders/information/main/GAME_CHANGELOG.md";
             break;
         }
         case "website": {
-            fileURL = "https://raw.githubusercontent.com/mathematicalbasedefenders/information/main/WEBSITE_CHANGELOG.md";
+            fileURL =
+                "https://raw.githubusercontent.com/mathematicalbasedefenders/information/main/WEBSITE_CHANGELOG.md";
             break;
         }
         default: {
@@ -1053,8 +1433,12 @@ app.use((error, request, response, next) => {
 // start
 
 app.listen(PORT, () => {
-    console.log(log.addMetadata(`App listening at https://localhost:${PORT}`, "info"));
+    console.log(
+        log.addMetadata(`App listening at https://localhost:${PORT}`, "info")
+    );
     if (credentials.getWhetherTestingCredentialsAreUsed()) {
-        console.log(log.addMetadata(`WARNING: Using testing credentials.`, "info"));
+        console.log(
+            log.addMetadata(`WARNING: Using testing credentials.`, "info")
+        );
     }
 });
