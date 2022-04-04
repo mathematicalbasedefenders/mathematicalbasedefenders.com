@@ -389,22 +389,27 @@ app.get("/leaderboards", async (request, response) => {
 
         switch (mode){
             case "easy":{
+                $("#title").text("Leaderboards (Easy Mode)");
+
                 leaderboardsSchema = schemas.getEasyModeLeaderboardsModel();
                 break;
             }
             case "standard":{
+                $("#title").text("Leaderboards (Standard Mode)");
                 leaderboardsSchema = schemas.getStandardModeLeaderboardsModel();
                 break;
             }
             default: {
                     $("#title").text("Mode does not exist!");
                     $("#leaderboards-wrapper").html("");
+                    response.writeHead(200, { "Content-Type": "text/html" });
+    response.end($.html());
+    return;
                 }
             }
         
 
 
-        $("#title").text("Leaderboards (Easy Mode)");
 
         let allPlayersOnLeaderboardsLoaded = false;
 
