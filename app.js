@@ -504,7 +504,7 @@ app.get("/leaderboards", async (request, response) => {
                             playerData.username +
                             "</a>"
                     );
-                    $("#rank-" + i + "-score").html(`${data.score}<p style="font-size:12px;margin:0;padding:0;">${data.scoreSubmissionDateAndTime}, ${data.timeInMilliseconds}ms, ${data.enemiesKilled}/${data.enemiesCreated}, ${data.actionsPerformed/(data.timeInMilliseconds/60000)}APM</p>`);
+                    $("#rank-" + i + "-score").html(`${data.score}<p style="font-size:12px;margin:0;padding:0;">${data.scoreSubmissionDateAndTime}, ${data.timeInMilliseconds}ms, ${data.enemiesKilled}/${data.enemiesCreated}, ${(data.actionsPerformed/(data.timeInMilliseconds/60000)).toFixed(3)}APM</p>`);
 
                 }
             }
