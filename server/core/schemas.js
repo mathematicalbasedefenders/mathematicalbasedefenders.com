@@ -4,13 +4,31 @@ const Schema = mongoose.Schema;
 const UserModelSchema = new Schema({
     username: String,
     usernameInAllLowercase: String,
-    email: String,
+    emailAddress: String,
     hashedPassword: String,
     userNumber: Number,
+    creationDateAndTime: Date,
     statistics: {
-        personalBestScore: Number,
+        easyModePersonalBestScore: Number,
+        standardModePersonalBestScore: Number,
         gamesPlayed: Number,
-        totalExperiencePoints: Number
+        totalExperiencePoints: Number,
+        personalBestScoreOnEasySingleplayerMode: {
+            score: Number,
+            timeInMilliseconds: Number,
+            scoreSubmissionDateAndTime: Date,
+            actionsPerformed: Number,
+            enemiesKilled: Number,
+            enemiesCreated: Number
+        },
+        personalBestScoreOnStandardSingleplayerMode: {
+            score: Number,
+            timeInMilliseconds: Number,
+            scoreSubmissionDateAndTime: Date,
+            actionsPerformed: Number,
+            enemiesKilled: Number,
+            enemiesCreated: Number
+        }
     },
     membership: {
         isDeveloper: Boolean,
@@ -25,27 +43,65 @@ const UserModelSchema = new Schema({
 
 const UserModel = mongoose.model("UserModel", UserModelSchema, "users");
 
-const LeaderboardsSchema = new Schema({
+const EasyModeLeaderboardsSchema = new Schema({
     rankNumber: Number,
     userIDOfHolder: String,
-    score: Number
+    score: Number,
+    timeInMilliseconds: Number,
+    scoreSubmissionDateAndTime: Date,
+    enemiesKilled: Number,
+    enemiesCreated: Number,
+    actionsPerformed: Number
 });
 
-const LeaderboardsModel = mongoose.model(
-    "LeaderboardsModel",
-    LeaderboardsSchema,
-    "leaderboards"
+const EasyModeLeaderboardsModel = mongoose.model(
+    "EasyModeLeaderboardsModel",
+    EasyModeLeaderboardsSchema,
+    "easyModeLeaderboardsRecords"
 );
+
+const StandardModeLeaderboardsSchema = new Schema({
+    rankNumber: Number,
+    userIDOfHolder: String,
+    score: Number,
+    timeInMilliseconds: Number,
+    scoreSubmissionDateAndTime: Date,
+    enemiesKilled: Number,
+    enemiesCreated: Number,
+    actionsPerformed: Number
+});
+
+const StandardModeLeaderboardsModel = mongoose.model(
+    "StandardModeLeaderboardsModel",
+    StandardModeLeaderboardsSchema,
+    "standardModeLeaderboardsRecords"
+);
+
+function getNewUserModelInstance(){
+    return new UserModel();
+}
+
+function getNewUserModelInstanceWithData(data){
+    return new UserModel(data);
+}
+
 
 function getUserModel() {
     return UserModel;
 }
 
-function getLeaderboardsModel() {
-    return LeaderboardsModel;
+function getEasyModeLeaderboardsModel() {
+    return EasyModeLeaderboardsModel;
+}
+
+function getStandardModeLeaderboardsModel() {
+    return StandardModeLeaderboardsModel;
 }
 
 module.exports = {
     getUserModel,
-    getLeaderboardsModel
+    getEasyModeLeaderboardsModel,
+    getStandardModeLeaderboardsModel,
+    getNewUserModelInstance,
+    getNewUserModelInstanceWithData,
 };

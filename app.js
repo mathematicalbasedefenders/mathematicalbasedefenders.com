@@ -19,7 +19,6 @@ const mongoose = require("mongoose");
 const nodemailer = require("nodemailer");
 const rateLimit = require("express-rate-limit");
 const url = require("url");
-const xss = require("xss");
 const { JSDOM } = require("jsdom");
 const { v4: uuidv4 } = require("uuid");
 
@@ -28,6 +27,8 @@ const defaultWindow = new JSDOM("").window;
 const DOMPurify = createDOMPurify(defaultWindow);
 
 const log = require("./server/core/log.js");
+const schemas = require("./server/core/schemas.js");
+
 
 const app = express();
 
@@ -175,50 +176,11 @@ const PendingPasswordResetSchema = new Schema({
     }
 });
 
-const UserSchema = new Schema({
-    username: String,
-    usernameInAllLowercase: String,
-    emailAddress: String,
-    hashedPassword: String,
-    userNumber: Number,
-    creationDateAndTime: {
-        type: Date,
-        default: Date.now()
-    },
-    statistics: {
-        gamesPlayed: Number,
-        easyModePersonalBestScore: Number,
-        standardModePersonalBestScore: Number
-    },
-    membership: {
-        isDeveloper: Boolean,
-        isAdministrator: Boolean,
-        isModerator: Boolean,
-        isContributor: Boolean,
-        isTester: Boolean,
-        isDonator: Boolean,
-        specialRank: String
-    }
-});
-
 const IDSchema = new Schema({
     _id: mongoose.Schema.Types.ObjectId,
     usersRegistered: Number
 });
 
-const EasyModeLeaderboardsRecordSchema = new Schema({
-    _id: mongoose.Schema.Types.ObjectId,
-    rankNumber: Number,
-    userIDOfHolder: String,
-    score: Number
-});
-
-const StandardModeLeaderboardsRecordSchema = new Schema({
-    _id: mongoose.Schema.Types.ObjectId,
-    rankNumber: Number,
-    userIDOfHolder: String,
-    score: Number
-});
 
 PendingUserSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 1800 });
 PendingPasswordResetSchema.index(
@@ -237,19 +199,9 @@ const PendingPasswordResetModel = mongoose.model(
     "pendingPasswordResets"
 );
 
-const UserModel = mongoose.model("UserModel", UserSchema, "users");
 const MetadataModel = mongoose.model("IDModel", IDSchema, "metadata");
 
-const EasyModeLeaderboardsRecordModel = mongoose.model(
-    "EasyModeLeaderboardsRecordModel",
-    EasyModeLeaderboardsRecordSchema,
-    "easyModeLeaderboardsRecords"
-);
-const StandardModeLeaderboardsRecordModel = mongoose.model(
-    "StandardModeLeaderboardsRecordModel",
-    StandardModeLeaderboardsRecordSchema,
-    "standardModeLeaderboardsRecords"
-);
+
 
 // pages
 app.get("/", (request, response) => {
@@ -270,7 +222,7 @@ app.get("/attributions", (request, response) => {
 });
 
 app.get("/statistics", (request, response) => {
-    UserModel.countDocuments({}, function (error, count) {
+    schemas.getUserModel().countDocuments({}, function (error, count) {
         if (error) {
             console.error(log.addMetadata(error.stack, "error"));
         }
@@ -307,7 +259,7 @@ app.get("/users", async (request, response) => {
 
     if (username) {
         if (!invalid) {
-            data = await UserModel.findOne(
+            data = await schemas.getUserModel().findOne(
                 { username: username },
                 function (error, result) {
                     if (error) {
@@ -319,7 +271,7 @@ app.get("/users", async (request, response) => {
         }
     } else {
         if (!invalid) {
-            data = await UserModel.findOne(
+            data = await schemas.getUserModel().findOne(
                 { userNumber: number },
                 function (error, result) {
                     if (error) {
@@ -336,11 +288,11 @@ app.get("/users", async (request, response) => {
         let statistics = JSON.parse(JSON.stringify(data.statistics));
 
         let easyModeLeaderboardRank =
-            await EasyModeLeaderboardsRecordModel.findOne({
+            await schemas.getEasyModeLeaderboardsModel().findOne({
                 userIDOfHolder: data["_id"]
             });
         let standardModeLeaderboardRank =
-            await StandardModeLeaderboardsRecordModel.findOne({
+            await schemas.getStandardModeLeaderboardsModel().findOne({
                 userIDOfHolder: data["_id"]
             });
 
@@ -424,7 +376,7 @@ app.get("/leaderboards", async (request, response) => {
     let $ = cheerio.load(fs.readFileSync(__dirname + "/leaderboards.html"));
 
     // TODO: Refactor me!
-
+    let leaderboardsSchema;
     let query = mongoDBSanitize.sanitize(url.parse(request.url, true)).query;
     let mode = DOMPurify.sanitize(mongoDBSanitize.sanitize(query.mode));
 
@@ -433,13 +385,31 @@ app.get("/leaderboards", async (request, response) => {
         return;
     }
 
-    if (mode == "easy") {
+
+
+        switch (mode){
+            case "easy":{
+                leaderboardsSchema = schemas.getEasyModeLeaderboardsModel();
+                break;
+            }
+            case "standard":{
+                leaderboardsSchema = schemas.getStandardModeLeaderboardsModel();
+                break;
+            }
+            default: {
+                    $("#title").text("Mode does not exist!");
+                    $("#leaderboards-wrapper").html("");
+                }
+            }
+        
+
+
         $("#title").text("Leaderboards (Easy Mode)");
 
         let allPlayersOnLeaderboardsLoaded = false;
 
         for (var i = 1; i <= 50; i++) {
-            let data = await EasyModeLeaderboardsRecordModel.findOne(
+            let data = await leaderboardsSchema.findOne(
                 { rankNumber: i },
                 function (error2, result2) {
                     return result2;
@@ -467,20 +437,26 @@ app.get("/leaderboards", async (request, response) => {
                             </td>
                             <td class="score-field" id="rank-score" width="20%" style="font-size:16px;text-align:right;">
                                 ???
-                            </td>
+                                <p id="rank-game-data">???</p>
+                                </td>
                         </tr>`
                     );
 
                     $("#rank-number").attr("id", "rank-" + i + "-number");
                     $("#rank-username").attr("id", "rank-" + i + "-username");
                     $("#rank-score").attr("id", "rank-" + i + "-score");
+                    $("#rank-game-data").attr("id", "rank-" + i + "-game-data");
+
+
 
                     $("#rank-" + i + "-number").html("#" + i);
                     $("#rank-" + i + "-username").html("???");
                     $("#rank-" + i + "-score").html("???");
+                    $("#rank-" + i + "-game-data").html("???");
+
                 }
             } else {
-                var playerData = await UserModel.findById(
+                var playerData = await schemas.getUserModel().findById(
                     data.userIDOfHolder,
                     function (error2, result2) {
                         return result2;
@@ -496,7 +472,7 @@ app.get("/leaderboards", async (request, response) => {
                             playerData.username +
                             "</a>"
                     );
-                    $("#rank-" + i + "-score").html(data.score);
+                    $("#rank-" + i + "-score").html(`${data.score}<p style="font-size:12px;margin:0;padding:0;">${data.scoreSubmissionDateAndTime}, ${data.timeInMilliseconds}ms, ${data.enemiesKilled}/${data.enemiesCreated}, ${data.actionsPerformed/(data.timeInMilliseconds/60000)}APM</p>`);
                 } else {
                     $("#leaderboards").append(
                         `<tr>
@@ -508,6 +484,7 @@ app.get("/leaderboards", async (request, response) => {
                             </td>
                             <td class="score-field" id="rank-score" width="20%" style="font-size:16px;text-align:right;">
                                 ???
+                                
                             </td>
                         </tr>`
                     );
@@ -515,6 +492,7 @@ app.get("/leaderboards", async (request, response) => {
                     $("#rank-number").attr("id", "rank-" + i + "-number");
                     $("#rank-username").attr("id", "rank-" + i + "-username");
                     $("#rank-score").attr("id", "rank-" + i + "-score");
+                    $("#rank-game-data").attr("id", "rank-" + i + "-game-data");
 
                     var playerURL = "users?username=" + playerData.username;
 
@@ -526,111 +504,12 @@ app.get("/leaderboards", async (request, response) => {
                             playerData.username +
                             "</a>"
                     );
-                    $("#rank-" + i + "-score").html(data.score);
+                    $("#rank-" + i + "-score").html(`${data.score}<p style="font-size:12px;margin:0;padding:0;">${data.scoreSubmissionDateAndTime}, ${data.timeInMilliseconds}ms, ${data.enemiesKilled}/${data.enemiesCreated}, ${data.actionsPerformed/(data.timeInMilliseconds/60000)}APM</p>`);
+
                 }
             }
         }
-    } else if (mode == "standard") {
-        let allPlayersOnLeaderboardsLoaded = false;
 
-        $("#title").text("Leaderboards (Standard Mode)");
-
-        for (var i = 1; i <= 50; i++) {
-            let data = await StandardModeLeaderboardsRecordModel.findOne(
-                { rankNumber: i },
-                function (error2, result2) {
-                    return result2;
-                }
-            );
-            data = JSON.parse(JSON.stringify(data));
-            let userIDOfHolderAsString = data.userIDOfHolder.toString();
-
-            if ("???" == userIDOfHolderAsString) {
-                allPlayersOnLeaderboardsLoaded = true;
-            }
-
-            if (allPlayersOnLeaderboardsLoaded) {
-                if (i == 1 || i == 2 || i == 3) {
-                    $("#rank-" + i + "-username").html("???");
-                    $("#rank-" + i + "-score").html("???");
-                } else {
-                    $("#leaderboards").append(
-                        `<tr>
-						<td width="20%" id="rank-number" style="font-size:16px;">
-							#
-						</td>
-						<td class="username-field" id="rank-username" width="40%" style=" font-size:16px; text-align:center;">
-							???
-						</td>
-						<td class="score-field" id="rank-score" width="20%" style="font-size:16px;text-align:right;">
-							???
-						</td>
-					</tr>`
-                    );
-
-                    $("#rank-number").attr("id", "rank-" + i + "-number");
-                    $("#rank-username").attr("id", "rank-" + i + "-username");
-                    $("#rank-score").attr("id", "rank-" + i + "-score");
-
-                    $("#rank-" + i + "-number").html("#" + i);
-                    $("#rank-" + i + "-username").html("???");
-                    $("#rank-" + i + "-score").html("???");
-                }
-            } else {
-                var playerData = await UserModel.findById(
-                    data.userIDOfHolder,
-                    function (error2, result2) {
-                        return result2;
-                    }
-                );
-
-                if (i == 1 || i == 2 || i == 3) {
-                    var playerURL = "users?username=" + playerData.username;
-                    $("#rank-" + i + "-username").html(
-                        `<a href=${playerURL} style="color:${getRankColor(
-                            calculateRank(playerData)
-                        )}">` +
-                            playerData.username +
-                            "</a>"
-                    );
-                    $("#rank-" + i + "-score").html(data.score);
-                } else {
-                    $("#leaderboards").append(
-                        `<tr>
-						<td width="20%" id="rank-number" style="font-size:16px;">
-							#
-						</td>
-						<td class="username-field" id="rank-username" width="40%" style=" font-size:16px; text-align:center;">
-							???
-						</td>
-						<td class="score-field" id="rank-score" width="20%" style="font-size:16px;text-align:right;">
-							???
-						</td>
-					</tr>`
-                    );
-
-                    $("#rank-number").attr("id", "rank-" + i + "-number");
-                    $("#rank-username").attr("id", "rank-" + i + "-username");
-                    $("#rank-score").attr("id", "rank-" + i + "-score");
-
-                    var playerURL = "users?username=" + playerData.username;
-
-                    $("#rank-" + i + "-number").html("#" + i);
-                    $("#rank-" + i + "-username").html(
-                        `<a href=${playerURL} style="color:${getRankColor(
-                            calculateRank(playerData)
-                        )}">` +
-                            playerData.username +
-                            "</a>"
-                    );
-                    $("#rank-" + i + "-score").html(data.score);
-                }
-            }
-        }
-    } else {
-        $("#title").text("Mode does not exist!");
-        $("#leaderboards-wrapper").html("");
-    }
 
     response.writeHead(200, { "Content-Type": "text/html" });
     response.end($.html());
@@ -685,7 +564,8 @@ app.get("/confirm-email-address", async (request, response) => {
                 }
             };
 
-            const userModelToSave = new UserModel(dataToSave);
+            let userModelToSave = schemas.getNewUserModelInstanceWithData(dataToSave);
+
 
             MetadataModel.findOneAndUpdate(
                 { documentIsMetadata: true },
@@ -801,11 +681,11 @@ app.post("/register", parseForm, csrfProtection, async (request, response) => {
         desiredUsernameInAllLowercase.toLowerCase()
     );
 
-    // var usernameIsAvailable1 = await UserModel.findOne({ username: desiredUsername }).select(desiredUsername);
-    let emailIsNotAvailable1 = await UserModel.findOne({
+    // var usernameIsAvailable1 = await schemas.getUserModel().findOne({ username: desiredUsername }).select(desiredUsername);
+    let emailIsNotAvailable1 = await schemas.getUserModel().findOne({
         emailAddress: desiredEmail
     }).select(desiredEmail);
-    let usernameIsNotAvailable1 = await UserModel.findOne({
+    let usernameIsNotAvailable1 = await schemas.getUserModel().findOne({
         usernameInAllLowercase: desiredUsernameInAllLowercase
     }).select(desiredUsernameInAllLowercase);
     let emailIsNotAvailable2 = await PendingUserModel.findOne({
@@ -1055,7 +935,7 @@ app.post(
         );
         let passwordResetConfirmationCode = DOMPurify.sanitize(uuidv4());
 
-        let playerData = await UserModel.findOne({
+        let playerData = await schemas.getUserModel().findOne({
             emailAddress: desiredEmail
         });
 
@@ -1207,7 +1087,7 @@ app.post(
                                                     "?erroroccurred=true"
                                                 );
                                             } else {
-                                                UserModel.findOneAndUpdate(
+                                                schemas.getUserModel().findOneAndUpdate(
                                                     { emailAddress: email },
                                                     { hashedPassword: hash },
                                                     {
