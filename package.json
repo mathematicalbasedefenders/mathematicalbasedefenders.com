@@ -15,6 +15,7 @@
         "cookie-parser": "^1.4.6",
         "csurf": "^1.11.0",
         "dompurify": "^2.3.4",
+        "ejs": "^3.0.2",
         "express": "^4.17.1",
         "express-mongo-sanitize": "^2.2.0",
         "express-rate-limit": "^6.1.0",

@@ -19,6 +19,7 @@ const mongoose = require("mongoose");
 const nodemailer = require("nodemailer");
 const rateLimit = require("express-rate-limit");
 const url = require("url");
+const _ = require("lodash");
 const { JSDOM } = require("jsdom");
 const { v4: uuidv4 } = require("uuid");
 
@@ -28,7 +29,6 @@ const DOMPurify = createDOMPurify(defaultWindow);
 
 const log = require("./server/core/log.js");
 const schemas = require("./server/core/schemas.js");
-
 
 const app = express();
 
@@ -114,6 +114,8 @@ var ObjectId = require("mongoose").Types.ObjectId;
 const { resolve } = require("path");
 
 // other stuff
+app.set("view engine", "ejs");
+
 app.use(favicon(__dirname + "/public/assets/images/favicon.ico"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname + "/public"));
@@ -181,7 +183,6 @@ const IDSchema = new Schema({
     usersRegistered: Number
 });
 
-
 PendingUserSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 1800 });
 PendingPasswordResetSchema.index(
     { expiresAt: 1 },
@@ -201,24 +202,22 @@ const PendingPasswordResetModel = mongoose.model(
 
 const MetadataModel = mongoose.model("IDModel", IDSchema, "metadata");
 
-
-
 // pages
 app.get("/", (request, response) => {
-    response.sendFile(__dirname + "/index.html");
+    response.render(__dirname + "/views/pages/index");
 });
 
 app.get("/play", (request, response) => {
-    response.sendFile(__dirname + "/play.html");
+    response.render(__dirname + "/views/pages/play");
 });
 
 app.get("/register", csrfProtection, (request, response) => {
     response.cookie("csrfToken", request.csrfToken());
-    response.sendFile(__dirname + "/register.html");
+    response.render(__dirname + "/views/pages/register");
 });
 
 app.get("/attributions", (request, response) => {
-    response.sendFile(__dirname + "/attributions.html");
+    response.render(__dirname + "/views/pages/attributions");
 });
 
 app.get("/statistics", (request, response) => {
@@ -226,20 +225,13 @@ app.get("/statistics", (request, response) => {
         if (error) {
             console.error(log.addMetadata(error.stack, "error"));
         }
-
-        let $ = cheerio.load(fs.readFileSync(__dirname + "/statistics.html"));
-
-        $("#users-registered").text(count.toString());
-
-        response.writeHead(200, { "Content-Type": "text/html" });
-        response.end($.html());
-
-        // response.sendFile();
+        response.render(__dirname + "/views/pages/statistics", {
+            statistics: { registeredUsers: count }
+        });
     });
 });
 
 app.get("/users", async (request, response) => {
-    let $ = cheerio.load(fs.readFileSync(__dirname + "/users.html"));
 
     let query = mongoDBSanitize.sanitize(url.parse(request.url, true)).query;
     let username = DOMPurify.sanitize(mongoDBSanitize.sanitize(query.username));
@@ -259,40 +251,40 @@ app.get("/users", async (request, response) => {
 
     if (username) {
         if (!invalid) {
-            data = await schemas.getUserModel().findOne(
-                { username: username },
-                function (error, result) {
+            data = await schemas
+                .getUserModel()
+                .findOne({ username: username }, function (error, result) {
                     if (error) {
                         console.error(log.addMetadata(error.stack, "error"));
                     }
                     return result;
-                }
-            );
+                });
         }
     } else {
         if (!invalid) {
-            data = await schemas.getUserModel().findOne(
-                { userNumber: number },
-                function (error, result) {
+            data = await schemas
+                .getUserModel()
+                .findOne({ userNumber: number }, function (error, result) {
                     if (error) {
                         console.error(log.addMetadata(error.stack, "error"));
                     }
                     return result;
-                }
-            );
+                });
         }
     }
 
     // why?
     if (data && !invalid) {
-        let statistics = JSON.parse(JSON.stringify(data.statistics));
 
-        let easyModeLeaderboardRank =
-            await schemas.getEasyModeLeaderboardsModel().findOne({
+        data = _.cloneDeep(data);
+        let easyModeLeaderboardRank = await schemas
+            .getEasyModeLeaderboardsModel()
+            .findOne({
                 userIDOfHolder: data["_id"]
             });
-        let standardModeLeaderboardRank =
-            await schemas.getStandardModeLeaderboardsModel().findOne({
+        let standardModeLeaderboardRank = await schemas
+            .getStandardModeLeaderboardsModel()
+            .findOne({
                 userIDOfHolder: data["_id"]
             });
 
@@ -307,75 +299,31 @@ app.get("/users", async (request, response) => {
             ).rankNumber;
         }
 
-        let rank = calculateRank(data);
+        
+        data.rank = calculateRank(data);
+        data.rankColor = getRankColor(calculateRank(data));
+        data.emailAddress = "";
+        data.hashedPassword = "";
+        data.statistics.easyModeLeaderboardRank = easyModeLeaderboardRank;
+        data.statistics.standardModeLeaderboardRank = standardModeLeaderboardRank;
+        data.statistics.currentLevel = `${getLevel(data.statistics.totalExperiencePoints)}`;
+        data.statistics.progressToNextLevelInPercentage = `${parseFloat((getProgressToNextLevel(data.statistics.totalExperiencePoints)*100).toFixed(3)).toString()}%`;
 
-        let rankColor = "black";
+        response.render(__dirname + "/views/pages/users.ejs", {data: data});
 
-        rankColor = getRankColor(rank);
-
-        $("#rank").html(rank);
-        $("#rank").css("color", rankColor);
-
-        $("#user").html(data.username);
-
-        let creationDateAndTime = data.creationDateAndTime;
-        let progressToNextLevelText =
-            100 *
-                getProgressToNextLevel(
-                    statistics.totalExperiencePoints
-                ).toFixed(2) +
-            "% to next level";
-
-        if (progressToNextLevelText.indexOf("NaN%") > -1) {
-            progressToNextLevelText = "0% to next level";
-        }
-
-        $("#player-join-date").html(
-            new Date(creationDateAndTime).toUTCString()
-        );
-
-        // personal best
-        $("#easy-mode-personal-best-score").html(
-            statistics.personalBestScoreOnEasySingleplayerMode.score
-        );
-        $("#easy-mode-global-rank").html(
-            easyModeLeaderboardRank ? `Global #${easyModeLeaderboardRank}` : ""
-        );
-
-        // standard mode personal best
-        $("#standard-mode-personal-best-score").html(
-            statistics.personalBestScoreOnStandardSingleplayerMode.score
-        );
-        $("#standard-mode-global-rank").html(
-            standardModeLeaderboardRank
-                ? `Global #${standardModeLeaderboardRank}`
-                : ""
-        );
-
-        // experience points
-        $("#total-experience-points").html(statistics.totalExperiencePoints);
-        $("#current-level").html(
-            "Level " + getLevel(statistics.totalExperiencePoints).toString()
-        );
-        $("#progress-to-next-level").html(progressToNextLevelText);
-
-        response.writeHead(200, { "Content-Type": "text/html" });
-        response.end($.html());
     } else {
-        $("#user-data").html("Player not found!");
-        response.writeHead(200, { "Content-Type": "text/html" });
-        response.end($.html());
+        response.render(__dirname + "/views/pages/not-found.ejs");
     }
 });
 
 app.get("/privacy-policy", (request, response) => {
-    response.sendFile(__dirname + "/privacy-policy.html");
+    response.render(__dirname + "/views/pages/privacy-policy");
 });
 
 app.get("/leaderboards", async (request, response) => {
-    let $ = cheerio.load(fs.readFileSync(__dirname + "/leaderboards.html"));
 
-    // TODO: Refactor me!
+
+
     let leaderboardsSchema;
     let query = mongoDBSanitize.sanitize(url.parse(request.url, true)).query;
     let mode = DOMPurify.sanitize(mongoDBSanitize.sanitize(query.mode));
@@ -385,139 +333,60 @@ app.get("/leaderboards", async (request, response) => {
         return;
     }
 
+    let startCasedMode = _.startCase(mode)
 
+    switch (mode) {
+        case "easy": {
+            // $("#title").text("Leaderboards (Easy Mode)");
 
-        switch (mode){
-            case "easy":{
-                $("#title").text("Leaderboards (Easy Mode)");
+            leaderboardsSchema = schemas.getEasyModeLeaderboardsModel();
+            break;
+        }
+        case "standard": {
+            // $("#title").text("Leaderboards (Standard Mode)");
+            leaderboardsSchema = schemas.getStandardModeLeaderboardsModel();
+            break;
+        }
+        default: {
+            response.render(__dirname + "/views/pages/not-found");
+            return;
+        }
+    }
 
-                leaderboardsSchema = schemas.getEasyModeLeaderboardsModel();
+    let allPlayersOnLeaderboardsLoaded = false;
+    let leaderboardData = await leaderboardsSchema.find({
+        rankNumber: { $lt: 51 }
+    });
+    let playerData = {};
+
+    for (let i = 1; i <= 50; i++) {
+        let objectID;
+        for (let object of leaderboardData) {
+            if (object.rankNumber == i) {
+                objectID = object.userIDOfHolder.toString();
                 break;
-            }
-            case "standard":{
-                $("#title").text("Leaderboards (Standard Mode)");
-                leaderboardsSchema = schemas.getStandardModeLeaderboardsModel();
-                break;
-            }
-            default: {
-                    $("#title").text("Mode does not exist!");
-                    $("#leaderboards-wrapper").html("");
-                    response.writeHead(200, { "Content-Type": "text/html" });
-    response.end($.html());
-    return;
-                }
-            }
-        
-
-
-
-        let allPlayersOnLeaderboardsLoaded = false;
-
-        for (var i = 1; i <= 50; i++) {
-            let data = await leaderboardsSchema.findOne(
-                { rankNumber: i },
-                function (error2, result2) {
-                    return result2;
-                }
-            );
-            data = JSON.parse(JSON.stringify(data));
-            let userIDOfHolderAsString = data.userIDOfHolder.toString();
-
-            if ("???" == userIDOfHolderAsString) {
-                allPlayersOnLeaderboardsLoaded = true;
-            }
-
-            if (allPlayersOnLeaderboardsLoaded) {
-                if (i == 1 || i == 2 || i == 3) {
-                    $("#rank-" + i + "-username").html("???");
-                    $("#rank-" + i + "-score").html("???");
-                } else {
-                    $("#leaderboards").append(
-                        `<tr>
-                            <td width="20%" id="rank-number" style="font-size:16px;">
-                                #
-                            </td>
-                            <td class="username-field" id="rank-username" width="40%" style=" font-size:16px; text-align:center;">
-                                ???
-                            </td>
-                            <td class="score-field" id="rank-score" width="20%" style="font-size:16px;text-align:right;">
-                                ???
-                                <p id="rank-game-data">???</p>
-                                </td>
-                        </tr>`
-                    );
-
-                    $("#rank-number").attr("id", "rank-" + i + "-number");
-                    $("#rank-username").attr("id", "rank-" + i + "-username");
-                    $("#rank-score").attr("id", "rank-" + i + "-score");
-                    $("#rank-game-data").attr("id", "rank-" + i + "-game-data");
-
-
-
-                    $("#rank-" + i + "-number").html("#" + i);
-                    $("#rank-" + i + "-username").html("???");
-                    $("#rank-" + i + "-score").html("???");
-                    $("#rank-" + i + "-game-data").html("???");
-
-                }
-            } else {
-                var playerData = await schemas.getUserModel().findById(
-                    data.userIDOfHolder,
-                    function (error2, result2) {
-                        return result2;
-                    }
-                );
-
-                if (i == 1 || i == 2 || i == 3) {
-                    var playerURL = "users?username=" + playerData.username;
-                    $("#rank-" + i + "-username").html(
-                        `<a href=${playerURL} style="color:${getRankColor(
-                            calculateRank(playerData)
-                        )}">` +
-                            playerData.username +
-                            "</a>"
-                    );
-                    $("#rank-" + i + "-score").html(`${data.score}<p style="font-size:12px;margin:0;padding:0;">${data.scoreSubmissionDateAndTime}, ${data.timeInMilliseconds}ms, ${data.enemiesKilled}/${data.enemiesCreated}, ${(data.actionsPerformed/(data.timeInMilliseconds/60000)).toFixed(3)}APM</p>`);
-                } else {
-                    $("#leaderboards").append(
-                        `<tr>
-                            <td width="20%" id="rank-number" style="font-size:16px;">
-                                #
-                            </td>
-                            <td class="username-field" id="rank-username" width="40%" style=" font-size:16px; text-align:center;">
-                                ???
-                            </td>
-                            <td class="score-field" id="rank-score" width="20%" style="font-size:16px;text-align:right;">
-                                ???
-                                
-                            </td>
-                        </tr>`
-                    );
-
-                    $("#rank-number").attr("id", "rank-" + i + "-number");
-                    $("#rank-username").attr("id", "rank-" + i + "-username");
-                    $("#rank-score").attr("id", "rank-" + i + "-score");
-                    $("#rank-game-data").attr("id", "rank-" + i + "-game-data");
-
-                    var playerURL = "users?username=" + playerData.username;
-
-                    $("#rank-" + i + "-number").html("#" + i);
-                    $("#rank-" + i + "-username").html(
-                        `<a href=${playerURL} style="color:${getRankColor(
-                            calculateRank(playerData)
-                        )}">` +
-                            playerData.username +
-                            "</a>"
-                    );
-                    $("#rank-" + i + "-score").html(`${data.score}<p style="font-size:12px;margin:0;padding:0;">${data.scoreSubmissionDateAndTime}, ${data.timeInMilliseconds}ms, ${data.enemiesKilled}/${data.enemiesCreated}, ${(data.actionsPerformed/(data.timeInMilliseconds/60000)).toFixed(3)}APM</p>`);
-
-                }
             }
         }
 
+        if (objectID != "???") {
+            let playerRecord = await schemas
+                .getUserModel()
+                .findById(objectID, function (error2, result2) {
+                    return result2;
+                });
+                playerData[i] = [];
+            playerData[i][0] = playerRecord.username;
+            playerData[i][1] = calculateRank(playerRecord);
+            playerData[i][2] = getRankColor(playerData[i][1]);
+        }
+    }
 
-    response.writeHead(200, { "Content-Type": "text/html" });
-    response.end($.html());
+    response.render(__dirname + "/views/pages/leaderboards", {
+        leaderboardData: leaderboardData,
+        playerData: playerData,
+        gameMode: startCasedMode,
+    });
+
 });
 
 app.get("/confirm-email-address", async (request, response) => {
@@ -569,8 +438,8 @@ app.get("/confirm-email-address", async (request, response) => {
                 }
             };
 
-            let userModelToSave = schemas.getNewUserModelInstanceWithData(dataToSave);
-
+            let userModelToSave =
+                schemas.getNewUserModelInstanceWithData(dataToSave);
 
             MetadataModel.findOneAndUpdate(
                 { documentIsMetadata: true },
@@ -623,20 +492,20 @@ app.get("/confirm-email-address", async (request, response) => {
 });
 
 app.get("/changelog", async (request, response) => {
-    response.sendFile(__dirname + "/changelog.html");
+    response.render(__dirname + "/views/pages/changelog");
 });
 
 app.get("/about", async (request, response) => {
-    response.sendFile(__dirname + "/about.html");
+    response.render(__dirname + "/views/pages/about");
 });
 
 app.get("/open-source-acknowledgements", async (request, response) => {
-    response.sendFile(__dirname + "/open-source-acknowledgements.html");
+    response.render(__dirname + "/views/pages/open-source-acknowledgements");
 });
 
 app.get("/forgot-password", csrfProtection, async (request, response) => {
     response.cookie("csrfToken", request.csrfToken());
-    response.sendFile(__dirname + "/forgot-password.html");
+    response.render(__dirname + "/views/pages/forgot-password");
 });
 
 app.get("/change-password", csrfProtection, async (request, response) => {
@@ -652,12 +521,12 @@ app.get("/change-password", csrfProtection, async (request, response) => {
         if (
             pendingPasswordResetRecord["passwordResetConfirmationCode"] == code
         ) {
-            response.sendFile(__dirname + "/change-password.html");
+            response.render(__dirname + "/views/pages/change-password");
         } else {
-            response.redirect("?erroroccurred=true");
+            response.redirect("/?erroroccurred=true");
         }
     } else {
-        response.redirect("?erroroccurred=true");
+        response.redirect("/?erroroccurred=true");
     }
 });
 
@@ -687,12 +556,18 @@ app.post("/register", parseForm, csrfProtection, async (request, response) => {
     );
 
     // var usernameIsAvailable1 = await schemas.getUserModel().findOne({ username: desiredUsername }).select(desiredUsername);
-    let emailIsNotAvailable1 = await schemas.getUserModel().findOne({
-        emailAddress: desiredEmail
-    }).select(desiredEmail);
-    let usernameIsNotAvailable1 = await schemas.getUserModel().findOne({
-        usernameInAllLowercase: desiredUsernameInAllLowercase
-    }).select(desiredUsernameInAllLowercase);
+    let emailIsNotAvailable1 = await schemas
+        .getUserModel()
+        .findOne({
+            emailAddress: desiredEmail
+        })
+        .select(desiredEmail);
+    let usernameIsNotAvailable1 = await schemas
+        .getUserModel()
+        .findOne({
+            usernameInAllLowercase: desiredUsernameInAllLowercase
+        })
+        .select(desiredUsernameInAllLowercase);
     let emailIsNotAvailable2 = await PendingUserModel.findOne({
         emailAddress: desiredEmail
     }).select(desiredEmail);
@@ -1066,7 +941,7 @@ app.post(
                 bcrypt.genSalt(SALT_ROUNDS, function (error1, salt) {
                     if (error1) {
                         console.error(log.addMetadata(error1.stack, "error"));
-                        response.redirect("?erroroccurred=true");
+                        response.redirect("/?erroroccurred=true");
                     } else {
                         bcrypt.hash(
                             newPassword,
@@ -1076,7 +951,7 @@ app.post(
                                     console.error(
                                         log.addMetadata(error2.stack, "error")
                                     );
-                                    response.redirect("?erroroccurred=true");
+                                    response.redirect("/?erroroccurred=true");
                                 } else {
                                     PendingPasswordResetModel.deleteOne(
                                         { emailAddress: email },
@@ -1089,40 +964,44 @@ app.post(
                                                     )
                                                 );
                                                 response.redirect(
-                                                    "?erroroccurred=true"
+                                                    "/?erroroccurred=true"
                                                 );
                                             } else {
-                                                schemas.getUserModel().findOneAndUpdate(
-                                                    { emailAddress: email },
-                                                    { hashedPassword: hash },
-                                                    {
-                                                        useFindAndModify: true,
-                                                        new: true
-                                                    },
-                                                    (error, response2) => {
-                                                        if (error) {
-                                                            console.error(
-                                                                log.addMetadata(
-                                                                    error.stack,
-                                                                    "error"
-                                                                )
-                                                            );
-                                                            response.redirect(
-                                                                "?erroroccurred=true"
-                                                            );
-                                                        } else {
-                                                            console.log(
-                                                                log.addMetadata(
-                                                                    "Successfully changed password for a user!",
-                                                                    "info"
-                                                                )
-                                                            );
-                                                            response.redirect(
-                                                                "/?changedPassword=true"
-                                                            );
+                                                schemas
+                                                    .getUserModel()
+                                                    .findOneAndUpdate(
+                                                        { emailAddress: email },
+                                                        {
+                                                            hashedPassword: hash
+                                                        },
+                                                        {
+                                                            useFindAndModify: true,
+                                                            new: true
+                                                        },
+                                                        (error, response2) => {
+                                                            if (error) {
+                                                                console.error(
+                                                                    log.addMetadata(
+                                                                        error.stack,
+                                                                        "error"
+                                                                    )
+                                                                );
+                                                                response.redirect(
+                                                                    "/?erroroccurred=true"
+                                                                );
+                                                            } else {
+                                                                console.log(
+                                                                    log.addMetadata(
+                                                                        "Successfully changed password for a user!",
+                                                                        "info"
+                                                                    )
+                                                                );
+                                                                response.redirect(
+                                                                    "/?changedPassword=true"
+                                                                );
+                                                            }
                                                         }
-                                                    }
-                                                );
+                                                    );
                                             }
                                         }
                                     );
@@ -1132,7 +1011,7 @@ app.post(
                     }
                 });
             } else {
-                response.redirect("?erroroccurred=true");
+                response.redirect("/?erroroccurred=true");
             }
         } else {
             response.redirect("/?erroroccurred=true");
@@ -1181,7 +1060,7 @@ app.post("/fetch-website-changelog", async (request, response) => {
 // PUT THIS LAST (404 page)
 
 app.get("*", function (req, res) {
-    res.status(404).sendFile(__dirname + "/404.html");
+    res.status(404).render(__dirname + "/views/pages/404");
 });
 
 // other functions
@@ -1312,7 +1191,7 @@ function getProgressToNextLevel(experiencePoints) {
 app.use((error, request, response, next) => {
     console.error(log.addMetadata(error.stack, "error"));
     response.status(500);
-    response.sendFile(__dirname + "/error.html");
+    response.render(__dirname + "/views/pages/error");
 });
 
 // start

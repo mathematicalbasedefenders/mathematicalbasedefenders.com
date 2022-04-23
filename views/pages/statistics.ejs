@@ -2,13 +2,10 @@
 
 <html>
     <head>
-        <meta charset="UTF-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Confirm Email | Mathematical Base Defenders</title>
+        <%- include('../partials/head'); %>
 
-        <link rel="stylesheet" type="text/css" href="/css/global.css" />
-        <script src="https://www.google.com/recaptcha/api.js"></script>
+        <title>Statistics | Mathematical Base Defenders</title>
+
         <style>
             .link-button {
                 border: none;
@@ -21,33 +18,28 @@
 
     <body>
         <!-- Header -->
-        <div id="content-wrapper">
-            <div style="font-size: 28px">
-                <span float="left;">
-                    <div id="top-navigation-bar">
-                        <input
-                            type="image"
-                            src="assets/images/mathematicalbasedefenders.png"
-                            style="height: 96px"
-                            class="link-button mathematical-base-defenders-logo"
-                            onClick="document.location.href='/'"
-                        />
-                        <a
-                            class="link-button"
-                            style="font-size: 36px"
-                            href="play"
-                            >Play</a
-                        >
-                        <a class="link-button" href="register">Register</a>
+        <div style="font-size: 28px">
+            <span float="left;">
+                <div id="top-navigation-bar">
+                    <input
+                        type="image"
+                        src="assets/images/mathematicalbasedefenders.png"
+                        style="height: 96px"
+                        class="link-button mathematical-base-defenders-logo"
+                        onClick="document.location.href='/'"
+                    />
+                    <a class="link-button" style="font-size: 36px" href="play"
+                        >Play</a
+                    >
+                    <a class="link-button" href="register">Register</a>
 
-                        <a class="link-button" href="statistics">Statistics</a>
-                        <a class="link-button" href="leaderboards?mode=standard"
-                            >Leaderboards</a
-                        >
-                        <a class="link-button" href="about">About</a>
-                    </div>
-                </span>
-            </div>
+                    <a class="link-button" href="statistics">Statistics</a>
+                    <a class="link-button" href="leaderboards?mode=standard"
+                        >Leaderboards</a
+                    >
+                    <a class="link-button" href="about">About</a>
+                </div>
+            </span>
         </div>
 
         <!-- Content -->
@@ -59,12 +51,12 @@
                     align-items: center;
                 "
             >
-                <div style="font-size: 20px">
-                    <div id="message"></div>
+                <div class="information-box fit-to-content">
+                    <span style="font-size: 24px">Users Registered</span><br />
+                    <span style="font-size: 48px"><%=statistics.registeredUsers%></span>
                 </div>
             </div>
         </div>
-
         <!-- Footer -->
         <div id="bottom-navigation-bar-wrapper">
             <div id="bottom-navigation-bar">

@@ -527,3 +527,6 @@ credentials/
 
 # prettier
 .prettierrc
+
+# useless stuff
+migration-finished-html-pages/
