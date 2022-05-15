@@ -156,7 +156,7 @@ app.use(cookieParser());
 // app.use(requireDirectory("./routes"));
 
 require("fs").readdirSync(require("path").join(__dirname, "routes")).forEach((file) => {
-    app.use(require("./routes/" + file));
+    app.use(require("./routes/" + file), limiter);
 });
 
 
