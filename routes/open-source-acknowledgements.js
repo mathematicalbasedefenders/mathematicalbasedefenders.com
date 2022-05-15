@@ -1,6 +1,12 @@
 var router = require("express").Router();
-
-router.get("/open-source-acknowledgements", async (request, response) => {
+const rateLimit = require("express-rate-limit");
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 100,
+    standardHeaders: true,
+    legacyHeaders: false
+});
+router.get("/open-source-acknowledgements", limiter,async (request, response) => {
     response.render("pages/open-source-acknowledgements");
 });
 

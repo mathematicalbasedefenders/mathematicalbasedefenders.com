@@ -10,6 +10,14 @@ const defaultWindow = new JSDOM("").window;
 const createDOMPurify = require("dompurify");
 const DOMPurify = createDOMPurify(defaultWindow);
 
+const rateLimit = require("express-rate-limit");
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 100,
+    standardHeaders: true,
+    legacyHeaders: false
+});
+
 const log = require("../server/core/log.js")
 const utilities = require("../server/core/utilities.js");
 
@@ -17,7 +25,7 @@ var User = require("../models/User.js");
 var EasyModeLeaderboardsRecord = require("../models/EasyModeLeaderboardsRecord.js");
 var StandardModeLeaderboardsRecord = require("../models/StandardModeLeaderboardsRecord.js");
 
-router.get("/leaderboards", async (request, response) => {
+router.get("/leaderboards", limiter, async (request, response) => {
 
 
 

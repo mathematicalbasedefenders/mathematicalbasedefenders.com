@@ -11,11 +11,18 @@ const createDOMPurify = require("dompurify");
 const DOMPurify = createDOMPurify(defaultWindow);
 const { v4: uuidv4 } = require("uuid");
 const mongoDBSanitize = require("express-mongo-sanitize");
+const rateLimit = require("express-rate-limit");
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 100,
+    standardHeaders: true,
+    legacyHeaders: false
+});
 
 const log = require("../server/core/log.js")
 
 
-router.get("/confirm-email-address", async (request, response) => {
+router.get("/confirm-email-address", limiter,async (request, response) => {
     
     let query = url.parse(request.url, true).query;
     let email = DOMPurify.sanitize(mongoDBSanitize.sanitize(query.email));

@@ -12,12 +12,19 @@ const DOMPurify = createDOMPurify(defaultWindow);
 const log = require("../server/core/log.js");
 const utilities = require("../server/core/utilities.js");
 
+const rateLimit = require("express-rate-limit");
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 100,
+    standardHeaders: true,
+    legacyHeaders: false
+});
 
 var User = require("../models/User.js");
 var EasyModeLeaderboardsRecord = require("../models/EasyModeLeaderboardsRecord.js");
 var StandardModeLeaderboardsRecord = require("../models/StandardModeLeaderboardsRecord.js");
 
-router.get("/users", async (request, response) => {
+router.get("/users", limiter, async (request, response) => {
     let originalData = await validateQuery(request.url);
     if (originalData) {
         response.render("pages/users", {

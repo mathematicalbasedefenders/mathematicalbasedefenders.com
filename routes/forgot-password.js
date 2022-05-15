@@ -17,11 +17,19 @@ const createDOMPurify = require("dompurify");
 const DOMPurify = createDOMPurify(defaultWindow);
 const { v4: uuidv4 } = require("uuid");
 
+const rateLimit = require("express-rate-limit");
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 100,
+    standardHeaders: true,
+    legacyHeaders: false
+});
+
 const credentials = require("../credentials/credentials.js");
 const log = require("../server/core/log.js");
 
 
-router.get("/forgot-password", csrfProtection, async (request, response) => {
+router.get("/forgot-password", [csrfProtection, limiter], async (request, response) => {
     response.cookie("csrfToken", request.csrfToken());
     response.render("pages/forgot-password");
 });
@@ -29,7 +37,7 @@ router.get("/forgot-password", csrfProtection, async (request, response) => {
 router.post(
     "/forgot-password",
     parseForm,
-    csrfProtection,
+    [csrfProtection, limiter],
     async (request, response) => {
         const responseKey = DOMPurify.sanitize(
             request.body["g-recaptcha-response"]

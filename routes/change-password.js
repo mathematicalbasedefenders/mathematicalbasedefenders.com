@@ -12,7 +12,13 @@ const { JSDOM } = require("jsdom");
 const defaultWindow = new JSDOM("").window;
 const createDOMPurify = require("dompurify");
 const DOMPurify = createDOMPurify(defaultWindow);
-
+const rateLimit = require("express-rate-limit");
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 100,
+    standardHeaders: true,
+    legacyHeaders: false
+});
 const log = require("../server/core/log.js");
 
 
@@ -20,7 +26,7 @@ var User = require("../models/User.js");
 var PendingPasswordReset = require("../models/PendingPasswordReset.js");
 
 
-router.get("/change-password", csrfProtection, async (request, response) => {
+router.get("/change-password", [csrfProtection, limiter], async (request, response) => {
     response.cookie("csrfToken", request.csrfToken());
     let query = url.parse(request.url, true).query;
     let email = DOMPurify.sanitize(mongoDBSanitize.sanitize(query.email));
@@ -45,7 +51,7 @@ router.get("/change-password", csrfProtection, async (request, response) => {
 router.post(
     "/change-password",
     parseForm,
-    csrfProtection,
+    [csrfProtection, limiter],
     async (request, response) => {
         let query = url.parse(request.url, true).query;
         let email = DOMPurify.sanitize(mongoDBSanitize.sanitize(query.email));
