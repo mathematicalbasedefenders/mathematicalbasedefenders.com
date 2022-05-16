@@ -270,7 +270,7 @@ router.post(
                                                 )
                                             );
                                             response.redirect(
-                                                "/?signup=success"
+                                                "/?registered=true"
                                             );
                                         }
                                     }
