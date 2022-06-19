@@ -26,7 +26,7 @@ const limiter = rateLimit({
 });
 
 const credentials = require("../credentials/credentials.js");
-const log = require("../server/core/log.js");
+const log = require("../core/log.js");
 
 
 router.get("/forgot-password", [csrfProtection, limiter], async (request, response) => {

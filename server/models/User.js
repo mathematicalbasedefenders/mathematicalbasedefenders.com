@@ -40,4 +40,11 @@ const UserModelSchema = new mongoose.Schema({
     }
 });
 
+UserModelSchema.statics.safeFindByUsername = function (username) {
+    return this.findOne({ username: username }).select({
+        emailAddress: 0,
+        hashedPassword: 0
+    });
+};
+
 module.exports = mongoose.model("User", UserModelSchema, "users");

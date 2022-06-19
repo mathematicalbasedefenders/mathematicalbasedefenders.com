@@ -19,7 +19,7 @@ const limiter = rateLimit({
     legacyHeaders: false
 });
 
-const log = require("../server/core/log.js")
+const log = require("../core/log.js")
 
 
 router.get("/confirm-email-address", limiter,async (request, response) => {

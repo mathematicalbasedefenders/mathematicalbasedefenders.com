@@ -9,8 +9,8 @@ const defaultWindow = new JSDOM("").window;
 const createDOMPurify = require("dompurify");
 const DOMPurify = createDOMPurify(defaultWindow);
 
-const log = require("../server/core/log.js");
-const utilities = require("../server/core/utilities.js");
+const log = require("../core/log.js");
+const utilities = require("../core/utilities.js");
 
 const rateLimit = require("express-rate-limit");
 const limiter = rateLimit({

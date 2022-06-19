@@ -18,8 +18,8 @@ const limiter = rateLimit({
     legacyHeaders: false
 });
 
-const log = require("../server/core/log.js")
-const utilities = require("../server/core/utilities.js");
+const log = require("../core/log.js")
+const utilities = require("../core/utilities.js");
 
 var User = require("../models/User.js");
 var EasyModeLeaderboardsRecord = require("../models/EasyModeLeaderboardsRecord.js");

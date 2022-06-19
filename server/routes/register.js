@@ -27,7 +27,7 @@ const limiter = rateLimit({
 });
 
 const credentials = require("../credentials/credentials.js");
-const log = require("../server/core/log.js");
+const log = require("../core/log.js");
 
 router.get("/register", [csrfProtection, limiter], (request, response) => {
     response.cookie("csrfToken", request.csrfToken());

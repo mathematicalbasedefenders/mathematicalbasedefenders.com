@@ -37,7 +37,7 @@ const PORT = 8080;
 
 const SALT_ROUNDS = 16;
 
-const credentials = require("./credentials/credentials.js");
+const credentials = require("./server/credentials/credentials.js");
 
 const uri = credentials.getMongooseURI();
 
@@ -155,10 +155,12 @@ app.use(
 app.use(cookieParser());
 // app.use(requireDirectory("./routes"));
 
-require("fs").readdirSync(require("path").join(__dirname, "routes")).forEach((file) => {
-    app.use(require("./routes/" + file));
+require("fs").readdirSync(require("path").join(__dirname, "./server/routes")).forEach((file) => {
+    app.use(require("./server/routes/" + file));
 });
-
+require("fs").readdirSync(require("path").join(__dirname, "./server/api")).forEach((file) => {
+    app.use(require("./server/api/" + file));
+});
 
 app.post("/fetch-open-source-licenses", async (request, response) => {
     let licensesToShow = {};

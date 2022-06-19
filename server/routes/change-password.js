@@ -19,7 +19,7 @@ const limiter = rateLimit({
     standardHeaders: true,
     legacyHeaders: false
 });
-const log = require("../server/core/log.js");
+const log = require("../core/log.js");
 
 
 var User = require("../models/User.js");
