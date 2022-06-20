@@ -55,14 +55,14 @@ router.get("/leaderboards", limiter, async (request, response) => {
         }
 
         if (objectID != "???") {
-            console.log(objectID);
+
             let playerRecord = await User.findById(
                 objectID,
                 function (error2, result2) {
                     return result2;
                 }
             );
-            console.log(playerRecord);
+
             playerData[i] = [];
             playerData[i][0] = playerRecord.username;
             playerData[i][1] = utilities.calculateRank(playerRecord);
