@@ -8,7 +8,7 @@ const { JSDOM } = require("jsdom");
 const defaultWindow = new JSDOM("").window;
 const createDOMPurify = require("dompurify");
 const DOMPurify = createDOMPurify(defaultWindow);
-
+const axios = require("axios");
 const log = require("../core/log.js");
 const utilities = require("../core/utilities.js");
 
@@ -25,7 +25,8 @@ var EasyModeLeaderboardsRecord = require("../models/EasyModeLeaderboardsRecord.j
 var StandardModeLeaderboardsRecord = require("../models/StandardModeLeaderboardsRecord.js");
 
 router.get("/users", limiter, async (request, response) => {
-    let originalData = await validateQuery(request.url);
+    let originalData = await validateQuery(request);
+    originalData = originalData.data;
     if (originalData) {
         response.render("pages/users", {
             data: await getUserData(originalData)
@@ -35,8 +36,8 @@ router.get("/users", limiter, async (request, response) => {
     }
 });
 
-async function validateQuery(requestURL) {
-    let query = mongoDBSanitize.sanitize(url.parse(requestURL, true)).query;
+async function validateQuery(request) {
+    let query = mongoDBSanitize.sanitize(url.parse(request.url, true)).query;
     let username = DOMPurify.sanitize(mongoDBSanitize.sanitize(query.username));
     let number = DOMPurify.sanitize(mongoDBSanitize.sanitize(query.number));
     let invalid = false;
@@ -53,29 +54,11 @@ async function validateQuery(requestURL) {
 
     if (username) {
         if (!invalid) {
-            data = await User.findOne(
-                { username: username },
-                function (error, result) {
-                    if (error) {
-                        console.error(log.addMetadata(error.stack, "error"));
-                    }
-                    return result;
-                }
+            data = await axios.get(
+                `${request.protocol}://${request.get("Host")}/api/users/${username}`
             );
         }
-    } else {
-        if (!invalid) {
-            data = await User.findOne(
-                { userNumber: number },
-                function (error, result) {
-                    if (error) {
-                        console.error(log.addMetadata(error.stack, "error"));
-                    }
-                    return result;
-                }
-            );
-        }
-    }
+    } 
 
     return data;
 }
