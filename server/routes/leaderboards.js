@@ -16,7 +16,7 @@ const limiter = rateLimit({
     standardHeaders: true,
     legacyHeaders: false
 });
-
+const configuration = require("../core/configuration.js");
 const log = require("../core/log.js");
 const utilities = require("../core/utilities.js");
 
@@ -36,32 +36,8 @@ router.get("/leaderboards", limiter, async (request, response) => {
 
     let startCasedMode = _.startCase(mode)
 
-    // switch (mode) {
-    //     case "easy": {
-    //         // $("#title").text("Leaderboards (Easy Mode)");
-
-    //         leaderboardsSchema = EasyModeLeaderboardsRecord;
-    //         break;
-    //     }
-    //     case "standard": {
-    //         // $("#title").text("Leaderboards (Standard Mode)");
-    //         leaderboardsSchema = StandardModeLeaderboardsRecord;
-    //         break;
-    //     }
-    //     default: {
-    //         response.render("pages/not-found");
-    //         return;
-    //     }
-    // }
-
-    // let allPlayersOnLeaderboardsLoaded = false;
-    // let leaderboardData = await leaderboardsSchema.find({
-    //     rankNumber: { $lt: 51 }
-    // });
-
     try {
-        console.debug(`${request.protocol}://${request.get("Host")}/api/leaderboards/${mode}`);
-        leaderboardData = await axios.get(`${request.protocol}://${request.get("Host")}/api/leaderboards/${mode}`);
+        leaderboardData = await axios.get(`${request.protocol == "http" && configuration.configuration.autoHTTPS ? "https" : request.protocol}://${request.get("Host")}/api/leaderboards/${mode}`);
         leaderboardData = leaderboardData.data;
     } catch (error) {
         console.error(log.addMetadata(error, "error"));
@@ -79,12 +55,14 @@ router.get("/leaderboards", limiter, async (request, response) => {
         }
 
         if (objectID != "???") {
+            console.log(objectID);
             let playerRecord = await User.findById(
                 objectID,
                 function (error2, result2) {
                     return result2;
                 }
             );
+            console.log(playerRecord);
             playerData[i] = [];
             playerData[i][0] = playerRecord.username;
             playerData[i][1] = utilities.calculateRank(playerRecord);

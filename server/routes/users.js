@@ -11,7 +11,7 @@ const DOMPurify = createDOMPurify(defaultWindow);
 const axios = require("axios");
 const log = require("../core/log.js");
 const utilities = require("../core/utilities.js");
-
+const configuration = require("../core/configuration.js");
 const rateLimit = require("express-rate-limit");
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000,
@@ -54,9 +54,10 @@ async function validateQuery(request) {
 
     if (username) {
         if (!invalid) {
-            data = await axios.get(
-                `${request.protocol}://${request.get("Host")}/api/users/${username}`
+            data = 
+                await axios.get(`${request.protocol == "http" && configuration.configuration.autoHTTPS ? "https" : request.protocol}://${request.get("Host")}/api/users/${username}`
             );
+
         }
     } 
 
