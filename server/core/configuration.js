@@ -1,5 +1,5 @@
 const configuration = {
-    autoHTTPSOnAPICalls: false,
+    autoHTTPSOnAPICalls: true,
 }
 
 module.exports = {configuration: configuration}
