@@ -16,7 +16,7 @@ router.get("/api/metadata", limiter, async (request, response) => {
             console.error(log.addMetadata(error.stack, "error"));
         }
     });
-    response.json(data);
+    response.status(200).json(data);
 });
 
 module.exports = router;

@@ -530,3 +530,4 @@ credentials/
 
 # useless stuff
 migration-finished-html-pages/
+server/core/configuration.js

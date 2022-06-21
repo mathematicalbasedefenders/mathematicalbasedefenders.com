@@ -28,7 +28,7 @@ router.get("/api/leaderboards/:mode", limiter, async (request, response) => {
         }
     }
     let data = await model.find({rankNumber: { $lt: 51 }});
-    response.json(data);
+    response.status(200).json(data);
 });
 
 module.exports = router;

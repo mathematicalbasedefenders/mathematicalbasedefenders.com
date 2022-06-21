@@ -37,7 +37,7 @@ router.get("/leaderboards", limiter, async (request, response) => {
     let startCasedMode = _.startCase(mode)
 
     try {
-        leaderboardData = await axios.get(`${request.protocol == "http" && configuration.configuration.autoHTTPS ? "https" : request.protocol}://${request.get("Host")}/api/leaderboards/${mode}`);
+        leaderboardData = await axios.get(`${request.protocol == "http" && configuration.configuration.autoHTTPSOnAPICalls ? "https" : request.protocol}://${request.get("Host")}/api/leaderboards/${mode}`);
         leaderboardData = leaderboardData.data;
     } catch (error) {
         console.error(log.addMetadata(error, "error"));

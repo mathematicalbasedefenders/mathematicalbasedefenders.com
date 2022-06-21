@@ -55,7 +55,7 @@ async function validateQuery(request) {
     if (username) {
         if (!invalid) {
             data = 
-                await axios.get(`${request.protocol == "http" && configuration.configuration.autoHTTPS ? "https" : request.protocol}://${request.get("Host")}/api/users/${username}`
+                await axios.get(`${request.protocol == "http" && configuration.configuration.autoHTTPSOnAPICalls ? "https" : request.protocol}://${request.get("Host")}/api/users/${username}`
             );
 
         }
