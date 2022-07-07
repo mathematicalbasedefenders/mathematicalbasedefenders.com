@@ -213,6 +213,11 @@ async function getRepositoryLink(path) {
         fs.readFile(path, "utf8", function (error, data) {
             if (error) {
                 resolve("(No repository link found.)");
+                return;
+            }
+            if (data == null){
+                resolve("(No repository link found.)");
+                return;
             }
             resolve(JSON.parse(data).homepage);
         });
