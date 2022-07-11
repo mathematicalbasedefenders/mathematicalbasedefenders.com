@@ -9,7 +9,7 @@
         width="40%"
         style="font-size: 24px; text-align: center;"
     >
-        <a href=<%=playerData[record.rankNumber.toString()]?.[0] ? `/users?username=${playerData[record.rankNumber.toString()]?.[0]}` : "javascript: void(0);"%>>
+        <a href=<%=playerData[record.rankNumber.toString()]?.[0] ? `/users/${playerData[record.rankNumber.toString()]?.[0]}` : "javascript: void(0);"%>>
             <span <%=`style=color:${playerData[record.rankNumber.toString()]?.[2]}`%>><%=playerData[record.rankNumber.toString()]?.[0] ?? "???"%></span></a
         >
     </td>
