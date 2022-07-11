@@ -105,7 +105,7 @@ router.post(
 
                 if (
                     !/^[0-9a-zA-Z_]+$/.test(desiredUsername) ||
-                    desiredUsername.length > 32 ||
+                    desiredUsername.length > 20 ||
                     desiredUsername.length < 3 ||
                     desiredUsername == "" ||
                     desiredUsername == null

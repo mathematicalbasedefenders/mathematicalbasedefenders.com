@@ -24,8 +24,8 @@ var User = require("../models/User.js");
 var EasyModeLeaderboardsRecord = require("../models/EasyModeLeaderboardsRecord.js");
 var StandardModeLeaderboardsRecord = require("../models/StandardModeLeaderboardsRecord.js");
 
-router.get("/users", limiter, async (request, response) => {
-    let originalData = await validateQuery(request);
+router.get("/users/:user", limiter, async (request, response) => {
+    let originalData = await validateQuery(request.params.user, request);
     originalData = originalData.data;
     if (originalData) {
         response.render("pages/users", {
@@ -36,30 +36,14 @@ router.get("/users", limiter, async (request, response) => {
     }
 });
 
-async function validateQuery(request) {
-    let query = mongoDBSanitize.sanitize(url.parse(request.url, true)).query;
-    let username = DOMPurify.sanitize(mongoDBSanitize.sanitize(query.username));
-    let number = DOMPurify.sanitize(mongoDBSanitize.sanitize(query.number));
-    let invalid = false;
+async function validateQuery(user, request) {
 
-    if (!/^[0-9a-zA-Z_]+$/.test(username)) {
-        invalid = true;
-    }
-    if (isNaN(number)) {
-        invalid = true;
-    }
-    if (!username && !number) {
-        invalid = true;
+    if (!(/[A-Za-z0-9_]{3,20}/.test(user) || /[0-9a-f]{24}/.test(user))) {
+        return false;
     }
 
-    if (username) {
-        if (!invalid) {
-            data = 
-                await axios.get(`${request.protocol == "http" && configuration.configuration.autoHTTPSOnAPICalls ? "https" : request.protocol}://${request.get("Host")}/api/users/${username}`
-            );
-
-        }
-    } 
+    let data = await axios.get(`${request.protocol == "http" && configuration.configuration.autoHTTPSOnAPICalls ? "https" : request.protocol}://${request.get("Host")}/api/users/${user}`);
+    data = JSON.parse(JSON.stringify(data));
 
     return data;
 }

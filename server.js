@@ -22,6 +22,7 @@ const url = require("url");
 const _ = require("lodash");
 const { JSDOM } = require("jsdom");
 const { v4: uuidv4 } = require("uuid");
+const path = require("path");
 
 const Schema = mongoose.Schema;
 
@@ -116,7 +117,7 @@ const { resolve } = require("path");
 
 // other stuff
 app.set("view engine", "ejs");
-
+app.set("views", path.join(__dirname,"server/views"))
 app.use(favicon(__dirname + "/public/assets/images/favicon.ico"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname + "/public"));
@@ -203,7 +204,7 @@ app.post("/fetch-website-changelog", async (request, response) => {
 // PUT THIS LAST (404 page)
 
 app.get("*", function (req, res) {
-    res.status(404).render(__dirname + "/views/pages/404");
+    res.status(404).render(__dirname + "/server/views/pages/404");
 });
 
 // other functions

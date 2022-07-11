@@ -14,21 +14,38 @@ const User = require("../models/User.js");
 const EasyModeLeaderboardsRecord = require("../models/EasyModeLeaderboardsRecord.js");
 const StandardModeLeaderboardsRecord = require("../models/StandardModeLeaderboardsRecord.js");
 
-router.get("/api/users/:username", limiter, async (request, response) => {
-    if (!request?.params?.username) { response.status(400).json("Invalid Request."); return; }
-    let username = request.params.username;
-    if (!/[A-Za-z0-9_]{3,32}/.test(username)) { response.status(400).json("Invalid Request."); return; }
-    let data = await User.safeFindByUsername(mongoDBSanitize.sanitize(username));
-    data = JSON.parse(JSON.stringify(data));
-    if (data == null) {response.status(400).json("Invalid Request."); return;}
-    let easyLeaderboardData = await EasyModeLeaderboardsRecord.findOne({userIDOfHolder: data._id.toString()});
-    let standardLeaderboardData = await StandardModeLeaderboardsRecord.findOne({userIDOfHolder: data._id.toString()});
-    // add leaderboards data
-    if (easyLeaderboardData != null){
-        data.statistics.personalBestScoreOnEasySingleplayerMode.globalRank = easyLeaderboardData.rankNumber; 
+router.get("/api/users/:user", limiter, async (request, response) => {
+    if (!request?.params?.user) {
+        response.status(400).json("Invalid Request.");
+        return;
     }
-    if (standardLeaderboardData != null){
-        data.statistics.personalBestScoreOnStandardSingleplayerMode.globalRank = standardLeaderboardData.rankNumber; 
+    let user = request.params.user;
+    if (!(/[A-Za-z0-9_]{3,20}/.test(user) || /[0-9a-f]{24}/.test(user))) {
+        response.status(400).json("Invalid Request.");
+        return;
+    }
+    let data = /[0-9a-f]{24}/.test(user)
+        ? await User.safeFindByUserID(mongoDBSanitize.sanitize(user))
+        : await User.safeFindByUsername(mongoDBSanitize.sanitize(user));
+    data = JSON.parse(JSON.stringify(data));
+    if (data == null) {
+        response.status(400).json("Invalid Request.");
+        return;
+    }
+    let easyLeaderboardData = await EasyModeLeaderboardsRecord.findOne({
+        userIDOfHolder: data._id.toString()
+    });
+    let standardLeaderboardData = await StandardModeLeaderboardsRecord.findOne({
+        userIDOfHolder: data._id.toString()
+    });
+    // add leaderboards data
+    if (easyLeaderboardData != null) {
+        data.statistics.personalBestScoreOnEasySingleplayerMode.globalRank =
+            easyLeaderboardData.rankNumber;
+    }
+    if (standardLeaderboardData != null) {
+        data.statistics.personalBestScoreOnStandardSingleplayerMode.globalRank =
+            standardLeaderboardData.rankNumber;
     }
     response.status(200).json(data);
 });

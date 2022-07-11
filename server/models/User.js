@@ -47,4 +47,11 @@ UserModelSchema.statics.safeFindByUsername = function (username) {
     });
 };
 
+UserModelSchema.statics.safeFindByUserID = function (userID) {
+    return this.findOne({ _id: userID}).select({
+        emailAddress: 0,
+        hashedPassword: 0
+    });
+};
+
 module.exports = mongoose.model("User", UserModelSchema, "users");
