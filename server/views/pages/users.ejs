@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 
 <html>
-    <head>
-        <%- include('../partials/head'); %>
+
+<head>
+    <%- include('../partials/head'); %>
         <title>Mathematical Base Defenders</title>
 
         <link rel="stylesheet" type="text/css" href="/css/global.css" />
@@ -15,69 +16,47 @@
                 font-size: 24px;
             }
         </style>
-    </head>
+</head>
 
-    <body>
-        <!-- Header -->
-        <%- include('../partials/header'); %>
+<body>
+    <!-- Header -->
+    <%- include('../partials/header'); %>
 
         <!-- Content  -->
         <div id="content-wrapper">
             <div>
                 <div>
-                    <div
-                        style="
+                    <div style="
                             display: flex;
                             justify-content: center;
                             align-items: center;
-                        "
-                    >
-                        <div
-                            style="
+                        ">
+                        <div style="
                                 left: 15%;
                                 width: 70%;
                                 max-width: 1200px;
                                 word-wrap: break-word;
-                            "
-                        >
+                            ">
                             <div id="user-data">
-                                <span
-                                    <%=`style
-                                    =font-size:32px;color:${data.rankColor};`%>
-                                    ><%-data.rank%></span
-                                >
+                                <span <%=`style=font-size:32px;color:${data.rankColor};`%>
+                                    ><%-data.rank%></span>
                                 <span style="font-size: 32px">
-                                    <%-data.username%></span
-                                ><span style="font-size: 32px"
-                                    >'s play data</span
-                                >
+                                    <%-data.username%>
+                                </span><span style="font-size: 32px">'s play data</span>
                                 <br />
                                 <hr />
                                 <span style="font-size: 28px">General</span>
                                 <br />
                                 <div class="information-box fit-to-content">
-                                    <span style="font-size: 24px"
-                                        >Total Experience Points </span
-                                    ><br /><span
-                                        style="font-size: 48px"
-                                        id="total-experience-points"
-                                        ><%-
-                                        data.statistics.totalExperiencePoints ||
-                                        `???` %></span
-                                    ><br /><span
-                                        style="font-size: 16px"
-                                        id="current-level"
-                                        >Level <%- data.statistics.currentLevel
-                                        || `???` %></span
-                                    >
+                                    <span style="font-size: 24px">Total Experience Points </span><br /><span
+                                        style="font-size: 48px" id="total-experience-points">
+                                        <%- data.statistics.totalExperiencePoints || `???` %>
+                                    </span><br /><span style="font-size: 16px" id="current-level">Level <%-
+                                            data.statistics.currentLevel || `???` %></span>
                                     |
-                                    <span
-                                        style="font-size: 16px"
-                                        id="progress-to-next-level"
-                                        ><%-
-                                        data.statistics.progressToNextLevelInPercentage
-                                        || `???` %> to next level</span
-                                    >
+                                    <span style="font-size: 16px" id="progress-to-next-level">
+                                        <%- data.statistics.progressToNextLevelInPercentage || `???` %> to next level
+                                    </span>
                                 </div>
 
                                 <hr />
@@ -85,20 +64,13 @@
                                 <span style="font-size: 28px">Easy</span>
                                 <br />
                                 <div class="information-box fit-to-content">
-                                    <span style="font-size: 24px"
-                                        >Personal Best </span
-                                    ><br /><span
-                                        style="font-size: 48px"
-                                        id="easy-mode-personal-best-score"
-                                        ><%-data.statistics.personalBestScoreOnEasySingleplayerMode.score
-                                        || `???`%></span
-                                    ><br /><span
-                                        style="font-size: 16px"
-                                        id="easy-mode-global-rank"
-                                        ><%-data.statistics.easyModeLeaderboardRank
-                                        ? `Global
-                                        #${data.statistics.easyModeLeaderboardRank}`:``%></span
-                                    >
+                                    <span style="font-size: 24px">Personal Best </span><br /><span
+                                        style="font-size: 48px" id="easy-mode-personal-best-score">
+                                        <%-data.statistics.personalBestScoreOnEasySingleplayerMode.score || `???`%>
+                                    </span><br /><span style="font-size: 16px" id="easy-mode-global-rank">
+                                        <%-data.statistics.easyModeLeaderboardRank ? `Global
+                                            #${data.statistics.easyModeLeaderboardRank}`:``%>
+                                    </span>
                                 </div>
 
                                 <hr />
@@ -106,20 +78,13 @@
                                 <span style="font-size: 28px">Standard</span>
                                 <br />
                                 <div class="information-box fit-to-content">
-                                    <span style="font-size: 24px"
-                                        >Personal Best </span
-                                    ><br /><span
-                                        style="font-size: 48px"
-                                        id="standard-mode-personal-best-score"
-                                        ><%-data.statistics.personalBestScoreOnStandardSingleplayerMode.score
-                                        || `???`%></span
-                                    ><br /><span
-                                        style="font-size: 16px"
-                                        id="standard-mode-global-rank"
-                                        ><%-data.statistics.standardModeLeaderboardRank
-                                        ? `Global
-                                        #${data.statistics.standardModeLeaderboardRank}`:``%></span
-                                    >
+                                    <span style="font-size: 24px">Personal Best </span><br /><span
+                                        style="font-size: 48px" id="standard-mode-personal-best-score">
+                                        <%-data.statistics.personalBestScoreOnStandardSingleplayerMode.score || `???`%>
+                                    </span><br /><span style="font-size: 16px" id="standard-mode-global-rank">
+                                        <%-data.statistics.standardModeLeaderboardRank ? `Global
+                                            #${data.statistics.standardModeLeaderboardRank}`:``%>
+                                    </span>
                                 </div>
 
                                 <hr />
@@ -130,13 +95,22 @@
                                     <div style="font-size: 24px">
                                         Join Date
                                         <br />
-                                        <span
-                                            id="player-join-date"
-                                            style="font-size: 48px"
-                                            ><%-data.creationDateAndTime%></span
-                                        >
+                                        <span id="player-join-date" style="font-size: 48px">
+                                            <%-data.creationDateAndTime%>
+                                        </span>
                                     </div>
                                 </div>
+                                <br><br>
+                                <div class="information-box fit-to-content">
+                                    <div style="font-size: 24px">
+                                        User ID <br />
+                                        <span id="player-join-date" style="font-size: 48px">
+                                            <%-data._id%>
+                                        </span>
+                                    </div>
+                                </div>
+
+
                                 <hr />
                             </div>
                         </div>
@@ -144,144 +118,26 @@
                 </div>
             </div>
         </div>
+
         <!-- Footer -->
-        <div id="bottom-navigation-bar-wrapper">
-            <div id="bottom-navigation-bar">
-                <div id="bottom-navigation-bar-left-text">
-                    ©
-                    <a
-                        href="https://mistertfy64.com"
-                        style="color: transparent"
-                        title="Mathematical Base Defenders' creator's personal website"
-                    >
-                        <img
-                            style="vertical-align: middle"
-                            src="assets/images/mistertfy64.svg"
-                            height="32px"
-                        />
-                    </a>
-                    2021-2022 &nbsp;
-                    <a class="bottom-navigation-bar-text" href="changelog"
-                        >Changelog</a
-                    >
-                    <a class="bottom-navigation-bar-text" href="privacy-policy"
-                        >Legal</a
-                    >
-                    <a
-                        class="bottom-navigation-bar-text"
-                        href="open-source-acknowledgements"
-                        >Acknowledgements</a
-                    >
-                    <a class="bottom-navigation-bar-text" href="attributions"
-                        >Attributions</a
-                    >
-                    <div id="bottom-navigation-bar-right-text">
-                        <a
-                            href="https://patreon.com/mistertfy64"
-                            style="color: transparent"
-                            title="Donate"
-                        >
-                            <img
-                                style="vertical-align: middle"
-                                src="assets/images/patreon.png"
-                                height="32px"
-                            /> </a
-                        >&nbsp;
-                        <a
-                            href="https://discord.gg/pDTZvrTXm9"
-                            style="color: transparent"
-                            title="Discord Server"
-                        >
-                            <img
-                                style="vertical-align: middle"
-                                src="assets/images/discord.svg"
-                                height="32px"
-                            /> </a
-                        >&nbsp;
-                        <a
-                            href="https://github.com/mathematicalbasedefenders/issuetracker"
-                            style="color: transparent"
-                            title="GitHub Issue Tracker"
-                        >
-                            <img
-                                style="vertical-align: middle"
-                                src="assets/images/github.png"
-                                height="32px"
-                            /> </a
-                        >&nbsp;
-                        <a
-                            href="https://facebook.com/mathematicalbasedefenders"
-                            style="color: transparent"
-                            title="Facebook"
-                        >
-                            <img
-                                style="vertical-align: middle"
-                                src="assets/images/facebook.png"
-                                height="32px"
-                            /> </a
-                        >&nbsp;
-                        <a
-                            href="https://twitter.com/MathematicalBD"
-                            style="color: transparent"
-                            title="Twitter"
-                        >
-                            <img
-                                style="vertical-align: middle"
-                                src="assets/images/twitter.png"
-                                height="32px"
-                            /> </a
-                        >&nbsp;
-                        <a
-                            href="https://instagram.com/mathematicalbasedefenders"
-                            style="color: transparent"
-                            title="Instagram"
-                        >
-                            <img
-                                style="vertical-align: middle"
-                                src="assets/images/instagram.png"
-                                height="32px"
-                            />
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </body>
-    <script
-        src="https://code.jquery.com/jquery-3.6.0.min.js"
-        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
-        crossorigin="anonymous"
-    ></script>
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script
-        async
-        src="https://www.googletagmanager.com/gtag/js?id=G-XVRB5TXW3K"
-    ></script>
-    <script>
-        function checkURLQueryParameters() {
-            let url = new URL(window.location.href);
-            let username = url.searchParams.get("username");
-            let number = url.searchParams.get("number");
+        <%- include('../partials/footer'); %>
+</body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"
+    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XVRB5TXW3K"></script>
 
-            if (username != null) {
-                document.title =
-                    "User " + username + " | Mathematical Base Defenders";
-            } else if (number != null) {
-                document.title =
-                    "User #" + number + " | Mathematical Base Defenders";
-            }
-        }
-    </script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag() {
-            dataLayer.push(arguments);
-        }
-        gtag("js", new Date());
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+    gtag("js", new Date());
 
-        gtag("config", "G-XVRB5TXW3K");
-    </script>
-    <script>
-        checkURLQueryParameters();
-    </script>
+    gtag("config", "G-XVRB5TXW3K");
+</script>
+<script>
+    checkURLQueryParameters();
+</script>
+
 </html>
