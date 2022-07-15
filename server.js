@@ -117,7 +117,7 @@ const { resolve } = require("path");
 
 // other stuff
 app.set("view engine", "ejs");
-app.set("views", path.join(__dirname,"server/views"))
+app.set("views", path.join(__dirname, "server/views"));
 app.use(favicon(__dirname + "/public/assets/images/favicon.ico"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname + "/public"));
@@ -125,6 +125,7 @@ app.use(mongoDBSanitize());
 app.use(limiter);
 app.use(
     helmet({
+        crossOriginEmbedderPolicy: false,
         contentSecurityPolicy: {
             directives: {
                 ...helmet.contentSecurityPolicy.getDefaultDirectives(),
@@ -132,7 +133,12 @@ app.use(
                     "'self'",
                     "'unsafe-inline'",
                     "https://www.googletagmanager.com",
-                    "https://www.google-analytics.com"
+                    "https://www.google-analytics.com",
+                    "https://*.googlesyndication.com",
+                    "https://googleads.g.doubleclick.net/",
+                    "https://*.google.co.th",
+                    "https://*.google.com",
+                    "https://*.googleadservices.com"
                 ],
                 "script-src": [
                     "'self'",
@@ -140,13 +146,28 @@ app.use(
                     "code.jquery.com",
                     "www.googletagmanager.com",
                     "https://www.google.com/recaptcha/",
-                    "https://www.gstatic.com/recaptcha/"
+                    "https://www.gstatic.com/recaptcha/",
+                    "https://*.googlesyndication.com",
+                    "https://googleads.g.doubleclick.net/",
+                    "https://*.google.co.th",
+                    "https://*.google.com",
+                    "https://*.googleadservices.com"
                 ],
                 "frame-src": [
                     "'self'",
                     "'unsafe-inline'",
                     "https://www.google.com/recaptcha/",
-                    "https://recaptcha.google.com/recaptcha/"
+                    "https://recaptcha.google.com/recaptcha/",
+                    "https://*.googlesyndication.com",
+                    "https://googleads.g.doubleclick.net/",
+                    "https://*.google.co.th",
+                    "https://*.google.com",
+                    "https://*.googleadservices.com"
+                ],
+                "img-src": [
+                    "'self'",
+                    "'unsafe-inline'",
+                    "https://*.googlesyndication.com"
                 ],
                 "script-src-attr": ["'self'", "'unsafe-inline'"]
             }
@@ -156,12 +177,16 @@ app.use(
 app.use(cookieParser());
 // app.use(requireDirectory("./routes"));
 
-require("fs").readdirSync(require("path").join(__dirname, "./server/routes")).forEach((file) => {
-    app.use(require("./server/routes/" + file));
-});
-require("fs").readdirSync(require("path").join(__dirname, "./server/api")).forEach((file) => {
-    app.use(require("./server/api/" + file));
-});
+require("fs")
+    .readdirSync(require("path").join(__dirname, "./server/routes"))
+    .forEach((file) => {
+        app.use(require("./server/routes/" + file));
+    });
+require("fs")
+    .readdirSync(require("path").join(__dirname, "./server/api"))
+    .forEach((file) => {
+        app.use(require("./server/api/" + file));
+    });
 
 app.post("/fetch-open-source-licenses", async (request, response) => {
     let licensesToShow = {};
@@ -216,7 +241,7 @@ async function getRepositoryLink(path) {
                 resolve("(No repository link found.)");
                 return;
             }
-            if (data == null){
+            if (data == null) {
                 resolve("(No repository link found.)");
                 return;
             }
@@ -247,8 +272,6 @@ async function readLicenseFile(path) {
     });
 }
 
-
-
 async function loadChangelog(service) {
     let fileURL;
     switch (service) {
@@ -278,8 +301,6 @@ async function loadChangelog(service) {
         });
     });
 }
-
-
 
 // stuff that needs to be at the end
 app.use((error, request, response, next) => {
