@@ -143,6 +143,7 @@ app.use(
                 "script-src": [
                     "'self'",
                     "'unsafe-inline'",
+                    "'unsafe-eval'",
                     "code.jquery.com",
                     "www.googletagmanager.com",
                     "https://www.google.com/recaptcha/",
