@@ -41,8 +41,7 @@
                                 <span <%=`style=font-size:32px;color:${data.rankColor};`%>
                                     ><%-data.rank%></span>
                                 <span style="font-size: 32px">
-                                    <%-data.username%>
-                                's play data</span>
+                                    <%-data.username%>'s play data</span>
                                 <br />
                                 <hr />
                                 <span style="font-size: 28px">General</span>
@@ -66,7 +65,7 @@
                                 <div class="information-box fit-to-content">
                                     <span style="font-size: 24px">Personal Best </span><br /><span
                                         style="font-size: 48px" id="easy-mode-personal-best-score">
-                                        <%-data.statistics.personalBestScoreOnEasySingleplayerMode.score || `???`%>
+                                        <%-data.statistics.personalBestScoreOnEasySingleplayerMode?.score || `???`%>
                                     </span><br /><span style="font-size: 16px" id="easy-mode-global-rank">
                                         <%-data.statistics.easyModeLeaderboardRank ? `Global
                                             #${data.statistics.easyModeLeaderboardRank}`:``%>
@@ -80,7 +79,7 @@
                                 <div class="information-box fit-to-content">
                                     <span style="font-size: 24px">Personal Best </span><br /><span
                                         style="font-size: 48px" id="standard-mode-personal-best-score">
-                                        <%-data.statistics.personalBestScoreOnStandardSingleplayerMode.score || `???`%>
+                                        <%-data.statistics.personalBestScoreOnStandardSingleplayerMode?.score || `???`%>
                                     </span><br /><span style="font-size: 16px" id="standard-mode-global-rank">
                                         <%-data.statistics.standardModeLeaderboardRank ? `Global
                                             #${data.statistics.standardModeLeaderboardRank}`:``%>

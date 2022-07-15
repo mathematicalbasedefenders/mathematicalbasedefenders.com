@@ -22,7 +22,7 @@ router.get("/api/leaderboards/:mode", limiter, async (request, response) => {
             break;
         }
         default: {
-            response.status(400).json("Mode does not exist.");
+            response.status(404).json("Mode does not exist.");
             return;
             break;
         }

@@ -25,11 +25,11 @@ router.get("/api/users/:user", limiter, async (request, response) => {
         return;
     }
     let data = /[0-9a-f]{24}/.test(user)
-        ? await User.safeFindByUserID(mongoDBSanitize.sanitize(user))
-        : await User.safeFindByUsername(mongoDBSanitize.sanitize(user));
+        ? await User.findByUserIDUsingAPI(mongoDBSanitize.sanitize(user))
+        : await User.findByUsernameUsingAPI(mongoDBSanitize.sanitize(user));
     data = JSON.parse(JSON.stringify(data));
     if (data == null) {
-        response.status(400).json("Invalid Request.");
+        response.status(404).json("Not Found.");
         return;
     }
     let easyLeaderboardData = await EasyModeLeaderboardsRecord.findOne({

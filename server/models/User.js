@@ -54,4 +54,23 @@ UserModelSchema.statics.safeFindByUserID = function (userID) {
     });
 };
 
+UserModelSchema.statics.findByUsernameUsingAPI = function (username){
+    return this.findOne({ username: username}).select({
+        username: 1,
+        creationDateAndTime: 1,
+        statistics: 1,
+        membership: 1
+    });
+}
+
+
+UserModelSchema.statics.findByUserIDUsingAPI = function (userID){
+return this.findOne({  _id: userID} ).select({
+    username: 1,
+    creationDateAndTime: 1,
+    statistics: 1,
+    membership: 1
+    });
+}
+
 module.exports = mongoose.model("User", UserModelSchema, "users");

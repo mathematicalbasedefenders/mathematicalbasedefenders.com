@@ -28,22 +28,28 @@ router.get("/users/:user", limiter, async (request, response) => {
     let originalData = await validateQuery(request.params.user, request);
     originalData = originalData.data;
     if (originalData) {
+        let  data =  await getUserData(originalData);
         response.render("pages/users", {
-            data: await getUserData(originalData)
+           data: data
         });
+    
     } else {
         response.render("pages/not-found");
     }
 });
 
 async function validateQuery(user, request) {
+    let data;
 
     if (!(/[A-Za-z0-9_]{3,20}/.test(user) || /[0-9a-f]{24}/.test(user))) {
         return false;
     }
-
-    let data = await axios.get(`${request.protocol == "http" && configuration.configuration.autoHTTPSOnAPICalls ? "https" : request.protocol}://${request.get("Host")}/api/users/${user}`);
+    try {
+    data = await axios.get(`${request.protocol == "http" && configuration.configuration.autoHTTPSOnAPICalls ? "https" : request.protocol}://${request.get("Host")}/api/users/${user}`);
     data = JSON.parse(JSON.stringify(data));
+    } catch (error) {
+        return false;
+    }
 
     return data;
 }
