@@ -61,13 +61,6 @@ router.post(
         desiredUsernameInAllLowercase = DOMPurify.sanitize(
             desiredUsernameInAllLowercase.toLowerCase()
         );
-
-        // var usernameIsAvailable1 = await schemas.getUserModel().findOne({ username: desiredUsername }).select(desiredUsername);
-
-        var metadataDocument = await Metadata.findOne({
-            documentIsMetadata: true
-        });
-
         fetch(reCaptchaURL, { method: "post" })
             .then((response) => response.json())
             .then(async (google_response) => {
@@ -84,16 +77,16 @@ router.post(
                 // get information
                 let emailIsNotAvailable1 = await User.findOne({
                     emailAddress: desiredEmail
-                }).select(desiredEmail);
+                }).clone().select(desiredEmail);
                 let usernameIsNotAvailable1 = await User.findOne({
                     usernameInAllLowercase: desiredUsernameInAllLowercase
-                }).select(desiredUsernameInAllLowercase);
+                }).clone().select(desiredUsernameInAllLowercase);
                 let emailIsNotAvailable2 = await PendingUser.findOne({
                     emailAddress: desiredEmail
-                }).select(desiredEmail);
+                }).clone().select(desiredEmail);
                 let usernameIsNotAvailable2 = await PendingUser.findOne({
                     usernameInAllLowercase: desiredUsernameInAllLowercase
-                }).select(desiredUsernameInAllLowercase);
+                }).clone().select(desiredUsernameInAllLowercase);
 
                 if (usernameIsNotAvailable1 || usernameIsNotAvailable2) {
                     // registration failed - username already taken

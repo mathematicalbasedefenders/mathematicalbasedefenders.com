@@ -27,7 +27,7 @@ router.get("/api/leaderboards/:mode", limiter, async (request, response) => {
             break;
         }
     }
-    let data = await model.find({rankNumber: { $lt: 51 }});
+    let data = await model.find({rankNumber: { $lt: 51 }}).clone();
     response.status(200).json(data);
 });
 
