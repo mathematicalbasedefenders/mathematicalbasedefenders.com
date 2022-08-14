@@ -56,7 +56,7 @@ router.post(
 
         let playerData = await User.findOne({
             emailAddress: desiredEmail
-        });
+        }).clone();
 
         if (playerData) {
             fetch(reCaptchaURL, { method: "post" })

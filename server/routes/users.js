@@ -61,11 +61,11 @@ async function getUserData(data, invalid=false) {
         data = _.cloneDeep(data);
         let easyModeLeaderboardRank = await EasyModeLeaderboardsRecord.findOne({
             userIDOfHolder: data["_id"]
-        });
+        }).clone();
         let standardModeLeaderboardRank =
             await StandardModeLeaderboardsRecord.findOne({
                 userIDOfHolder: data["_id"]
-            });
+            }).clone();
 
         if (easyModeLeaderboardRank) {
             easyModeLeaderboardRank = JSON.parse(

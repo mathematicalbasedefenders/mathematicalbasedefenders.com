@@ -61,7 +61,7 @@ router.get("/leaderboards", limiter, async (request, response) => {
                 function (error2, result2) {
                     return result2;
                 }
-            );
+            ).clone();
 
             playerData[i] = [];
             playerData[i][0] = playerRecord.username;

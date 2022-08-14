@@ -30,11 +30,11 @@ router.get("/confirm-email-address", limiter,async (request, response) => {
 
     let pendingUserRecord = await PendingUser.findOne({
         emailAddress: email
-    });
+    }).clone();
 
     if (pendingUserRecord) {
         if (pendingUserRecord["emailConfirmationCode"] == code) {
-            let metadataDocument = await Metadata.findOne({documentIsMetadata: true});
+            let metadataDocument = await Metadata.findOne({documentIsMetadata: true}).clone();
             let stringifiedJSON = JSON.stringify(metadataDocument);
             let object = JSON.parse(stringifiedJSON);
             let userCount = object["usersRegistered"];
@@ -98,7 +98,7 @@ router.get("/confirm-email-address", limiter,async (request, response) => {
                         });
                     }
                 }
-            );
+            ).clone();
 
             console.log(
                 log.addMetadata(
