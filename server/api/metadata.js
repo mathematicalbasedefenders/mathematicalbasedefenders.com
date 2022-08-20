@@ -15,7 +15,7 @@ router.get("/api/metadata", limiter, async (request, response) => {
         if (error) {
             console.error(log.addMetadata(error.stack, "error"));
         }
-    });
+    }).clone();
     response.status(200).json(data);
 });
 

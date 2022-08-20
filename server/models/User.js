@@ -44,14 +44,14 @@ UserModelSchema.statics.safeFindByUsername = function (username) {
     return this.findOne({ username: username }).select({
         emailAddress: 0,
         hashedPassword: 0
-    });
+    }).clone();
 };
 
 UserModelSchema.statics.safeFindByUserID = function (userID) {
     return this.findOne({ _id: userID}).select({
         emailAddress: 0,
         hashedPassword: 0
-    });
+    }).clone();
 };
 
 UserModelSchema.statics.findByUsernameUsingAPI = function (username){
@@ -60,7 +60,7 @@ UserModelSchema.statics.findByUsernameUsingAPI = function (username){
         creationDateAndTime: 1,
         statistics: 1,
         membership: 1
-    });
+    }).clone();
 }
 
 
@@ -70,7 +70,7 @@ return this.findOne({  _id: userID} ).select({
     creationDateAndTime: 1,
     statistics: 1,
     membership: 1
-    });
+    }).clone();
 }
 
 module.exports = mongoose.model("User", UserModelSchema, "users");
