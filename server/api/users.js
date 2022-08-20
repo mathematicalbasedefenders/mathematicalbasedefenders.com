@@ -20,7 +20,7 @@ router.get("/api/users/:user", limiter, async (request, response) => {
         return;
     }
     let user = request.params.user;
-    if (!(/[A-Za-z0-9_]{3,20}/.test(user) || /[0-9a-f]{24}/.test(user))) {
+    if (!((/[A-Za-z0-9_]{3,20}/.test(user) && user.length >= 3 && user.length <= 20) || (/[0-9a-f]{24}/g.test(user) && user.length == 24))) {
         response.status(400).json("Invalid Request.");
         return;
     }
