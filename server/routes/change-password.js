@@ -33,7 +33,7 @@ router.get("/change-password", [csrfProtection, limiter], async (request, respon
     let code = DOMPurify.sanitize(mongoDBSanitize.sanitize(query.code));
     var pendingPasswordResetRecord = await PendingPasswordReset.findOne({
         emailAddress: email
-    });
+    }).clone();
 
     if (pendingPasswordResetRecord) {
         if (
@@ -65,7 +65,7 @@ router.post(
 
         let record = await PendingPasswordReset.find({
             $and: [{ emailAddress: email }, { code: code }]
-        });
+        }).clone();
 
         if (record) {
             if (
@@ -143,7 +143,7 @@ router.post(
                                                                 );
                                                             }
                                                         }
-                                                    );
+                                                    ).clone();
                                             }
                                         }
                                     );

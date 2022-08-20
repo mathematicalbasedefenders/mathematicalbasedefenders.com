@@ -34,10 +34,10 @@ router.get("/api/users/:user", limiter, async (request, response) => {
     }
     let easyLeaderboardData = await EasyModeLeaderboardsRecord.findOne({
         userIDOfHolder: data._id.toString()
-    });
+    }).clone();
     let standardLeaderboardData = await StandardModeLeaderboardsRecord.findOne({
         userIDOfHolder: data._id.toString()
-    });
+    }).clone();
     // add leaderboards data
     if (easyLeaderboardData != null) {
         data.statistics.personalBestScoreOnEasySingleplayerMode.globalRank =
