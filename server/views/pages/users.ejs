@@ -1,142 +1,139 @@
 <!DOCTYPE html>
 
 <html>
+	<head>
+		<%- include('../partials/head'); %>
+		<title>Mathematical Base Defenders</title>
 
-<head>
-    <%- include('../partials/head'); %>
-        <title>Mathematical Base Defenders</title>
+		<link rel="stylesheet" type="text/css" href="/css/global.css" />
 
-        <link rel="stylesheet" type="text/css" href="/css/global.css" />
+		<style>
+			.link-button {
+				border: none;
+				background: none;
+				font-family: "Computer Modern Unicode Serif";
+				font-size: 24px;
+				max-width: fit-content;
+			}
 
-        <style>
-            .link-button {
-                border: none;
-                background: none;
-                font-family: "Computer Modern Unicode Serif";
-                font-size: 24px;
-            }
-        </style>
-</head>
+			.information-box {
+				display: inline-block;
+				width: 100%;
+			}
 
-<body>
-    <!-- Header -->
-    <%- include('../partials/header'); %>
+			.score-text {
+				font-size: 48px;
+			}
 
-        <!-- Content  -->
-        <div id="content-wrapper">
-            <div>
-                <div>
-                    <div style="
-                            display: flex;
-                            justify-content: center;
-                            align-items: center;
-                        ">
-                        <div style="
-                                left: 15%;
-                                width: 70%;
-                                max-width: 1200px;
-                                word-wrap: break-word;
-                            ">
-                            <div id="user-data">
-                                <span <%=`style=font-size:32px;color:${data.rankColor};`%>
-                                    ><%-data.rank%></span>
-                                <span style="font-size: 32px">
-                                    <%-data.username%>'s play data</span>
-                                <br />
-                                <hr />
-                                <span style="font-size: 28px">General</span>
-                                <br />
-                                <div class="information-box fit-to-content">
-                                    <span style="font-size: 24px">Total Experience Points </span><br /><span
-                                        style="font-size: 48px" id="total-experience-points">
-                                        <%- data.statistics.totalExperiencePoints || `???` %>
-                                    </span><br /><span style="font-size: 16px" id="current-level">Level <%-
-                                            data.statistics.currentLevel || `???` %></span>
-                                    |
-                                    <span style="font-size: 16px" id="progress-to-next-level">
-                                        <%- data.statistics.progressToNextLevelInPercentage || `???` %> to next level
-                                    </span>
-                                </div>
+			.score-information-text {
+				text-align: right;
+			}
+		</style>
+	</head>
 
-                                <hr />
+	<body>
+		<!-- Header -->
+		<%- include('../partials/header'); %>
 
-                                <span style="font-size: 28px">Easy</span>
-                                <br />
-                                <div class="information-box fit-to-content">
-                                    <span style="font-size: 24px">Personal Best </span><br /><span
-                                        style="font-size: 48px" id="easy-mode-personal-best-score">
-                                        <%-data.statistics.personalBestScoreOnEasySingleplayerMode?.score || `???`%>
-                                    </span><br /><span style="font-size: 16px" id="easy-mode-global-rank">
-                                        <%-data.statistics.easyModeLeaderboardRank ? `Global
-                                            #${data.statistics.easyModeLeaderboardRank}`:``%>
-                                    </span>
-                                </div>
+		<!-- Content  -->
+		<div id="content-wrapper">
+			<div>
+				<div>
+					<div style="display: flex; justify-content: center; align-items: center">
+						<div
+							style="
+								left: 15%;
+								width: min(70%, 1200px);
 
-                                <hr />
+								word-wrap: break-word;
+								display: inline-block;
+							"
+						>
+							<div id="user-data">
+								<!-- -->
 
-                                <span style="font-size: 28px">Standard</span>
-                                <br />
-                                <div class="information-box fit-to-content">
-                                    <span style="font-size: 24px">Personal Best </span><br /><span
-                                        style="font-size: 48px" id="standard-mode-personal-best-score">
-                                        <%-data.statistics.personalBestScoreOnStandardSingleplayerMode?.score || `???`%>
-                                    </span><br /><span style="font-size: 16px" id="standard-mode-global-rank">
-                                        <%-data.statistics.standardModeLeaderboardRank ? `Global
-                                            #${data.statistics.standardModeLeaderboardRank}`:``%>
-                                    </span>
-                                </div>
+								<div class="information-box" style="width: calc(100% - 26px);display:flex;justify-content:space-between;flex-wrap:wrap;">
+									<div>
+									<span <%-`style=font-size:24px;color:${data.rankColor}`%> ><%-data.rank%></span>
+									<br />
+									<span style="font-size: 48px"> <%-data.username%> </span>
+									<br>
+									Level <%- data.statistics.currentLevel%> (<%- data.statistics.progressToNextLevelInPercentage %> to next)
+									<div style="border-color:#aaaaaa;border-radius:5px;width:25%;height:10px;background-color:#bbbbbb">
+										<div <%-`style="border-radius:5px;width:${data.statistics.progressToNextLevelInPercentage};background-color:#000000;height:10px;"`%>></div>
+									</div>
+									</div>
+									<div style="text-align:right;">
+										Joined on <%-data.creationDateAndTime%>
+										<br>
+										User ID: <%-data._id%>
+									</div>
+								</div>
+								<br /><br />
+								<div style="display: flex">
+									<div class="information-box">
+										<span style="font-size: 24px">Easy Singleplayer</span>
+										<div style="display: flex; flex-wrap: wrap; justify-content: space-between">
+											<div class="score-text">
+												<%-data.statistics.personalBestScoreOnEasySingleplayerMode?.score || `???`%>
+												<div style="font-size: 16px"><%-data.statistics?.easyModeLeaderboardRank ? (data.statistics.easyModeLeaderboardRank == 1 ? "Current World Record":`Global #${data.statistics.easyModeLeaderboardRank}`) : ""%></div>
+											</div>
+											<br />
 
-                                <hr />
+											<div class="score-information-text" style="font-size: 16px">
+												<%-data.statistics.personalBestScoreOnEasySingleplayerMode?.timeInMilliseconds ? `${data.statistics.personalBestScoreOnEasySingleplayerMode.timeInMilliseconds}ms` : "" %> <br />
+												<%-data.statistics.personalBestScoreOnEasySingleplayerMode?.actionsPerformed ? `${(data.statistics.personalBestScoreOnEasySingleplayerMode.actionsPerformed/(data.statistics.personalBestScoreOnEasySingleplayerMode.timeInMilliseconds/60000)).toFixed(3)}APM` : "" %> <br />
+												<%-data.statistics.personalBestScoreOnEasySingleplayerMode?.enemiesKilled ? `${data.statistics.personalBestScoreOnEasySingleplayerMode.enemiesKilled}/${data.statistics.personalBestScoreOnEasySingleplayerMode.enemiesCreated}` : "" %>
+												<br />
 
-                                <span style="font-size: 28px">Metadata</span>
-                                <br />
-                                <div class="information-box fit-to-content">
-                                    <div style="font-size: 24px">
-                                        Join Date
-                                        <br />
-                                        <span id="player-join-date" style="font-size: 48px">
-                                            <%-data.creationDateAndTime%>
-                                        </span>
-                                    </div>
-                                </div>
-                                <br><br>
-                                <div class="information-box fit-to-content">
-                                    <div style="font-size: 24px">
-                                        User ID <br />
-                                        <span id="player-join-date" style="font-size: 48px">
-                                            <%-data._id%>
-                                        </span>
-                                    </div>
-                                </div>
+												<%-data.statistics.personalBestScoreOnEasySingleplayerMode?.scoreSubmissionDateAndTime ? `${data.statistics.personalBestScoreOnEasySingleplayerMode?.scoreSubmissionDateAndTime}`:""%>
+											</div>
+										</div>
+									</div>
 
+									<div class="information-box" style="margin-left: 1%">
+										<span style="font-size: 24px">Standard Singleplayer</span>
 
-                                <hr />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+										<br />
+										<div style="display: flex;flex-wrap: wrap;  justify-content: space-between">
+											<div class="score-text">
+												<%-data.statistics.personalBestScoreOnStandardSingleplayerMode?.score || `???`%>
+												<div style="font-size: 16px"><%-data.statistics?.standardModeLeaderboardRank ? (data.statistics.standardModeLeaderboardRank == 1?"Current World Record":`Global #${data.statistics.standardModeLeaderboardRank}`):""%></div>
+											</div>
+											<div class="score-information-text" style="font-size: 16px">
+												<%-data.statistics.personalBestScoreOnStandardSingleplayerMode?.timeInMilliseconds ? `${data.statistics.personalBestScoreOnStandardSingleplayerMode.timeInMilliseconds}ms` : "" %> <br />
+												<%-data.statistics.personalBestScoreOnStandardSingleplayerMode?.actionsPerformed ? `${(data.statistics.personalBestScoreOnStandardSingleplayerMode.actionsPerformed/(data.statistics.personalBestScoreOnStandardSingleplayerMode.timeInMilliseconds/60000)).toFixed(3)}APM` : "" %> <br />
+												<%-data.statistics.personalBestScoreOnStandardSingleplayerMode?.enemiesKilled ? `${data.statistics.personalBestScoreOnStandardSingleplayerMode.enemiesKilled}/${data.statistics.personalBestScoreOnStandardSingleplayerMode.enemiesCreated}` : "" %>
+												<br />
 
-        <!-- Footer -->
-        <%- include('../partials/footer'); %>
-</body>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"
-    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XVRB5TXW3K"></script>
+												<%-data.statistics.personalBestScoreOnStandardSingleplayerMode?.scoreSubmissionDateAndTime ? `${data.statistics.personalBestScoreOnStandardSingleplayerMode?.scoreSubmissionDateAndTime}`:""%>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Footer -->
+		<%- include('../partials/footer'); %>
+	</body>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-XVRB5TXW3K"></script>
 
-<script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag() {
-        dataLayer.push(arguments);
-    }
-    gtag("js", new Date());
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag() {
+			dataLayer.push(arguments);
+		}
+		gtag("js", new Date());
 
-    gtag("config", "G-XVRB5TXW3K");
-</script>
-<script>
-    checkURLQueryParameters();
-</script>
-
+		gtag("config", "G-XVRB5TXW3K");
+	</script>
+	<script>
+		checkURLQueryParameters();
+	</script>
 </html>
