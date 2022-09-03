@@ -189,7 +189,7 @@ require("fs")
         app.use(require("./server/api/" + file));
     });
 
-app.post("/fetch-open-source-licenses", async (request, response) => {
+app.post("/fetch-open-source-licenses", limiter, async (request, response) => {
     let licensesToShow = {};
     for (let key in licenses) {
         licensesToShow[key.toString()] = {};
