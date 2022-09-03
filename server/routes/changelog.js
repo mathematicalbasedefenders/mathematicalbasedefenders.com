@@ -9,7 +9,7 @@ const limiter = rateLimit({
 const https = require("https");
 const marked = require("marked");
 const MarkdownIt = require('markdown-it');
-const md = new MarkdownIt();
+const md = new MarkdownIt({html:true});
 
 router.get("/changelog", limiter,async(request, response) => {
     let data = {}
