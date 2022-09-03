@@ -96,8 +96,8 @@
                         <div
                             id="website-changelog"
                             style="text-align: left"
-                        ></div>
-                        <div id="game-changelog" style="text-align: left"></div>
+                        ><%- data.websiteChangelog %></div>
+                        <div id="game-changelog" style="text-align: left"><%- data.gameChangelog %></div>
                     </div>
                 </div>
             </div>
@@ -172,13 +172,5 @@
                 }
             }
         }
-    </script>
-    <script>
-        $.post("/fetch-website-changelog", (data, status) => {
-            $("#website-changelog").html(data);
-        });
-        $.post("/fetch-game-changelog", (data, status) => {
-            $("#game-changelog").html(data);
-        });
     </script>
 </html>
