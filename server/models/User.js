@@ -27,6 +27,10 @@ const UserModelSchema = new mongoose.Schema({
             actionsPerformed: Number,
             enemiesKilled: Number,
             enemiesCreated: Number
+        },
+        multiplayer: {
+            gamesPlayed: Number,
+            gamesWon: Number
         }
     },
     membership: {
@@ -70,6 +74,7 @@ return this.findOne({  _id: userID} ).select({
     creationDateAndTime: 1,
     statistics: 1,
     membership: 1
+
     }).clone();
 }
 

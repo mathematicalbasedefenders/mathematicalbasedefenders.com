@@ -107,7 +107,9 @@ async function getUserData(data, invalid=false) {
         if (data.username === "mistertfy64") {data.rankDescription = RANK_DESCRIPTIONS["Game Master"]} else { 
         data.rankDescription = data.rank.toString() in RANK_DESCRIPTIONS ? RANK_DESCRIPTIONS[data.rank.toString()] : "This user is a normal player.";
     }}
-
+    data.statistics.multiplayerWinRate = data.statistics.multiplayer.gamesWon/data.statistics.multiplayer.gamesPlayed;
+    data.statistics.primaryMultiplayerWinRateMessage = `${(data.statistics.multiplayerWinRate*100).toFixed(3)}%`;
+    data.statistics.secondaryMultiplayerWinRateMessage = `Won 1 multiplayer game every ${(data.statistics.multiplayer.gamesPlayed/data.statistics.multiplayer.gamesWon)} multiplayer games played.`;
     return data;
 }
 
