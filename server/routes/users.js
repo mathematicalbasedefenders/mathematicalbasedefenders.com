@@ -96,9 +96,27 @@ async function getUserData(data, invalid = false) {
 		}
 	}
 	data.statistics.multiplayerWinRate = data.statistics?.multiplayer?.gamesWon / data.statistics?.multiplayer?.gamesPlayed;
-	data.statistics.primaryMultiplayerWinRateMessage = data.statistics.multiplayerWinRate ? `${(data.statistics.multiplayerWinRate * 100).toFixed(3)}% win rate` : "N/A";
-	data.statistics.secondaryMultiplayerWinRateMessage = data.statistics.multiplayerWinRate ? `Won 1 multiplayer game every ${data.statistics.multiplayer.gamesPlayed / data.statistics.multiplayer.gamesWon} multiplayer games played.`: "Player has not played a multiplayer game yet.";
-	return data;
+	if (data.statistics?.multiplayer?.gamesPlayed) {
+		
+		if (data.statistics?.multiplayer?.gamesWon){
+		data.statistics.primaryMultiplayerWinRateMessage = `${(data.statistics.multiplayerWinRate * 100).toFixed(3)}% win rate`;
+		} else {
+			data.statistics.primaryMultiplayerWinRateMessage = `0.000% win rate`;
+		}
+	
+	} else {
+		data.statistics.primaryMultiplayerWinRateMessage = "N/A";
+	}
+
+	if (data.statistics?.multiplayer?.gamesPlayed){
+		if (data.statistics?.multiplayer?.gamesWon === 0 || !(data.statistics?.multiplayer?.gamesWon)){
+			data.statistics.secondaryMultiplayerWinRateMessage = `Player played at least one multiplayer game, but hasn't won any yet.`;
+		} else {
+			data.statistics.secondaryMultiplayerWinRateMessage =  `Won 1 multiplayer game every ${data.statistics.multiplayer.gamesPlayed / data.statistics.multiplayer.gamesWon} multiplayer games played.`;
+		}
+	} else {
+		data.statistics.secondaryMultiplayerWinRateMessage ="Player has not played a multiplayer game yet.";
+		}	return data;
 }
 
 module.exports = router;
