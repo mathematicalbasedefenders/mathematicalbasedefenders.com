@@ -93,7 +93,7 @@ router.post(
 								<br>
 								If this is you, and you want continue with the procedure, please click this link.
 								<br>
-								<a href=https://mathematicalbasedefenders.com/change-password/?email={desiredEmail}?code=${DOMPurify.sanitize(
+								<a href=https://mathematicalbasedefenders.com/change-password?email=${desiredEmail}&code=${DOMPurify.sanitize(
                                     passwordResetConfirmationCode
                                 )}>https://mathematicalbasedefenders.com/change-password?email=${DOMPurify.sanitize(
                                         desiredEmail
