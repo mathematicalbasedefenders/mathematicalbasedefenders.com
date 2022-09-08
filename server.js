@@ -211,7 +211,7 @@ app.post("/fetch-open-source-licenses", limiter, async (request, response) => {
 
 app.post("/fetch-game-changelog", async (request, response) => {
     let changelog;
-    await loadChangelog("game").then((result) => {
+    await getTextFromURL("game").then((result) => {
         changelog = result;
     });
     changelog = DOMPurify.sanitize(changelog);
@@ -220,7 +220,7 @@ app.post("/fetch-game-changelog", async (request, response) => {
 
 app.post("/fetch-website-changelog", async (request, response) => {
     let changelog;
-    await loadChangelog("website").then((result) => {
+    await getTextFromURL("website").then((result) => {
         changelog = result;
     });
     changelog = DOMPurify.sanitize(changelog);
@@ -273,7 +273,7 @@ async function readLicenseFile(path) {
     });
 }
 
-async function loadChangelog(service) {
+async function getTextFromURL(service) {
     let fileURL;
     switch (service) {
         case "game": {
@@ -284,6 +284,16 @@ async function loadChangelog(service) {
         case "website": {
             fileURL =
                 "https://raw.githubusercontent.com/mathematicalbasedefenders/information/main/WEBSITE_CHANGELOG.md";
+            break;
+        }
+        case "about": {
+            fileURL =
+                "https://raw.githubusercontent.com/mathematicalbasedefenders/information/main/ABOUT.md";
+            break;
+        }
+        case "privacyPolicy": {
+            fileURL =
+                "https://raw.githubusercontent.com/mathematicalbasedefenders/information/main/PRIVACY_POLICY.md";
             break;
         }
         default: {
