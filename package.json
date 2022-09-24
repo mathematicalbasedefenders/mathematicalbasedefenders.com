@@ -4,7 +4,8 @@
   "description": "Website for Mathematical Base Defenders.",
   "main": "app.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "checkUndefVarsOnly": "npx eslint --rule 'no-undef: error' --parser-options=ecmaVersion:latest --env node,browser,es2021,commonjs --no-eslintrc ."
   },
   "author": "mistertfy64",
   "license": "GPL-3.0-or-later",
@@ -55,6 +56,11 @@
   },
   "homepage": "https://github.com/mistertfy64/mathematicalbasedefenders.com#readme",
   "devDependencies": {
+    "eslint": "^8.24.0",
+    "eslint-config-standard": "^17.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-n": "^15.3.0",
+    "eslint-plugin-promise": "^6.0.1",
     "jest": "^28.1.3"
   }
 }
