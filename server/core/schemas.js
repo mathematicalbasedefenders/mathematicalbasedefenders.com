@@ -1,8 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-
-
 // const EasyModeLeaderboardsSchema = new Schema({
 //     rankNumber: Number,
 //     userIDOfHolder: String,
@@ -37,31 +35,30 @@ const Schema = mongoose.Schema;
 //     "standardModeLeaderboardsRecords"
 // );
 
-function getNewUserModelInstance(){
-    return new UserModel();
+function getNewUserModelInstance() {
+  return new UserModel();
 }
 
-function getNewUserModelInstanceWithData(data){
-    return new UserModel(data);
+function getNewUserModelInstanceWithData(data) {
+  return new UserModel(data);
 }
-
 
 function getUserModel() {
-    return UserModel;
+  return UserModel;
 }
 
 function getEasyModeLeaderboardsModel() {
-    return EasyModeLeaderboardsModel;
+  return EasyModeLeaderboardsModel;
 }
 
 function getStandardModeLeaderboardsModel() {
-    return StandardModeLeaderboardsModel;
+  return StandardModeLeaderboardsModel;
 }
 
 module.exports = {
-    getUserModel,
-    getEasyModeLeaderboardsModel,
-    getStandardModeLeaderboardsModel,
-    getNewUserModelInstance,
-    getNewUserModelInstanceWithData,
+  getUserModel,
+  getEasyModeLeaderboardsModel,
+  getStandardModeLeaderboardsModel,
+  getNewUserModelInstance,
+  getNewUserModelInstanceWithData
 };
