@@ -1,6 +1,6 @@
 const axios = require("axios");
 
 test("api: get metadata from username from api should not return a falsy value", async () => {
-	let data = (await axios.get("http://localhost:8080/api/metadata")).data;
-	expect(data).toBeTruthy();
+  let data = (await axios.get("http://localhost:8080/api/metadata")).data;
+  expect(data).toBeTruthy();
 });

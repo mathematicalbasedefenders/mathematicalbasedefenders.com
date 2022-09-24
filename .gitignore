@@ -524,9 +524,7 @@ credentials/
 .DS_Store
 .dccache
 
-
-# prettier
-.prettierrc
+server/core/mail.js
 
 # useless stuff
 migration-finished-html-pages/
