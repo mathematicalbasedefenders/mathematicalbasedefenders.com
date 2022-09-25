@@ -1,22 +1,20 @@
 var router = require("express").Router();
 
-var PendingUser = require("../models/PendingUser.js");
-var User = require("../models/User.js");
-var Metadata = require("../models/Metadata.js");
-
 const csurf = require("csurf");
 const csrfProtection = csurf({ cookie: true });
-const bcrypt = require("bcrypt");
 const bodyParser = require("body-parser");
 const parseForm = bodyParser.urlencoded({ extended: false });
-const nodemailer = require("nodemailer");
+
 const mongoDBSanitize = require("express-mongo-sanitize");
+
+const UserService = require("../services/user.js");
+const MailService = require("../services/mail.js");
+
 
 const { JSDOM } = require("jsdom");
 const defaultWindow = new JSDOM("").window;
 const createDOMPurify = require("dompurify");
 const DOMPurify = createDOMPurify(defaultWindow);
-const { v4: uuidv4 } = require("uuid");
 
 const rateLimit = require("express-rate-limit");
 const limiter = rateLimit({
@@ -26,8 +24,7 @@ const limiter = rateLimit({
   legacyHeaders: false
 });
 
-const log = require("../core/log.js");
-const mail = require("../core/mail.js");
+
 
 router.get("/register", [csrfProtection, limiter], (request, response) => {
   response.cookie("csrfToken", request.csrfToken());
@@ -55,11 +52,8 @@ router.post(
     let desiredEmail = DOMPurify.sanitize(
       mongoDBSanitize.sanitize(request.body.email)
     );
-    let desiredUsernameInAllLowercase = DOMPurify.sanitize(
-      mongoDBSanitize.sanitize(request.body.username)
-    );
-    desiredUsernameInAllLowercase = DOMPurify.sanitize(
-      desiredUsernameInAllLowercase.toLowerCase()
+    let plaintextPassword = DOMPurify.sanitize(
+      mongoDBSanitize.sanitize(request.body.password)
     );
     fetch(reCaptchaURL, { method: "post" })
       .then((response) => response.json())
@@ -72,158 +66,40 @@ router.post(
           return;
         }
 
-        let errored = false;
-
-        // get information
-        let emailIsNotAvailable1 = await User.findOne({
-          emailAddress: desiredEmail
-        })
-          .clone()
-          .select(desiredEmail);
-        let usernameIsNotAvailable1 = await User.findOne({
-          usernameInAllLowercase: desiredUsernameInAllLowercase
-        })
-          .clone()
-          .select(desiredUsernameInAllLowercase);
-        let emailIsNotAvailable2 = await PendingUser.findOne({
-          emailAddress: desiredEmail
-        })
-          .clone()
-          .select(desiredEmail);
-        let usernameIsNotAvailable2 = await PendingUser.findOne({
-          usernameInAllLowercase: desiredUsernameInAllLowercase
-        })
-          .clone()
-          .select(desiredUsernameInAllLowercase);
-
-        if (usernameIsNotAvailable1 || usernameIsNotAvailable2) {
-          // registration failed - username already taken
-          response.redirect(
-            "?erroroccurred=true&errorreason=usernamealreadytaken"
-          );
-          return;
-        }
-
-        if (
-          !/^[0-9a-zA-Z_]+$/.test(desiredUsername) ||
-          desiredUsername.length > 20 ||
-          desiredUsername.length < 3 ||
-          desiredUsername == "" ||
-          desiredUsername == null
-        ) {
-          // registration failed - username not valid
-          response.redirect("?erroroccurred=true&errorreason=usernamenotvalid");
-          return;
-        }
-
-        if (emailIsNotAvailable1 || emailIsNotAvailable2) {
-          // registration failed - email already taken
-          response.redirect(
-            "?erroroccurred=true&errorreason=emailalreadytaken"
-          );
-          return;
-        }
-
-        if (
-          !/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(
-            desiredEmail
-          ) ||
-          desiredEmail == "" ||
-          desiredEmail == null
-        ) {
-          // registration failed - email not valid
-          response.redirect("?erroroccurred=true&errorreason=emailnotvalid");
-          return;
-        }
-
-        let plaintextPassword = DOMPurify.sanitize(
-          mongoDBSanitize.sanitize(request.body.password)
+        let validationResult = await UserService.validateNewUserInformation(
+          desiredUsername,
+          desiredEmail,
+          plaintextPassword
         );
 
-        if (
-          plaintextPassword.length < 8 ||
-          plaintextPassword.length > 64 ||
-          plaintextPassword == "" ||
-          plaintextPassword == null ||
-          plaintextPassword.includes(" ") ||
-          !/^[0-9a-zA-Z!"#$%&'()*+,-.:;<=>?@^_`{|}~]*$/.test(plaintextPassword)
-        ) {
-          response.redirect("?erroroccurred=true&errorreason=passwordnotvalid");
+        if (!validationResult.success) {
+          response.redirect(validationResult.redirectTo);
           return;
         }
 
-        let hashedPasswordToSave;
-        let emailConfirmationCode;
+        let dataWriteResult = await UserService.addUnverifiedUser(
+          desiredUsername,
+          desiredEmail,
+          plaintextPassword
+        );
 
-        await bcrypt.genSalt(16, async (error1, salt) => {
-          if (error1) {
-            response.redirect("?erroroccurred=true&errorreason=internalerror");
-            return;
-          } else {
-            await bcrypt.hash(plaintextPassword, salt, (error2, hash) => {
-              if (error2) {
-                response.redirect(
-                  "?erroroccurred=true&errorreason=internalerror"
-                );
-                return;
-              }
-              hashedPasswordToSave = hash;
-              emailConfirmationCode = uuidv4();
+        if (!dataWriteResult.success) {
+          response.redirect(dataWriteResult.redirectTo);
+          return;
+        }
 
-              // create data object (pending user)
-              let dataToSave = {
-                username: desiredUsername,
-                usernameInAllLowercase: desiredUsernameInAllLowercase,
-                emailAddress: desiredEmail,
-                hashedPassword: hashedPasswordToSave,
-                emailConfirmationLink: `https://mathematicalbasedefenders.com/confirm-email-address?email=${desiredEmail}&code=${emailConfirmationCode}`,
-                emailConfirmationCode: emailConfirmationCode,
-                expiresAt: new Date(Date.now() + 1800000).getTime()
-              };
+        let mailResult = await MailService.sendMailToUnverifiedUser(
+          desiredUsername, desiredEmail, dataWriteResult.emailConfirmationCode
+        )
 
-              let pendingUserModelToSave = new PendingUser(dataToSave);
+        if (!mailResult.ok){
+          response.redirect(mailResult.redirectTo);
+          return;
+        }
 
-              pendingUserModelToSave.save((error4) => {
-                if (error4) {
-                  errored = true;
-                  response.redirect(
-                    "?erroroccurred=true&errorreason=internalerror"
-                  );
-                  return;
-                }
-              });
+        response.redirect(mailResult.redirectTo);
+        return;
 
-              if (errored) return;
-              let transporter = nodemailer.createTransport(
-                mail.getNodemailerOptionsObject()
-              );
-              let message = mail.getMailContentForNewlyRegisteredUser(desiredEmail, emailConfirmationCode);
-              transporter.sendMail(message, (error, information) => {
-                if (error) {
-                  console.error(log.addMetadata(error.stack, "error"));
-                  response.redirect(
-                    "?erroroccurred=true&errorreason=internalerror"
-                  );
-                  return;
-                } else {
-                  console.log(
-                    log.addMetadata(
-                      `Successfully sent verification message to ${desiredUsername}'s e-mail address!`,
-                      "info"
-                    )
-                  );
-                  console.log(
-                    log.addMetadata(
-                      "New Unconfirmed User: " + desiredUsername,
-                      "info"
-                    )
-                  );
-                  response.redirect("/?registered=true");
-                }
-              });
-            });
-          }
-        });
       });
   }
 );
