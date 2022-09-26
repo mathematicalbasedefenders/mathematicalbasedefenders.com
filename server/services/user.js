@@ -12,18 +12,25 @@ async function validateNewUserInformation(
 ) {
   let desiredUsernameInAllLowercase = desiredUsername.toLowerCase();
 
+
   // get information
   let emailIsNotAvailable1 = await User.findOne({
     emailAddress: desiredEmail
   })
     .clone()
     .select(desiredEmail);
-  let usernameIsNotAvailable1 = await User.findOne({
+
+
+
+    let usernameIsNotAvailable1 = await User.findOne({
     usernameInAllLowercase: desiredUsernameInAllLowercase
   })
     .clone()
     .select(desiredUsernameInAllLowercase);
-  let emailIsNotAvailable2 = await PendingUser.findOne({
+
+
+
+    let emailIsNotAvailable2 = await PendingUser.findOne({
     emailAddress: desiredEmail
   })
     .clone()
@@ -121,7 +128,7 @@ async function addUnverifiedUser(desiredUsername, desiredEmail, plaintextPasswor
 
   let dataToSave = {
     username: desiredUsername,
-    usernameInAllLowercase: desiredUsername.toLowerCase,
+    usernameInAllLowercase: desiredUsername.toLowerCase(),
     emailAddress: desiredEmail,
     hashedPassword: hashedPassword,
     emailConfirmationLink: `https://mathematicalbasedefenders.com/confirm-email-address?email=${desiredEmail}&code=${emailConfirmationCode}`,

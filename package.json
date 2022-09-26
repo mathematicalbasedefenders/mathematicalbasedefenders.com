@@ -4,7 +4,8 @@
   "description": "Website for Mathematical Base Defenders.",
   "main": "app.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest ./tests/database/*",
+    "testAll": "jest",
     "checkUndefVarsOnly": "npx eslint --rule 'no-undef: error' --parser-options=ecmaVersion:latest --env node,browser,es2021,commonjs --no-eslintrc ."
   },
   "author": "mistertfy64",
@@ -56,6 +57,7 @@
   },
   "homepage": "https://github.com/mistertfy64/mathematicalbasedefenders.com#readme",
   "devDependencies": {
+    "@shelf/jest-mongodb": "^4.1.0",
     "eslint": "^8.24.0",
     "eslint-config-standard": "^17.0.0",
     "eslint-plugin-import": "^2.26.0",
