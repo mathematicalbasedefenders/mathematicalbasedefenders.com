@@ -1,92 +1,92 @@
 <!DOCTYPE html>
 
 <html>
-    <head>
-        
-        <%- include('../partials/head'); %>
-        <title>About | Mathematical Base Defenders</title>
+
+<head>
+
+  <%- include('../partials/head'); %>
+    <title>About | Mathematical Base Defenders</title>
 
 
 
-        <style>
-            .link-button {
-                border: none;
-                background: none;
-                font-family: "Computer Modern Unicode Serif";
-                font-size: 24px;
-            }
-            h1, h2, h3, h4 {
-                font-size: 36px;
-                font-weight: normal;
-                margin: 5px 0px;
-            }
-            p {
-                margin: 0;
-            }
+    <style>
+      .link-button {
+        border: none;
+        background: none;
+        font-family: "Computer Modern Unicode Serif";
+        font-size: 24px;
+      }
 
-            table,
-            th,
-            td {
-                border: 1px solid black;
-                border-collapse: collapse;
-            }
+      h1,
+      h2,
+      h3,
+      h4 {
+        font-size: 36px;
+        font-weight: normal;
+        margin: 5px 0px;
+      }
 
-            th {
-                font-weight: normal;
-            }
+      p {
+        margin: 0;
+      }
 
-            td {
-                padding: 3px 3px;
-            }
+      table,
+      th,
+      td {
+        border: 1px solid black;
+        border-collapse: collapse;
+      }
 
-            .score-multiplier-tables-container {
-                display: inline-block;
-            }
-        </style>
-    </head>
+      th {
+        font-weight: normal;
+      }
 
-    <body>
-        <!-- Header -->
-        <%- include('../partials/header'); %>
+      td {
+        padding: 3px 3px;
+      }
 
-        <!-- Content -->
-        <div id="content-wrapper">
-            <div
-                style="
+      .score-multiplier-tables-container {
+        display: inline-block;
+      }
+    </style>
+</head>
+
+<body>
+  <!-- Header -->
+  <%- include('../partials/header'); %>
+
+    <!-- Content -->
+    <div id="content-wrapper">
+      <div style="
                     display: flex;
                     justify-content: center;
                     align-items: center;
-                "
-            >
-                <div
-                    style="
+                ">
+        <div style="
                         left: 15%;
                         width: 70%;
                         max-width: 1200px;
                         word-wrap: break-word;
-                    "
-                >
-                    <div style="font-size: 20px">
-                        <%-data.aboutText%>
-                    </div>
-                </div>
-            </div>
+                    ">
+          <div style="font-size: 20px">
+            <%-data.aboutText%>
+          </div>
         </div>
-        <!-- Footer -->
-        <%- include('../partials/footer'); %>
-    </body>
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script
-        async
-        src="https://www.googletagmanager.com/gtag/js?id=G-XVRB5TXW3K"
-    ></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag() {
-            dataLayer.push(arguments);
-        }
-        gtag("js", new Date());
+      </div>
+    </div>
+    <!-- Footer -->
+    <%- include('../partials/footer'); %>
+</body>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XVRB5TXW3K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() {
+    dataLayer.push(arguments);
+  }
+  gtag("js", new Date());
 
-        gtag("config", "G-XVRB5TXW3K");
-    </script>
+  gtag("config", "G-XVRB5TXW3K");
+</script>
+
 </html>

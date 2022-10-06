@@ -45,7 +45,9 @@ router.post(
       request.body["g-recaptcha-response"]
     );
     const reCaptchaSecretKey = DOMPurify.sanitize(
+
       process.env.RECAPTCHA_SECRET_KEY
+
     );
     const reCaptchaURL = DOMPurify.sanitize(
       `https://www.google.com/recaptcha/api/siteverify?secret=${reCaptchaSecretKey}&response=${responseKey}`
@@ -80,9 +82,11 @@ router.post(
                 response.redirect("/?resetpassword=fail");
               } else {
                 let transporter = nodemailer.createTransport(
+
                   mail.getNodemailerOptionsObject()
                 );
                 let message = mail.getMailContentForPasswordReset(desiredEmail,passwordResetConfirmationCode);
+
                 transporter.sendMail(message, (error, information) => {
                   if (error) {
                     console.error(log.addMetadata(error.stack, "error"));

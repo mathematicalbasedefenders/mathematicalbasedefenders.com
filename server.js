@@ -320,7 +320,9 @@ app.listen(PORT, () => {
   console.log(
     log.addMetadata(`App listening at https://localhost:${PORT}`, "info")
   );
+
   if (process.env.CREDENTIAL_SET_USED === "testing") {
+
     console.log(log.addMetadata(`WARNING: Using testing credentials.`, "info"));
   }
 });

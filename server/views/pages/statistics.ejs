@@ -1,56 +1,55 @@
 <!DOCTYPE html>
 
 <html>
-    <head>
-        <%- include('../partials/head'); %>
 
-        <title>Statistics | Mathematical Base Defenders</title>
+<head>
+  <%- include('../partials/head'); %>
 
-        <style>
-            .link-button {
-                border: none;
-                background: none;
-                font-family: "Computer Modern Unicode Serif";
-                font-size: 24px;
-            }
-        </style>
-    </head>
+    <title>Statistics | Mathematical Base Defenders</title>
 
-    <body>
-        <!-- Header -->
-        <%- include('../partials/header'); %>
+    <style>
+      .link-button {
+        border: none;
+        background: none;
+        font-family: "Computer Modern Unicode Serif";
+        font-size: 24px;
+      }
+    </style>
+</head>
 
-        <!-- Content -->
-        <div id="content-wrapper">
-            <div
-                style="
+<body>
+  <!-- Header -->
+  <%- include('../partials/header'); %>
+
+    <!-- Content -->
+    <div id="content-wrapper">
+      <div style="
                     display: flex;
                     justify-content: center;
                     align-items: center;
-                "
-            >
-                <div class="information-box fit-to-content">
-                    <span style="font-size: 24px">Users Registered</span><br />
-                    <span style="font-size: 48px"><%=statistics.registeredUsers%></span>
-                </div>
-            </div>
+                ">
+        <div class="information-box fit-to-content">
+          <span style="font-size: 24px">Users Registered</span><br />
+          <span style="font-size: 48px">
+            <%=statistics.registeredUsers%>
+          </span>
         </div>
-        <!-- Footer -->
-        <%- include('../partials/footer'); %>
+      </div>
+    </div>
+    <!-- Footer -->
+    <%- include('../partials/footer'); %>
 
-    </body>
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script
-        async
-        src="https://www.googletagmanager.com/gtag/js?id=G-XVRB5TXW3K"
-    ></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag() {
-            dataLayer.push(arguments);
-        }
-        gtag("js", new Date());
+</body>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XVRB5TXW3K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() {
+    dataLayer.push(arguments);
+  }
+  gtag("js", new Date());
 
-        gtag("config", "G-XVRB5TXW3K");
-    </script>
+  gtag("config", "G-XVRB5TXW3K");
+</script>
+
 </html>

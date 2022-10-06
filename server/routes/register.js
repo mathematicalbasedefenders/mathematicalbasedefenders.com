@@ -43,7 +43,9 @@ router.post(
       request.body["g-recaptcha-response"]
     );
     const reCaptchaSecretKey = DOMPurify.sanitize(
+
       process.env.RECAPTCHA_SECRET_KEY
+
     );
     const reCaptchaURL = DOMPurify.sanitize(
       `https://www.google.com/recaptcha/api/siteverify?secret=${reCaptchaSecretKey}&response=${responseKey}`
@@ -190,6 +192,7 @@ router.post(
                     "?erroroccurred=true&errorreason=internalerror"
                   );
                   return;
+
                 }
               });
 
@@ -221,6 +224,7 @@ router.post(
                   response.redirect("/?registered=true");
                 }
               });
+
             });
           }
         });
