@@ -24,8 +24,8 @@ const limiter = rateLimit({
   legacyHeaders: false
 });
 
-const credentials = require("../credentials/credentials.js");
 const log = require("../core/log.js");
+const mail = require("../core/mail.js");
 
 router.get(
   "/forgot-password",
@@ -45,7 +45,9 @@ router.post(
       request.body["g-recaptcha-response"]
     );
     const reCaptchaSecretKey = DOMPurify.sanitize(
-      credentials.getReCAPTCHASecretKey()
+
+      process.env.RECAPTCHA_SECRET_KEY
+
     );
     const reCaptchaURL = DOMPurify.sanitize(
       `https://www.google.com/recaptcha/api/siteverify?secret=${reCaptchaSecretKey}&response=${responseKey}`
@@ -80,31 +82,11 @@ router.post(
                 response.redirect("/?resetpassword=fail");
               } else {
                 let transporter = nodemailer.createTransport(
-                  credentials.getNodemailerOptionsObject()
+
+                  mail.getNodemailerOptionsObject()
                 );
-                let message = {
-                  from: "Mathematical Base Defenders Support <support@mathematicalbasedefenders.com>",
-                  to: desiredEmail,
-                  subject:
-                    "Password Reset Confirmation for Mathematical Base Defenders",
-                  html: `
-							<p>
-								Someone requested a password reset for your Mathematical Base Defenders account.
-								<br>
-								If this is you, and you want continue with the procedure, please click this link.
-								<br>
-								<a href=https://mathematicalbasedefenders.com/change-password?email=${desiredEmail}&code=${DOMPurify.sanitize(
-                    passwordResetConfirmationCode
-                  )}>https://mathematicalbasedefenders.com/change-password?email=${DOMPurify.sanitize(
-                    desiredEmail
-                  )}&code=${DOMPurify.sanitize(
-                    passwordResetConfirmationCode
-                  )}</a>
-								<br>
-								This link will expire in 30 minutes. After that, you may request a new password reset link. If the link doesn't work, feel free to copy and paste the link. If you need help, please reply to this e-mail.
-							</p>
-							`
-                };
+                let message = mail.getMailContentForPasswordReset(desiredEmail,passwordResetConfirmationCode);
+
                 transporter.sendMail(message, (error, information) => {
                   if (error) {
                     console.error(log.addMetadata(error.stack, "error"));

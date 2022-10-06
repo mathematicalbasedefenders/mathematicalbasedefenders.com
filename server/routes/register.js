@@ -26,8 +26,8 @@ const limiter = rateLimit({
   legacyHeaders: false
 });
 
-const credentials = require("../credentials/credentials.js");
 const log = require("../core/log.js");
+const mail = require("../core/mail.js");
 
 router.get("/register", [csrfProtection, limiter], (request, response) => {
   response.cookie("csrfToken", request.csrfToken());
@@ -43,7 +43,9 @@ router.post(
       request.body["g-recaptcha-response"]
     );
     const reCaptchaSecretKey = DOMPurify.sanitize(
-      credentials.getReCAPTCHASecretKey()
+
+      process.env.RECAPTCHA_SECRET_KEY
+
     );
     const reCaptchaURL = DOMPurify.sanitize(
       `https://www.google.com/recaptcha/api/siteverify?secret=${reCaptchaSecretKey}&response=${responseKey}`
@@ -190,35 +192,15 @@ router.post(
                     "?erroroccurred=true&errorreason=internalerror"
                   );
                   return;
+
                 }
               });
 
               if (errored) return;
               let transporter = nodemailer.createTransport(
-                credentials.getNodemailerOptionsObject()
+                mail.getNodemailerOptionsObject()
               );
-              let message = {
-                from: "Mathematical Base Defenders Support <support@mathematicalbasedefenders.com>",
-                to: desiredEmail,
-                subject: "Email Confirmation for Mathematical Base Defenders",
-                html: `
-                                                            <p>
-                                                                Thanks for signing up for Mathematical Base Defenders!
-                                                                <br>
-                                                                In order to fully activate your account, please click the activation link below.
-                                                                <br>
-                                                                <a href=https://mathematicalbasedefenders.com/confirm-email-address?email=${DOMPurify.sanitize(
-                                                                  desiredEmail
-                                                                )}&code=${DOMPurify.sanitize(
-                  emailConfirmationCode
-                )}>https://mathematicalbasedefenders.com/confirm-email-address?email=${DOMPurify.sanitize(
-                  desiredEmail
-                )}&code=${DOMPurify.sanitize(emailConfirmationCode)}</a>
-                                                                <br>
-                                                                This link will expire in 30 minutes. After that, your account will be deleted and you may sign up again. If the link doesn't work, feel free to copy and paste the link. If you need help, please reply to this e-mail.
-                                                            </p>
-                                                            `
-              };
+              let message = mail.getMailContentForNewlyRegisteredUser(desiredEmail, emailConfirmationCode);
               transporter.sendMail(message, (error, information) => {
                 if (error) {
                   console.error(log.addMetadata(error.stack, "error"));
@@ -242,6 +224,7 @@ router.post(
                   response.redirect("/?registered=true");
                 }
               });
+
             });
           }
         });

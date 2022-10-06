@@ -24,6 +24,8 @@ const { JSDOM } = require("jsdom");
 const { v4: uuidv4 } = require("uuid");
 const path = require("path");
 
+require("dotenv").config({path:"./credentials/.env"});
+
 const Schema = mongoose.Schema;
 
 const defaultWindow = new JSDOM("").window;
@@ -38,9 +40,8 @@ const PORT = 8080;
 
 const SALT_ROUNDS = 16;
 
-const credentials = require("./server/credentials/credentials.js");
 
-const uri = credentials.getMongooseURI();
+const uri = process.env.DATABASE_CONNECTION_URI;
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -319,7 +320,9 @@ app.listen(PORT, () => {
   console.log(
     log.addMetadata(`App listening at https://localhost:${PORT}`, "info")
   );
-  if (credentials.getWhetherTestingCredentialsAreUsed()) {
+
+  if (process.env.CREDENTIAL_SET_USED === "testing") {
+
     console.log(log.addMetadata(`WARNING: Using testing credentials.`, "info"));
   }
 });
