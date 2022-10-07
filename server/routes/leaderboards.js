@@ -1,7 +1,6 @@
 var router = require("express").Router();
 
 const _ = require("lodash");
-const mongoose = require("mongoose");
 const mongoDBSanitize = require("express-mongo-sanitize");
 const url = require("url");
 const axios = require("axios").default;
@@ -21,8 +20,6 @@ const log = require("../core/log.js");
 const utilities = require("../core/utilities.js");
 
 var User = require("../models/User.js");
-var EasyModeLeaderboardsRecord = require("../models/EasyModeLeaderboardsRecord.js");
-var StandardModeLeaderboardsRecord = require("../models/StandardModeLeaderboardsRecord.js");
 
 router.get("/leaderboards", limiter, async (request, response) => {
   let leaderboardData;
