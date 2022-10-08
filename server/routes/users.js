@@ -39,7 +39,6 @@ const RANK_DESCRIPTIONS = {
 
 router.get("/users/:user", limiter, async (request, response) => {
   let originalData = await validateQuery(request.params.user, request);
-  originalData = originalData.data;
   if (originalData) {
     let data = await getUserData(originalData);
     response.render("pages/users", {
@@ -65,7 +64,7 @@ async function validateQuery(user, request) {
           : request.protocol
       }://${request.get("Host")}/api/users/${user}`
     );
-    data = JSON.parse(JSON.stringify(data));
+    data = JSON.parse(JSON.stringify(data.data));
   } catch (error) {
     console.error(log.addMetadata(error.stack, "error"));
     return false;
