@@ -67,7 +67,7 @@ async function validateQuery(user, request) {
     );
     data = JSON.parse(JSON.stringify(data));
   } catch (error) {
-    console.error(log.addMetadata(error, "error"));
+    console.error(log.addMetadata(error.stack, "error"));
     return false;
   }
 
