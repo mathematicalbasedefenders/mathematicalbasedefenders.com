@@ -45,7 +45,7 @@ router.get("/users/:user", limiter, async (request, response) => {
       data: data
     });
   } else {
-    response.render("pages/not-found");
+    response.render("pages/404");
   }
 });
 
