@@ -305,7 +305,7 @@ async function getTextFromURL(service) {
 app.use((error, request, response, next) => {
   console.error(log.addMetadata(error.stack, "error"));
   response.status(500);
-  response.render(__dirname + "/views/pages/error");
+  response.render(__dirname + "/views/pages/500");
 });
 
 // start
