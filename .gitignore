@@ -529,3 +529,6 @@ server/core/mail.js
 # useless stuff
 migration-finished-html-pages/
 server/core/configuration.js
+
+# production builds
+.dist/

@@ -1,0 +1,26 @@
+<tr>
+  <td width="20%" class="rank-number" style="font-size: 24px">
+    #<%=rank.toString()%>
+
+  </td>
+  <td class="username-field" class="rank-username" width="40%" style="font-size: 24px; text-align: center;">
+    <a href=<%=playerData[rank.toString()]?.[0] ? `/users/${playerData[rank.toString()]?.[0]}` : "javascript: void(0);"
+      %>>
+      <span <%=`style=color:${playerData[rank.toString()]?.[2]}`%>>
+        <%=playerData[rank.toString()]?.[0] ?? "???" %>
+      </span></a>
+  </td>
+  <td class="score-field" class="rank-score" width="20%" style="font-size: 16px; text-align: right">
+    <div style="font-size: 24px">
+      <%=record.score===-50 ? "???" : record.score%>
+    </div>
+    <% if (record.score !==-50){%>
+      <p class="rank-game-data" style="margin-top: 0; margin-bottom: 0">
+        <%=record.timeInMilliseconds%>ms,
+          <%=record.scoreSubmissionDateAndTime%>,
+            <%=record.enemiesKilled%>/<%=record.enemiesCreated%>,
+                <%=(record.actionsPerformed /record.timeInMilliseconds*60000).toFixed(3)%>APM
+      </p>
+      <%}%>
+  </td>
+</tr>

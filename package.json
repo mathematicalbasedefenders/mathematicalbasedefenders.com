@@ -4,16 +4,21 @@
   "description": "Website for Mathematical Base Defenders.",
   "main": "app.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "build": "tsc",
+    "copyStaticFiles": "copyfiles --up 1 \"src/**/*\" -e \"**/*.ts\" dist",
+    "start": "npm run build && npm run copyStaticFiles && node ./dist/server.js"
   },
   "author": "mistertfy64",
   "license": "MIT",
   "dependencies": {
+    "@types/isomorphic-fetch": "^0.0.36",
     "axios": "^0.27.2",
     "bcrypt": "^5.0.1",
     "body-parser": "^1.19.1",
     "cheerio": "^1.0.0-rc.10",
     "cookie-parser": "^1.4.6",
+    "copyfiles": "^2.4.1",
     "csurf": "^1.11.0",
     "dompurify": "^2.3.4",
     "dotenv": "^16.0.2",
@@ -41,6 +46,7 @@
     "require-dir": "^1.2.0",
     "serve-favicon": "^2.5.0",
     "socket.io": "^4.4.1",
+    "typescript": "^4.8.4",
     "uuid": "^8.3.2",
     "uWebSockets.js": "github:uNetworking/uWebSockets.js#v20.10.0",
     "validate-npm-package-name": "^3.0.0",
@@ -55,6 +61,20 @@
   },
   "homepage": "https://github.com/mistertfy64/mathematicalbasedefenders.com#readme",
   "devDependencies": {
+    "@types/bcrypt": "^5.0.0",
+    "@types/body-parser": "^1.19.2",
+    "@types/cookie-parser": "^1.4.3",
+    "@types/csurf": "^1.11.2",
+    "@types/dompurify": "^2.3.4",
+    "@types/express": "^4.17.14",
+    "@types/jest": "^29.2.0",
+    "@types/jsdom": "^20.0.0",
+    "@types/license-checker": "^25.0.3",
+    "@types/lodash": "^4.14.186",
+    "@types/marked": "^4.0.7",
+    "@types/nodemailer": "^6.4.6",
+    "@types/serve-favicon": "^2.5.3",
+    "@types/uuid": "^8.3.4",
     "jest": "^28.1.3"
   }
 }
