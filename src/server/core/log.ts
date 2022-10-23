@@ -24,6 +24,7 @@ function addLogMessageMetadata(
     }
     case "warning": {
       logLevel = "WARNING";
+      break;
     }
     case "debug": {
       logLevel = "DEBUG";
