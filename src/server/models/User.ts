@@ -45,10 +45,10 @@ interface UserInterface {
 }
 
 interface UserModel extends mongoose.Model<UserInterface> {
-  safeFindByUsername(username: string): Promise<Object>;
-  safeFindByUserID(userID: string): Promise<Object>;
-  findByUsernameUsingAPI(username: string): Promise<Object>;
-  findByUserIDUsingAPI(userID: string): Promise<Object>;
+  safeFindByUsername(username: string): Promise<UserInterface>;
+  safeFindByUserID(userID: string): Promise<UserInterface>;
+  findByUsernameUsingAPI(username: string): Promise<UserInterface>;
+  findByUserIDUsingAPI(userID: string): Promise<UserInterface>;
 }
 
 const UserSchema = new mongoose.Schema<UserInterface, UserModel>({
@@ -135,6 +135,10 @@ UserSchema.static("findByUserIDUsingAPI", async function (userID: string) {
     .clone();
 });
 
-const User = mongoose.model<UserInterface, UserModel>("User", UserSchema);
+const User = mongoose.model<UserInterface, UserModel>(
+  "User",
+  UserSchema,
+  "users"
+);
 
 export { User, UserInterface };

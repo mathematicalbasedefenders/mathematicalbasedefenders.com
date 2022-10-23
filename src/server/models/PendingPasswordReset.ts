@@ -41,6 +41,6 @@ PendingPasswordResetSchema.index(
 const PendingPasswordReset = mongoose.model<
   PendingPasswordResetInterface,
   PendingPasswordResetModel
->("PendingPasswordReset", PendingPasswordResetSchema);
+>("PendingPasswordReset", PendingPasswordResetSchema, "pendingPasswordResets");
 
 export default PendingPasswordReset;

@@ -12,7 +12,9 @@ interface StandardModeLeaderboardsRecordInterface {
 }
 
 interface StandardModeLeaderboardsRecordModel
-  extends mongoose.Model<StandardModeLeaderboardsRecordInterface> {}
+  extends mongoose.Model<StandardModeLeaderboardsRecordInterface> {
+  getAll(): Promise<StandardModeLeaderboardsRecordInterface>;
+}
 
 const StandardModeLeaderboardsRecordSchema = new mongoose.Schema<
   StandardModeLeaderboardsRecordInterface,
@@ -28,9 +30,20 @@ const StandardModeLeaderboardsRecordSchema = new mongoose.Schema<
   actionsPerformed: Number
 });
 
+StandardModeLeaderboardsRecordSchema.static("getAll", async function () {
+  return this.find({ rankNumber: { $lt: 51 } }).clone();
+});
+
 const StandardModeLeaderboardsRecord = mongoose.model<
   StandardModeLeaderboardsRecordInterface,
   StandardModeLeaderboardsRecordModel
->("StandardModeLeaderboardsRecord", StandardModeLeaderboardsRecordSchema);
+>(
+  "StandardModeLeaderboardsRecord",
+  StandardModeLeaderboardsRecordSchema,
+  "standardModeLeaderboardsRecords"
+);
 
-export default StandardModeLeaderboardsRecord;
+export {
+  StandardModeLeaderboardsRecord,
+  StandardModeLeaderboardsRecordInterface
+};

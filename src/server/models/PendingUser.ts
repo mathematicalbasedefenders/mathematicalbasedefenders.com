@@ -56,7 +56,8 @@ PendingUserSchema.static(
 
 const PendingUser = mongoose.model<PendingUserInterface, PendingUserModel>(
   "PendingUser",
-  PendingUserSchema
+  PendingUserSchema,
+  "pendingUsers"
 );
 
 export default PendingUser;

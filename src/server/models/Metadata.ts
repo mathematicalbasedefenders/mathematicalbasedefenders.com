@@ -16,7 +16,8 @@ const MetadataSchema = new mongoose.Schema<MetadataInterface, MetadataModel>({
 
 const Metadata = mongoose.model<MetadataInterface, MetadataModel>(
   "Metadata",
-  MetadataSchema
+  MetadataSchema,
+  "metadata"
 );
 
 export default Metadata;

@@ -12,7 +12,9 @@ interface EasyModeLeaderboardsRecordInterface {
 }
 
 interface EasyModeLeaderboardsRecordModel
-  extends mongoose.Model<EasyModeLeaderboardsRecordInterface> {}
+  extends mongoose.Model<EasyModeLeaderboardsRecordInterface> {
+  getAll(): Promise<EasyModeLeaderboardsRecordInterface>;
+}
 
 const EasyModeLeaderboardsRecordSchema = new mongoose.Schema<
   EasyModeLeaderboardsRecordInterface,
@@ -28,9 +30,17 @@ const EasyModeLeaderboardsRecordSchema = new mongoose.Schema<
   actionsPerformed: Number
 });
 
+EasyModeLeaderboardsRecordSchema.static("getAll", async function () {
+  return this.find({ rankNumber: { $lt: 51 } }).clone();
+});
+
 const EasyModeLeaderboardsRecord = mongoose.model<
   EasyModeLeaderboardsRecordInterface,
   EasyModeLeaderboardsRecordModel
->("EasyModeLeaderboardsRecord", EasyModeLeaderboardsRecordSchema);
+>(
+  "EasyModeLeaderboardsRecord",
+  EasyModeLeaderboardsRecordSchema,
+  "easyModeLeaderboardsRecords"
+);
 
-export default EasyModeLeaderboardsRecord;
+export { EasyModeLeaderboardsRecord, EasyModeLeaderboardsRecordInterface };
