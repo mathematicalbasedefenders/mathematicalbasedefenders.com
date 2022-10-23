@@ -19,7 +19,7 @@ import createDOMPurify from "dompurify";
 const window: any = new JSDOM("").window;
 const DOMPurify = createDOMPurify(window);
 import { v4 as uuidv4 } from "uuid";
-
+import fetch from "isomorphic-fetch";
 import rateLimit from "express-rate-limit";
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
