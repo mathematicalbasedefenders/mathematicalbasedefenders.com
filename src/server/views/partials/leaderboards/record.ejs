@@ -4,10 +4,9 @@
 
   </td>
   <td class="username-field" class="rank-username" width="40%" style="font-size: 24px; text-align: center;">
-    <a href=<%=playerData[rank.toString()]?.[0] ? `/users/${playerData[rank.toString()]?.[0]}` : "javascript: void(0);"
-      %>>
-      <span <%=`style=color:${playerData[rank.toString()]?.[2]}`%>>
-        <%=playerData[rank.toString()]?.[0] ?? "???" %>
+    <a href=<%=playerData[0] ? `/users/${playerData[0]}` : "javascript: void(0);" %>>
+      <span <%=`style=color:${playerData[2]}`%>>
+        <%=playerData[0] ?? "???" %>
       </span></a>
   </td>
   <td class="score-field" class="rank-score" width="20%" style="font-size: 16px; text-align: right">

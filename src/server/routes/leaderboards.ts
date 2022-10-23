@@ -30,16 +30,14 @@ router.get(
   limiter,
   async (request: any, response: any) => {
     let leaderboardData;
-
     let sanitized: any = mongoDBSanitize.sanitize(request.params.mode);
     let mode = DOMPurify.sanitize(sanitized as string);
+    let startCasedMode = _.startCase(mode);
 
     if (!mode) {
       response.redirect("/leaderboards/standard");
       return;
     }
-
-    let startCasedMode = _.startCase(mode);
 
     try {
       // FIXME: Dangerous??
@@ -51,32 +49,32 @@ router.get(
       console.error(addLogMessageMetadata(error.stack, LogMessageLevel.ERROR));
     }
 
-    let playerData: Array<string[]> = [];
+    let playerData: Array<(string | UserInterface)[]> = [];
 
     for (let i = 1; i <= 50; i++) {
       let objectID;
       for (let object of leaderboardData) {
-        if (object.rankNumber == i) {
+        if (object.rankNumber === i) {
           objectID = object.userIDOfHolder.toString();
           break;
         }
       }
 
       if (objectID != "???") {
-        let playerRecord: UserInterface | null = await User.findById(
-          objectID,
-          function (error2: any, result2: any) {
-            return result2;
-          }
-        ).clone();
+        // users that hold a rank
+        let playerRecord: UserInterface | null =
+          await User.findByUserIDUsingAPI(objectID);
 
         if (typeof playerRecord === "object") {
-          let playerDataForPlayer: string[] = [];
+          let playerDataForPlayer: (string | UserInterface)[] = [];
           playerDataForPlayer.push(
             playerRecord?.username ?? "(Unable to get username.)"
           );
           playerDataForPlayer.push(utilities.calculateRank(playerRecord));
-          playerDataForPlayer.push(utilities.getRankColor(playerRecord));
+          playerDataForPlayer.push(
+            utilities.getRankColor(utilities.calculateRank(playerRecord))
+          );
+          playerDataForPlayer.push(playerRecord);
           playerData.push(playerDataForPlayer);
         }
       }

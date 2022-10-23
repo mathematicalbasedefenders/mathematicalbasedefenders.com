@@ -65,11 +65,12 @@
     </p>
     <div style="display: flex; justify-content: center; align-items: center">
       <table id="leaderboards-table" style="max-width: 80vw; width: 80vw">
-        <% for (let i=0; i <49; i++){ %>
-          <% let key=Object.keys(leaderboardData).find(key=>
-            Object.keys(leaderboardData[key]) === i); %> <%- include("../partials/leaderboards/record.ejs", {record:
-              leaderboardData[key], playerData: playerData, rank: i+1}); %>
-              <%}%>
+        <!-- Variable substitutions because prettier doesn't work well with ejs + 80 char/line limit... -->
+        <% for (let i=0; i <50; i++){ %>
+          <% let lb=leaderboardData[i] ?? [] %>
+            <% let plr=playerData[i] ?? [] %>
+              <%- include("../partials/leaderboards/record.ejs", {record: lb, playerData: plr, rank: i+1}); %>
+                <%}%>
       </table>
     </div>
     <br>

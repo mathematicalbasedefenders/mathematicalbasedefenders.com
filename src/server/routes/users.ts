@@ -21,8 +21,14 @@ const limiter = rateLimit({
 });
 
 import { User, UserInterface } from "../models/User";
-import EasyModeLeaderboardsRecord from "../models/EasyModeLeaderboardsRecord.js";
-import StandardModeLeaderboardsRecord from "../models/StandardModeLeaderboardsRecord.js";
+import {
+  EasyModeLeaderboardsRecord,
+  EasyModeLeaderboardsRecordInterface
+} from "../models/EasyModeLeaderboardsRecord";
+import {
+  StandardModeLeaderboardsRecord,
+  StandardModeLeaderboardsRecordInterface
+} from "../models/StandardModeLeaderboardsRecord";
 
 const RANK_DESCRIPTIONS: any = {
   "Game Master":
