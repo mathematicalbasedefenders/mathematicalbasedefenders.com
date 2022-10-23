@@ -12,8 +12,14 @@ const limiter = rateLimit({
 import _ from "lodash";
 import { addLogMessageMetadata, LogMessageLevel } from "../core/log";
 import { User, UserInterface } from "../models/User";
-import EasyModeLeaderboardsRecord from "../models/EasyModeLeaderboardsRecord.js";
-import StandardModeLeaderboardsRecord from "../models/StandardModeLeaderboardsRecord.js";
+import {
+  EasyModeLeaderboardsRecord,
+  EasyModeLeaderboardsRecordInterface
+} from "../models/EasyModeLeaderboardsRecord";
+import {
+  StandardModeLeaderboardsRecord,
+  StandardModeLeaderboardsRecordInterface
+} from "../models/StandardModeLeaderboardsRecord";
 
 router.get("/api/users/:user", limiter, async (request, response) => {
   if (!request?.params?.user) {

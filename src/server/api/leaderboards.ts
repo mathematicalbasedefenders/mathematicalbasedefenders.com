@@ -8,11 +8,18 @@ const limiter = rateLimit({
   legacyHeaders: false
 });
 import { addLogMessageMetadata, LogMessageLevel } from "../core/log";
-import EasyModeLeaderboardsRecord from "../models/EasyModeLeaderboardsRecord.js";
-import StandardModeLeaderboardsRecord from "../models/StandardModeLeaderboardsRecord.js";
+import {
+  EasyModeLeaderboardsRecord,
+  EasyModeLeaderboardsRecordInterface
+} from "../models/EasyModeLeaderboardsRecord";
+import {
+  StandardModeLeaderboardsRecord,
+  StandardModeLeaderboardsRecordInterface
+} from "../models/StandardModeLeaderboardsRecord";
 
 router.get("/api/leaderboards/:mode", limiter, async (request, response) => {
   let model;
+  let data;
   switch (request.params.mode) {
     case "easy": {
       model = EasyModeLeaderboardsRecord;
@@ -25,10 +32,15 @@ router.get("/api/leaderboards/:mode", limiter, async (request, response) => {
     default: {
       response.status(404).json("Mode does not exist.");
       return;
-      break;
     }
   }
-  let data = await model.find({ rankNumber: { $lt: 51 } }).clone();
+
+  try {
+    data = await model.getAll();
+  } catch (error: any) {
+    console.error(addLogMessageMetadata(error.stack, LogMessageLevel.ERROR));
+    response.status(500).json("Internal Server Error.");
+  }
   response.status(200).json(data);
 });
 
