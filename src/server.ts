@@ -62,7 +62,7 @@ let getLicenses = async () => {
   return await new Promise((resolve, reject) => {
     licenseChecker.init(
       {
-        start: __dirname
+        start: path.join(__dirname, "..")
       },
       function (error, packages) {
         if (error) {
@@ -86,10 +86,16 @@ let getLicenses = async () => {
           for (let moduleName of moduleNames) {
             licensesToReturn[moduleName.toString()] = {
               homepage: getRepositoryLink(
-                __dirname + "/node_modules/" + moduleName + "/package.json"
+                path.join(
+                  __dirname,
+                  "..",
+                  "/node_modules/",
+                  moduleName,
+                  "/package.json"
+                )
               ),
               license: readLicenseFile(
-                __dirname + "/node_modules/" + moduleName
+                path.join(__dirname, "..", "/node_modules/", moduleName)
               )
             };
           }

@@ -117,9 +117,7 @@
   <script>
     $.post("/fetch-open-source-licenses", (data, status) => {
       $("#loading-text").text("");
-
       data = JSON.parse(data);
-      console.log(data);
       for (let content in data) {
         if (data[content].homepage == "") {
           $("#license-container").append(`<h2>${content}</h2>`);
