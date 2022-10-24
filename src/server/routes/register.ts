@@ -157,83 +157,42 @@ router.post(
           return;
         }
 
-        let hashedPasswordToSave;
-        let emailConfirmationCode;
+        try {
+          let salt = await bcrypt.genSalt(16);
 
-        await bcrypt.genSalt(16, async (error1, salt) => {
-          if (error1) {
-            response.redirect("?erroroccurred=true&errorreason=internalerror");
-            return;
-          } else {
-            await bcrypt.hash(plaintextPassword, salt, (error2, hash) => {
-              if (error2) {
-                response.redirect(
-                  "?erroroccurred=true&errorreason=internalerror"
-                );
-                return;
-              }
-              hashedPasswordToSave = hash;
-              emailConfirmationCode = uuidv4();
+          let hashedPasswordToSave = await bcrypt.hash(plaintextPassword, salt);
 
-              // create data object (pending user)
-              let dataToSave = {
-                username: desiredUsername,
-                usernameInAllLowercase: desiredUsernameInAllLowercase,
-                emailAddress: desiredEmail,
-                hashedPassword: hashedPasswordToSave,
-                emailConfirmationLink: `https://mathematicalbasedefenders.com/confirm-email-address?email=${desiredEmail}&code=${emailConfirmationCode}`,
-                emailConfirmationCode: emailConfirmationCode,
-                expiresAt: new Date(Date.now() + 1800000).getTime()
-              };
+          let emailConfirmationCode = uuidv4();
 
-              let pendingUserModelToSave = new PendingUser(dataToSave);
+          // create data object (pending user)
+          let dataToSave = {
+            username: desiredUsername,
+            usernameInAllLowercase: desiredUsernameInAllLowercase,
+            emailAddress: desiredEmail,
+            hashedPassword: hashedPasswordToSave,
+            emailConfirmationLink: `https://mathematicalbasedefenders.com/confirm-email-address?email=${desiredEmail}&code=${emailConfirmationCode}`,
+            emailConfirmationCode: emailConfirmationCode,
+            expiresAt: new Date(Date.now() + 1800000).getTime()
+          };
 
-              pendingUserModelToSave.save((error4) => {
-                if (error4) {
-                  errored = true;
-                  response.redirect(
-                    "?erroroccurred=true&errorreason=internalerror"
-                  );
-                  return;
-                }
-              });
+          let pendingUserModelToSave = new PendingUser(dataToSave);
 
-              if (errored) return;
-              let transporter = nodemailer.createTransport(
-                mail.getNodemailerOptionsObject()
-              );
-              let message = mail.getMailContentForNewlyRegisteredUser(
-                desiredEmail,
-                emailConfirmationCode
-              );
-              transporter.sendMail(message, (error, information) => {
-                if (error) {
-                  console.error(
-                    addLogMessageMetadata(error.stack, LogMessageLevel.ERROR)
-                  );
-                  response.redirect(
-                    "?erroroccurred=true&errorreason=internalerror"
-                  );
-                  return;
-                } else {
-                  console.log(
-                    addLogMessageMetadata(
-                      `Successfully sent verification message to ${desiredUsername}'s e-mail address!`,
-                      LogMessageLevel.INFO
-                    )
-                  );
-                  console.log(
-                    addLogMessageMetadata(
-                      "New Unconfirmed User: " + desiredUsername,
-                      LogMessageLevel.INFO
-                    )
-                  );
-                  response.redirect("/?registered=true");
-                }
-              });
-            });
-          }
-        });
+          pendingUserModelToSave.save();
+
+          let transporter = nodemailer.createTransport(
+            mail.getNodemailerOptionsObject()
+          );
+          let message = mail.getMailContentForNewlyRegisteredUser(
+            desiredEmail,
+            emailConfirmationCode
+          );
+          transporter.sendMail(message);
+        } catch (error: any) {
+          console.error(
+            addLogMessageMetadata(error.stack, LogMessageLevel.ERROR)
+          );
+          response.redirect("/?erroroccurred=true&errorreason=internalerror");
+        }
       });
   }
 );
