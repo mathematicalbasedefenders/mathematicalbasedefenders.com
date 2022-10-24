@@ -82,45 +82,46 @@ router.post(
       $and: [{ emailAddress: email }, { code: code }]
     }).clone();
 
-    if (record) {
-      if (
+    if (!record) {
+      response.redirect("/?erroroccurred=true");
+      return;
+    }
+
+    if (
+      !(
         validation.validatePassword(newPassword) &&
         newPassword === confirmNewPassword
-      ) {
-        try {
-          let hashedNewPasswordSalt: string = await bcrypt.genSalt(16);
-          let hashedNewPassword: string = await bcrypt.hash(
-            newPassword,
-            hashedNewPasswordSalt
-          );
-          await PendingPasswordReset.deleteOne({ emailAddress: email });
-          await User.findOneAndUpdate(
-            { emailAddress: email },
-            {
-              hashedPassword: hashedNewPassword
-            },
-            {
-              useFindAndModify: true,
-              new: true
-            }
-          ).clone();
-          console.log(
-            addLogMessageMetadata(
-              "Successfully changed password for a user!",
-              LogMessageLevel.INFO
-            )
-          );
-          response.redirect("/?changedPassword=true");
-        } catch (error: any) {
-          console.error(
-            addLogMessageMetadata(error.stack, LogMessageLevel.ERROR)
-          );
-          response.redirect("/?erroroccurred=true");
+      )
+    ) {
+      response.redirect("/?erroroccurred=true");
+    }
+
+    try {
+      let hashedNewPasswordSalt: string = await bcrypt.genSalt(16);
+      let hashedNewPassword: string = await bcrypt.hash(
+        newPassword,
+        hashedNewPasswordSalt
+      );
+      await PendingPasswordReset.deleteOne({ emailAddress: email });
+      await User.findOneAndUpdate(
+        { emailAddress: email },
+        {
+          hashedPassword: hashedNewPassword
+        },
+        {
+          useFindAndModify: true,
+          new: true
         }
-      } else {
-        response.redirect("/?erroroccurred=true");
-      }
-    } else {
+      ).clone();
+      console.log(
+        addLogMessageMetadata(
+          "Successfully changed password for a user!",
+          LogMessageLevel.INFO
+        )
+      );
+      response.redirect("/?changedPassword=true");
+    } catch (error: any) {
+      console.error(addLogMessageMetadata(error.stack, LogMessageLevel.ERROR));
       response.redirect("/?erroroccurred=true");
     }
   }
