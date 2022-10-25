@@ -82,13 +82,15 @@
             <br />
             <br />
             Mathematical Base Defenders, as the name suggests, is a
-            math-based game. (boohoo), <strong>It is not a substitute for a legitimate math tutor.</strong><br /><br />
+            math-based game. (boohoo)<br /><br />
             You defend your base from square-shaped enemies using
             square-shaped tiles.<br /><br />
             <br /><br />
             <button onClick="document.location='https://play.mathematicalbasedefenders.com'" class="play-button">
               Play</button><br /><span style="font-size: 16px">An account is not required to play, however
-              registering for one is highly recommended.</span>
+              registering for one is highly recommended.<br>This game uses the numpad on your keyboard. If you don't
+              have one, other keybindings and mouse input are available.<br>The game is not a substitute for a
+              legitimate math tutor.</span>
           </div>
         </div>
       </div>
@@ -105,11 +107,13 @@
   function pickAndShowGameDescription() {
     let descriptions = [
       "A competitive(?) multiplayer math game!!!!!!!!111111111!!!!1",
-      "Defend your base from square-shaped enemies using square-shaped tiles!",
+      "Defend your base from square-shaped enemies using square-shaped tiles using math!",
       "The hardest math game that only involves basic calculations????",
       "The worst math game ever?",
       "The most feature-creep math game ever?",
-      "A math game you can't use a calculator on???"
+      "A math game you can't use a calculator on???",
+      "Oh look, another math game, just why is it so hard to play?",
+      "The number I want won't come up!!!"
     ];
     document.getElementById("game-description").innerHTML =
       descriptions[Math.floor(Math.random() * descriptions.length)];
