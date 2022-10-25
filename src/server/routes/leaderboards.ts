@@ -34,8 +34,8 @@ router.get(
     let mode = DOMPurify.sanitize(sanitized as string);
     let startCasedMode = _.startCase(mode);
 
-    if (!mode) {
-      response.redirect("/leaderboards/standard");
+    if (!mode || (mode !== "easy" && mode !== "standard")) {
+      response.render("pages/404", { resourceName: "leaderboards" });
       return;
     }
 
