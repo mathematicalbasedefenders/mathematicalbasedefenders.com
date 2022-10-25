@@ -244,7 +244,9 @@ app.post("/fetch-website-changelog", async (request, response) => {
 // PUT THIS LAST (404 page)
 
 app.get("*", function (req, res) {
-  res.status(404).render(__dirname + "/server/views/pages/404");
+  res
+    .status(404)
+    .render(__dirname + "/server/views/pages/404", { resourceName: "page" });
 });
 
 // other functions

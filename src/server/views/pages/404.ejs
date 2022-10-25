@@ -16,9 +16,16 @@
   <%- include('../partials/header'); %>
 
     <!-- Content -->
-    <div id="content-wrapper">
-      <p style="text-align: center; font-size: 72px">404</p>
-      <p style="text-align: center; font-size: 24px">Not Found</p>
+    <div id="content-wrapper" style="display:flex;justify-content:center;align-items:center;">
+
+      <div style="display:flex;align-items:center">
+        <div style="font-size:96px;">404</div>
+        <div style="font-size:24px;">The <%= resourceName + " " %> you are looking for can't be found.<br>Do you want to
+            go
+            back to <a href="/">the homepage?</a></div>
+
+      </div>
+
     </div>
 
     <!-- Footer -->
