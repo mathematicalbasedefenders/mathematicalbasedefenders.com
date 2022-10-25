@@ -20,6 +20,8 @@
             <%=record.enemiesKilled%>/<%=record.enemiesCreated%>,
                 <%=(record.actionsPerformed /record.timeInMilliseconds*60000).toFixed(3)%>APM
       </p>
-      <%}%>
+      <%} else { %>
+        <p class="rank-game-data" style="margin-top: 0; margin-bottom: 0">&nbsp;</p>
+        <%}%>
   </td>
 </tr>
