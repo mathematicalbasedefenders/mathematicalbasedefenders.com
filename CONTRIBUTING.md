@@ -19,6 +19,8 @@ Table of Contents
 
 For people who don't know how to code but would still like to help out the Game Master figure out ideas or catch bugs, feel free to create an issue. Issues are for bug reports and feature requests. Feel free to make one, and the Game Master will take a look at it, and will try to respond back as fast as possible.
 
+When reporting a bug in the Issues tab, make sure that you describe what the bug is about, how to reproduce it, and a potential fix (optional).
+
 ## Contributing by Helping Development
 
 For people who want to help the codebase directly, feel free to fork the repository on GitHub, then clone it to your local machine.
