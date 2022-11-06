@@ -17,7 +17,8 @@ const RANK_INFORMATION: any = {
     description:
       "This user created and has full control over Mathematical Base Defenders.",
     color: "#ff0000",
-    key: "isDeveloper"
+    key: "isDeveloper",
+    precedence: 10000
   },
 
   "Administrator": {
@@ -25,7 +26,8 @@ const RANK_INFORMATION: any = {
     description:
       "This user created and has full control over Mathematical Base Defenders.",
     color: "#da1717",
-    key: "isAdministrator"
+    key: "isAdministrator",
+    precedence: 9999
   },
 
   "Moderator": {
@@ -33,7 +35,8 @@ const RANK_INFORMATION: any = {
     description:
       "This user has punishment control over Mathematical Base Defenders.",
     color: "#ff7f00",
-    key: "isModerator"
+    key: "isModerator",
+    precedence: 9998
   },
 
   // Helpful Roles
@@ -43,7 +46,8 @@ const RANK_INFORMATION: any = {
     description:
       "This user has higher access to the Mathematical Base Defenders source code.",
     color: "#0e5bf8",
-    key: "isCollaborator"
+    key: "isCollaborator",
+    precedence: 3002
   },
 
   "Trial Collaborator": {
@@ -51,7 +55,8 @@ const RANK_INFORMATION: any = {
     description:
       "This user has temporary higher access to the Mathematical Base Defenders source code.",
     color: "#2368fa",
-    key: "isTrialCollaborator"
+    key: "isTrialCollaborator",
+    precedence: 3001
   },
 
   "Contributor": {
@@ -59,14 +64,16 @@ const RANK_INFORMATION: any = {
     description:
       "This user has helped Mathematical Base Defenders with its source code.",
     color: "#01acff",
-    key: "isContributor"
+    key: "isContributor",
+    precedence: 3000
   },
 
   "Tester": {
     name: "Tester",
     description: "This user has helped test Mathematical Base Defenders.",
     color: "#5bb1e0",
-    key: "isTester"
+    key: "isTester",
+    precedence: 2000
   },
 
   // Money Roles
@@ -76,7 +83,8 @@ const RANK_INFORMATION: any = {
     description:
       "This user has supported Mathematical Base Defenders financially.",
     color: "#2ec771",
-    key: "isDonator"
+    key: "isDonator",
+    precedence: 1000
   }
 };
 
