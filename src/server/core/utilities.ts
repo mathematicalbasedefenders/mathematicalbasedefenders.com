@@ -30,7 +30,7 @@ function calculateRank(data: any) {
   let ranksOwned = [];
   let finalRank = "";
   let topPrecedence = 0;
-  console.debug(ranks);
+
   // for (let rank in ranks) {
   //   if (ranks[rank]) {
   //     ranksOwned.push(rank);

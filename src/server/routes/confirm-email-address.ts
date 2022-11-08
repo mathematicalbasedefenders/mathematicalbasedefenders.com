@@ -32,8 +32,6 @@ router.get("/confirm-email-address", limiter, async (request, response) => {
   );
   let code: string = DOMPurify.sanitize(mongoDBSanitize.sanitize(query.code));
 
-  console.debug(email, code);
-
   let pendingUserRecord = await PendingUser.findOne({
     emailAddress: email
   }).clone();

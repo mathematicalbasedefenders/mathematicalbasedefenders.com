@@ -20,6 +20,7 @@ const limiter = rateLimit({
   legacyHeaders: false
 });
 
+import { RANK_INFORMATION } from "../core/ranks";
 import { User, UserInterface } from "../models/User";
 import {
   EasyModeLeaderboardsRecord,
@@ -30,18 +31,18 @@ import {
   StandardModeLeaderboardsRecordInterface
 } from "../models/StandardModeLeaderboardsRecord";
 
-const RANK_DESCRIPTIONS: any = {
-  "Game Master":
-    "This user created and has full control over Mathematical Base Defenders.",
-  Administrator:
-    "This user has almost full control over Mathematical Base Defenders.",
-  Moderator: "This user can assign punishments to users.",
-  Contributor:
-    "This user helped with the development of Mathematical Base Defenders, but isn't part of the development team.",
-  Tester:
-    "This user helped to test features of Mathematical Base Defenders, but isn't part of the development team.",
-  Donator: "This user has supported Mathematical Base Defenders financially."
-};
+// const RANK_DESCRIPTIONS: any = {
+//   "Game Master":
+//     "This user created and has full control over Mathematical Base Defenders.",
+//   Administrator:
+//     "This user has almost full control over Mathematical Base Defenders.",
+//   Moderator: "This user can assign punishments to users.",
+//   Contributor:
+//     "This user helped with the development of Mathematical Base Defenders, but isn't part of the development team.",
+//   Tester:
+//     "This user helped to test features of Mathematical Base Defenders, but isn't part of the development team.",
+//   Donator: "This user has supported Mathematical Base Defenders financially."
+// };
 
 router.get("/users/:user", limiter, async (request, response) => {
   let originalData = await validateQuery(request.params.user, request);
@@ -114,14 +115,11 @@ async function getUserData(data: any, invalid: boolean = false) {
         ) * 100
       ).toFixed(3)
     ).toString()}%`;
-    if (data.username === "mistertfy64") {
-      data.rankDescription = RANK_DESCRIPTIONS["Game Master"];
-    } else {
-      data.rankDescription =
-        data.rank.toString() in RANK_DESCRIPTIONS
-          ? RANK_DESCRIPTIONS[data.rank.toString()]
-          : "This user is a normal player.";
-    }
+
+    data.rankDescription =
+      data.rank.toString() in Object.keys(RANK_INFORMATION)
+        ? RANK_INFORMATION[data.rank.toString()].description
+        : "This user is a normal player.";
   }
   data.statistics.multiplayerWinRate =
     data.statistics?.multiplayer?.gamesWon /
