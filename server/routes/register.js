@@ -40,7 +40,9 @@ router.post(
       request.body["g-recaptcha-response"]
     );
     const reCaptchaSecretKey = DOMPurify.sanitize(
+
       process.env.RECAPTCHA_SECRET_KEY
+
     );
     const reCaptchaURL = DOMPurify.sanitize(
       `https://www.google.com/recaptcha/api/siteverify?secret=${reCaptchaSecretKey}&response=${responseKey}`
@@ -97,6 +99,80 @@ router.post(
           return;
         }
 
+        let hashedPasswordToSave;
+        let emailConfirmationCode;
+
+        await bcrypt.genSalt(16, async (error1, salt) => {
+          if (error1) {
+            response.redirect("?erroroccurred=true&errorreason=internalerror");
+            return;
+          } else {
+            await bcrypt.hash(plaintextPassword, salt, (error2, hash) => {
+              if (error2) {
+                response.redirect(
+                  "?erroroccurred=true&errorreason=internalerror"
+                );
+                return;
+              }
+              hashedPasswordToSave = hash;
+              emailConfirmationCode = uuidv4();
+
+              // create data object (pending user)
+              let dataToSave = {
+                username: desiredUsername,
+                usernameInAllLowercase: desiredUsernameInAllLowercase,
+                emailAddress: desiredEmail,
+                hashedPassword: hashedPasswordToSave,
+                emailConfirmationLink: `https://mathematicalbasedefenders.com/confirm-email-address?email=${desiredEmail}&code=${emailConfirmationCode}`,
+                emailConfirmationCode: emailConfirmationCode,
+                expiresAt: new Date(Date.now() + 1800000).getTime()
+              };
+
+              let pendingUserModelToSave = new PendingUser(dataToSave);
+
+              pendingUserModelToSave.save((error4) => {
+                if (error4) {
+                  errored = true;
+                  response.redirect(
+                    "?erroroccurred=true&errorreason=internalerror"
+                  );
+                  return;
+
+                }
+              });
+
+              if (errored) return;
+              let transporter = nodemailer.createTransport(
+                mail.getNodemailerOptionsObject()
+              );
+              let message = mail.getMailContentForNewlyRegisteredUser(desiredEmail, emailConfirmationCode);
+              transporter.sendMail(message, (error, information) => {
+                if (error) {
+                  console.error(log.addMetadata(error.stack, "error"));
+                  response.redirect(
+                    "?erroroccurred=true&errorreason=internalerror"
+                  );
+                  return;
+                } else {
+                  console.log(
+                    log.addMetadata(
+                      `Successfully sent verification message to ${desiredUsername}'s e-mail address!`,
+                      "info"
+                    )
+                  );
+                  console.log(
+                    log.addMetadata(
+                      "New Unconfirmed User: " + desiredUsername,
+                      "info"
+                    )
+                  );
+                  response.redirect("/?registered=true");
+                }
+              });
+
+            });
+          }
+        });
         response.redirect(mailResult.redirectTo);
         return;
 

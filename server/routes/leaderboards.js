@@ -1,9 +1,7 @@
 var router = require("express").Router();
 
 const _ = require("lodash");
-const mongoose = require("mongoose");
 const mongoDBSanitize = require("express-mongo-sanitize");
-const url = require("url");
 const axios = require("axios").default;
 const { JSDOM } = require("jsdom");
 const defaultWindow = new JSDOM("").window;
@@ -21,16 +19,18 @@ const log = require("../core/log.js");
 const utilities = require("../core/utilities.js");
 
 var User = require("../models/User.js");
-var EasyModeLeaderboardsRecord = require("../models/EasyModeLeaderboardsRecord.js");
-var StandardModeLeaderboardsRecord = require("../models/StandardModeLeaderboardsRecord.js");
 
 router.get("/leaderboards", limiter, async (request, response) => {
+  response.redirect("/leaderboards/standard");
+  return;
+});
+
+router.get("/leaderboards/:mode", limiter, async (request, response) => {
   let leaderboardData;
-  let query = mongoDBSanitize.sanitize(url.parse(request.url, true)).query;
-  let mode = DOMPurify.sanitize(mongoDBSanitize.sanitize(query.mode));
+  let mode = DOMPurify.sanitize(mongoDBSanitize.sanitize(request.params.mode));
 
   if (!mode) {
-    response.redirect("/leaderboards?mode=standard");
+    response.redirect("/leaderboards/standard");
     return;
   }
 
