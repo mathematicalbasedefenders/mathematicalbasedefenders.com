@@ -1,44 +1,42 @@
 #!/usr/bin/env nodejs
 const https = require("https");
 
-const bcrypt = require("bcrypt");
+
 const bodyParser = require("body-parser");
-const cheerio = require("cheerio");
+
 const cookieParser = require("cookie-parser");
 const createDOMPurify = require("dompurify");
 const csurf = require("csurf");
 const express = require("express");
 const favicon = require("serve-favicon");
-const fetch = require("isomorphic-fetch");
+
 const fs = require("fs");
 const helmet = require("helmet");
 const licenseChecker = require("license-checker");
 const marked = require("marked");
 const mongoDBSanitize = require("express-mongo-sanitize");
 const mongoose = require("mongoose");
-const nodemailer = require("nodemailer");
+
 const rateLimit = require("express-rate-limit");
-const url = require("url");
-const _ = require("lodash");
+
 const { JSDOM } = require("jsdom");
-const { v4: uuidv4 } = require("uuid");
+
 const path = require("path");
 
-require("dotenv").config({path:"./credentials/.env"});
+require("dotenv").config({path:path.join(process.cwd(), "credentials" ,".env")});
 
-const Schema = mongoose.Schema;
+
 
 const defaultWindow = new JSDOM("").window;
 const DOMPurify = createDOMPurify(defaultWindow);
 
 const log = require("./server/core/log.js");
-const schemas = require("./server/core/schemas.js");
+
 
 const app = express();
 
 const PORT = 8080;
 
-const SALT_ROUNDS = 16;
 
 
 const uri = process.env.DATABASE_CONNECTION_URI;
