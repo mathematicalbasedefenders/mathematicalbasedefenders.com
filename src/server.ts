@@ -64,7 +64,7 @@ let getLicenses = async () => {
       {
         start: path.join(__dirname, "..")
       },
-      function (error, packages) {
+      function (error: any, packages: any) {
         if (error) {
           console.log(
             addLogMessageMetadata(error.stack, LogMessageLevel.ERROR)
@@ -200,30 +200,34 @@ require("fs")
     app.use(require("./server/api/" + file).router);
   });
 
-app.post("/fetch-open-source-licenses", limiter, async (request, response) => {
-  let licensesToShow = <LicenseData>{};
-  for (let key in licenses) {
-    licensesToShow[key.toString()] = {
-      homepage: "",
-      license: ""
-    };
-    let homepage = await licenses[key]["homepage"];
-    if (homepage) {
-      licensesToShow[key.toString()]["homepage"] = homepage as string;
-    } else {
-      licensesToShow[key.toString()]["homepage"] = "";
+app.post(
+  "/fetch-open-source-licenses",
+  limiter,
+  async (request: any, response: any) => {
+    let licensesToShow = <LicenseData>{};
+    for (let key in licenses) {
+      licensesToShow[key.toString()] = {
+        homepage: "",
+        license: ""
+      };
+      let homepage = await licenses[key]["homepage"];
+      if (homepage) {
+        licensesToShow[key.toString()]["homepage"] = homepage as string;
+      } else {
+        licensesToShow[key.toString()]["homepage"] = "";
+      }
+      let license = await licenses[key]["license"];
+      if (license) {
+        licensesToShow[key.toString()]["license"] = license as string;
+      } else {
+        licensesToShow[key.toString()]["license"] = "(No license found.)";
+      }
     }
-    let license = await licenses[key]["license"];
-    if (license) {
-      licensesToShow[key.toString()]["license"] = license as string;
-    } else {
-      licensesToShow[key.toString()]["license"] = "(No license found.)";
-    }
+    response.send(JSON.stringify(licensesToShow));
   }
-  response.send(JSON.stringify(licensesToShow));
-});
+);
 
-app.post("/fetch-game-changelog", async (request, response) => {
+app.post("/fetch-game-changelog", async (request: any, response: any) => {
   let changelog: unknown = "";
   await getTextFromURL("game").then((result) => {
     changelog = result;
@@ -232,7 +236,7 @@ app.post("/fetch-game-changelog", async (request, response) => {
   response.send(changelog);
 });
 
-app.post("/fetch-website-changelog", async (request, response) => {
+app.post("/fetch-website-changelog", async (request: any, response: any) => {
   let changelog: unknown = "";
   await getTextFromURL("website").then((result) => {
     changelog = result;
@@ -243,8 +247,8 @@ app.post("/fetch-website-changelog", async (request, response) => {
 
 // PUT THIS LAST (404 page)
 
-app.get("*", function (req, res) {
-  res
+app.get("*", function (request: any, response: any) {
+  response
     .status(404)
     .render(__dirname + "/server/views/pages/404", { resourceName: "page" });
 });
