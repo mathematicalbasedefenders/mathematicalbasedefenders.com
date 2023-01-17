@@ -86,27 +86,26 @@ router.post(
           return;
         }
 
-        let dataWriteResult = await UserService.addUnverifiedUser(
-          desiredUsername,
-          desiredEmail,
-          plaintextPassword
-        );
+        // let dataWriteResult = await UserService.addUnverifiedUser(
+        //   desiredUsername,
+        //   desiredEmail,
+        //   plaintextPassword
+        // );
 
-        if (!dataWriteResult.success) {
-          response.redirect(dataWriteResult.redirectTo);
-          return;
-        }
+        // if (!dataWriteResult.success) {
+        //   response.redirect(dataWriteResult.redirectTo);
+        //   return;
+        // }
 
-        let mailResult = await MailService.sendMailToUnverifiedUser(
-          desiredUsername,
-          desiredEmail,
-          dataWriteResult.emailConfirmationCode
-        );
+        // let mailResult = await MailService.sendMailToUnverifiedUser(
+        //   desiredUsername,
+        //   desiredEmail,
+        //   dataWriteResult.emailConfirmationCode
+        // );
 
-        if (!mailResult.success) {
-          response.redirect(mailResult.redirectTo);
-          return;
-        }
+        // if (!mailResult.success) {
+        //   response.redirect(mailResult.redirectTo);
+        //   return;
 
         try {
           let salt = await bcrypt.genSalt(16);
@@ -129,18 +128,18 @@ router.post(
             expiresAt: new Date(Date.now() + 1800000).getTime()
           };
 
-          let pendingUserModelToSave = new PendingUser(dataToSave);
-
-          pendingUserModelToSave.save();
-
           let transporter = nodemailer.createTransport(
             mail.getNodemailerOptionsObject()
           );
-          let message = mail.getMailContentForNewlyRegisteredUser(
+
+          await MailService.sendMailToUnverifiedUser(
+            desiredUsername,
             desiredEmail,
             emailConfirmationCode
           );
-          transporter.sendMail(message);
+          let pendingUserModelToSave = new PendingUser(dataToSave);
+
+          await pendingUserModelToSave.save();
         } catch (error: any) {
           console.error(
             addLogMessageMetadata(error.stack, LogMessageLevel.ERROR)
