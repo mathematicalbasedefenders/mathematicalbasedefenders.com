@@ -102,9 +102,16 @@ router.get("/confirm-email-address", limiter, async (request, response) => {
       return;
     } catch (error: any) {
       console.error(addLogMessageMetadata(error.stack, LogMessageLevel.ERROR));
+      response.redirect("/?erroroccurred=true");
       return;
     }
   } else {
+    console.error(
+      addLogMessageMetadata(
+        `No user with verification code ${code} found!`,
+        LogMessageLevel.ERROR
+      )
+    );
     response.redirect("/?erroroccurred=true");
     return;
   }
