@@ -22,16 +22,19 @@ interface PendingPasswordResetModel
 const PendingPasswordResetSchema = new mongoose.Schema<
   PendingPasswordResetInterface,
   PendingPasswordResetModel
->({
-  emailAddress: String,
-  passwordResetConfirmationLink: String,
-  passwordResetConfirmationCode: String,
-  expiresAt: {
-    type: Date,
-    default: new Date(Date.now() + 1800000).getTime(),
-    expires: 1800
-  }
-});
+>(
+  {
+    emailAddress: String,
+    passwordResetConfirmationLink: String,
+    passwordResetConfirmationCode: String,
+    expiresAt: {
+      type: Date,
+      default: new Date(Date.now() + 1800000).getTime(),
+      expires: 1800
+    }
+  },
+  { collection: "pendingPasswordResets" }
+);
 
 PendingPasswordResetSchema.index(
   { expiresAt: 1 },

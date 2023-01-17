@@ -8,11 +8,14 @@ interface MetadataInterface {
 
 interface MetadataModel extends mongoose.Model<MetadataInterface> {}
 
-const MetadataSchema = new mongoose.Schema<MetadataInterface, MetadataModel>({
-  _id: mongoose.Schema.Types.ObjectId,
-  usersRegistered: Number,
-  documentIsMetadata: Boolean
-});
+const MetadataSchema = new mongoose.Schema<MetadataInterface, MetadataModel>(
+  {
+    _id: mongoose.Schema.Types.ObjectId,
+    usersRegistered: Number,
+    documentIsMetadata: Boolean
+  },
+  { collection: "metadata" }
+);
 
 const Metadata = mongoose.model<MetadataInterface, MetadataModel>(
   "Metadata",

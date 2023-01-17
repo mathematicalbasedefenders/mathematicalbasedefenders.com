@@ -24,19 +24,22 @@ interface PendingUserModel extends mongoose.Model<PendingUserInterface> {}
 const PendingUserSchema = new mongoose.Schema<
   PendingUserInterface,
   PendingUserModel
->({
-  username: String,
-  usernameInAllLowercase: String,
-  emailAddress: String,
-  hashedPassword: String,
-  emailConfirmationLink: String,
-  emailConfirmationCode: String,
-  expiresAt: {
-    type: Date,
-    default: new Date(Date.now() + 1800000).getTime(),
-    expires: 1800
-  }
-});
+>(
+  {
+    username: String,
+    usernameInAllLowercase: String,
+    emailAddress: String,
+    hashedPassword: String,
+    emailConfirmationLink: String,
+    emailConfirmationCode: String,
+    expiresAt: {
+      type: Date,
+      default: new Date(Date.now() + 1800000).getTime(),
+      expires: 1800
+    }
+  },
+  { collection: "pendingUsers" }
+);
 
 PendingUserSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 1800 });
 
@@ -44,7 +47,7 @@ PendingUserSchema.static(
   "findUserAndCode",
   async function (email: string, confirmationCode: string) {
     // could be none, if none exists.
-    let user = await this.find({
+    let user: any = await this.find({
       $and: [
         { emailAddress: email },
         { emailConfirmationCode: confirmationCode }
