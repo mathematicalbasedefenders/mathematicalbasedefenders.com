@@ -27,7 +27,6 @@ import dotenv from "dotenv";
 
 dotenv.config({ path: path.join(__dirname, "../credentials/.env") });
 
-const Schema = mongoose.Schema;
 
 const window: any = new JSDOM("").window;
 const DOMPurify = createDOMPurify(window);

@@ -12,7 +12,8 @@ import bodyParser from "body-parser";
 const parseForm = bodyParser.urlencoded({ extended: false });
 import nodemailer from "nodemailer";
 import mongoDBSanitize from "express-mongo-sanitize";
-
+const UserService = require("../../server/services/user.js");
+const MailService = require("../../server/services/mail.js");
 import { JSDOM } from "jsdom";
 
 import createDOMPurify from "dompurify";
@@ -60,11 +61,8 @@ router.post(
     let desiredEmail = DOMPurify.sanitize(
       mongoDBSanitize.sanitize(request.body.email)
     );
-    let desiredUsernameInAllLowercase = DOMPurify.sanitize(
-      mongoDBSanitize.sanitize(request.body.username)
-    );
-    desiredUsernameInAllLowercase = DOMPurify.sanitize(
-      desiredUsernameInAllLowercase.toLowerCase()
+    let plaintextPassword = DOMPurify.sanitize(
+      mongoDBSanitize.sanitize(request.body.password)
     );
     fetch(reCaptchaURL, { method: "post" })
       .then((response) => response.json())
@@ -77,83 +75,34 @@ router.post(
           return;
         }
 
-        let errored = false;
-
-        // get information
-        let emailIsNotAvailable1 = await User.findOne({
-          emailAddress: desiredEmail
-        })
-          .clone()
-          .select(desiredEmail);
-        let usernameIsNotAvailable1 = await User.findOne({
-          usernameInAllLowercase: desiredUsernameInAllLowercase
-        })
-          .clone()
-          .select(desiredUsernameInAllLowercase);
-        let emailIsNotAvailable2 = await PendingUser.findOne({
-          emailAddress: desiredEmail
-        })
-          .clone()
-          .select(desiredEmail);
-        let usernameIsNotAvailable2 = await PendingUser.findOne({
-          usernameInAllLowercase: desiredUsernameInAllLowercase
-        })
-          .clone()
-          .select(desiredUsernameInAllLowercase);
-
-        if (usernameIsNotAvailable1 || usernameIsNotAvailable2) {
-          // registration failed - username already taken
-          response.redirect(
-            "?erroroccurred=true&errorreason=usernamealreadytaken"
-          );
-          return;
-        }
-
-        if (
-          !/^[0-9a-zA-Z_]+$/.test(desiredUsername) ||
-          desiredUsername.length > 20 ||
-          desiredUsername.length < 3 ||
-          desiredUsername == "" ||
-          desiredUsername == null
-        ) {
-          // registration failed - username not valid
-          response.redirect("?erroroccurred=true&errorreason=usernamenotvalid");
-          return;
-        }
-
-        if (emailIsNotAvailable1 || emailIsNotAvailable2) {
-          // registration failed - email already taken
-          response.redirect(
-            "?erroroccurred=true&errorreason=emailalreadytaken"
-          );
-          return;
-        }
-
-        if (
-          !/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(
-            desiredEmail
-          ) ||
-          desiredEmail == "" ||
-          desiredEmail == null
-        ) {
-          // registration failed - email not valid
-          response.redirect("?erroroccurred=true&errorreason=emailnotvalid");
-          return;
-        }
-
-        let plaintextPassword = DOMPurify.sanitize(
-          mongoDBSanitize.sanitize(request.body.password)
+        let validationResult = await UserService.validateNewUserInformation(
+          desiredUsername,
+          desiredEmail,
+          plaintextPassword
         );
 
-        if (
-          plaintextPassword.length < 8 ||
-          plaintextPassword.length > 64 ||
-          plaintextPassword == "" ||
-          plaintextPassword == null ||
-          plaintextPassword.includes(" ") ||
-          !/^[0-9a-zA-Z!"#$%&'()*+,-.:;<=>?@^_`{|}~]*$/.test(plaintextPassword)
-        ) {
-          response.redirect("?erroroccurred=true&errorreason=passwordnotvalid");
+        if (!validationResult.success) {
+          response.redirect(validationResult.redirectTo);
+          return;
+        }
+
+        let dataWriteResult = await UserService.addUnverifiedUser(
+          desiredUsername,
+          desiredEmail,
+          plaintextPassword
+        );
+
+        if (!dataWriteResult.success) {
+          response.redirect(dataWriteResult.redirectTo);
+          return;
+        }
+
+        let mailResult = await MailService.sendMailToUnverifiedUser(
+          desiredUsername, desiredEmail, dataWriteResult.emailConfirmationCode
+        )
+
+        if (!mailResult.ok){
+          response.redirect(mailResult.redirectTo);
           return;
         }
 
@@ -163,6 +112,8 @@ router.post(
           let hashedPasswordToSave = await bcrypt.hash(plaintextPassword, salt);
 
           let emailConfirmationCode = uuidv4();
+          
+          let desiredUsernameInAllLowercase: string = desiredUsername.toLowerCase();
 
           // create data object (pending user)
           let dataToSave = {
