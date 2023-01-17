@@ -1,7 +1,7 @@
 import express from "express";
 var router = express.Router();
 
-import PendingUser from "../models/PendingUser.js";
+import { PendingUser } from "../models/PendingUser.js";
 import { User, UserInterface } from "../models/User";
 import Metadata from "../models/Metadata.js";
 

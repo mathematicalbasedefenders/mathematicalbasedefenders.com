@@ -1,7 +1,7 @@
 import express from "express";
 var router = express.Router();
 
-import PendingUser from "../models/PendingUser.js";
+import { PendingUser } from "../models/PendingUser.js";
 import { User, UserInterface } from "../models/User";
 import Metadata from "../models/Metadata.js";
 
@@ -98,10 +98,12 @@ router.post(
         }
 
         let mailResult = await MailService.sendMailToUnverifiedUser(
-          desiredUsername, desiredEmail, dataWriteResult.emailConfirmationCode
-        )
+          desiredUsername,
+          desiredEmail,
+          dataWriteResult.emailConfirmationCode
+        );
 
-        if (!mailResult.ok){
+        if (!mailResult.success) {
           response.redirect(mailResult.redirectTo);
           return;
         }
@@ -112,8 +114,9 @@ router.post(
           let hashedPasswordToSave = await bcrypt.hash(plaintextPassword, salt);
 
           let emailConfirmationCode = uuidv4();
-          
-          let desiredUsernameInAllLowercase: string = desiredUsername.toLowerCase();
+
+          let desiredUsernameInAllLowercase: string =
+            desiredUsername.toLowerCase();
 
           // create data object (pending user)
           let dataToSave = {
@@ -143,8 +146,10 @@ router.post(
             addLogMessageMetadata(error.stack, LogMessageLevel.ERROR)
           );
           response.redirect("/?erroroccurred=true&errorreason=internalerror");
+          return;
         }
       });
+    response.redirect("/?registered=true");
   }
 );
 

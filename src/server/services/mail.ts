@@ -1,39 +1,47 @@
-const log = require("../core/log.js");
-const mail = require("../core/mail.js");
-const nodemailer = require("nodemailer");
-function sendMailToUnverifiedUser(desiredUsername: string, desiredEmail: string, emailConfirmationCode: string){
+import * as log from "../core/log.js";
+import * as mail from "../core/mail.js";
+import nodemailer from "nodemailer";
+async function sendMailToUnverifiedUser(
+  desiredUsername: string,
+  desiredEmail: string,
+  emailConfirmationCode: string
+) {
+  let success: boolean = false;
   let transporter = nodemailer.createTransport(
     mail.getNodemailerOptionsObject()
   );
-  let message = mail.getMailContentForNewlyRegisteredUser(desiredEmail, emailConfirmationCode);
-  transporter.sendMail(message, (error: any, information: any) => {
-    if (error || !information) {
-      console.error(log.addMetadata(error.stack, "error"));
-      return {
-        success: false,
-        redirectTo: "?erroroccurred=true&errorreason=internalerror"
-      };
-    } else {
-      console.log(
-        log.addMetadata(
-          `Successfully sent verification message to ${desiredUsername}'s e-mail address!`,
-          "info"
-        )
-      );
-      console.log(
-        log.addMetadata(
-          "New Unconfirmed User: " + desiredUsername,
-          "info"
-        )
-      );
-        return {
-          success: true,
-          redirectTo: "/?registered-true"
-        }
-    }
-  });
+  let message = mail.getMailContentForNewlyRegisteredUser(
+    desiredEmail,
+    emailConfirmationCode
+  );
+  try {
+    transporter.sendMail(message);
+  } catch (error: any) {
+    console.error(
+      log.addLogMessageMetadata(error.stack, log.LogMessageLevel.ERROR)
+    );
+    return {
+      success: false,
+      redirectTo: "?erroroccurred=true&errorreason=internalerror"
+    };
+  }
+  console.log(
+    log.addLogMessageMetadata(
+      `Successfully sent verification message to ${desiredUsername}'s e-mail address!`,
+      log.LogMessageLevel.INFO
+    )
+  );
+  console.log(
+    log.addLogMessageMetadata(
+      "New Unconfirmed User: " + desiredUsername,
+      log.LogMessageLevel.INFO
+    )
+  );
+
+  return {
+    success: true,
+    redirectTo: "/?registered-true"
+  };
 }
 
-export{
-  sendMailToUnverifiedUser,
-}
+export { sendMailToUnverifiedUser };

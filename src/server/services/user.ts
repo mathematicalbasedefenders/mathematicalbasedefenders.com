@@ -1,9 +1,10 @@
 const bcrypt = require("bcrypt");
 const { v4: uuidv4 } = require("uuid");
 
-var PendingUser = require("../models/PendingUser.js");
-var User = require("../models/User.js");
-
+// var PendingUser = require("../models/PendingUser.js");
+// var User = require("../models/User.js");
+import { PendingUser } from "../models/PendingUser";
+import { User } from "../models/User";
 
 async function validateNewUserInformation(
   desiredUsername: string,
@@ -11,8 +12,6 @@ async function validateNewUserInformation(
   plaintextPassword: string
 ) {
   let desiredUsernameInAllLowercase = desiredUsername.toLowerCase();
-
-
   // get information
   let emailIsNotAvailable1 = await User.findOne({
     emailAddress: desiredEmail
@@ -20,17 +19,13 @@ async function validateNewUserInformation(
     .clone()
     .select(desiredEmail);
 
-
-
-    let usernameIsNotAvailable1 = await User.findOne({
+  let usernameIsNotAvailable1 = await User.findOne({
     usernameInAllLowercase: desiredUsernameInAllLowercase
   })
     .clone()
     .select(desiredUsernameInAllLowercase);
 
-
-
-    let emailIsNotAvailable2 = await PendingUser.findOne({
+  let emailIsNotAvailable2 = await PendingUser.findOne({
     emailAddress: desiredEmail
   })
     .clone()
@@ -100,12 +95,15 @@ async function validateNewUserInformation(
   }
 
   return {
-    success: true,
-  }
+    success: true
+  };
 }
 
-async function addUnverifiedUser(desiredUsername: string, desiredEmail: string, plaintextPassword: string) {
-
+async function addUnverifiedUser(
+  desiredUsername: string,
+  desiredEmail: string,
+  plaintextPassword: string
+) {
   let emailConfirmationCode = uuidv4();
   let salt, hashedPassword;
   try {
@@ -114,16 +112,16 @@ async function addUnverifiedUser(desiredUsername: string, desiredEmail: string, 
     return {
       success: false,
       redirectTo: "?erroroccurred=true&errorreason=internalerror"
-    }
+    };
   }
-  
+
   try {
     hashedPassword = await bcrypt.hash(plaintextPassword, salt);
   } catch (error) {
     return {
       success: false,
       redirectTo: "?erroroccurred=true&errorreason=internalerror"
-    }
+    };
   }
 
   let dataToSave = {
@@ -139,23 +137,18 @@ async function addUnverifiedUser(desiredUsername: string, desiredEmail: string, 
   let pendingUserModelToSave = new PendingUser(dataToSave);
 
   try {
-    pendingUserModelToSave.save()
+    pendingUserModelToSave.save();
   } catch (error) {
     return {
       success: false,
       redirectTo: "?erroroccurred=true&errorreason=internalerror"
-    }
+    };
   }
 
   return {
     success: true,
     emailConfirmationCode: emailConfirmationCode
-  }
-
+  };
 }
 
-
-export{
-  addUnverifiedUser,
-  validateNewUserInformation
-};
+export { addUnverifiedUser, validateNewUserInformation };

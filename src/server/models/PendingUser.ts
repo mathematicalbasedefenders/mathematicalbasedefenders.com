@@ -60,4 +60,4 @@ const PendingUser = mongoose.model<PendingUserInterface, PendingUserModel>(
   "pendingUsers"
 );
 
-export default PendingUser;
+export { PendingUser };
