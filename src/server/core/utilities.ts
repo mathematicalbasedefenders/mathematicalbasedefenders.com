@@ -80,6 +80,9 @@ function getLevel(experiencePoints: number) {
 }
 
 function getProgressToNextLevel(experiencePoints: number) {
+  if (experiencePoints <= 0 || !experiencePoints) {
+    return 0;
+  }
   let currentLevel = 0;
   while (500 * Math.pow(currentLevel + 1, 0.75) <= experiencePoints) {
     experiencePoints -= 500 * Math.pow(currentLevel + 1, 0.75);

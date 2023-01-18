@@ -86,27 +86,6 @@ router.post(
           return;
         }
 
-        // let dataWriteResult = await UserService.addUnverifiedUser(
-        //   desiredUsername,
-        //   desiredEmail,
-        //   plaintextPassword
-        // );
-
-        // if (!dataWriteResult.success) {
-        //   response.redirect(dataWriteResult.redirectTo);
-        //   return;
-        // }
-
-        // let mailResult = await MailService.sendMailToUnverifiedUser(
-        //   desiredUsername,
-        //   desiredEmail,
-        //   dataWriteResult.emailConfirmationCode
-        // );
-
-        // if (!mailResult.success) {
-        //   response.redirect(mailResult.redirectTo);
-        //   return;
-
         try {
           let salt = await bcrypt.genSalt(16);
 
@@ -140,6 +119,9 @@ router.post(
           let pendingUserModelToSave = new PendingUser(dataToSave);
 
           await pendingUserModelToSave.save();
+
+          // TODO: Is this safe?
+          response.redirect("/?registered=true");
         } catch (error: any) {
           console.error(
             addLogMessageMetadata(error.stack, LogMessageLevel.ERROR)
@@ -148,7 +130,6 @@ router.post(
           return;
         }
       });
-    response.redirect("/?registered=true");
   }
 );
 

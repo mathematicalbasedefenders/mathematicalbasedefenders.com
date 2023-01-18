@@ -68,7 +68,13 @@ async function validateQuery(user: string, request: any) {
     );
     data = JSON.parse(JSON.stringify(data.data));
   } catch (error: any) {
-    console.error(addLogMessageMetadata(error.stack, LogMessageLevel.ERROR));
+    console.error(
+      addLogMessageMetadata(
+        error.stack ||
+          `Failed to validate query for a user lookup operation on ${user}`,
+        LogMessageLevel.ERROR
+      )
+    );
     return false;
   }
 
