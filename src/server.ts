@@ -27,7 +27,6 @@ import dotenv from "dotenv";
 
 dotenv.config({ path: path.join(__dirname, "../credentials/.env") });
 
-
 const window: any = new JSDOM("").window;
 const DOMPurify = createDOMPurify(window);
 
@@ -35,7 +34,7 @@ import { addLogMessageMetadata, LogMessageLevel } from "./server/core/log";
 
 const app = express();
 
-const PORT = 8080;
+const PORT = 8000;
 
 const DATABASE_URI: string | undefined = process.env.DATABASE_CONNECTION_URI;
 
