@@ -10,7 +10,7 @@ const limiter = rateLimit({
 });
 
 router.get("/", limiter, (request, response) => {
-  response.render("pages/index");
+  response.render("pages/prepare-for-reversal");
 });
 
 export { router };

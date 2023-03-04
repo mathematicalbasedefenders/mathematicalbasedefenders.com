@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mathematical Base Defenders - Under Maintenance</title>
+</head>
+<style>
+  @font-face {
+    font-family: "Computer Modern Unicode Serif";
+    src: url("../assets/fonts/computermodernunicodeserif.ttf");
+  }
+
+  body {
+    margin: 0;
+    background-color: #000000;
+    color: #ffffff;
+    font-family: "Computer Modern Unicode Serif";
+    padding: 0;
+
+  }
+
+  .text--large {
+    font-size: 24px;
+  }
+
+  .text--medium {
+    font-size: 16px;
+  }
+
+  a {
+    color: #aaaaaa;
+  }
+</style>
+
+<body>
+  <div style="width:100vw;height:100vh;">
+    <div style="width:100%;height:100%;display:flex;justify-content: center;align-items: center;text-align: center;">
+      <div>
+        <img style="filter: invert(1);" src="/assets/images/reversal.svg" width="200">
+        <br><br>
+        <span class="text--large">To prepare for The Reversal Update, this domain is now under maintenance, and the majority of the website is now disabled.</span>
+        <br>
+        <span class="text--medium">However, you may still <a href="/register">register for an account</a> and/or <a href="/privacy-policy">read the privacy policy</a>.</span>
+        <br>
+        <span class="text--medium">You may also <a href="https://discord.gg/pDTZvrTXm9">join the Discord Server for updates</a> and/or check on <a href="https://github.com/mathematicalbasedefenders/">development progress in the GitHub organization</a>.</span>
+        <br><br>
+        <a href="https://mistertfy64.com"><img style="vertical-align: middle" src="/assets/images/mistertfy64.svg" width="auto" height="32px"></a>
+      </div>
+    </div>
+  </div>
+  <script>
+    let url = new URL(window.location.href);
+    let registered = url.searchParams.get("registered");
+    let sentPasswordResetLink = url.searchParams.get(
+      "sentpasswordresetlink"
+    );
+    let changedPassword = url.searchParams.get("changedpassword");
+    let verifiedEmail = url.searchParams.get("verifiedemail");
+    let erroroccurred = url.searchParams.get("erroroccurred");
+    if (erroroccurred != null) {
+      if (erroroccurred == "true") {
+        alert(
+          "An error has occurred!"
+        );
+
+      }
+    }
+
+    if (registered != null) {
+      if (registered == "true") {
+        alert(
+          "Successfully registered! Check your email for a confirmation link! The link is valid for only 30 minutes!"
+        );
+
+      }
+    }
+
+    if (sentPasswordResetLink != null) {
+      if (sentPasswordResetLink == "true") {
+        alert(
+          "Successfully sent you a password reset link! Check your email for the link! The link is valid for only 30 minutes!"
+        );
+
+      }
+    }
+
+    if (changedPassword != null) {
+      if (changedPassword == "true") {
+        alert(
+          "Successfully changed your password!"
+        );
+
+      }
+    }
+
+    if (verifiedEmail != null) {
+      if (verifiedEmail == "true") {
+        alert(
+          "Successfully verified e-mail! You may now log in!"
+        );
+
+      }
+    }
+  </script>
+</body>
+
+</html>

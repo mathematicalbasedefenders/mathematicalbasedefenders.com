@@ -190,6 +190,17 @@ app.use(cookieParser());
 require("fs")
   .readdirSync(require("path").join(__dirname, "./server/routes"))
   .forEach((file: any) => {
+    console.log(file);
+    if (
+      !(
+        file === "privacy-policy.js" ||
+        file === "register.js" ||
+        file === "confirm-email-address.js" ||
+        file === "index.js"
+      )
+    ) {
+      return;
+    }
     app.use(require("./server/routes/" + file).router);
   });
 require("fs")
@@ -244,11 +255,10 @@ app.post("/fetch-website-changelog", async (request: any, response: any) => {
 });
 
 // PUT THIS LAST (404 page)
-
 app.get("*", function (request: any, response: any) {
-  response
-    .status(404)
-    .render(__dirname + "/server/views/pages/404", { resourceName: "page" });
+  response.redirect("/");
+  // .status(404)
+  // .render(__dirname + "/server/views/pages/404", { resourceName: "page" });
 });
 
 // other functions
