@@ -1,0 +1,28 @@
+@font-face {
+  font-family: "Computer Modern Unicode Serif";
+  src: url("../assets/fonts/computermodernunicodeserif.ttf");
+}
+
+body {
+  font-family: "Computer Modern Unicode Serif";
+  margin: 0;
+  padding: 0;
+  background-color: #eeeeee;
+}
+
+#top-navigation-bar {
+  background-color: #222222;
+}
+
+.top-navigation-bar__button {
+  color: #ffffff;
+  padding: 0 20px;
+  transition-duration: 250ms;
+  font-size: 24px;
+  vertical-align: middle;
+}
+
+.top-navigation-bar__button:hover {
+  color: #222222;
+  background-color: #ffffff;
+}
