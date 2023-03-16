@@ -26,3 +26,65 @@ body {
   color: #222222;
   background-color: #ffffff;
 }
+
+#bottom-navigation-bar-wrapper {
+  position: relative;
+}
+
+#bottom-navigation-bar {
+  position: relative;
+  background-color: #222222;
+  font-size: 20px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  bottom: 0;
+  overflow: auto;
+  text-decoration: none;
+  color: white;
+  bottom: 0;
+}
+
+.bottom-navigation-bar__image-button > a > div {
+  display: flex;
+  align-items: center;
+}
+.bottom-navigation-bar__image-button > div > span {
+  color: #ffffff;
+  text-decoration: none;
+}
+.bottom-navigation-bar__section {
+  /* idk why */
+  flex-basis: calc(100% / 3);
+  margin-left: 1%;
+  margin-top: 0.25%;
+  font-size: 16px;
+}
+
+.bottom-navigation-bar__image-button {
+  vertical-align: middle;
+}
+
+.bottom-navigation-bar__image-button span,
+.bottom-navigation-bar__image-button img {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.bottom-navigation-bar__image-button span {
+  margin-left: 4px;
+}
+
+.bottom-navigation-bar-text {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.bottom-navigation-bar__image-button > div > img {
+  vertical-align: middle;
+  width: 16px;
+  height: 16px;
+}
+
+.bottom-navigation-bar__image-button {
+  color: transparent;
+}
