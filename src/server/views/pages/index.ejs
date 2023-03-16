@@ -14,14 +14,10 @@
       background-blend-mode: lighten;
     }
 
-    h1 {
-      text-align: center;
-      font-weight: normal;
-      font-size: 48px
-    }
+
 
     #header {
-      height: 40vh
+      height: 50vh
     }
 
     #header__text-container {
@@ -30,14 +26,59 @@
 
     #header__text>h1 {
       margin: 0;
+      text-align: center;
+      font-weight: normal;
+      font-size: 48px
+    }
 
+    #header__text>h2 {
+      margin: 0;
+      text-align: center;
+      font-weight: normal;
+      font-size: 24px
     }
 
     #header__text {
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
       height: 100%;
+    }
+
+    #play-now-button {
+      background-color: #108800;
+      border-radius: 4px;
+      color: #ffffff;
+      border: 2px #108800 solid;
+      transition-duration: 250ms;
+      width: 320px;
+      height: 64px;
+      font-size: 32px;
+      font-family: "Computer Modern Unicode Serif";
+      margin-right: 8px;
+    }
+
+    #register-button {
+      background-color: #0185d1;
+      border-radius: 4px;
+      color: #ffffff;
+      border: 2px #0185d1 solid;
+      transition-duration: 250ms;
+      width: 320px;
+      height: 64px;
+      font-size: 32px;
+      font-family: "Computer Modern Unicode Serif";
+    }
+
+    #play-now-button:hover {
+      background-color: #15b800;
+      border: 2px #15b800 solid;
+    }
+
+    #register-button:hover {
+      background-color: #0992e2;
+      border: 2px #0992e2 solid;
     }
   </style>
 </head>
@@ -49,6 +90,10 @@
       <div id="header__text-container">
         <div id="header__text">
           <h1>Yet another number-cruncher math game.</h1>
+          <h2>Solve math problems to kill enemies, and that's pretty much it.</h2>
+          <div style="display:flex">
+            <button id="play-now-button">Play Now</button><button id="register-button">Register</button>
+          </div>
         </div>
       </div>
     </div>
