@@ -10,6 +10,11 @@ body {
   background-color: #eeeeee;
 }
 
+#content-container {
+  /* TODO: magic number, fix */
+  min-height: calc(100vh - 112px);
+}
+
 #top-navigation-bar {
   background-color: #222222;
 }
