@@ -17,13 +17,26 @@ body {
 
 #top-navigation-bar {
   background-color: #222222;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  height: 48px;
 }
 
+.top-navigation-bar__button-container {
+  height: 100%;
+}
 .top-navigation-bar__button {
+  display: flex;
+  height: 100%;
   color: #ffffff;
   padding: 0 20px;
   transition-duration: 250ms;
   font-size: 24px;
+  align-items: center;
+}
+
+.top-navigation-bar__button > span {
   vertical-align: middle;
 }
 
