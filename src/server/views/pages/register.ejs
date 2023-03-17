@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mathematical Base Defenders</title>
+  <%- include("../partials/head.ejs") %>
+  <style>
+    #form-container {
+      width: 80%;
+      margin-left: auto;
+      margin-right: auto;
+      display: block;
+    }
+
+    h1 {
+      margin: 0;
+      font-weight: normal;
+      font-size: 48px
+    }
+
+    h2 {
+      margin: 0;
+      font-weight: normal;
+      font-size: 24px
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      margin: 2px 0;
+      width: 90%;
+      font-size: 24px;
+      font-family: "Computer Modern Unicode Serif";
+    }
+
+    .tooltip-text {
+      visibility: hidden;
+      background-color: #222222;
+      color: #ffffff;
+      width: 20%;
+      height: fit-content;
+      padding: 4px;
+      display: inline-block;
+      position: absolute;
+      margin-left: 8px;
+      margin-top: 2px;
+
+    }
+
+    .register-form-entry:hover .tooltip-text {
+      visibility: visible;
+    }
+  </style>
+</head>
+
+<body>
+  <%- include("../partials/top-navigation-bar.ejs") %>
+  <div id="content-container">
+    <!-- This is the main content -->
+    <br>
+
+
+    <div style="width:100%;">
+      <div id="form-container">
+        <form id="register-form">
+          <h1>Register</h1>
+          <hr>
+          <div style="display:flex;width:100%;">
+            <div style="width:80%;">
+              <div class="register-form-entry">
+                <h2 class="register-form__email">E-mail Address</h2>
+                <input type="text" class="register-form__email">
+                <span class="tooltip-text">Put the e-mail address that you want to use for your account here.<br>You may also use plus addressing if you wish.<br>Currently, these can not be changed. A future update will allow such functionality.</span>
+              </div>
+              <br>
+              <div class="register-form-entry">
+                <h2 class="register-form__username">Username</h2>
+                <input type="text" class="register-form__username">
+                <span class="tooltip-text">Put the username that you want to use for your account here.<br>Usernames must follow these conditions:<ul>
+                    <li>Only alphanumeric characters and/or underscores.</li>
+                    <li>3 to 20 characters long</li>
+                  </ul>Currently, these can not be changed. A future update will allow such functionality.</span>
+              </div>
+              <br>
+              <div class="register-form-entry">
+                <h2 class="register-password">Password</h2>
+                <input type="password" class="register-form__password">
+                <span class="tooltip-text">Put the password that you want to use for your account here.<br>Passwords must follow these conditions:<ul>
+                    <li>Only alphanumeric characters and symbols found in a QWERTY keyboard.</li>
+                    <li>8 to 48 characters long</li>
+                  </ul>Passwords may be changed on demand.</span>
+              </div>
+              <br>
+            </div>
+            <div style="width:20%;">
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <!-- This is the main content -->
+  <%- include("../partials/footer.ejs") %>
+</body>
+
+</html>

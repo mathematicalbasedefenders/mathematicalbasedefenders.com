@@ -13,6 +13,7 @@ body {
 #content-container {
   /* TODO: magic number, fix */
   min-height: calc(100vh - 112px);
+  width: 100%;
 }
 
 #top-navigation-bar {
