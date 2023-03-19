@@ -1,30 +1,24 @@
 #!/usr/bin/env nodejs
 import https from "https";
 
-import bcrypt from "bcrypt";
 import bodyParser from "body-parser";
-import cheerio from "cheerio";
 import cookieParser from "cookie-parser";
 import createDOMPurify from "dompurify";
-import csurf from "csurf";
 import express from "express";
 import favicon from "serve-favicon";
-import fetch from "isomorphic-fetch";
-import fs from "fs";
 import helmet from "helmet";
-import licenseChecker from "license-checker";
-import { marked } from "marked";
 import mongoDBSanitize from "express-mongo-sanitize";
 import mongoose from "mongoose";
-import nodemailer from "nodemailer";
 import rateLimit from "express-rate-limit";
-import url from "url";
 import _ from "lodash";
 import { JSDOM } from "jsdom";
-import { v4 } from "uuid";
 import path from "path";
 import dotenv from "dotenv";
-
+const cors = require("cors");
+const corsOptions = {
+  origin: ["https://mathematicalbasedefenders.com", "http://localhost:8000"],
+  credentials: true
+};
 dotenv.config({ path: path.join(__dirname, "../credentials/.env") });
 
 const window: any = new JSDOM("").window;
@@ -45,9 +39,6 @@ const limiter = rateLimit({
   legacyHeaders: false
 });
 
-const csrfProtection = csurf({ cookie: true });
-const parseForm = bodyParser.urlencoded({ extended: false });
-
 // mongoose
 if (typeof DATABASE_URI === "string") {
   mongoose.connect(DATABASE_URI);
@@ -62,7 +53,6 @@ mongoose.connection.on("connected", () => {
 });
 
 var ObjectId = require("mongoose").Types.ObjectId;
-import { resolve } from "path";
 
 // other stuff
 app.set("view engine", "ejs");
@@ -72,6 +62,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname + "/public"));
 app.use(mongoDBSanitize());
 app.use(limiter);
+app.use(cors(corsOptions));
 app.use(
   helmet({
     crossOriginEmbedderPolicy: false,
@@ -125,18 +116,18 @@ app.use(
   })
 );
 app.use(cookieParser());
-
 // Routes
 require("fs")
   .readdirSync(require("path").join(__dirname, "./server/routes"))
   .forEach((file: any) => {
     app.use(require("./server/routes/" + file).router);
   });
-require("fs")
-  .readdirSync(require("path").join(__dirname, "./server/api"))
-  .forEach((file: any) => {
-    app.use(require("./server/api/" + file).router);
-  });
+
+// require("fs")
+//   .readdirSync(require("path").join(__dirname, "./server/api"))
+//   .forEach((file: any) => {
+//     app.use(require("./server/api/" + file).router);
+//   });
 
 // PUT THIS LAST (404 page)
 app.get("*", function (request: any, response: any) {

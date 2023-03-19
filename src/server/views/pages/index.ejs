@@ -7,14 +7,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mathematical Base Defenders</title>
   <%- include("../partials/head.ejs") %>
+  <%- include("../partials/slide-down-css.ejs") %>
   <style>
     #header {
       background-image: url("/assets/images/gameplay-background.png");
       background-color: rgba(255, 255, 255, 0.8);
       background-blend-mode: lighten;
     }
-
-
 
     #header {
       height: 50vh
@@ -100,6 +99,7 @@
 </head>
 
 <body>
+  <%- include("../partials/slide-down.ejs")%>
   <%- include("../partials/top-navigation-bar.ejs") %>
   <div id="content-container">
     <!-- This is the main content -->
@@ -132,6 +132,8 @@
     </div>
   </div> <!-- This is the main content -->
   <%- include("../partials/footer.ejs") %>
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+  <%- include("../partials/slide-down-index.ejs") %>
 </body>
 
 </html>
