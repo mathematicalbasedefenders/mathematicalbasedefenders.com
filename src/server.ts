@@ -123,11 +123,11 @@ require("fs")
     app.use(require("./server/routes/" + file).router);
   });
 
-// require("fs")
-//   .readdirSync(require("path").join(__dirname, "./server/api"))
-//   .forEach((file: any) => {
-//     app.use(require("./server/api/" + file).router);
-//   });
+require("fs")
+  .readdirSync(require("path").join(__dirname, "./server/api"))
+  .forEach((file: any) => {
+    app.use(require("./server/api/" + file).router);
+  });
 
 // PUT THIS LAST (404 page)
 app.get("*", function (request: any, response: any) {
