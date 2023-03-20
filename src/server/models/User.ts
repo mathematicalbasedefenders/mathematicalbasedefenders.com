@@ -49,6 +49,8 @@ interface UserModel extends mongoose.Model<UserInterface> {
   safeFindByUserID(userID: string): Promise<UserInterface>;
   findByUsernameUsingAPI(username: string): Promise<UserInterface>;
   findByUserIDUsingAPI(userID: string): Promise<UserInterface>;
+  getAllEasySingleplayerBestScores(): Promise<Array<object>>;
+  getAllStandardSingleplayerBestScores(): Promise<Array<object>>;
 }
 
 const UserSchema = new mongoose.Schema<UserInterface, UserModel>({
@@ -133,6 +135,42 @@ UserSchema.static("findByUserIDUsingAPI", async function (userID: string) {
       membership: 1
     })
     .clone();
+});
+
+UserSchema.static("getAllEasySingleplayerBestScores", async function () {
+  let players: Array<object> = [];
+  let loaded: Array<object> = [];
+  let cursor = this.find({})
+    .select({
+      _id: 1,
+      "username": 1,
+      "statistics.personalBestScoreOnEasySingleplayerMode": 1
+    })
+    .clone()
+    .lean(true)
+    .cursor();
+  for await (let player of cursor) {
+    loaded.push(player);
+  }
+  return loaded;
+});
+
+UserSchema.static("getAllStandardSingleplayerBestScores", async function () {
+  let players: Array<object> = [];
+  let loaded: Array<object> = [];
+  let cursor = this.find({})
+    .select({
+      _id: 1,
+      "username": 1,
+      "statistics.personalBestScoreOnStandardSingleplayerMode": 1
+    })
+    .clone()
+    .lean(true)
+    .cursor();
+  for await (let player of cursor) {
+    loaded.push(player);
+  }
+  return loaded;
 });
 
 const User = mongoose.model<UserInterface, UserModel>(
