@@ -32,7 +32,7 @@ router.get("/api/leaderboards/:mode", limiter, async (request, response) => {
             request.params.mode
           )}SingleplayerMode`
         ],
-      _id: player._id,
+      playerID: player._id,
       username: player.username
     };
   });
