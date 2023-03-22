@@ -43,25 +43,23 @@ router.get("/api/users/:user", limiter, async (request, response) => {
     `${request.protocol}://${request.get("Host")}/api/leaderboards/easy`
   );
   let easyLeaderboardDataJSON = await easyLeaderboardData.json();
-  let easyLeaderboardDataRank =
-    easyLeaderboardDataJSON.findIndex(
-      (record: any) => data._id === record.playerID.toString()
-    ) || null;
+  let easyLeaderboardDataRank = easyLeaderboardDataJSON.findIndex(
+    (record: any) => data._id === record.playerID.toString()
+  );
   //
   let standardLeaderboardData = await fetch(
     `${request.protocol}://${request.get("Host")}/api/leaderboards/standard`
   );
   let standardLeaderboardDataJSON = await standardLeaderboardData.json();
-  let standardLeaderboardDataRank =
-    standardLeaderboardDataJSON.findIndex(
-      (record: any) => data._id === record.playerID.toString()
-    ) || null;
+  let standardLeaderboardDataRank = standardLeaderboardDataJSON.findIndex(
+    (record: any) => data._id === record.playerID.toString()
+  );
   // add leaderboards data
-  if (easyLeaderboardDataRank != null) {
+  if (easyLeaderboardDataRank !== -1) {
     data.statistics.personalBestScoreOnEasySingleplayerMode.globalRank =
       easyLeaderboardDataRank;
   }
-  if (standardLeaderboardDataRank != null) {
+  if (standardLeaderboardDataRank !== -1) {
     data.statistics.personalBestScoreOnStandardSingleplayerMode.globalRank =
       standardLeaderboardDataRank;
   }
