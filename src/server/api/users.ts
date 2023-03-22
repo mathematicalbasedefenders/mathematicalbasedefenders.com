@@ -8,18 +8,10 @@ const limiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false
 });
-
+const fetch = require("node-fetch");
 import _ from "lodash";
 import { addLogMessageMetadata, LogMessageLevel } from "../core/log";
 import { User, UserInterface } from "../models/User";
-import {
-  EasyModeLeaderboardsRecord,
-  EasyModeLeaderboardsRecordInterface
-} from "../models/EasyModeLeaderboardsRecord";
-import {
-  StandardModeLeaderboardsRecord,
-  StandardModeLeaderboardsRecordInterface
-} from "../models/StandardModeLeaderboardsRecord";
 
 router.get("/api/users/:user", limiter, async (request, response) => {
   if (!request?.params?.user) {
@@ -47,21 +39,32 @@ router.get("/api/users/:user", limiter, async (request, response) => {
     response.status(404).json("Not Found.");
     return;
   }
-  // let easyLeaderboardData = await EasyModeLeaderboardsRecord.findOne({
-  //   userIDOfHolder: data._id.toString()
-  // }).clone();
-  // let standardLeaderboardData = await StandardModeLeaderboardsRecord.findOne({
-  //   userIDOfHolder: data._id.toString()
-  // }).clone();
-  // // add leaderboards data
-  // if (easyLeaderboardData != null) {
-  //   data.statistics.personalBestScoreOnEasySingleplayerMode.globalRank =
-  //     easyLeaderboardData.rankNumber;
-  // }
-  // if (standardLeaderboardData != null) {
-  //   data.statistics.personalBestScoreOnStandardSingleplayerMode.globalRank =
-  //     standardLeaderboardData.rankNumber;
-  // }
+  let easyLeaderboardData = await fetch(
+    `${request.protocol}://${request.get("Host")}/api/leaderboards/easy`
+  );
+  let easyLeaderboardDataJSON = await easyLeaderboardData.json();
+  let easyLeaderboardDataRank =
+    easyLeaderboardDataJSON.findIndex(
+      (record: any) => data._id === record.playerID.toString()
+    ) || null;
+  //
+  let standardLeaderboardData = await fetch(
+    `${request.protocol}://${request.get("Host")}/api/leaderboards/standard`
+  );
+  let standardLeaderboardDataJSON = await standardLeaderboardData.json();
+  let standardLeaderboardDataRank =
+    standardLeaderboardDataJSON.findIndex(
+      (record: any) => data._id === record.playerID.toString()
+    ) || null;
+  // add leaderboards data
+  if (easyLeaderboardDataRank != null) {
+    data.statistics.personalBestScoreOnEasySingleplayerMode.globalRank =
+      easyLeaderboardDataRank;
+  }
+  if (standardLeaderboardDataRank != null) {
+    data.statistics.personalBestScoreOnStandardSingleplayerMode.globalRank =
+      standardLeaderboardDataRank;
+  }
   response.status(200).json(data);
 });
 
