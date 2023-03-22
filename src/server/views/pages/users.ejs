@@ -85,7 +85,7 @@
       <div class="user-information-box" id="user-information-box__general">
         <div class="medium-text" style=<%-`color:${data.rank.color}`%>><%= data.rank.rank %></div>
         <h1><%= data.username %></h1>
-        <div class="medium-text">Level <%=data.level.current%> (<%=(data.level.toNext*100).toFixed(3)%>% to next)</div>
+        <div class="medium-text">Level <%=data.level.current%> (<%=isNaN(data.level.toNext) ? "0.000" : (data.level.toNext*100).toFixed(3)%>% to next)</div>
       </div>
       <br>
       <div class="user-information-box" id="user-information-box__easy">
