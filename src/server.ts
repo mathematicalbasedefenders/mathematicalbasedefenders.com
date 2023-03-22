@@ -1,7 +1,4 @@
 #!/usr/bin/env nodejs
-import https from "https";
-
-import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import createDOMPurify from "dompurify";
 import express from "express";
@@ -25,11 +22,10 @@ const window: any = new JSDOM("").window;
 const DOMPurify = createDOMPurify(window);
 
 import { addLogMessageMetadata, LogMessageLevel } from "./server/core/log";
+import { getLicenses } from "./server/core/licenses";
 
 const app = express();
-
 const PORT = 8000;
-
 const DATABASE_URI: string | undefined = process.env.DATABASE_CONNECTION_URI;
 
 const limiter = rateLimit({
@@ -38,6 +34,8 @@ const limiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false
 });
+
+let licenses;
 
 // mongoose
 if (typeof DATABASE_URI === "string") {
@@ -52,9 +50,6 @@ mongoose.connection.on("connected", () => {
   );
 });
 
-var ObjectId = require("mongoose").Types.ObjectId;
-
-// other stuff
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "server/views"));
 app.use(favicon(__dirname + "/public/assets/images/favicon.ico"));
@@ -140,11 +135,18 @@ app.get("*", function (request: any, response: any) {
 app.use((error: any, request: any, response: any, next: any) => {
   console.error(addLogMessageMetadata(error.stack, LogMessageLevel.ERROR));
   response.status(500);
-  response.render(__dirname + "/views/pages/error");
+  response.render(__dirname + "server/views/pages/error.ejs");
 });
 
+// load licenses
+async function loadLicenses() {
+  licenses = await getLicenses();
+  console.log(
+    addLogMessageMetadata("Finished reading licenses.", LogMessageLevel.INFO)
+  );
+}
 // start
-
+loadLicenses();
 app.listen(PORT, () => {
   console.log(
     addLogMessageMetadata(
@@ -162,3 +164,5 @@ app.listen(PORT, () => {
     );
   }
 });
+
+export { licenses };
