@@ -3,7 +3,7 @@ var router = express.Router();
 const fetch = require("node-fetch");
 import rateLimit from "express-rate-limit";
 import _ from "lodash";
-import { getScoresOfAllPlayers } from "../services/leaderboards";
+import { getScoresOfTopPlayers } from "../services/leaderboards";
 import { User } from "../models/User";
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,

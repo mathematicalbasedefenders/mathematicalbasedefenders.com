@@ -1,7 +1,7 @@
 import { addLogMessageMetadata, LogMessageLevel } from "../core/log.js";
 import { User } from "../models/User.js";
 // Stolen from play subdomain's repository
-async function getScoresOfAllPlayers(gameMode: string) {
+async function getScoresOfTopPlayers(gameMode: string, amount: number) {
   let startTime = Date.now();
   let key = "";
   let players: Array<any> = [];
@@ -37,7 +37,7 @@ async function getScoresOfAllPlayers(gameMode: string) {
         b[`statistics`][`personalBestScoreOn${key}SingleplayerMode`].score
     )
     .reverse()
-    .slice(0, 100);
+    .slice(0, amount);
   console.log(
     addLogMessageMetadata(
       `${key} score querying took ${Date.now() - startTime}ms`,
@@ -47,4 +47,4 @@ async function getScoresOfAllPlayers(gameMode: string) {
   return sorted;
 }
 
-export { getScoresOfAllPlayers };
+export { getScoresOfTopPlayers };

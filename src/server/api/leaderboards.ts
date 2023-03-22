@@ -1,7 +1,7 @@
 import express from "express";
 var router = express.Router();
 import rateLimit from "express-rate-limit";
-import { getScoresOfAllPlayers } from "../services/leaderboards";
+import { getScoresOfTopPlayers } from "../services/leaderboards";
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
@@ -20,7 +20,10 @@ import {
 import _ from "lodash";
 
 router.get("/api/leaderboards/:mode", limiter, async (request, response) => {
-  let data = await getScoresOfAllPlayers(`${request.params.mode}Singleplayer`);
+  let data = await getScoresOfTopPlayers(
+    `${request.params.mode}Singleplayer`,
+    100
+  );
   data = data.map((player) => {
     return {
       statistics:
