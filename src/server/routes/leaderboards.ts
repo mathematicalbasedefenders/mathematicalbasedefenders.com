@@ -12,6 +12,10 @@ const limiter = rateLimit({
   legacyHeaders: false
 });
 
+router.get("/leaderboards", limiter, async (request, response) => {
+  response.redirect("/leaderboards/standard");
+});
+
 router.get("/leaderboards/:mode", limiter, async (request, response) => {
   if (request.params.mode !== "easy" && request.params.mode !== "standard") {
     return;
