@@ -1,218 +1,140 @@
 <!DOCTYPE html>
-
-<html>
+<html lang="en">
 
 <head>
-
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mathematical Base Defenders</title>
+  <%- include("../partials/head.ejs") %>
+  <%- include("../partials/slide-down-css.ejs") %>
+  <style>
+    #header {
+      background-image: url("/assets/images/gameplay-background.png");
+      background-color: rgba(255, 255, 255, 0.8);
+      background-blend-mode: lighten;
+    }
 
-  <%- include('../partials/head'); %>
-    <%- include('../partials/advertisement') %>
+    #header {
+      height: 50vh
+    }
 
-      <style>
-        #notification {
-          top: -15%;
-          width: 100%;
-          height: 7.5%;
-          background-color: black;
-          color: white;
-          z-index: 10;
-          position: absolute;
-          text-align: center;
-        }
+    #header__text-container {
+      height: 100%;
+    }
 
-        #notification-text-wrapper {
-          font-size: 2.5vmin;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          width: 100%;
-          height: 100%;
-        }
+    #header__text>h1 {
+      margin: 0;
+      text-align: center;
+      font-weight: normal;
+      font-size: 48px
+    }
 
-        .play-button {
-          border-color: #149914;
-          border-radius: 4px;
-          background-color: #149414;
-          border-style: solid;
-          width: 300px;
-          height: 72px;
-          font-size: 48px;
-          font-family: "Computer Modern Unicode Serif";
-          color: white;
-          transition: all 0.2s;
-        }
+    #header__text>h2 {
+      margin: 0;
+      text-align: center;
+      font-weight: normal;
+      font-size: 24px
+    }
 
-        .play-button:hover {
-          background-color: #17a717;
-          border-color: #17a717;
-        }
+    #header__text {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+    }
 
-        #award-emblem-container {
-          margin-right: 50%;
-          text-align: center;
-        }
-      </style>
+    #play-now-button {
+      background-color: #108800;
+      border-radius: 4px;
+      color: #ffffff;
+      border: 2px #108800 solid;
+      transition-duration: 250ms;
+      width: 320px;
+      height: 64px;
+      font-size: 32px;
+      font-family: "Computer Modern Unicode Serif";
+      margin-right: 8px;
+    }
+
+    #register-button {
+      background-color: #0185d1;
+      border-radius: 4px;
+      color: #ffffff;
+      border: 2px #0185d1 solid;
+      transition-duration: 250ms;
+      width: 320px;
+      height: 64px;
+      font-size: 32px;
+      font-family: "Computer Modern Unicode Serif";
+    }
+
+    #play-now-button:hover {
+      background-color: #15b800;
+      border: 2px #15b800 solid;
+    }
+
+    #register-button:hover {
+      background-color: #0992e2;
+      border: 2px #0992e2 solid;
+    }
+
+    .main-point {
+      display: flex;
+    }
+
+    .main-point>div {
+      margin-left: 16px;
+      margin-right: 16px;
+      width: calc(50% - 32px);
+    }
+
+    .main-point h2 {
+      margin: 0;
+      font-weight: normal;
+      font-size: 24px
+    }
+  </style>
 </head>
 
 <body>
-  <!-- Notification -->
-  <div id="notification">
-    <div id="notification-text-wrapper"></div>
-  </div>
-
-  <!-- Header -->
-  <%- include('../partials/header'); %>
-
-
-    <!-- Content -->
-    <div id="content-wrapper">
-      <div style="
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                ">
-        <div style="font-size: 24px">
-          <div style="
-                            left: 15%;
-                            width: 90vw;
-                            word-wrap: break-word;
-                        ">
-            <div id="game-description" style="font-size: 48px"></div>
-            <br />
-            <br />
-            Mathematical Base Defenders, as the name suggests, is a
-            math-based game. (boohoo)<br /><br />
-            You defend your base from square-shaped enemies using
-            square-shaped tiles.<br /><br />
-            <br /><br />
-            <button onClick="document.location='https://play.mathematicalbasedefenders.com'" class="play-button">
-              Play</button><br /><span style="font-size: 16px">An account is not required to play, however
-              registering for one is highly recommended.<br>This game uses the numpad on your keyboard. If you don't
-              have one, other keybindings and mouse input are available.<br>The game is not a substitute for a
-              legitimate math tutor.</span>
+  <%- include("../partials/slide-down.ejs")%>
+  <%- include("../partials/top-navigation-bar.ejs") %>
+  <div id="content-container">
+    <!-- This is the main content -->
+    <div id="header">
+      <div id="header__text-container">
+        <div id="header__text">
+          <h1>Yet another number-cruncher math game.</h1>
+          <h2>Solve math problems to kill enemies, and that's pretty much it.</h2>
+          <div style="display:flex">
+            <a href="https://play.mathematicalbasedefenders.com"><button id="play-now-button">Play Now</button></a>
+            <a href="/register"><button id="register-button">Register</button></a>
           </div>
         </div>
       </div>
     </div>
-
-    <!-- Footer -->
-    <%- include('../partials/footer'); %>
+    <br>
+    <div>
+      <div class="main-point">
+        <div>
+          <h2>Basic concept.</h2>
+          <h2>Made unreasonably hard.</h2>
+          <h2>Basically unplayable.</h2>
+          <p>
+            Mathematical Base Defenders is a "number-cruncher" styled math game, where the goal is to solve math problems to kill enemies before it reaches your base.
+            A basic math game concept, containing only the four basic arithmetic operations, is now made insanely and unrealistically hard. Too hard that it's not even fun anymore.
+            In the past, the concept of this game is to create problems to kill enemies, in this current "Reversal" update, it has been reversed to make you solve problems, hopefully making the game easier to play and harder to break the flow.
+          </p>
+        </div>
+        <div></div>
+      </div>
+    </div>
+  </div> <!-- This is the main content -->
+  <%- include("../partials/footer.ejs") %>
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+  <%- include("../partials/slide-down-index.ejs") %>
 </body>
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XVRB5TXW3K"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"
-  integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-<script>
-  function pickAndShowGameDescription() {
-    let descriptions = [
-      "A competitive(?) multiplayer math game!!!!!!!!111111111!!!!1",
-      "Defend your base from square-shaped enemies using square-shaped tiles using math!",
-      "The hardest math game that only involves basic calculations????",
-      "The worst math game ever?",
-      "The most feature-creep math game ever?",
-      "A math game you can't use a calculator on???",
-      "Oh look, another math game, just why is it so hard to play?",
-      "The number I want won't come up!!!"
-    ];
-    document.getElementById("game-description").innerHTML =
-      descriptions[Math.floor(Math.random() * descriptions.length)];
-  }
-</script>
-
-<script>
-  function checkURLQueryParameters() {
-    let url = new URL(window.location.href);
-    let registered = url.searchParams.get("registered");
-    let sentPasswordResetLink = url.searchParams.get(
-      "sentpasswordresetlink"
-    );
-    let changedPassword = url.searchParams.get("changedpassword");
-    let verifiedEmail = url.searchParams.get("verifiedemail");
-    let erroroccurred = url.searchParams.get("erroroccurred");
-
-    if (erroroccurred != null) {
-      if (erroroccurred == "true") {
-        showSlideDownNotification(
-          "An error has occurred!",
-          "#ff2222"
-        );
-        return;
-      }
-    }
-
-    if (registered != null) {
-      if (registered == "true") {
-        showSlideDownNotification(
-          "Successfully registered! Check your email for a confirmation link! The link is valid for only 30 minutes!",
-          "#259125"
-        );
-        return;
-      }
-    }
-
-    if (sentPasswordResetLink != null) {
-      if (sentPasswordResetLink == "true") {
-        showSlideDownNotification(
-          "Successfully sent you a password reset link! Check your email for the link! The link is valid for only 30 minutes!",
-          "#259125"
-        );
-        return;
-      }
-    }
-
-    if (changedPassword != null) {
-      if (changedPassword == "true") {
-        showSlideDownNotification(
-          "Successfully changed your password!",
-          "#259125"
-        );
-        return;
-      }
-    }
-
-    if (verifiedEmail != null) {
-      if (verifiedEmail == "true") {
-        showSlideDownNotification(
-          "Successfully verified e-mail! You may now log in!",
-          "#259125"
-        );
-        return;
-      }
-    }
-  }
-
-  function showSlideDownNotification(message, backgroundColor) {
-    $("#notification-text-wrapper").text(message);
-    $("#notification").css({ "background-color": backgroundColor });
-    $("#notification")
-      .animate(
-        {
-          top: "0%"
-        },
-        500
-      )
-      .delay(2000)
-      .animate(
-        {
-          top: "-15%"
-        },
-        500
-      );
-  }
-</script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag() {
-    dataLayer.push(arguments);
-  }
-  gtag("js", new Date());
-
-  gtag("config", "G-XVRB5TXW3K");
-</script>
-<script>
-  pickAndShowGameDescription();
-  checkURLQueryParameters();
-</script>
 
 </html>

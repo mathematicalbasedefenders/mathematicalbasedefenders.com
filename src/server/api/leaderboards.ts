@@ -1,6 +1,7 @@
 import express from "express";
 var router = express.Router();
 import rateLimit from "express-rate-limit";
+import { getScoresOfTopPlayers } from "../services/leaderboards";
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
@@ -16,31 +17,25 @@ import {
   StandardModeLeaderboardsRecord,
   StandardModeLeaderboardsRecordInterface
 } from "../models/StandardModeLeaderboardsRecord";
+import _ from "lodash";
 
 router.get("/api/leaderboards/:mode", limiter, async (request, response) => {
-  let model;
-  let data;
-  switch (request.params.mode) {
-    case "easy": {
-      model = EasyModeLeaderboardsRecord;
-      break;
-    }
-    case "standard": {
-      model = StandardModeLeaderboardsRecord;
-      break;
-    }
-    default: {
-      response.status(404).json("Mode does not exist.");
-      return;
-    }
-  }
-
-  try {
-    data = await model.getAll();
-  } catch (error: any) {
-    console.error(addLogMessageMetadata(error.stack, LogMessageLevel.ERROR));
-    response.status(500).json("Internal Server Error.");
-  }
+  let data = await getScoresOfTopPlayers(
+    `${request.params.mode}Singleplayer`,
+    100
+  );
+  data = data.map((player) => {
+    return {
+      statistics:
+        player.statistics[
+          `personalBestScoreOn${_.startCase(
+            request.params.mode
+          )}SingleplayerMode`
+        ],
+      playerID: player._id,
+      username: player.username
+    };
+  });
   response.status(200).json(data);
 });
 

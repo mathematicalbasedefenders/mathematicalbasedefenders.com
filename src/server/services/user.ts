@@ -6,7 +6,7 @@ const { v4: uuidv4 } = require("uuid");
 import { PendingUser } from "../models/PendingUser";
 import { User } from "../models/User";
 
-async function validateNewUserInformation(
+async function validateNewUser(
   desiredUsername: string,
   desiredEmail: string,
   plaintextPassword: string
@@ -82,7 +82,7 @@ async function validateNewUserInformation(
 
   if (
     plaintextPassword.length < 8 ||
-    plaintextPassword.length > 64 ||
+    plaintextPassword.length > 48 ||
     plaintextPassword === "" ||
     plaintextPassword === null ||
     plaintextPassword.includes(" ") ||
@@ -107,7 +107,7 @@ async function addUnverifiedUser(
   let emailConfirmationCode = uuidv4();
   let salt, hashedPassword;
   try {
-    salt = await bcrypt.genSalt(16);
+    salt = await bcrypt.genSalt(14);
   } catch (error) {
     return {
       success: false,
@@ -151,4 +151,4 @@ async function addUnverifiedUser(
   };
 }
 
-export { addUnverifiedUser, validateNewUserInformation };
+export { addUnverifiedUser, validateNewUser };

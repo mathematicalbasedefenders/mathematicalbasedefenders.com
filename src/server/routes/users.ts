@@ -1,17 +1,5 @@
-import express from "express";
+import express, { Request } from "express";
 var router = express.Router();
-
-import _ from "lodash";
-import mongoDBSanitize from "express-mongo-sanitize";
-import url from "url";
-
-import { JSDOM } from "jsdom";
-import createDOMPurify from "dompurify";
-const window: any = new JSDOM("").window;
-const DOMPurify = createDOMPurify(window);
-import axios from "axios";
-import { addLogMessageMetadata, LogMessageLevel } from "../core/log.js";
-import * as utilities from "../core/utilities.js";
 import rateLimit from "express-rate-limit";
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -19,146 +7,101 @@ const limiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false
 });
+const fetch = require("node-fetch");
+const userRegEx = /[A-Za-z0-9_]{3,20}/;
+const userIDRegEx = /[0-9a-f]{24}/g;
 
-import { RANK_INFORMATION } from "../core/ranks";
-import { User, UserInterface } from "../models/User";
-import {
-  EasyModeLeaderboardsRecord,
-  EasyModeLeaderboardsRecordInterface
-} from "../models/EasyModeLeaderboardsRecord";
-import {
-  StandardModeLeaderboardsRecord,
-  StandardModeLeaderboardsRecordInterface
-} from "../models/StandardModeLeaderboardsRecord";
+// TODO: Make a better placeholder
+const scorePlaceholder = {
+  "score": "N/A",
+  "timeInMilliseconds": "",
+  "scoreSubmissionDateAndTime": "",
+  "actionsPerformed": "",
+  "enemiesKilled": "",
+  "enemiesCreated": "",
+  "globalRank": ""
+};
 
-// const RANK_DESCRIPTIONS: any = {
-//   "Game Master":
-//     "This user created and has full control over Mathematical Base Defenders.",
-//   Administrator:
-//     "This user has almost full control over Mathematical Base Defenders.",
-//   Moderator: "This user can assign punishments to users.",
-//   Contributor:
-//     "This user helped with the development of Mathematical Base Defenders, but isn't part of the development team.",
-//   Tester:
-//     "This user helped to test features of Mathematical Base Defenders, but isn't part of the development team.",
-//   Donator: "This user has supported Mathematical Base Defenders financially."
-// };
-
-router.get("/users/:user", limiter, async (request, response) => {
-  let originalData = await validateQuery(request.params.user, request);
-  if (originalData) {
-    let data = await getUserData(originalData);
-    response.render("pages/users", {
-      data: data
-    });
-  } else {
-    response.render("pages/404", { resourceName: "user" });
-  }
+router.get("/users/:query", limiter, async (request, response) => {
+  response.render("pages/users", { data: await getData(request) });
 });
 
-async function validateQuery(user: string, request: any) {
-  let data;
-
-  if (!(/[A-Za-z0-9_]{3,20}/.test(user) || /[0-9a-f]{24}/.test(user))) {
-    return false;
+async function getData(request: Request) {
+  let query = request.params.query;
+  if (
+    !(
+      (userRegEx.test(query) && query.length >= 3 && query.length <= 20) ||
+      (userIDRegEx.test(query) && query.length == 24)
+    )
+  ) {
+    return;
   }
-  try {
-    data = await axios.get(
-      `${request.protocol}://${request.get("Host")}/api/users/${user}`
-    );
-    data = JSON.parse(JSON.stringify(data.data));
-  } catch (error: any) {
-    console.error(
-      addLogMessageMetadata(
-        error.stack ||
-          `Failed to validate query for a user lookup operation on ${user}`,
-        LogMessageLevel.ERROR
-      )
-    );
-    return false;
-  }
-
-  return data;
+  let data = await fetch(
+    `${request.protocol}://${request.get("Host")}/api/users/${query}`
+  );
+  data = await data.json();
+  //
+  let level = getLevel(data.statistics.totalExperiencePoints);
+  let rank = getRank(data.membership);
+  //
+  let formattedData = {
+    username: data.username,
+    level: {
+      current: level.level,
+      toNext: level.progressToNext
+    },
+    rank: {
+      rank: rank.title,
+      color: rank.color
+    },
+    joinDate: data.creationDateAndTime,
+    userID: data._id,
+    easyBest:
+      data?.statistics?.personalBestScoreOnEasySingleplayerMode ||
+      scorePlaceholder,
+    standardBest:
+      data?.statistics?.personalBestScoreOnStandardSingleplayerMode ||
+      scorePlaceholder
+  };
+  return formattedData;
 }
 
-async function getUserData(data: any, invalid: boolean = false) {
-  // why?
-
-  if (data && !invalid) {
-    data = _.cloneDeep(data);
-    let easyModeLeaderboardRank = await EasyModeLeaderboardsRecord.findOne({
-      userIDOfHolder: data["_id"]
-    }).clone();
-    let standardModeLeaderboardRank =
-      await StandardModeLeaderboardsRecord.findOne({
-        userIDOfHolder: data["_id"]
-      }).clone();
-
-    if (easyModeLeaderboardRank) {
-      easyModeLeaderboardRank = JSON.parse(
-        JSON.stringify(easyModeLeaderboardRank)
-      ).rankNumber;
-    }
-    if (standardModeLeaderboardRank) {
-      standardModeLeaderboardRank = JSON.parse(
-        JSON.stringify(standardModeLeaderboardRank)
-      ).rankNumber;
-    }
-
-    data.rank = utilities.calculateRank(data);
-    data.rankColor = utilities.getRankColor(utilities.calculateRank(data));
-    data.emailAddress = "";
-    data.hashedPassword = "";
-    data.statistics.easyModeLeaderboardRank = easyModeLeaderboardRank;
-    data.statistics.standardModeLeaderboardRank = standardModeLeaderboardRank;
-    data.statistics.currentLevel = `${utilities.getLevel(
-      data.statistics.totalExperiencePoints
-    )}`;
-    data.statistics.progressToNextLevelInPercentage = `${parseFloat(
-      (
-        utilities.getProgressToNextLevel(
-          data.statistics.totalExperiencePoints
-        ) * 100
-      ).toFixed(3)
-    ).toString()}%`;
-
-    data.rankDescription =
-      data.rank.toString() in Object.keys(RANK_INFORMATION)
-        ? RANK_INFORMATION[data.rank.toString()].description
-        : "This user is a normal player.";
+function getLevel(experiencePoints: number) {
+  let level = 0;
+  let stock = experiencePoints;
+  while (stock > 100 * 1.1 ** level) {
+    stock -= 100 * 1.1 ** level;
+    level++;
   }
-  data.statistics.multiplayerWinRate =
-    data.statistics?.multiplayer?.gamesWon /
-    data.statistics?.multiplayer?.gamesPlayed;
-  if (data.statistics?.multiplayer?.gamesPlayed) {
-    if (data.statistics?.multiplayer?.gamesWon) {
-      data.statistics.primaryMultiplayerWinRateMessage = `${(
-        data.statistics.multiplayerWinRate * 100
-      ).toFixed(3)}% win rate`;
-    } else {
-      data.statistics.primaryMultiplayerWinRateMessage = `0.000% win rate`;
-    }
-  } else {
-    data.statistics.primaryMultiplayerWinRateMessage = "N/A";
-  }
+  return {
+    level: level,
+    progressToNext: stock / (100 * 1.1 ** level + 1)
+  };
+}
 
-  if (data.statistics?.multiplayer?.gamesPlayed) {
-    if (
-      data.statistics?.multiplayer?.gamesWon === 0 ||
-      !data.statistics?.multiplayer?.gamesWon
-    ) {
-      data.statistics.secondaryMultiplayerWinRateMessage = `Player played at least one multiplayer game, but hasn't won any yet.`;
-    } else {
-      data.statistics.secondaryMultiplayerWinRateMessage = `Won 1 multiplayer game every ${
-        data.statistics.multiplayer.gamesPlayed /
-        data.statistics.multiplayer.gamesWon
-      } multiplayer games played.`;
-    }
-  } else {
-    data.statistics.secondaryMultiplayerWinRateMessage =
-      "Player has not played a multiplayer game yet.";
+// TODO: change type
+function getRank(membership: any) {
+  // TODO: Refactor this stupid thing already
+  if (membership?.isDeveloper) {
+    return { title: "Developer", color: "#ff0000" };
   }
-  return data;
+  if (membership?.isAdministrator) {
+    return { title: "Administrator", color: "#da1717" };
+  }
+  if (membership?.isModerator) {
+    return { title: "Moderator", color: "#ff7f00" };
+  }
+  if (membership?.isContributor) {
+    return { title: "Contributor", color: "#01acff" };
+  }
+  if (membership?.isTester) {
+    return { title: "Tester", color: "#5bb1e0" };
+  }
+  if (membership?.isDonator) {
+    return { title: "Donator", color: "#26e02c" };
+  }
+  // No rank
+  return { title: "(No Rank)", color: "#eeeeee" };
 }
 
 export { router };

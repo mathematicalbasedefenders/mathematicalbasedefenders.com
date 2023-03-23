@@ -1,92 +1,83 @@
 <!DOCTYPE html>
-
-<html>
+<html lang="en">
 
 <head>
-  <%- include('../partials/head'); %>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mathematical Base Defenders</title>
+  <%- include("../partials/head.ejs") %>
+  <style>
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
 
-    <title>Leaderboards | Mathematical Base Defenders</title>
+    #leaderboards-table tr:nth-child(1) {
+      background-color: #ffd700;
+    }
 
-    <style>
-      .link-button {
-        border: none;
-        background: none;
-        font-family: "Computer Modern Unicode Serif";
-        font-size: 24px;
-      }
+    #leaderboards-table tr:nth-child(2) {
+      background-color: #c0c0c0;
+    }
 
-      table {
-        border-collapse: collapse;
-      }
+    #leaderboards-table tr:nth-child(3) {
+      background-color: #cd7f32;
+    }
 
-      #leaderboards-table tr:nth-child(1) {
-        background-color: #ffd700;
-      }
+    a {
+      color: black;
+      text-decoration: none;
+    }
 
-      #leaderboards-table tr:nth-child(2) {
-        background-color: #c0c0c0;
-      }
+    .rank-number {
+      font-size: 24px;
+    }
 
-      #leaderboards-table tr:nth-child(3) {
-        background-color: #cd7f32;
-      }
+    .rank-username {
+      font-size: 24px;
+    }
 
-      a {
-        color: black;
-        text-decoration: none;
-      }
+    .rank-score {
+      font-size: 24px;
+    }
 
-      .rank-number {
-        font-size: 24px;
-      }
+    .rank-game-data {
+      font-size: 12px;
+      white-space: nowrap;
+    }
 
-      .rank-username {
-        font-size: 24px;
-      }
-
-      .rank-score {
-        font-size: 24px;
-      }
-
-      .rank-game-data {
-        font-size: 12px;
-        white-space: nowrap;
-      }
-    </style>
+    h1 {
+      margin: 0;
+      font-weight: normal;
+      font-size: 48px
+    }
+  </style>
 </head>
 
 <body>
-  <!-- Header -->
-  <%- include('../partials/header'); %>
-    <!-- Content -->
-
-    <p style="text-align: center">
-      <span style="font-size: 48px">Leaderboards (<%- gameMode %> Mode)</span>
-    </p>
-    <div style="display: flex; justify-content: center; align-items: center">
-      <table id="leaderboards-table" style="max-width: 80vw; width: 80vw">
-        <!-- Variable substitutions because prettier doesn't work well with ejs + 80 char/line limit... -->
-        <% for (let i=0; i <50; i++){ %>
-          <% let lb=leaderboardData[i] ?? [] %>
-            <% let plr=playerData[i] ?? [] %>
-              <%- include("../partials/leaderboards/record.ejs", {record: lb, playerData: plr, rank: i+1}); %>
-                <%}%>
-      </table>
+  <%- include("../partials/top-navigation-bar.ejs") %>
+  <div id="content-container">
+    <!-- This is the main content -->
+    <div style="width: 80%;      margin-left: auto;
+    margin-right: auto;">
+      <br>
+      <h1>Leaderboards: <%=mode%> Singleplayer</h1>
+      <hr>
+      <div style="display: flex; justify-content: center; align-items: center;">
+        <table id="leaderboards-table">
+          <% for (let i = 0; i < 100; i++) { %>
+          <% if (i < data.length) { %>
+          <%- include("../partials/leaderboards-record.ejs", {record:data[i],rank:i+1}) %>
+          <% } else { %>
+          <%- include("../partials/leaderboards-record.ejs", {record:null,rank:i+1}) %>
+          <% } %>
+          <% } %>
+        </table>
+      </div>
     </div>
-    <br>
-    <!-- Footer -->
-    <%- include('../partials/footer'); %>
+  </div> <!-- This is the main content -->
+  <%- include("../partials/footer.ejs") %>
 </body>
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XVRB5TXW3K"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag() {
-    dataLayer.push(arguments);
-  }
-  gtag("js", new Date());
-
-  gtag("config", "G-XVRB5TXW3K");
-</script>
 
 </html>

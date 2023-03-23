@@ -1,0 +1,82 @@
+<script>
+  function checkURLQueryParameters() {
+    let url = new URL(window.location.href);
+    let registered = url.searchParams.get("registered");
+    let sentPasswordResetLink = url.searchParams.get(
+      "sentpasswordresetlink"
+    );
+    let changedPassword = url.searchParams.get("changedpassword");
+    let verifiedEmail = url.searchParams.get("verifiedemail");
+    let erroroccurred = url.searchParams.get("erroroccurred");
+
+    if (erroroccurred != null) {
+      if (erroroccurred == "true") {
+        showSlideDownNotification(
+          "An error has occurred!",
+          "#ff2222"
+        );
+        return;
+      }
+    }
+
+    if (registered != null) {
+      if (registered == "true") {
+        showSlideDownNotification(
+          "Successfully registered! Check your email for a confirmation link! The link is valid for only 30 minutes!",
+          "#259125"
+        );
+        return;
+      }
+    }
+
+    if (sentPasswordResetLink != null) {
+      if (sentPasswordResetLink == "true") {
+        showSlideDownNotification(
+          "Successfully sent you a password reset link! Check your email for the link! The link is valid for only 30 minutes!",
+          "#259125"
+        );
+        return;
+      }
+    }
+
+    if (changedPassword != null) {
+      if (changedPassword == "true") {
+        showSlideDownNotification(
+          "Successfully changed your password!",
+          "#259125"
+        );
+        return;
+      }
+    }
+
+    if (verifiedEmail != null) {
+      if (verifiedEmail == "true") {
+        showSlideDownNotification(
+          "Successfully verified e-mail! You may now log in!",
+          "#259125"
+        );
+        return;
+      }
+    }
+  }
+  checkURLQueryParameters();
+
+  function showSlideDownNotification(message, backgroundColor) {
+    $("#slide-down-notification-text-wrapper").text(message);
+    $("#slide-down-notification").css({
+      "background-color": backgroundColor
+    });
+    $("#slide-down-notification")
+      .animate({
+          top: "0%"
+        },
+        500
+      )
+      .delay(2000)
+      .animate({
+          top: "-15%"
+        },
+        500
+      );
+  }
+</script>

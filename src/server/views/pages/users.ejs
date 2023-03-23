@@ -1,184 +1,127 @@
 <!DOCTYPE html>
-
-<html>
+<html lang="en">
 
 <head>
-  <%- include('../partials/head'); %>
-    <title>Mathematical Base Defenders</title>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mathematical Base Defenders</title>
+  <%- include("../partials/head.ejs") %>
+  <style>
+    #content-container {
+      width: 80%;
+      margin-left: auto;
+      margin-right: auto;
+      display: block;
+    }
 
-    <link rel="stylesheet" type="text/css" href="/css/global.css" />
+    #user-information-container {
+      display: grid;
+      grid-template-rows: [row1-start] 160px [row1-end row2-start] 160px [row2-end row3-start] 160px [row3-end];
+      grid-template-columns: [column1-start] 50% [column1-end column2-start] 50% [column2-end];
+    }
 
-    <style>
-      .link-button {
-        border: none;
-        background: none;
-        font-family: "Computer Modern Unicode Serif";
-        font-size: 24px;
-        max-width: fit-content;
-      }
+    .user-information-box {
+      border: 2px solid #aaaaaa;
+      border-radius: 4px;
+      margin: 8px;
+      padding: 4px;
+    }
 
-      .information-box {
-        display: inline-block;
-        width: 100%;
-      }
+    #user-information-box__general {
+      grid-column: column1-start / column2-end;
+      grid-row: row1-start / row1-end;
+    }
 
-      .score-text {
-        font-size: 48px;
-      }
+    #user-information-box__easy {
+      grid-column: column1-start / column1-end;
+      grid-row: row2-start / row2-end;
+    }
 
-      .score-information-text {
-        text-align: right;
-      }
-    </style>
+    #user-information-box__standard {
+      grid-column: column2-start / column2-end;
+      grid-row: row2-start / row2-end;
+    }
+
+    .user-information-box h1 {
+      margin: 0;
+      font-weight: normal;
+      font-size: 48px
+    }
+
+    .user-information-box h2 {
+      margin: 0;
+      font-weight: normal;
+      font-size: 36px
+    }
+
+    .user-information-box h3 {
+      margin: 0;
+      font-weight: normal;
+      font-size: 20px
+    }
+
+    .large-text {
+      font-size: 48px;
+    }
+
+    .medium-text {
+      font-size: 20px;
+    }
+
+    .split-container {
+      display: flex;
+      justify-content: space-between;
+    }
+  </style>
 </head>
 
 <body>
-  <!-- Header -->
-  <%- include('../partials/header'); %>
+  <%- include("../partials/top-navigation-bar.ejs") %>
+  <div id="content-container">
+    <!-- This is the main content -->
+    <br>
+    <div id="user-information-container" style="width:100%;">
+      <div class="user-information-box" id="user-information-box__general">
+        <div class="medium-text" style=<%-`color:${data.rank.color}`%>><%= data.rank.rank %></div>
+        <h1><%= data.username %></h1>
+        <div class="medium-text">Level <%=data.level.current%> (<%=isNaN(data.level.toNext) ? "0.000" : (data.level.toNext*100).toFixed(3)%>% to next)</div>
+      </div>
+      <br>
+      <div class="user-information-box" id="user-information-box__easy">
+        <div class="split-container">
+          <div>
+            <div class="medium-text">Easy Singleplayer</div>
+            <div class="large-text"><%=data.easyBest.score%></div>
+          </div>
+          <div style="text-align:right;">
+            <% if (data.easyBest.score !== "N/A"){ %>
+            <%- `<div class="small-text">${data.easyBest.timeInMilliseconds}ms</div>` %>
+            <%- `<div class="small-text">${data.easyBest.scoreSubmissionDateAndTime}</div>` %>
+            <%- `<div class="small-text">${data.easyBest.enemiesKilled}/${data.easyBest.enemiesCreated}</div>`%>
+            <% } %>
+          </div>
+        </div>
+      </div>
 
-    <!-- Content  -->
-    <div id="content-wrapper">
-      <div>
-        <div>
-          <div style="display: flex; justify-content: center; align-items: center">
-            <div style="
-								left: 15%;
-								width: min(70%, 1200px);
-
-								word-wrap: break-word;
-								display: inline-block;
-							">
-              <div id="user-data">
-                <!-- -->
-
-                <div class="information-box"
-                  style="width: calc(100% - 26px);display:flex;justify-content:space-between;flex-wrap:wrap;">
-                  <div>
-                    <span <%-`style=font-size:24px;color:${data.rankColor}`%>
-                      <%-`title="${data.rankDescription}"`%>><%-data.rank%>
-                    </span>
-                    <br />
-                    <span style="font-size: 48px">
-                      <%-data.username%>
-                    </span>
-                    <br>
-                    Level <%- data.statistics.currentLevel%> (<%- data.statistics.progressToNextLevelInPercentage %> to
-                        next)
-                        <div
-                          style="border-color:#aaaaaa;border-radius:5px;width:25%;height:10px;background-color:#bbbbbb">
-                          <div
-                            <%-`style="border-radius:5px;width:${data.statistics.progressToNextLevelInPercentage};background-color:#000000;height:10px;"
-                            `%>></div>
-                        </div>
-                  </div>
-                  <div style="text-align:right;">
-                    Joined on <%-data.creationDateAndTime%>
-                      <br>
-                      User ID: <%-data._id%>
-                  </div>
-                </div>
-                <br />
-                <div style="display: flex">
-                  <div class="information-box">
-                    <span style="font-size: 24px">Easy Singleplayer</span>
-                    <div style="display: flex; flex-wrap: wrap; justify-content: space-between">
-                      <div class="score-text">
-                        <%-data.statistics.personalBestScoreOnEasySingleplayerMode?.score || `???`%>
-                          <div style="font-size: 16px">
-                            <%-data.statistics?.easyModeLeaderboardRank ? (data.statistics.easyModeLeaderboardRank==1
-                              ? "Current World Record" :`Global #${data.statistics.easyModeLeaderboardRank}`) : "" %>
-                          </div>
-                      </div>
-                      <br />
-
-                      <div class="score-information-text" style="font-size: 16px">
-                        <%-data.statistics.personalBestScoreOnEasySingleplayerMode?.timeInMilliseconds ?
-                          `${data.statistics.personalBestScoreOnEasySingleplayerMode.timeInMilliseconds}ms` : "" %>
-                          <br />
-                          <%-data.statistics.personalBestScoreOnEasySingleplayerMode?.actionsPerformed ?
-                            `${(data.statistics.personalBestScoreOnEasySingleplayerMode.actionsPerformed/(data.statistics.personalBestScoreOnEasySingleplayerMode.timeInMilliseconds/60000)).toFixed(3)}APM`
-                            : "" %> <br />
-                            <%-data.statistics.personalBestScoreOnEasySingleplayerMode?.enemiesKilled ?
-                              `${data.statistics.personalBestScoreOnEasySingleplayerMode.enemiesKilled}/${data.statistics.personalBestScoreOnEasySingleplayerMode.enemiesCreated}`
-                              : "" %>
-                              <br />
-
-                              <%-data.statistics.personalBestScoreOnEasySingleplayerMode?.scoreSubmissionDateAndTime ?
-                                `${data.statistics.personalBestScoreOnEasySingleplayerMode?.scoreSubmissionDateAndTime}`:""%>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="information-box" style="margin-left: 1%">
-                    <span style="font-size: 24px">Standard Singleplayer</span>
-
-                    <br />
-                    <div style="display: flex;flex-wrap: wrap;  justify-content: space-between">
-                      <div class="score-text">
-                        <%-data.statistics.personalBestScoreOnStandardSingleplayerMode?.score || `???`%>
-                          <div style="font-size: 16px">
-                            <%-data.statistics?.standardModeLeaderboardRank ?
-                              (data.statistics.standardModeLeaderboardRank==1?"Current World Record":`Global
-                              #${data.statistics.standardModeLeaderboardRank}`):""%>
-                          </div>
-                      </div>
-                      <div class="score-information-text" style="font-size: 16px">
-                        <%-data.statistics.personalBestScoreOnStandardSingleplayerMode?.timeInMilliseconds ?
-                          `${data.statistics.personalBestScoreOnStandardSingleplayerMode.timeInMilliseconds}ms` : "" %>
-                          <br />
-                          <%-data.statistics.personalBestScoreOnStandardSingleplayerMode?.actionsPerformed ?
-                            `${(data.statistics.personalBestScoreOnStandardSingleplayerMode.actionsPerformed/(data.statistics.personalBestScoreOnStandardSingleplayerMode.timeInMilliseconds/60000)).toFixed(3)}APM`
-                            : "" %> <br />
-                            <%-data.statistics.personalBestScoreOnStandardSingleplayerMode?.enemiesKilled ?
-                              `${data.statistics.personalBestScoreOnStandardSingleplayerMode.enemiesKilled}/${data.statistics.personalBestScoreOnStandardSingleplayerMode.enemiesCreated}`
-                              : "" %>
-                              <br />
-
-                              <%-data.statistics.personalBestScoreOnStandardSingleplayerMode?.scoreSubmissionDateAndTime
-                                ?
-                                `${data.statistics.personalBestScoreOnStandardSingleplayerMode?.scoreSubmissionDateAndTime}`:""%>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <br>
-                <div class="information-box"
-                  style="width: calc(100% - 26px);display:flex;justify-content:space-between;flex-wrap:wrap;">
-                  <div>
-                    <span style="font-size:24px;">Multiplayer</span>
-                    <br />
-                    <span class="score-text">
-                      <%-data.statistics.primaryMultiplayerWinRateMessage%>
-                    </span>
-                    <br>
-                    <%-data.statistics.secondaryMultiplayerWinRateMessage%>
-                  </div>
-                </div>
-              </div>
-            </div>
+      <div class="user-information-box" id="user-information-box__standard">
+        <div class="split-container">
+          <div>
+            <div class="medium-text">Standard Singleplayer</div>
+            <div class="large-text"><%=data.standardBest.score%></div>
+          </div>
+          <div style="text-align:right;">
+            <% if (data.standardBest.score !== "N/A"){ %>
+            <%- `<div class="small-text">${data.standardBest.timeInMilliseconds}ms</div>` %>
+            <%- `<div class="small-text">${data.standardBest.scoreSubmissionDateAndTime}</div>` %>
+            <%- `<div class="small-text">${data.standardBest.enemiesKilled}/${data.standardBest.enemiesCreated}</div>`%>
+            <% } %>
           </div>
         </div>
       </div>
     </div>
-    <!-- Footer -->
-    <%- include('../partials/footer'); %>
+  </div> <!-- This is the main content -->
+  <%- include("../partials/footer.ejs") %>
 </body>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"
-  integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XVRB5TXW3K"></script>
-
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag() {
-    dataLayer.push(arguments);
-  }
-  gtag("js", new Date());
-
-  gtag("config", "G-XVRB5TXW3K");
-</script>
-<script>
-  checkURLQueryParameters();
-</script>
 
 </html>

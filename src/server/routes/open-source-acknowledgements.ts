@@ -7,11 +7,15 @@ const limiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false
 });
+import * as server from "../../server";
+
 router.get(
   "/open-source-acknowledgements",
   limiter,
   async (request, response) => {
-    response.render("pages/open-source-acknowledgements");
+    response.render("pages/open-source-acknowledgements", {
+      data: server.licenses
+    });
   }
 );
 
