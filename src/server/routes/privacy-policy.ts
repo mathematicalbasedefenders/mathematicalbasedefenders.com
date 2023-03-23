@@ -18,7 +18,7 @@ router.get("/privacy-policy", limiter, async (request, response) => {
 async function loadPrivacyPolicy() {
   return new Promise(async (resolve, reject) => {
     let data = "";
-    await https.get(
+    https.get(
       "https://raw.githubusercontent.com/mathematicalbasedefenders/information/main/PRIVACY_POLICY.md",
       (response) => {
         response.on("data", (chunk) => {

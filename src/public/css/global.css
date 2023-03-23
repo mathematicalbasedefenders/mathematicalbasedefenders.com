@@ -3,49 +3,49 @@
   src: url("../assets/fonts/computermodernunicodeserif.ttf");
 }
 
-* {
-  font-variant-ligatures: none;
-}
-
 body {
   font-family: "Computer Modern Unicode Serif";
-  background-color: #eeeeee;
+  font-variant-ligatures: none;
   margin: 0;
   padding: 0;
+  background-color: #eeeeee;
 }
 
-#content-wrapper {
+#content-container {
   /* TODO: magic number, fix */
   min-height: calc(100vh - 112px);
-}
-
-.link-button {
-  border: none;
-  background: none;
-  font-family: "Computer Modern Unicode Serif";
-  vertical-align: text-top;
-  font-size: 24px;
-  transition: all 0.2s;
-  opacity: 0.5;
-  text-decoration: none;
-  color: black;
-}
-
-.link-button + .link-button {
-  margin: 0.25vw;
-}
-
-.link-button.mathematical-base-defenders-logo {
-  opacity: 1;
-}
-
-.link-button:hover {
-  opacity: 1;
+  width: 100%;
 }
 
 #top-navigation-bar {
-  position: 0.5vw;
-  margin: 0.5vw;
+  background-color: #222222;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  height: 48px;
+}
+
+.top-navigation-bar__button-container {
+  height: 100%;
+}
+.top-navigation-bar__button {
+  display: flex;
+  height: 100%;
+  color: #ffffff;
+  padding: 0 20px;
+  transition-duration: 250ms;
+  font-size: 24px;
+  align-items: center;
+  text-decoration: none;
+}
+
+.top-navigation-bar__button > span {
+  vertical-align: middle;
+}
+
+.top-navigation-bar__button:hover {
+  color: #222222;
+  background-color: #ffffff;
 }
 
 #bottom-navigation-bar-wrapper {
@@ -54,7 +54,7 @@ body {
 
 #bottom-navigation-bar {
   position: relative;
-  background-color: #303030;
+  background-color: #222222;
   font-size: 20px;
   padding-top: 10px;
   padding-bottom: 10px;
@@ -65,28 +65,14 @@ body {
   bottom: 0;
 }
 
-/* #bottom-navigation-bar-left-text {
-  vertical-align: middle;
-  color: white;
-  margin-left: 0.5vw;
-  user-select: none;
-}
-
-#bottom-navigation-bar-right-text {
-  vertical-align: middle;
-  color: white;
-  margin-right: 0.5vw;
-  user-select: none;
-  float: right;
-  top: 0;
-} */
-
-.bottom-navigation-bar__image-button > a> div {
-  display:flex;
+.bottom-navigation-bar__image-button > a > div {
+  display: flex;
   align-items: center;
 }
-
-
+.bottom-navigation-bar__image-button > div > span {
+  color: #ffffff;
+  text-decoration: none;
+}
 .bottom-navigation-bar__section {
   /* idk why */
   flex-basis: calc(100% / 3);
@@ -99,7 +85,8 @@ body {
   vertical-align: middle;
 }
 
-.bottom-navigation-bar__image-button span, .bottom-navigation-bar__image-button img {
+.bottom-navigation-bar__image-button span,
+.bottom-navigation-bar__image-button img {
   display: inline-block;
   vertical-align: middle;
 }
@@ -109,30 +96,16 @@ body {
 }
 
 .bottom-navigation-bar-text {
+  color: #ffffff;
   text-decoration: none;
-  color: white;
 }
 
-.information-box {
-  border-radius: 5px;
-  border-color: #aaaaaa;
-  border-style: solid;
-  padding: 10px 10px;
-  display: inline-block;
+.bottom-navigation-bar__image-button > div > img {
+  vertical-align: middle;
+  width: 16px;
+  height: 16px;
 }
 
-.information-box.fit-to-content {
-  width: fit-content;
-}
-
-.text-field {
-  border-color: #aaaaaa;
-  border-radius: 4px;
-  border-style: solid;
-  background-color: #aaaaaa;
-  width: 500px;
-  height: 32px;
-  font-size: 24px;
-  font-family: "Computer Modern Unicode Serif";
-  color: black;
+.bottom-navigation-bar__image-button {
+  color: transparent;
 }
