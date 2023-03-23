@@ -5,6 +5,7 @@
 
 body {
   font-family: "Computer Modern Unicode Serif";
+  font-variant-ligatures: none;
   margin: 0;
   padding: 0;
   background-color: #eeeeee;
