@@ -82,7 +82,7 @@ async function getRepositoryLink(path: string): Promise<string> {
     console.warn(
       addLogMessageMetadata(
         `No node_modules directory for ${path} found.`,
-        LogMessageLevel.ERROR
+        LogMessageLevel.WARNING
       )
     );
   }
