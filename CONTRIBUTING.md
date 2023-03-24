@@ -19,19 +19,11 @@ Table of Contents
 
 For people who don't know how to code but would still like to help out the Game Master figure out ideas or catch bugs, feel free to create an issue. Issues are for bug reports and feature requests. Feel free to make one, and the Game Master will take a look at it, and will try to respond back as fast as possible.
 
-When reporting a bug in the Issues tab, make sure that you describe what the bug is about, how to reproduce it, and a potential fix (optional).
+When reporting a bug in the Issues tab, make sure that you describe what the bug is about, how to reproduce it, and a potential fix (optional). mistertfy64 is usually very leinent on how issues should be reported, and currently he doesn't need an issue template.
 
 ## Contributing by Helping Development
 
-For people who want to help the codebase directly, feel free to fork the repository on GitHub, then clone it to your local machine.
-
-Additionally, to be able to run your own copy (i.e., fork) of Mathematical Base Defenders, you need a MongoDB instance. You can either get one (for free) on MongoDB Atlas, install MongoDB to your local machine, or start a Docker instance (`docker compose up`) with MongoDB on it. After that, follow the directions in the `example.env` file. You can then start your own version of Mathematical Base Defenders. You may need to manually create a user to use features for registered users.
-
-Code style is enforced by Prettier and ESLint. `index.ejs` is exempt from code style enforcements, but try to keep it as clean as possible so the Game Master is happy.
-
-After you are done making your modifications/fixing a bug/etc..., feel free to open a pull request, and the Game Master will take a look at it, and will try to respond back as fast as possible.
-
-Don't forget to run `npm run test` to ensure that tests will pass.
+ill rewrite this later lol, just do whatever you want - ill decide for myself if im gonna accept it
 
 ## Contributing by Donating
 
