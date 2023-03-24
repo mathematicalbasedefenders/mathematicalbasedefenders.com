@@ -41,7 +41,7 @@ async function getData(request: Request) {
   );
   data = await data.json();
   //
-  let level = getLevel(data.statistics.totalExperiencePoints);
+  let level = getLevel(data.statistics?.totalExperiencePoints);
   let rank = getRank(data.membership);
   //
   let formattedData = {
@@ -66,7 +66,13 @@ async function getData(request: Request) {
   return formattedData;
 }
 
-function getLevel(experiencePoints: number) {
+function getLevel(experiencePoints: number | undefined) {
+  if (typeof experiencePoints !== "number") {
+    return {
+      level: 0,
+      progressToNext: 0
+    };
+  }
   let level = 0;
   let stock = experiencePoints;
   while (stock > 100 * 1.1 ** level) {
