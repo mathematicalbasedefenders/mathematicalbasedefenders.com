@@ -1,6 +1,6 @@
 {
   "name": "mathematicalbasedefenders.com",
-  "version": "0.5.0-rc.2",
+  "version": "0.5.0-rc.4",
   "description": "Website for Mathematical Base Defenders.",
   "main": "app.js",
   "scripts": {
