@@ -23,7 +23,12 @@ const scorePlaceholder = {
 };
 
 router.get("/users/:query", limiter, async (request, response) => {
-  response.render("pages/users", { data: await getData(request) });
+  let data = await getData(request);
+  if (typeof data === "undefined" || data == null) {
+    response.render("pages/404");
+    return;
+  }
+  response.render("pages/users", { data: data });
 });
 
 async function getData(request: Request) {
@@ -40,6 +45,10 @@ async function getData(request: Request) {
     `${request.protocol}://${request.get("Host")}/api/users/${query}`
   );
   data = await data.json();
+  // TODO: Find a better way instead of just comparing for "Not Found."
+  if (data.status === 404 || data === "Not Found.") {
+    return null;
+  }
   //
   let level = getLevel(data.statistics?.totalExperiencePoints);
   let rank = getRank(data.membership);
