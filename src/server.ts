@@ -135,7 +135,7 @@ app.get("*", function (request: any, response: any) {
 app.use((error: any, request: any, response: any, next: any) => {
   console.error(addLogMessageMetadata(error.stack, LogMessageLevel.ERROR));
   response.status(500);
-  response.render(__dirname + "server/views/pages/error.ejs");
+  response.render(__dirname + "/server/views/pages/error.ejs");
 });
 
 // load licenses
