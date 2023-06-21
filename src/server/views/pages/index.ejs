@@ -5,12 +5,90 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mathematical Base Defenders</title>
+  <%- include("../partials/head.ejs") %>
+  <link rel="stylesheet" type="text/css" href="/css/index.css" />
 </head>
 
 <body>
-  <%- include("../partials/head.ejs") %>
   <%- include("../partials/header.ejs") %>
-  <main></main>
+  <main>
+    <div>
+      <div id="front-page__header">
+        <div>
+
+          <h1>Boring. Unbalanced. Awful.</h1>
+          <p>
+            Mathematical Base Defenders is just another number-cruncher math game where you solve problems to kill enemies.
+            There are many unbalanced modes, broken and/or unused features and the game is extremely bad that even the creator is embarrassed by it.
+            Why give it a try? Why even care? You probably won't like it.
+            <br>
+            <br>
+            <button class="play-now-button">
+              Play
+            </button>
+            <br>
+            <a class="text--link" href="/register">...or register for an account</a>
+          <p class="text--disclaimer">Although Mathematical Base Defenders is a math game that can improve your math skills, it is not a substitute for a legitimate math tutor.</p>
+          </p>
+
+        </div>
+        <div></div>
+      </div>
+      <br>
+      <h2>Game Modes</h2>
+      <p>There are multiple modes you can play in Mathematical Base Defenders. All of them are either too easy or too hard for you to actually get to play.</p>
+      <br>
+      <div id="gamemode-container-wrapper">
+        <div class="gamemode-container gamemode-container--easy">
+          <h3>Easy Singleplayer</h3>
+          <p>More like calculator mode. This mode is incredibly unbalanced that the enemies are <b>EXTREMELY</b> slow. You could even use a calculator on this mode. Maybe this could be called calculator mode due to the fact that you could use a calculator instead of actually crunching the numbers in your head in this mode.</p>
+          <br>
+          <a class="text--link" href="/leaderboards/easy">Easy Singleplayer Leaderboards</a>
+        </div>
+        <div class="gamemode-container gamemode-container--standard">
+          <h3>Standard Singleplayer</h3>
+          <p>More like very hard mode. The enemies are too fast and the questions are randomly generated with no regards to how "nice" and "compatible" the numbers are. Have fun memorizing the addition and subtraction table! One game probably won't last a minute in this mode.</p>
+          <br>
+          <a class="text--link" href="/leaderboards/standard">Standard Singleplayer Leaderboards</a>
+        </div>
+        <div class="gamemode-container gamemode-container--multiplayer">
+          <h3>Multiplayer</h3>
+          <p>Unfortunately, this game having multiplayer isn't something that makes this game "special" because it is extremely hard to find a more players. Additionally, once the game actually starts, the server crashes and/or you crash due to the creator's poor (or nonexistent) technical skills.</p>
+        </div>
+      </div>
+      <br>
+      <h2>Features</h2>
+      <p>There are also many features in the game. Some are just there for no reason other than to make the game look cooler. Most of them have no purpose.</p>
+      <br>
+      <div id="feature-container-wrapper">
+        <div class="feature-container">
+          <h3>Leaderboards</h3>
+          <p>Compare against others to see who is better, and also to lose your friends against a poorly-made math game.</p>
+
+        </div>
+        <div class="feature-container">
+          <h3>Account System</h3>
+          <p>Create an account to save your results, high-scores, and plays, so you can feel guilty about how much you've played this.</p>
+
+        </div>
+        <div class="feature-container">
+          <h3>Custom Modes</h3>
+          <p>Set the enemies to be as fast or as slow as possible. Only available in Singleplayer because the creator hasn't even made this in Multiplayer yet.</p>
+        </div>
+      </div>
+      <br>
+      <h2>What are you waiting for? Do you want to suffer? If so, play now!</h2>
+      <br>
+      <div class="right-align">
+        <button class="play-now-button">
+          Play Now
+        </button>
+        <br>
+        <a href="/register">...or register for an account</a>
+      </div>
+      <br>
+    </div>
+  </main>
   <%- include("../partials/footer.ejs") %>
 </body>
 
