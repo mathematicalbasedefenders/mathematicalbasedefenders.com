@@ -1,0 +1,65 @@
+main h1,
+main h2,
+main h3 {
+  font-weight: normal;
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+
+#leaderboards-table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+#leaderboards-table tr:nth-child(1) {
+  background-color: #ffd700;
+}
+
+#leaderboards-table tr:nth-child(2) {
+  background-color: #c0c0c0;
+}
+
+#leaderboards-table tr:nth-child(3) {
+  background-color: #cd7f32;
+}
+
+#leaderboards-table tr:nth-child(2n + 4) {
+  background-color: #dddddd;
+}
+
+#leaderboards-table tr:nth-child(2n + 5) {
+  background-color: #cccccc;
+}
+
+#leaderboards-table a {
+  color: black;
+  text-decoration: none;
+}
+
+#leaderboards-table .rank__number {
+  font-size: 150%;
+  width: 20%;
+}
+
+#leaderboards-table .rank__username {
+  width: 40%;
+  font-size: 150%;
+  text-align: center;
+}
+
+#leaderboards-table .rank__score {
+  font-size: 150%;
+  width: 20%;
+  text-align: right;
+}
+
+#leaderboards-table .rank__game-data {
+  font-size: 50%;
+  white-space: nowrap;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.center-align {
+  text-align: center;
+}

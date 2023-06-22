@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Mathematical Base Defenders</title>
+  <%- include("../partials/head.ejs") %>
+  <link rel="stylesheet" type="text/css" href="/css/leaderboards.css" />
+</head>
+
+<body>
+  <%- include("../partials/header.ejs") %>
+  <main>
+    <div>
+      <br>
+      <h1>Leaderboards: <%-mode%> Singleplayer </h1>
+      <p class="center-align"><a href="/leaderboards/easy">Easy Singleplayer</a> | <a href="/leaderboards/standard">Standard Singleplayer</a></p>
+      <table id="leaderboards-table">
+        <% for (let i = 0; i < 100; i++) { %>
+        <% if (i < data.length) { %>
+        <%- include("../partials/leaderboards-record.ejs", {record:data[i],rank:i+1}) %>
+        <% } else { %>
+        <%- include("../partials/leaderboards-record.ejs", {record:null,rank:i+1}) %>
+        <% } %>
+        <% } %>
+      </table>
+    </div>
+  </main>
+  <%- include("../partials/footer.ejs") %>
+</body>
+
+</html>
