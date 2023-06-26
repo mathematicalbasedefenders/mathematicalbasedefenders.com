@@ -72,7 +72,7 @@
 
           </div>
           <br>
-          <div class="user-data-box__gamemode">
+          <div class="user-data-box__gamemode <%-data.standardRankClass%>">
             <div class="user-data-box__gamemode-title">
               <h2>Standard Singleplayer</h2>
               <!-- TODO: Consider that other no scores are possible (e.g. null) -->
@@ -98,6 +98,10 @@
             <% } else { %>
             <p class="text--center-align">(No Standard Singleplayer record.)</p>
             <% } %>
+            <div class="user-data-box__stat <%-data.standardRankClass%>">
+              <span></span>
+              <div><%- data.standardRankText %></div>
+            </div>
           </div>
           <br>
           <div class="user-data-box__gamemode">
