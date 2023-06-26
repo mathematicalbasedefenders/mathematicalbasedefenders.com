@@ -97,6 +97,10 @@ main {
   margin-left: auto;
 }
 
+.text--center-align {
+  text-align: center;
+}
+
 /*
   TODO: viewport for smaller devices
 */
