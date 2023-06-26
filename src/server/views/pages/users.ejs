@@ -48,7 +48,7 @@
 
             <div class="user-data-box__stat">
               <span>Actions Per Minute</span>
-              <span><%-data.easyBest.actionsPerformed/(data.easyBest.timeInMilliseconds/60000)%>APM</span>
+              <span><%-(data.easyBest.actionsPerformed/(data.easyBest.timeInMilliseconds/60000)).toFixed(3)%>APM</span>
             </div>
             <div class="user-data-box__stat">
               <span>In Game Time</span>
@@ -81,7 +81,7 @@
             <% if (data.standardBest.score && data.standardBest.score !== "N/A") { %>
             <div class="user-data-box__stat">
               <span>Actions Per Minute</span>
-              <span><%-data.standardBest.actionsPerformed/(data.standardBest.timeInMilliseconds/60000)%>APM</span>
+              <span><%-(data.standardBest.actionsPerformed/(data.standardBest.timeInMilliseconds/60000)).toFixed(3)%>APM</span>
             </div>
             <div class="user-data-box__stat">
               <span>In Game Time</span>
