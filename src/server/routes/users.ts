@@ -106,8 +106,8 @@ async function getData(request: Request) {
       color: rank.color
     },
     multiplayer: {
-      won: data.statistics.multiplayer.gamesWon,
-      played: data.statistics.multiplayer.gamesPlayed
+      won: data?.statistics?.multiplayer?.gamesWon,
+      played: data?.statistics?.multiplayer?.gamesPlayed
     },
     joinDate: data.creationDateAndTime,
     userID: data._id,
