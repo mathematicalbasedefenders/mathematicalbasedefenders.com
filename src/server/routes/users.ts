@@ -52,16 +52,62 @@ async function getData(request: Request) {
   //
   let level = getLevel(data.statistics?.totalExperiencePoints);
   let rank = getRank(data.membership);
-  //
+
+  // easy rank
+  let easyRank =
+    data?.statistics?.personalBestScoreOnEasySingleplayerMode?.globalRank;
+  let standardRank =
+    data?.statistics?.personalBestScoreOnStandardSingleplayerMode?.globalRank;
+  let easyRankText =
+    easyRank === 0 || easyRank > 100 || isNaN(easyRank)
+      ? ""
+      : `Global Rank #${easyRank}`;
+  let easyRankClass = "";
+  if (easyRank === 1) {
+    easyRankClass = "user-data-box__stat--gold";
+  } else if (easyRank === 2) {
+    easyRankClass = "user-data-box__stat--silver";
+  } else if (easyRank === 3) {
+    easyRankClass = "user-data-box__stat--bronze";
+  } else if (easyRank <= 10) {
+    easyRankClass = "user-data-box__stat--top10";
+  } else if (easyRank <= 100) {
+    easyRankClass = "user-data-box__stat--top100";
+  }
+
+  // easy rank
+
+  let standardRankText =
+    standardRank === 0 || standardRank > 100 || isNaN(standardRank)
+      ? ""
+      : `Global Rank #${standardRank}`;
+  let standardRankClass = "";
+  if (standardRank === 1) {
+    standardRankClass = "user-data-box__stat--gold";
+  } else if (standardRank === 2) {
+    standardRankClass = "user-data-box__stat--silver";
+  } else if (standardRank === 3) {
+    standardRankClass = "user-data-box__stat--bronze";
+  } else if (standardRank <= 10) {
+    standardRankClass = "user-data-box__stat--top10";
+  } else if (standardRank <= 100) {
+    standardRankClass = "user-data-box__stat--top100";
+  }
+
   let formattedData = {
     username: data.username,
     level: {
       current: level.level,
-      toNext: level.progressToNext
+      toNext: level.progressToNext,
+      totalEXP: data.statistics?.totalExperiencePoints || 0
     },
     rank: {
       rank: rank.title,
       color: rank.color
+    },
+    multiplayer: {
+      won: data.statistics.multiplayer.gamesWon,
+      played: data.statistics.multiplayer.gamesPlayed
     },
     joinDate: data.creationDateAndTime,
     userID: data._id,
@@ -70,7 +116,13 @@ async function getData(request: Request) {
       scorePlaceholder,
     standardBest:
       data?.statistics?.personalBestScoreOnStandardSingleplayerMode ||
-      scorePlaceholder
+      scorePlaceholder,
+    easyRank: easyRank,
+    easyRankText: easyRankText,
+    easyRankClass: easyRankClass,
+    standardRank: standardRank,
+    standardRankText: standardRankText,
+    standardRankClass: standardRankClass
   };
   return formattedData;
 }
