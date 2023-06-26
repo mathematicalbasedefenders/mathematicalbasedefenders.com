@@ -105,9 +105,18 @@
               <h2>Multiplayer</h2>
               <p class="large-font"><%- data.multiplayer.played === 0 || isNaN(data.multiplayer.played)  ? "N/A" : `${(data.multiplayer.won/data.multiplayer.played*100).toFixed(3)}%` %></p>
             </div>
+            <% if (data.multiplayer.played === 0 || isNaN(data.multiplayer.played)) { %>
+            <p class="text--center-align">(No Multiplayer record.)</p>
+            <%} else {%>
+            <div class="user-data-box__stat">
+              <span>Games Won/Played</span>
+              <span><%-data.multiplayer.won || 0%>/<%-data.multiplayer.played%></span>
+            </div>
+            <% } %>
           </div>
         </div>
       </div>
+    </div>
     </div>
   </main>
   <%- include("../partials/footer.ejs") %>
