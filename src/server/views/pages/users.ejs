@@ -91,7 +91,7 @@
           <div class="user-data-box__gamemode">
             <div class="user-data-box__gamemode-title">
               <h2>Multiplayer</h2>
-              <p class="large-font"><%- data.multiplayer.played === 0 ? "0.000%" : `${(data.multiplayer.won/data.multiplayer.played*100).toFixed(3)}%` %></p>
+              <p class="large-font"><%- data.multiplayer.played === 0 || isNaN(data.multiplayer.played)  ? "0.000%" : `${(data.multiplayer.won/data.multiplayer.played*100).toFixed(3)}%` %></p>
             </div>
           </div>
         </div>
