@@ -1,0 +1,10 @@
+<h2 class="license-title"><%=name%></h2>
+<% if (data.homepage && data.homepage !== "(No repository link found.)"){ %>
+<%- `<a href=${data.homepage}>Repository</a>` %>
+<% } else { %>
+<%- `(No repository link found.)` %>
+<% } %>
+<br>
+<code style="font-size:12px;font-weight:normal">
+  <%- data.license %>
+</code>
