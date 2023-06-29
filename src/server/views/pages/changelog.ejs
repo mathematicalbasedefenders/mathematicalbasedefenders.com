@@ -2,48 +2,23 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mathematical Base Defenders</title>
+  <title>Changelog | Mathematical Base Defenders</title>
   <%- include("../partials/head.ejs") %>
-  <style>
-    h1 {
-      margin: 0;
-      font-weight: normal;
-      font-size: 48px
-    }
-
-    h2 {
-      margin: 0;
-      font-weight: normal;
-      font-size: 24px
-    }
-
-    .changelog-container {
-      width: 80% !important;
-      margin-left: auto;
-      margin-right: auto;
-      display: block;
-    }
-
-    .privacy-policy-container p {
-      margin: 0
-    }
-  </style>
+  <%- include("../partials/slide-down.ejs") %>
+  <!-- <link rel="stylesheet" type="text/css" href="/css/index.css" /> -->
 </head>
 
 <body>
-  <%- include("../partials/top-navigation-bar.ejs") %>
-  <div id="content-container">
-    <div class="changelog-container">
-      <!-- This is the main content -->
+  <%- include("../partials/header.ejs") %>
+  <main>
+    <div>
       <br>
       <h1>Changelog: <%= data.part %></h1>
+      <p class="text--center-align"><a href="/changelog/website">Website Changelog</a> | <a href="/changelog/game">Game Changelog</a></p>
       <hr>
       <%- data.text %>
     </div>
-  </div> <!-- This is the main content -->
+  </main>
   <%- include("../partials/footer.ejs") %>
 </body>
 

@@ -57,11 +57,11 @@ router.get("/api/users/:user", limiter, async (request, response) => {
   // add leaderboards data
   if (easyLeaderboardDataRank !== -1) {
     data.statistics.personalBestScoreOnEasySingleplayerMode.globalRank =
-      easyLeaderboardDataRank;
+      easyLeaderboardDataRank + 1;
   }
   if (standardLeaderboardDataRank !== -1) {
     data.statistics.personalBestScoreOnStandardSingleplayerMode.globalRank =
-      standardLeaderboardDataRank;
+      standardLeaderboardDataRank + 1;
   }
   response.status(200).json(data);
 });
