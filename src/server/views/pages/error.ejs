@@ -2,28 +2,26 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mathematical Base Defenders</title>
+  <title>Internal Error | Mathematical Base Defenders</title>
   <%- include("../partials/head.ejs") %>
-  <style>
-  </style>
+  <%- include("../partials/slide-down.ejs") %>
+  <link rel="stylesheet" type="text/css" href="/css/centered-text.css" />
 </head>
 
 <body>
-  <%- include("../partials/top-navigation-bar.ejs") %>
-  <!-- This is the main content -->
-  <div id="content-container">
-    <div style="display:flex;align-items:center;flex-direction:column">
-      <!-- Please tell mistertfy64 to actually learn error codes, for simplicity sake it's a 500 -->
-      <div style="font-size:96px;">500</div>
-      <div style="margin-left:8px;font-size:24px;">An internal server has occurred. If the issue persists, please
-        contact the Game Master.<br>Do you want to
-        go
-        back to <a href="/">the homepage?</a></div>
+  <%- include("../partials/header.ejs") %>
+  <main>
+    <div id="container">
+      <br>
+      <div id="centered">
+        <h1>
+          500
+        </h1>
+        <p>An internal server error has occurred. If this continues, please contact the administrator.<br>
+          Do you want to <a href="/">go back to the homepage</a>?</p>
+      </div>
     </div>
-  </div> <!-- This is the main content -->
+  </main>
   <%- include("../partials/footer.ejs") %>
 </body>
 

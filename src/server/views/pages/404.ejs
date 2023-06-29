@@ -2,27 +2,26 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mathematical Base Defenders</title>
+  <title>404 | Mathematical Base Defenders</title>
   <%- include("../partials/head.ejs") %>
-  <style>
-  </style>
+  <%- include("../partials/slide-down.ejs") %>
+  <link rel="stylesheet" type="text/css" href="/css/centered-text.css" />
 </head>
 
 <body>
-  <%- include("../partials/top-navigation-bar.ejs") %>
-  <!-- This is the main content -->
-  <div id="content-container">
-    <div style="display:flex;align-items:center;flex-direction:column">
-      <div style="font-size:96px;">404</div>
-      <div style="margin-left:8px;font-size:24px;">The page you are looking for can't be
-        found.<br>Do you want to
-        go
-        back to <a href="/">the homepage?</a></div>
+  <%- include("../partials/header.ejs") %>
+  <main>
+    <div id="container">
+      <br>
+      <div id="centered">
+        <h1>
+          404
+        </h1>
+        <p>The page you are looking for can't be found.<br>
+          Do you want to <a href="/">go back to the homepage</a>?</p>
+      </div>
     </div>
-  </div> <!-- This is the main content -->
+  </main>
   <%- include("../partials/footer.ejs") %>
 </body>
 

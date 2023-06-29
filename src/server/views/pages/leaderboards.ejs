@@ -2,81 +2,30 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mathematical Base Defenders</title>
+  <title>Leaderboards | Mathematical Base Defenders</title>
   <%- include("../partials/head.ejs") %>
-  <style>
-    table {
-      border-collapse: collapse;
-      width: 100%;
-    }
-
-    #leaderboards-table tr:nth-child(1) {
-      background-color: #ffd700;
-    }
-
-    #leaderboards-table tr:nth-child(2) {
-      background-color: #c0c0c0;
-    }
-
-    #leaderboards-table tr:nth-child(3) {
-      background-color: #cd7f32;
-    }
-
-    a {
-      color: black;
-      text-decoration: none;
-    }
-
-    .rank-number {
-      font-size: 24px;
-    }
-
-    .rank-username {
-      font-size: 24px;
-    }
-
-    .rank-score {
-      font-size: 24px;
-    }
-
-    .rank-game-data {
-      font-size: 12px;
-      white-space: nowrap;
-    }
-
-    h1 {
-      margin: 0;
-      font-weight: normal;
-      font-size: 48px
-    }
-  </style>
+  <link rel="stylesheet" type="text/css" href="/css/leaderboards.css" />
 </head>
 
 <body>
-  <%- include("../partials/top-navigation-bar.ejs") %>
-  <div id="content-container">
-    <!-- This is the main content -->
-    <div style="width: 80%;      margin-left: auto;
-    margin-right: auto;">
+  <%- include("../partials/header.ejs") %>
+  <main>
+    <div>
       <br>
-      <h1>Leaderboards: <%=mode%> Singleplayer</h1>
-      <hr>
-      <div style="display: flex; justify-content: center; align-items: center;">
-        <table id="leaderboards-table">
-          <% for (let i = 0; i < 100; i++) { %>
-          <% if (i < data.length) { %>
-          <%- include("../partials/leaderboards-record.ejs", {record:data[i],rank:i+1}) %>
-          <% } else { %>
-          <%- include("../partials/leaderboards-record.ejs", {record:null,rank:i+1}) %>
-          <% } %>
-          <% } %>
-        </table>
-      </div>
+      <h1>Leaderboards: <%-mode%> Singleplayer </h1>
+      <p class="center-align"><a href="/leaderboards/easy">Easy Singleplayer</a> | <a href="/leaderboards/standard">Standard Singleplayer</a></p>
+      <table id="leaderboards-table">
+        <% for (let i = 0; i < 100; i++) { %>
+        <% if (i < data.length) { %>
+        <%- include("../partials/leaderboards-record.ejs", {record:data[i],rank:i+1}) %>
+        <% } else { %>
+        <%- include("../partials/leaderboards-record.ejs", {record:null,rank:i+1}) %>
+        <% } %>
+        <% } %>
+      </table>
     </div>
-  </div> <!-- This is the main content -->
+    <br>
+  </main>
   <%- include("../partials/footer.ejs") %>
 </body>
 

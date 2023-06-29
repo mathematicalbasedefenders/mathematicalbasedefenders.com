@@ -2,125 +2,127 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mathematical Base Defenders</title>
+  <title>User Lookup | Mathematical Base Defenders</title>
   <%- include("../partials/head.ejs") %>
-  <style>
-    #content-container {
-      width: 80%;
-      margin-left: auto;
-      margin-right: auto;
-      display: block;
-    }
-
-    #user-information-container {
-      display: grid;
-      grid-template-rows: [row1-start] 160px [row1-end row2-start] 160px [row2-end row3-start] 160px [row3-end];
-      grid-template-columns: [column1-start] 50% [column1-end column2-start] 50% [column2-end];
-    }
-
-    .user-information-box {
-      border: 2px solid #aaaaaa;
-      border-radius: 4px;
-      margin: 8px;
-      padding: 4px;
-    }
-
-    #user-information-box__general {
-      grid-column: column1-start / column2-end;
-      grid-row: row1-start / row1-end;
-    }
-
-    #user-information-box__easy {
-      grid-column: column1-start / column1-end;
-      grid-row: row2-start / row2-end;
-    }
-
-    #user-information-box__standard {
-      grid-column: column2-start / column2-end;
-      grid-row: row2-start / row2-end;
-    }
-
-    .user-information-box h1 {
-      margin: 0;
-      font-weight: normal;
-      font-size: 48px
-    }
-
-    .user-information-box h2 {
-      margin: 0;
-      font-weight: normal;
-      font-size: 36px
-    }
-
-    .user-information-box h3 {
-      margin: 0;
-      font-weight: normal;
-      font-size: 20px
-    }
-
-    .large-text {
-      font-size: 48px;
-    }
-
-    .medium-text {
-      font-size: 20px;
-    }
-
-    .split-container {
-      display: flex;
-      justify-content: space-between;
-    }
-  </style>
+  <link rel="stylesheet" type="text/css" href="/css/users.css" />
 </head>
 
-<body>
-  <%- include("../partials/top-navigation-bar.ejs") %>
-  <div id="content-container">
-    <!-- This is the main content -->
-    <br>
-    <div id="user-information-container" style="width:100%;">
-      <div class="user-information-box" id="user-information-box__general">
-        <div class="medium-text" style=<%-`color:${data.rank.color}`%>><%= data.rank.rank %></div>
-        <h1><%= data.username %></h1>
-        <div class="medium-text">Level <%=data.level.current%> (<%=isNaN(data.level.toNext) ? "0.000" : (data.level.toNext*100).toFixed(3)%>% to next)</div>
-      </div>
+<body> <%- include("../partials/header.ejs") %>
+  <main>
+    <div>
       <br>
-      <div class="user-information-box" id="user-information-box__easy">
-        <div class="split-container">
-          <div>
-            <div class="medium-text">Easy Singleplayer</div>
-            <div class="large-text"><%=data.easyBest.score%></div>
-          </div>
-          <div style="text-align:right;">
-            <% if (data.easyBest.score !== "N/A"){ %>
-            <%- `<div class="small-text">${data.easyBest.timeInMilliseconds}ms</div>` %>
-            <%- `<div class="small-text">${data.easyBest.scoreSubmissionDateAndTime}</div>` %>
-            <%- `<div class="small-text">${data.easyBest.enemiesKilled}/${data.easyBest.enemiesCreated}</div>`%>
-            <% } %>
+      <div id="user-data-box">
+        <div id="user-data-box__profile">
+          <img alt="Profile pictures are coming in a future update." src="/assets/images/default-avatar.png" width="128" height="128">
+          <div id="user-data-box__username">
+            <p id="user-data-box__rank" style=<%-`background-color:${data.rank.color}`%>><%- data.rank.rank %></p>
+            <h1><%- data.username%></h1>
           </div>
         </div>
-      </div>
+        <br>
+        <div id="user-data-box__statistics">
+          <div class="user-data-box__gamemode">
+            <div class="user-data-box__gamemode-title">
+              <h2>General</h2>
+              <p class="large-font">Level <%-data.level.current || "0"%></p>
+            </div>
+            <div class="user-data-box__stat">
+              <span>Experience Points</span>
+              <span><%- data.level.totalEXP %>EXP (<%- data.level.toNext.toFixed(3)%>% to next)</span>
+            </div>
+            <div class="user-data-box__stat">
+              <span>Join Date</span>
+              <span><%- data.joinDate %></span>
+            </div>
 
-      <div class="user-information-box" id="user-information-box__standard">
-        <div class="split-container">
-          <div>
-            <div class="medium-text">Standard Singleplayer</div>
-            <div class="large-text"><%=data.standardBest.score%></div>
           </div>
-          <div style="text-align:right;">
-            <% if (data.standardBest.score !== "N/A"){ %>
-            <%- `<div class="small-text">${data.standardBest.timeInMilliseconds}ms</div>` %>
-            <%- `<div class="small-text">${data.standardBest.scoreSubmissionDateAndTime}</div>` %>
-            <%- `<div class="small-text">${data.standardBest.enemiesKilled}/${data.standardBest.enemiesCreated}</div>`%>
+          <br>
+          <div class="user-data-box__gamemode <%-data.easyRankClass%>">
+            <div class="user-data-box__gamemode-title">
+              <h2>Easy Singleplayer</h2>
+              <!-- TODO: Consider that other no scores are possible (e.g. null) -->
+              <p class="large-font"><%- data.easyBest.score  || "???" %></p>
+            </div>
+            <% if (data.easyBest.score && data.easyBest.score !== "N/A") { %>
+
+
+            <div class="user-data-box__stat">
+              <span>Actions Per Minute</span>
+              <span><%-(data.easyBest.actionsPerformed/(data.easyBest.timeInMilliseconds/60000)).toFixed(3)%>APM</span>
+            </div>
+            <div class="user-data-box__stat">
+              <span>In Game Time</span>
+              <span><%-data.easyBest.timeInMilliseconds%>ms</span>
+            </div>
+            <div class="user-data-box__stat">
+              <span>Enemies Killed/Spawned</span>
+              <span><%-data.easyBest.enemiesKilled%>/<%-data.easyBest.enemiesCreated%></span>
+            </div>
+            <div class="user-data-box__stat">
+              <span>Submitted On</span>
+              <span><%-data.easyBest.scoreSubmissionDateAndTime%></span>
+            </div>
+            <% } else { %>
+            <p class="text--center-align">(No Easy Singleplayer record.)</p>
+            <% } %>
+            <div class="user-data-box__stat <%-data.easyRankClass%>">
+              <span></span>
+              <div><%- data.easyRankText %></div>
+            </div>
+
+          </div>
+          <br>
+          <div class="user-data-box__gamemode <%-data.standardRankClass%>">
+            <div class="user-data-box__gamemode-title">
+              <h2>Standard Singleplayer</h2>
+              <!-- TODO: Consider that other no scores are possible (e.g. null) -->
+              <p class="large-font"><%- data.standardBest.score || "???" %></p>
+            </div>
+            <% if (data.standardBest.score && data.standardBest.score !== "N/A") { %>
+            <div class="user-data-box__stat">
+              <span>Actions Per Minute</span>
+              <span><%-(data.standardBest.actionsPerformed/(data.standardBest.timeInMilliseconds/60000)).toFixed(3)%>APM</span>
+            </div>
+            <div class="user-data-box__stat">
+              <span>In Game Time</span>
+              <span><%-data.standardBest.timeInMilliseconds%>ms</span>
+            </div>
+            <div class="user-data-box__stat">
+              <span>Enemies Killed/Spawned</span>
+              <span><%-data.standardBest.enemiesKilled%>/<%-data.standardBest.enemiesCreated%></span>
+            </div>
+            <div class="user-data-box__stat">
+              <span>Submitted On</span>
+              <span><%-data.standardBest.scoreSubmissionDateAndTime%></span>
+            </div>
+            <% } else { %>
+            <p class="text--center-align">(No Standard Singleplayer record.)</p>
+            <% } %>
+            <div class="user-data-box__stat <%-data.standardRankClass%>">
+              <span></span>
+              <div><%- data.standardRankText %></div>
+            </div>
+          </div>
+          <br>
+          <div class="user-data-box__gamemode">
+            <div class="user-data-box__gamemode-title">
+              <h2>Multiplayer</h2>
+              <p class="large-font"><%- data.multiplayer.played === 0 || isNaN(data.multiplayer.played)  ? "N/A" : `${(data.multiplayer.won/data.multiplayer.played*100).toFixed(3)}%` %></p>
+            </div>
+            <% if (data.multiplayer.played === 0 || isNaN(data.multiplayer.played)) { %>
+            <p class="text--center-align">(No Multiplayer record.)</p>
+            <%} else {%>
+            <div class="user-data-box__stat">
+              <span>Games Won/Played</span>
+              <span><%-data.multiplayer.won || 0%>/<%-data.multiplayer.played%></span>
+            </div>
             <% } %>
           </div>
         </div>
       </div>
     </div>
-  </div> <!-- This is the main content -->
+    <br>
+  </main>
   <%- include("../partials/footer.ejs") %>
 </body>
 
