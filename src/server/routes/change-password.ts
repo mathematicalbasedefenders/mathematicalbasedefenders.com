@@ -217,7 +217,6 @@ router.post(
         newPassword,
         hashedNewPasswordSalt
       );
-      console.log(hashedNewPassword);
       await PendingPasswordReset.deleteOne({ emailAddress: email });
       await User.findOneAndUpdate(
         { emailAddress: email },
