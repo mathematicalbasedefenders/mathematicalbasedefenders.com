@@ -1,0 +1,14 @@
+#centered {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+#container {
+  height: 100%;
+}
+
+h1 {
+  font-size: 300%;
+}
