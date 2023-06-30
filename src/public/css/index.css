@@ -4,8 +4,8 @@ body {
 }
 
 #front-page__header {
-  width: max(125%, 2000px);
-  background-size: 125%;
+  width: calc(100% * 4 / 3);
+  /* background-size: 125%; */
   color: var(--color-text-light);
   display: flex;
   flex-direction: column;
@@ -16,7 +16,6 @@ body {
   background-image: url("../assets/images/gameplay-background.png");
   background-repeat: no-repeat;
   position: relative;
-  height: 720px;
   justify-content: center;
 }
 
