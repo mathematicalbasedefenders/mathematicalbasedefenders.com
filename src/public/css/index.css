@@ -79,8 +79,7 @@ main h3 {
 
 .gamemode-container {
   width: 30%;
-  height: 0;
-  padding-bottom: 30%;
+  height: max-content;
   color: white;
   justify-content: space-between;
 }
