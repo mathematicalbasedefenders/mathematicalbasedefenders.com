@@ -6,7 +6,7 @@ body {
 #front-page__header {
   width: min(100vw, calc(100% * 4 / 3));
   /* background-size: 125%; */
-  height: 720px;
+  height: max(fit-content, 720px);
   color: var(--color-text-light);
   display: flex;
   flex-direction: column;
@@ -45,7 +45,7 @@ body {
   transition-duration: var(--transition-duration-regular);
   width: 20vw;
   height: 5vw;
-  font-size: 150%;
+  font-size: 3vw;
   font-family: "Computer Modern Unicode Serif";
   margin-right: 8px;
 }
