@@ -4,8 +4,9 @@ body {
 }
 
 #front-page__header {
-  width: calc(100% * 4 / 3);
+  width: min(100vw, calc(100% * 4 / 3));
   /* background-size: 125%; */
+  height: 720px;
   color: var(--color-text-light);
   display: flex;
   flex-direction: column;
@@ -42,8 +43,8 @@ body {
   color: #ffffff;
   border: 2px #108800 solid;
   transition-duration: var(--transition-duration-regular);
-  width: 320px;
-  height: 64px;
+  width: 20vw;
+  height: 5vw;
   font-size: 150%;
   font-family: "Computer Modern Unicode Serif";
   margin-right: 8px;
@@ -149,6 +150,11 @@ main h3 {
   text-align: right;
 }
 
+.bottom-footer__link img {
+  width: auto;
+  height: max(1.6vw, 32px);
+}
+
 @media only screen and (max-width: 768px) {
   #feature-container-wrapper {
     display: flex;
@@ -166,6 +172,18 @@ main h3 {
   #gamemode-container-wrapper {
     display: flex;
     justify-content: space-between;
+    flex-direction: column;
+  }
+
+  #bottom-footer {
+    flex-direction: column;
+  }
+
+  .bottom-footer__social-media {
+    flex-direction: column;
+  }
+
+  #top-navbar {
     flex-direction: column;
   }
 }
