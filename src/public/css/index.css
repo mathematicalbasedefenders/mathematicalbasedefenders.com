@@ -6,8 +6,7 @@ body {
 #front-page__header {
   width: min(100vw, calc(100% * 4 / 3));
   /* background-size: 125%; */
-  height: 720px;
-  min-height: fit-content;
+  min-height: 720px;
   background-size: cover;
   color: var(--color-text-light);
   display: flex;
@@ -20,7 +19,6 @@ body {
   background-repeat: no-repeat;
   position: relative;
   justify-content: center;
-  max-height: 100vh;
 }
 
 #front-page__header > div {
