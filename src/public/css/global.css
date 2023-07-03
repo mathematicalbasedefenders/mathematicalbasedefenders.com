@@ -43,7 +43,7 @@ body {
 .top-navbar__button {
   text-decoration: none !important;
   color: var(--color-text-light);
-  font-size: 175%;
+  font-size: min(32px, 175%);
   padding: 12px 16px;
 }
 
@@ -117,4 +117,27 @@ main h3 {
   font-weight: normal;
   margin-top: 4px;
   margin-bottom: 4px;
+}
+
+.bottom-footer__link > img {
+  vertical-align: middle;
+}
+
+.bottom-footer__link img {
+  width: auto;
+  height: max(1.6vw, 32px);
+}
+
+@media only screen and (max-width: 768px) {
+  #bottom-footer {
+    flex-direction: column;
+  }
+
+  .bottom-footer__social-media {
+    flex-direction: column;
+  }
+
+  #top-navbar {
+    flex-direction: column;
+  }
 }

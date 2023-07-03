@@ -63,3 +63,18 @@ main h3 {
 .center-align {
   text-align: center;
 }
+
+@media only screen and (max-width: 768px) {
+  .leaderboards__record {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .leaderboards__record .rank__number,
+  .leaderboards__record .rank__username,
+  .leaderboards__record .rank__game-data,
+  .leaderboards__record .rank__score {
+    text-align: center !important;
+    width: 100% !important;
+  }
+}
