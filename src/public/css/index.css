@@ -6,7 +6,9 @@ body {
 #front-page__header {
   width: min(100vw, calc(100% * 4 / 3));
   /* background-size: 125%; */
-  height: max(fit-content, 720px);
+  height: 720px;
+  min-height: fit-content;
+  background-size: cover;
   color: var(--color-text-light);
   display: flex;
   flex-direction: column;
@@ -18,6 +20,7 @@ body {
   background-repeat: no-repeat;
   position: relative;
   justify-content: center;
+  max-height: 100vh;
 }
 
 #front-page__header > div {
@@ -150,11 +153,6 @@ main h3 {
   text-align: right;
 }
 
-.bottom-footer__link img {
-  width: auto;
-  height: max(1.6vw, 32px);
-}
-
 @media only screen and (max-width: 768px) {
   #feature-container-wrapper {
     display: flex;
@@ -172,18 +170,6 @@ main h3 {
   #gamemode-container-wrapper {
     display: flex;
     justify-content: space-between;
-    flex-direction: column;
-  }
-
-  #bottom-footer {
-    flex-direction: column;
-  }
-
-  .bottom-footer__social-media {
-    flex-direction: column;
-  }
-
-  #top-navbar {
     flex-direction: column;
   }
 }
