@@ -38,6 +38,10 @@ body {
   font-size: 125%;
 }
 
+#front-page__header .text--description {
+  margin: 8px 0;
+}
+
 .play-now-button {
   background-color: #108800;
   border-radius: 4px;
