@@ -1,25 +1,12 @@
 import * as log from "../core/log.js";
 import * as mail from "../core/mail.js";
-import nodemailer from "nodemailer";
+
 async function sendMailToUnverifiedUser(
   desiredUsername: string,
-  desiredEmail: string,
-  emailConfirmationCode: string
+  email: string,
+  confirmationCode: string
 ) {
-  let success: boolean = false;
-  let transporter = nodemailer.createTransport(
-    mail.getNodemailerOptionsObject()
-  );
-  let message = mail.getMailContentForNewlyRegisteredUser(
-    desiredEmail,
-    emailConfirmationCode
-  );
-  try {
-    transporter.sendMail(message);
-  } catch (error: any) {
-    console.error(
-      log.addLogMessageMetadata(error.stack, log.LogMessageLevel.ERROR)
-    );
+  if (!mail.sendMailToNewlyRegisteredUser(email, confirmationCode)) {
     return {
       success: false,
       redirectTo: "?erroroccurred=true&errorreason=internalerror"

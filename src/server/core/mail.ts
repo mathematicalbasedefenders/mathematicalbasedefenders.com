@@ -1,64 +1,81 @@
-import createDOMPurify from "dompurify";
+import path from "path";
+import hbs, {
+  NodemailerExpressHandlebarsOptions
+} from "nodemailer-express-handlebars";
 import { JSDOM } from "jsdom";
+import createDOMPurify from "dompurify";
 const window: any = new JSDOM("").window;
 const DOMPurify = createDOMPurify(window);
+import nodemailer from "nodemailer";
+import * as log from "../core/log.js";
 
-function getMailContentForPasswordReset(
-  recipientEmail: any,
-  passwordResetConfirmationCode: any
+const handlebarOptions: NodemailerExpressHandlebarsOptions = {
+  viewEngine: {
+    partialsDir: path.join(__dirname, "mail-templates"),
+    defaultLayout: false
+  },
+  viewPath: path.join(__dirname, "mail-templates")
+};
+
+const transporter = nodemailer.createTransport(getNodemailerOptionsObject());
+transporter.use("compile", hbs(handlebarOptions));
+
+async function sendMailForPasswordReset(
+  recipientEmail: string,
+  confirmationCode: string
 ) {
-  let message = {
-    from: "Mathematical Base Defenders Support <support@mathematicalbasedefenders.com>",
-    to: recipientEmail,
+  const email = DOMPurify.sanitize(encodeURIComponent(recipientEmail));
+  const code = DOMPurify.sanitize(confirmationCode);
+  let confirmationLink = `https://mathematicalbasedefenders.com/change-password`;
+  confirmationLink += `?email=${email}`;
+  confirmationLink += `&code=${code}`;
+  const message = {
     subject: "Password Reset Confirmation for Mathematical Base Defenders",
-    html: `
-<p>
-Someone requested a password reset for your Mathematical Base Defenders account.
-<br>
-If this is you, and you want continue with the procedure, please click this link.
-<br>
-<a href=https://mathematicalbasedefenders.com/change-password?email=${encodeURIComponent(
-      recipientEmail
-    )}&code=${DOMPurify.sanitize(
-      passwordResetConfirmationCode
-    )}>https://mathematicalbasedefenders.com/change-password?email=${DOMPurify.sanitize(
-      encodeURIComponent(recipientEmail)
-    )}&code=${DOMPurify.sanitize(passwordResetConfirmationCode)}</a>
-<br>
-This link will expire in 30 minutes. After that, you may request a new password reset link. If the link doesn't work, feel free to copy and paste the link. If you need help, please reply to this e-mail.
-</p>
-`
+    from: "Mathematical Base Defenders <support@mathematicalbasedefenders.com>",
+    template: "password-reset",
+    to: recipientEmail,
+    context: {
+      confirmationLink: confirmationLink
+    }
   };
-  return message;
+  try {
+    await transporter.sendMail(message);
+  } catch (error: any) {
+    console.error(
+      log.addLogMessageMetadata(error.stack, log.LogMessageLevel.ERROR)
+    );
+    return false;
+  }
+  return true;
 }
 
-function getMailContentForNewlyRegisteredUser(
-  recipientEmail: any,
-  emailConfirmationCode: any
+async function sendMailToNewlyRegisteredUser(
+  recipientEmail: string,
+  confirmationCode: string
 ) {
+  const email = DOMPurify.sanitize(encodeURIComponent(recipientEmail));
+  const code = DOMPurify.sanitize(confirmationCode);
+  let confirmationLink = `https://mathematicalbasedefenders.com/confirm-email-address`;
+  confirmationLink += `?email=${email}`;
+  confirmationLink += `&code=${code}`;
   let message = {
-    from: "Mathematical Base Defenders Support <support@mathematicalbasedefenders.com>",
+    subject: "New Account Confirmation for Mathematical Base Defenders",
+    from: "Mathematical Base Defenders <support@mathematicalbasedefenders.com>",
+    template: "new-account",
     to: recipientEmail,
-    subject: "Email Confirmation for Mathematical Base Defenders",
-    html: `
-                            <p>
-                                Thanks for signing up for Mathematical Base Defenders!
-                                <br>
-                                In order to fully activate your account, please click the activation link below.
-                                <br>
-                                <a href=https://mathematicalbasedefenders.com/confirm-email-address?email=${DOMPurify.sanitize(
-                                  encodeURIComponent(recipientEmail)
-                                )}&code=${DOMPurify.sanitize(
-      emailConfirmationCode
-    )}>https://mathematicalbasedefenders.com/confirm-email-address?email=${DOMPurify.sanitize(
-      encodeURIComponent(recipientEmail)
-    )}&code=${DOMPurify.sanitize(emailConfirmationCode)}</a>
-                                <br>
-                                This link will expire in 30 minutes. After that, your account will be deleted and you may sign up again. If the link doesn't work, feel free to copy and paste the link. If you need help, please reply to this e-mail.
-                            </p>
-                            `
+    context: {
+      confirmationLink: confirmationLink
+    }
   };
-  return message;
+  try {
+    await transporter.sendMail(message);
+  } catch (error: any) {
+    console.error(
+      log.addLogMessageMetadata(error.stack, log.LogMessageLevel.ERROR)
+    );
+    return false;
+  }
+  return true;
 }
 
 function getNodemailerOptionsObject() {
@@ -74,8 +91,4 @@ function getNodemailerOptionsObject() {
   return toReturn;
 }
 
-export {
-  getNodemailerOptionsObject,
-  getMailContentForNewlyRegisteredUser,
-  getMailContentForPasswordReset
-};
+export { sendMailToNewlyRegisteredUser, sendMailForPasswordReset };
