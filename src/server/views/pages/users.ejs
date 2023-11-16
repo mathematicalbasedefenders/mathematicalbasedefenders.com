@@ -41,9 +41,9 @@
             <div class="user-data-box__gamemode-title">
               <h2>Easy Singleplayer</h2>
               <!-- TODO: Consider that other no scores are possible (e.g. null) -->
-              <p class="large-font"><%- data.easyBest.score  || "???" %></p>
+              <p class="large-font"><%- (data.easyBest.score>-1)? data.easyBest.score  : "???" %></p>
             </div>
-            <% if (data.easyBest.score && data.easyBest.score !== "N/A") { %>
+            <% if (data.easyBest.score  >-1&& data.easyBest.score !== "N/A") { %>
 
 
             <div class="user-data-box__stat">
@@ -76,9 +76,9 @@
             <div class="user-data-box__gamemode-title">
               <h2>Standard Singleplayer</h2>
               <!-- TODO: Consider that other no scores are possible (e.g. null) -->
-              <p class="large-font"><%- data.standardBest.score || "???" %></p>
+              <p class="large-font"><%- (data.standardBest.score>-1)? data.standardBest.score : "???" %></p>
             </div>
-            <% if (data.standardBest.score && data.standardBest.score !== "N/A") { %>
+            <% if (data.standardBest.score  >-1&& data.standardBest.score !== "N/A") { %>
             <div class="user-data-box__stat">
               <span>Actions Per Minute</span>
               <span><%-(data.standardBest.actionsPerformed/(data.standardBest.timeInMilliseconds/60000)).toFixed(3)%>APM</span>
