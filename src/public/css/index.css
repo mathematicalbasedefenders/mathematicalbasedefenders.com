@@ -104,6 +104,8 @@ main h3 {
 .gamemode-container a {
   text-align: right;
   margin: 4px;
+  width: calc(100% - 8px);
+  display: inline-block;
 }
 
 .gamemode-container--easy {
@@ -121,7 +123,6 @@ main h3 {
 .feature-container {
   width: 30%;
   height: auto;
-  height: 15%;
   color: white;
   justify-content: space-between;
   background-color: #222222;
@@ -146,7 +147,8 @@ main h3 {
   justify-content: space-between;
 }
 
-.right-align {
+.right-align,
+.text--right-align {
   text-align: right;
 }
 
