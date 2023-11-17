@@ -1,6 +1,5 @@
 import express from "express";
 var router = express.Router();
-import Metadata from "../models/Metadata";
 import { v4 as uuidv4 } from "uuid";
 import url from "url";
 import bcrypt from "bcrypt";
@@ -11,7 +10,6 @@ import { JSDOM } from "jsdom";
 import createDOMPurify from "dompurify";
 const window: any = new JSDOM("").window;
 const DOMPurify = createDOMPurify(window);
-import nodemailer from "nodemailer";
 import rateLimit from "express-rate-limit";
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -23,7 +21,7 @@ const fetch = require("node-fetch");
 import { addLogMessageMetadata, LogMessageLevel } from "../core/log";
 import * as validation from "../core/validation";
 import * as mail from "../core/mail.js";
-import { User, UserInterface } from "../models/User";
+import { User } from "../models/User";
 import PendingPasswordReset from "../models/PendingPasswordReset";
 import { doubleCsrf } from "csrf-csrf";
 const { generateToken, doubleCsrfProtection } = doubleCsrf({
