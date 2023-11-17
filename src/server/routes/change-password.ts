@@ -124,24 +124,16 @@ router.post(
           );
           response.redirect("/?resetpassword=fail");
         } else {
-          let transporter = nodemailer.createTransport(
-            mail.getNodemailerOptionsObject()
-          );
-          let message = mail.getMailContentForPasswordReset(
-            desiredEmail,
-            passwordResetConfirmationCode
-          );
-
-          transporter.sendMail(message, (error, information) => {
-            if (error) {
-              console.error(
-                addLogMessageMetadata(error.stack, LogMessageLevel.ERROR)
-              );
-              response.redirect("?erroroccurred=true");
-            } else {
-              response.redirect("/?sentpasswordresetlink=true");
-            }
-          });
+          if (
+            !mail.sendMailForPasswordReset(
+              desiredEmail,
+              passwordResetConfirmationCode
+            )
+          ) {
+            response.redirect("?erroroccurred=true");
+          } else {
+            response.redirect("/?sentpasswordresetlink=true");
+          }
         }
       });
     } else {
