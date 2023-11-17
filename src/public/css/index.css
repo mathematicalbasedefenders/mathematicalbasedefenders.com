@@ -81,6 +81,10 @@ main h3 {
   justify-content: space-between;
 }
 
+#gamemode-container-wrapper .gamemode-container {
+  height: auto;
+}
+
 .gamemode-container {
   width: 30%;
   height: max-content;
@@ -116,7 +120,7 @@ main h3 {
 
 .feature-container {
   width: 30%;
-  height: 0;
+  height: auto;
   height: 15%;
   color: white;
   justify-content: space-between;
