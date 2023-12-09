@@ -36,12 +36,15 @@ body {
   text-decoration: underline !important;
 }
 
+#front-page__links {
+  text-align: right;
+}
+
 #front-page__links > a {
   color: #ffffff !important;
   text-decoration: none !important;
   margin: 8px;
   font-size: 150%;
-  text-align: right;
 }
 
 #front-page__links > a:hover {
