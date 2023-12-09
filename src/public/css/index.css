@@ -3,6 +3,12 @@ body {
   overflow-x: hidden;
 }
 
+#front-page__content--demonstration {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+}
+
 #front-page__header {
   display: flex;
   justify-content: space-between;
@@ -17,7 +23,7 @@ body {
 #front-page__links {
   height: fit-content;
   width: 50%;
-  z-index: 5;
+  z-index: 6;
 }
 
 #front-page__logo {
@@ -51,16 +57,23 @@ body {
   text-decoration: underline !important;
 }
 
-#front-page__introduction {
+.front-page__section {
   width: min(100vw, calc(100% * 4 / 3));
   /* background-size: 125%; */
   min-height: 100vh;
-  background-size: cover;
-  color: var(--color-text-light);
+  color: #ffffff;
   display: flex;
   flex-direction: column;
   left: -10vw;
-  z-index: 3;
+  position: relative;
+}
+
+#front-page__introduction {
+  width: min(100vw, calc(100% * 4 / 3));
+  min-height: 100vh;
+  background-size: cover;
+  color: var(--color-text-light);
+  z-index: 5;
   position: relative;
   background-color: #000000;
   background-image: url("../assets/images/gameplay-background.png");
@@ -69,9 +82,14 @@ body {
 }
 
 #front-page__introduction > div {
-  width: min(50%, 80vw);
+  width: 80%;
   left: 10vw;
+  position: relative;
+}
 
+.front-page__section > div {
+  width: 80%;
+  left: 10vw;
   position: relative;
 }
 
@@ -87,6 +105,31 @@ body {
 
 #front-page__introduction .text--description {
   margin: 8px 0;
+}
+
+#front-page__content--gamemodes {
+  background-color: #2b2b2b;
+  flex-direction: row;
+}
+
+#front-page__content--gamemodes > div {
+  top: 96px;
+  z-index: 7;
+}
+
+#front-page__content--gamemodes h2,
+#front-page__content--gamemodes p {
+  display: relative;
+}
+
+.front-page__filler {
+  height: 128px;
+  background: #000000;
+  background: linear-gradient(180deg, #000000 0%, #000000 40%, #2b2b2b 100%);
+  z-index: 6;
+  position: absolute;
+  width: 100%;
+  left: 0vw;
 }
 
 .play-now-button {
