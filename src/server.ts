@@ -66,7 +66,8 @@ app.use(
           "https://googleads.g.doubleclick.net/",
           "https://*.google.co.th",
           "https://*.google.com",
-          "https://*.googleadservices.com"
+          "https://*.googleadservices.com",
+          "https://storage.mistertfy64.com"
         ],
         "script-src": [
           "'self'",
@@ -96,7 +97,8 @@ app.use(
         "img-src": [
           "'self'",
           "'unsafe-inline'",
-          "https://*.googlesyndication.com"
+          "https://*.googlesyndication.com",
+          "https://storage.mistertfy64.com"
         ],
         "script-src-attr": ["'self'", "'unsafe-inline'"]
       }
