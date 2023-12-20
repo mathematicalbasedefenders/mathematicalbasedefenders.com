@@ -358,31 +358,35 @@ main h3 {
   margin: 0px 8px;
 }
 
-.div3 {
+.feature-tile--feature-3 {
   grid-area: 1 / 1 / 4 / 3;
 }
-.div4 {
+.feature-tile--feature-4 {
   grid-area: 4 / 1 / 7 / 3;
 }
-.div5 {
+.feature-tile--feature-5 {
   grid-area: 7 / 1 / 9 / 3;
 }
-.div7 {
+.feature-tile--feature-7 {
   grid-area: 3 / 7 / 9 / 9;
 }
-.div1 {
+.feature-tile--feature-1 {
   grid-area: 1 / 3 / 9 / 5;
 }
-.div2 {
+.feature-tile--feature-2 {
   grid-area: 1 / 5 / 9 / 7;
 }
-.div6 {
+.feature-tile--feature-6 {
   grid-area: 1 / 7 / 3 / 9;
 }
 
 .right-align,
 .text--right-align {
   text-align: right;
+}
+
+.center-align {
+  text-align: center;
 }
 
 @media only screen and (max-width: 768px) {
