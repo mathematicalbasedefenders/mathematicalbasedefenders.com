@@ -147,7 +147,7 @@ loadLicenses();
 app.listen(PORT, () => {
   console.log(
     addLogMessageMetadata(
-      `App listening at https://localhost:${PORT}`,
+      `App listening at http://localhost:${PORT}`,
       LogMessageLevel.INFO
     )
   );
