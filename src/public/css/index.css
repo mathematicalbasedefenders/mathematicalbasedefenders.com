@@ -173,7 +173,7 @@ body {
 
 .text--disclaimer {
   opacity: 0.3;
-  font-size: 80% !important;
+  font-size: 60% !important;
 }
 
 main h1,
@@ -337,7 +337,13 @@ main h3 {
 }
 
 .feature-tile__image--dominant {
-  transform: rotate(7.5deg) translateX(5vw);
+  transform: scale(1.25) rotate(7.5deg) translateX(5vw);
+}
+
+.feature-tile__image--weak {
+  width: initial;
+  height: initial;
+  object-fit: contain;
 }
 
 .feature-tile__image img {
@@ -349,6 +355,7 @@ main h3 {
 .feature-tile__front p,
 .feature-tile__back p {
   z-index: 2;
+  margin: 0px 8px;
 }
 
 .div3 {
