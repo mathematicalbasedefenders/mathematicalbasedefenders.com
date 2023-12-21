@@ -40,6 +40,7 @@
     "markdown-it": "^13.0.1",
     "marked": "^4.0.10",
     "mongo-sanitize": "^1.1.0",
+    "mongodb": "^3.7.4",
     "mongoose": "^6.8.3",
     "mongoose-query-parser": "^1.2.1",
     "mpath": "^0.8.4",
