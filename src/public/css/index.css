@@ -1,58 +1,171 @@
-/* TODO: Find a better way. */
+/* TODO: Remove old code. */
 body {
   overflow-x: hidden;
 }
 
+#front-page__content--demonstration {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+}
+
 #front-page__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 80vw;
+  left: 10vw;
+  position: absolute;
+  top: 8px;
+}
+
+#front-page__logo,
+#front-page__links {
+  height: fit-content;
+  width: 50%;
+  z-index: 6;
+}
+
+#front-page__logo {
+  font-size: 150%;
+  color: #ffffff !important;
+  text-decoration: none !important;
+}
+
+#front-page__logo-text {
+  margin: -36px 0 0 40px;
+  display: block;
+  position: absolute;
+}
+
+#front-page__logo__text:hover {
+  text-decoration: underline !important;
+}
+
+#front-page__links {
+  text-align: right;
+}
+
+#front-page__links > a {
+  color: #ffffff !important;
+  text-decoration: none !important;
+  margin: 8px;
+  font-size: 150%;
+}
+
+#front-page__links > a:hover {
+  text-decoration: underline !important;
+}
+
+.front-page__section {
   width: min(100vw, calc(100% * 4 / 3));
   /* background-size: 125%; */
-  min-height: 720px;
-  background-size: cover;
-  color: var(--color-text-light);
+  min-height: 100vh;
+  color: #ffffff;
   display: flex;
   flex-direction: column;
   left: -10vw;
-  z-index: 3;
+  position: relative;
+}
+
+#front-page__introduction {
+  width: min(100vw, calc(100% * 4 / 3));
+  min-height: 100vh;
+  background-size: cover;
+  color: var(--color-text-light);
+  z-index: 5;
   position: relative;
   background-color: #000000;
   background-image: url("../assets/images/gameplay-background.png");
   background-repeat: no-repeat;
-  position: relative;
   justify-content: center;
 }
 
-#front-page__header > div {
-  width: min(50%, 80vw);
+#front-page__introduction > div {
+  width: 80%;
   left: 10vw;
-
   position: relative;
 }
 
-#front-page__header h1 {
-  font-size: 250%;
+.front-page__section > div {
+  width: 80%;
+  left: 10vw;
+  position: relative;
+}
+
+#front-page__introduction h1 {
+  font-size: 350%;
   margin: 8px 0;
   font-weight: normal;
 }
 
-#front-page__header p {
-  font-size: 125%;
+#front-page__introduction p {
+  font-size: 150%;
 }
 
-#front-page__header .text--description {
+#front-page__introduction .text--description {
   margin: 8px 0;
 }
 
-.play-now-button {
+#front-page__content--gamemodes {
+  background-color: #2b2b2b;
+  flex-direction: row;
+}
+
+#front-page__content--gamemodes > div {
+  top: 96px;
+  z-index: 7;
+}
+
+#front-page__content--gamemodes h2,
+#front-page__content--gamemodes p {
+  display: relative;
+}
+
+#front-page__content--gamemodes h2 {
+  font-size: 200%;
+}
+
+#front-page__content--gamemodes > div {
+  width: 80%;
+}
+
+.front-page__filler {
+  height: 128px;
+  background: #000000;
+  background: linear-gradient(180deg, #000000 0%, #000000 40%, #2b2b2b 100%);
+  z-index: 6;
+  position: absolute;
+  width: 100%;
+  left: 0vw;
+}
+
+#front-page__content--other-features {
+  background-color: #2b2b2b;
+}
+
+.text--description {
+  font-size: 125%;
+}
+/* below this is old code */
+
+.button--play-now {
   background-color: #108800;
   border-radius: 4px;
   color: #ffffff;
   border: 2px #108800 solid;
   transition-duration: var(--transition-duration-regular);
-  width: 20vw;
-  height: 5vw;
-  font-size: 3vw;
+  width: max(36vh, 320px);
+  height: max(6vh, 48px);
+  font-size: 3vh;
+  text-align: center;
   font-family: "Computer Modern Unicode Serif";
   margin-right: 8px;
+  cursor: pointer;
+}
+
+.button--play-now p {
+  left: 20%;
 }
 
 #front-page-header a {
@@ -64,9 +177,17 @@ body {
   color: var(--color-text-light) !important;
 }
 
+.text--small {
+  font-size: 90% !important;
+}
+
 .text--disclaimer {
   opacity: 0.3;
-  font-size: 80% !important;
+  font-size: 60% !important;
+}
+
+.text--darkened {
+  opacity: 0.6;
 }
 
 main h1,
@@ -80,6 +201,10 @@ main h3 {
 #gamemode-container-wrapper {
   display: flex;
   justify-content: space-between;
+}
+
+#gamemode-container-wrapper .gamemode-container {
+  height: auto;
 }
 
 .gamemode-container {
@@ -101,31 +226,16 @@ main h3 {
 .gamemode-container a {
   text-align: right;
   margin: 4px;
-}
-
-.gamemode-container--easy {
-  background-color: #00851d;
-}
-
-.gamemode-container--standard {
-  background-color: #b62a00;
-}
-
-.gamemode-container--multiplayer {
-  background-color: #3867e9;
-}
-
-#gamemode-container-wrapper {
-  display: flex;
-  justify-content: space-between;
+  width: calc(100% - 8px);
+  display: inline-block;
 }
 
 .feature-container {
   width: 30%;
-  height: 0;
-  height: 15%;
+  height: auto;
   color: white;
   justify-content: space-between;
+  background-color: #222222;
 }
 
 .feature-container > h3 {
@@ -147,31 +257,169 @@ main h3 {
   justify-content: space-between;
 }
 
-.feature-container {
-  background-color: #222222;
+/* Attribution for feature box grid: https://cssgrid-generator.netlify.app/ */
+
+#feature-box {
+  background-color: #ffffff;
+  width: 100%;
+  height: 50vh;
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: repeat(8, 1fr);
+  grid-column-gap: 4px;
+  grid-row-gap: 4px;
+  padding: 4px;
+  z-index: -1;
+  position: relative;
 }
 
-.right-align {
+.feature-tile {
+  background-color: #000000;
+  z-index: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.feature-tile h3 {
+  text-align: center;
+  font-weight: normal;
+  font-size: 125%;
+  opacity: 1;
+  color: #ffffff;
+  z-index: 2;
+  position: relative;
+}
+
+.feature-tile__content {
+  position: absolute;
+  margin: 4px;
+  font-size: 125%;
+  width: 100%;
+  height: 100%;
+}
+
+.feature-tile__front {
+  transition-duration: 200ms;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 3;
+  position: absolute;
+}
+
+.feature-tile__back {
+  transition-duration: 200ms;
+  width: 100%;
+  height: 100%;
+  visibility: hidden;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  margin: 4px;
+  word-wrap: normal;
+}
+
+.feature-tile:hover .feature-tile__back {
+  visibility: visible;
+  opacity: 1;
+}
+
+.feature-tile:hover .feature-tile__front {
+  visibility: hidden;
+  opacity: 0;
+}
+
+.feature-tile__image {
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  opacity: 0.75;
+  overflow: hidden;
+}
+
+.feature-tile__image--dominant {
+  transform: scale(1.25) rotate(7.5deg) translateX(5vw);
+}
+
+.feature-tile__image--weak {
+  width: initial;
+  height: initial;
+  object-fit: contain;
+}
+
+.feature-tile__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  user-select: none;
+}
+
+.feature-tile__front p,
+.feature-tile__back p {
+  z-index: 2;
+  margin: 0px 8px;
+}
+
+.feature-tile--feature-3 {
+  grid-area: 1 / 1 / 4 / 3;
+}
+.feature-tile--feature-4 {
+  grid-area: 4 / 1 / 7 / 3;
+}
+.feature-tile--feature-5 {
+  grid-area: 7 / 1 / 9 / 3;
+}
+.feature-tile--feature-7 {
+  grid-area: 3 / 7 / 9 / 9;
+}
+.feature-tile--feature-1 {
+  grid-area: 1 / 3 / 9 / 5;
+}
+.feature-tile--feature-2 {
+  grid-area: 1 / 5 / 9 / 7;
+}
+.feature-tile--feature-6 {
+  grid-area: 1 / 7 / 3 / 9;
+}
+
+.right-align,
+.text--right-align {
   text-align: right;
 }
 
+.center-align {
+  text-align: center;
+}
+
 @media only screen and (max-width: 768px) {
-  #feature-container-wrapper {
-    display: flex;
-    justify-content: space-between;
-    flex-direction: column;
-  }
-
-  .feature-container,
-  .gamemode-container {
-    width: 100%;
-    margin: 8px 0;
+  #feature-box {
+    display: inline-block;
+    margin-bottom: 15vh;
     height: fit-content;
+    z-index: 0;
   }
 
-  #gamemode-container-wrapper {
-    display: flex;
-    justify-content: space-between;
-    flex-direction: column;
+  .feature-tile {
+    display: block;
+    border: 4px solid #ffffff;
+  }
+
+  .feature-tile--dominant {
+    height: 320px;
+  }
+
+  .feature-tile--dominant .feature-tile__image--dominant {
+    transform: scale(1.25) rotate(7.5deg) translateX(20vw);
+  }
+
+  .feature-tile--weak {
+    height: 200px;
+  }
+}
+
+@media only screen and (max-height: 768px) {
+  #feature-box {
+    margin-bottom: 20vh;
   }
 }

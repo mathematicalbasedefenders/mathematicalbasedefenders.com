@@ -34,8 +34,8 @@ main h3 {
 }
 
 #user-data-box__rank {
-  padding: 4px 24px;
-  font-size: 95%;
+  padding: 4px 40px;
+  font-size: 110%;
   color: #ffffff;
 }
 
@@ -86,7 +86,7 @@ main h3 {
 .user-data-box__gamemode .user-data-box__stat.user-data-box__stat--top100 {
   font-size: 150%;
   margin: -4px -8px;
-  padding: 10px;
+  padding: 8px;
 }
 
 .user-data-box__gamemode.user-data-box__stat--gold {

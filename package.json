@@ -1,6 +1,6 @@
 {
   "name": "mathematicalbasedefenders.com",
-  "version": "0.5.2",
+  "version": "0.5.4",
   "description": "Website for Mathematical Base Defenders.",
   "main": "app.js",
   "scripts": {
@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@types/isomorphic-fetch": "^0.0.36",
-    "axios": "^0.27.2",
+    "axios": "^1.6.2",
     "bcrypt": "^5.0.1",
     "body-parser": "^1.19.1",
     "cheerio": "^1.0.0-rc.10",
@@ -40,11 +40,13 @@
     "markdown-it": "^13.0.1",
     "marked": "^4.0.10",
     "mongo-sanitize": "^1.1.0",
+    "mongodb": "^3.7.4",
     "mongoose": "^6.8.3",
     "mongoose-query-parser": "^1.2.1",
     "mpath": "^0.8.4",
     "node-fetch": "^2.6.9",
     "nodemailer": "^6.7.0",
+    "nodemailer-express-handlebars": "^6.1.0",
     "serve-favicon": "^2.5.0",
     "typescript": "^4.8.4",
     "uuid": "^8.3.2"
@@ -73,6 +75,7 @@
     "@types/markdown-it": "^12.2.3",
     "@types/marked": "^4.0.8",
     "@types/nodemailer": "^6.4.7",
+    "@types/nodemailer-express-handlebars": "^4.0.5",
     "@types/serve-favicon": "^2.5.3",
     "@types/uuid": "^8.3.4",
     "eslint": "^8.24.0",

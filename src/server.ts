@@ -1,14 +1,11 @@
 #!/usr/bin/env nodejs
 import cookieParser from "cookie-parser";
-import createDOMPurify from "dompurify";
-import express from "express";
+import express, { NextFunction, Request, Response } from "express";
 import favicon from "serve-favicon";
 import helmet from "helmet";
 import mongoDBSanitize from "express-mongo-sanitize";
 import mongoose from "mongoose";
 import rateLimit from "express-rate-limit";
-import _ from "lodash";
-import { JSDOM } from "jsdom";
 import path from "path";
 import dotenv from "dotenv";
 const cors = require("cors");
@@ -17,10 +14,6 @@ const corsOptions = {
   credentials: true
 };
 dotenv.config({ path: path.join(__dirname, "../credentials/.env") });
-
-const window: any = new JSDOM("").window;
-const DOMPurify = createDOMPurify(window);
-
 import { addLogMessageMetadata, LogMessageLevel } from "./server/core/log";
 import { getLicenses } from "./server/core/licenses";
 
@@ -73,7 +66,8 @@ app.use(
           "https://googleads.g.doubleclick.net/",
           "https://*.google.co.th",
           "https://*.google.com",
-          "https://*.googleadservices.com"
+          "https://*.googleadservices.com",
+          "https://storage.mistertfy64.com"
         ],
         "script-src": [
           "'self'",
@@ -103,7 +97,8 @@ app.use(
         "img-src": [
           "'self'",
           "'unsafe-inline'",
-          "https://*.googlesyndication.com"
+          "https://*.googlesyndication.com",
+          "https://storage.mistertfy64.com"
         ],
         "script-src-attr": ["'self'", "'unsafe-inline'"]
       }
@@ -114,29 +109,31 @@ app.use(cookieParser());
 // Routes
 require("fs")
   .readdirSync(require("path").join(__dirname, "./server/routes"))
-  .forEach((file: any) => {
+  .forEach((file: string) => {
     app.use(require("./server/routes/" + file).router);
   });
 
 require("fs")
   .readdirSync(require("path").join(__dirname, "./server/api"))
-  .forEach((file: any) => {
+  .forEach((file: string) => {
     app.use(require("./server/api/" + file).router);
   });
 
 // PUT THIS LAST (404 page)
-app.get("*", function (request: any, response: any) {
+app.get("*", function (request: Request, response: Response) {
   response
     .status(404)
     .render(__dirname + "/server/views/pages/404", { resourceName: "page" });
 });
 
 // stuff that needs to be at the end
-app.use((error: any, request: any, response: any, next: any) => {
-  console.error(addLogMessageMetadata(error.stack, LogMessageLevel.ERROR));
-  response.status(500);
-  response.render(__dirname + "/server/views/pages/error.ejs");
-});
+app.use(
+  (error: any, request: Request, response: Response, next: NextFunction) => {
+    console.error(addLogMessageMetadata(error.stack, LogMessageLevel.ERROR));
+    response.status(500);
+    response.render(__dirname + "/server/views/pages/error.ejs");
+  }
+);
 
 // load licenses
 async function loadLicenses() {
@@ -150,7 +147,7 @@ loadLicenses();
 app.listen(PORT, () => {
   console.log(
     addLogMessageMetadata(
-      `App listening at https://localhost:${PORT}`,
+      `App listening at http://localhost:${PORT}`,
       LogMessageLevel.INFO
     )
   );
