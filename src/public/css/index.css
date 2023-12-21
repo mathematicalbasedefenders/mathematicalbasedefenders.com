@@ -1,4 +1,4 @@
-/* TODO: Find a better way. */
+/* TODO: Remove old code. */
 body {
   overflow-x: hidden;
 }
@@ -149,17 +149,23 @@ body {
 }
 /* below this is old code */
 
-.play-now-button {
+.button--play-now {
   background-color: #108800;
   border-radius: 4px;
   color: #ffffff;
   border: 2px #108800 solid;
   transition-duration: var(--transition-duration-regular);
-  width: 20vw;
-  height: 5vw;
-  font-size: 3vw;
+  width: max(36vh, 320px);
+  height: max(6vh, 48px);
+  font-size: 3vh;
+  text-align: center;
   font-family: "Computer Modern Unicode Serif";
   margin-right: 8px;
+  cursor: pointer;
+}
+
+.button--play-now p {
+  left: 20%;
 }
 
 #front-page-header a {
@@ -171,9 +177,17 @@ body {
   color: var(--color-text-light) !important;
 }
 
+.text--small {
+  font-size: 90% !important;
+}
+
 .text--disclaimer {
   opacity: 0.3;
   font-size: 60% !important;
+}
+
+.text--darkened {
+  opacity: 0.6;
 }
 
 main h1,
@@ -214,18 +228,6 @@ main h3 {
   margin: 4px;
   width: calc(100% - 8px);
   display: inline-block;
-}
-
-.gamemode-container--easy {
-  background-color: #00851d;
-}
-
-.gamemode-container--standard {
-  background-color: #b62a00;
-}
-
-.gamemode-container--multiplayer {
-  background-color: #3867e9;
 }
 
 .feature-container {
@@ -350,6 +352,7 @@ main h3 {
   width: 100%;
   height: 100%;
   object-fit: contain;
+  user-select: none;
 }
 
 .feature-tile__front p,
@@ -413,22 +416,10 @@ main h3 {
   .feature-tile--weak {
     height: 200px;
   }
-  /* #feature-container-wrapper {
-    display: flex;
-    justify-content: space-between;
-    flex-direction: column;
-  }
+}
 
-  .feature-container,
-  .gamemode-container {
-    width: 100%;
-    margin: 8px 0;
-    height: fit-content;
+@media only screen and (max-height: 768px) {
+  #feature-box {
+    margin-bottom: 20vh;
   }
-
-  #gamemode-container-wrapper {
-    display: flex;
-    justify-content: space-between;
-    flex-direction: column;
-  } */
 }
