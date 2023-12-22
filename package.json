@@ -1,6 +1,6 @@
 {
   "name": "mathematicalbasedefenders.com",
-  "version": "0.5.4",
+  "version": "0.5.5",
   "description": "Website for Mathematical Base Defenders.",
   "main": "app.js",
   "scripts": {
@@ -33,7 +33,7 @@
     "express-mongo-sanitize": "^2.2.0",
     "express-rate-limit": "^6.1.0",
     "fontfaceobserver": "^2.1.0",
-    "helmet": "^5.0.1",
+    "helmet": "^7.1.0",
     "jsdom": "^19.0.0",
     "license-checker": "^8.0.1",
     "lodash": "^4.17.21",
