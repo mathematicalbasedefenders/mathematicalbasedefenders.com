@@ -17,7 +17,6 @@ dotenv.config({ path: path.join(__dirname, "../credentials/.env") });
 import { addLogMessageMetadata, LogMessageLevel } from "./server/core/log";
 import { getLicenses } from "./server/core/licenses";
 
-const app = express();
 const PORT = 8000;
 const DATABASE_URI: string | undefined = process.env.DATABASE_CONNECTION_URI;
 
@@ -28,21 +27,8 @@ const limiter = rateLimit({
   legacyHeaders: false
 });
 
-let licenses;
-
-// mongoose
-if (typeof DATABASE_URI === "string") {
-  mongoose.connect(DATABASE_URI);
-}
-mongoose.connection.on("connected", () => {
-  console.log(
-    addLogMessageMetadata(
-      "Successfully connected to mongoose.",
-      LogMessageLevel.INFO
-    )
-  );
-});
-
+const app = express();
+app.set("trust proxy", 2);
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "server/views"));
 app.use(favicon(__dirname + "/public/assets/images/favicon.ico"));
@@ -106,6 +92,22 @@ app.use(
   })
 );
 app.use(cookieParser());
+
+let licenses;
+
+// mongoose
+if (typeof DATABASE_URI === "string") {
+  mongoose.connect(DATABASE_URI);
+}
+mongoose.connection.on("connected", () => {
+  console.log(
+    addLogMessageMetadata(
+      "Successfully connected to mongoose.",
+      LogMessageLevel.INFO
+    )
+  );
+});
+
 // Routes
 require("fs")
   .readdirSync(require("path").join(__dirname, "./server/routes"))
