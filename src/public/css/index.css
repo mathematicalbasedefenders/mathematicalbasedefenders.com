@@ -293,9 +293,9 @@ main h3 {
 .feature-tile__content {
   position: absolute;
   margin: 4px;
-  font-size: 125%;
   width: 100%;
   height: 100%;
+  font-size: min(2.25vh, 24px);
 }
 
 .feature-tile__front {
@@ -317,6 +317,7 @@ main h3 {
   position: absolute;
   margin: 4px;
   word-wrap: normal;
+  font-size: min(1.8vh, 18px);
 }
 
 .feature-tile:hover .feature-tile__back {
