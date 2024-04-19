@@ -1,4 +1,4 @@
-import { log } from "./log";
+import { addLogMessageMetadata, LogMessageLevel } from "./log";
 import licenseChecker from "license-checker";
 import path from "path";
 import fs from "fs";
@@ -23,7 +23,9 @@ async function getLicenses() {
       },
       async function (error: any, packages: any) {
         if (error) {
-          log.error(error.stack);
+          console.log(
+            addLogMessageMetadata(error.stack, LogMessageLevel.ERROR)
+          );
         } else {
           let licensesToReturn = <LicenseData>{};
           let moduleNames: Array<string> = [];
@@ -77,7 +79,12 @@ async function getRepositoryLink(path: string): Promise<string> {
     }
     return JSON.parse(data)?.repository?.url;
   } catch (error: any) {
-    log.warn(`No node_modules directory for ${path} found.`);
+    console.warn(
+      addLogMessageMetadata(
+        `No node_modules directory for ${path} found.`,
+        LogMessageLevel.WARNING
+      )
+    );
   }
   // (Error loading repository link.)
   return "";
@@ -101,7 +108,7 @@ async function readLicenseFile(path: string): Promise<string> {
       }
     }
   } catch (error: any) {
-    log.error(error.stack);
+    console.error(addLogMessageMetadata(error.stack, LogMessageLevel.ERROR));
     return "(Error loading LICENSE file.)";
   }
   return "(No LICENSE file found.)";

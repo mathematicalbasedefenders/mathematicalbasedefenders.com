@@ -1,7 +1,7 @@
 import express from "express";
 var router = express.Router();
 import rateLimit from "express-rate-limit";
-import { log } from "../core/log";
+import { addLogMessageMetadata, LogMessageLevel } from "../core/log";
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
@@ -17,7 +17,9 @@ router.get("/api/metadata", limiter, async (request, response) => {
     {},
     function (error: any, count: any) {
       if (error) {
-        log.error(error.stack);
+        console.error(
+          addLogMessageMetadata(error.stack, LogMessageLevel.ERROR)
+        );
       }
     }
   ).clone();

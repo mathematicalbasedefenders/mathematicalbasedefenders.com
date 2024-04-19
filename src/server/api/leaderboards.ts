@@ -8,6 +8,15 @@ const limiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false
 });
+import { addLogMessageMetadata, LogMessageLevel } from "../core/log";
+import {
+  EasyModeLeaderboardsRecord,
+  EasyModeLeaderboardsRecordInterface
+} from "../models/EasyModeLeaderboardsRecord";
+import {
+  StandardModeLeaderboardsRecord,
+  StandardModeLeaderboardsRecordInterface
+} from "../models/StandardModeLeaderboardsRecord";
 import _ from "lodash";
 
 router.get("/api/leaderboards/:mode", limiter, async (request, response) => {
