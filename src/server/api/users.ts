@@ -44,7 +44,7 @@ router.get("/api/users/:user", limiter, async (request, response) => {
     return;
   }
   // get data
-  let data: UserInterface = await _.cloneDeep(getUserData(sanitized));
+  let data: UserInterface = _.cloneDeep(await getUserData(sanitized));
   if (!data) {
     response.status(404).json("Not Found.");
     return;
