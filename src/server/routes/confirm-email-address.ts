@@ -20,7 +20,7 @@ const limiter = rateLimit({
   legacyHeaders: false
 });
 
-import { log } from "../core/log.js";
+import { addLogMessageMetadata, LogMessageLevel } from "../core/log.js";
 
 router.get("/confirm-email-address", limiter, async (request, response) => {
   let query: any = url.parse(request.url, true).query; // possibly none
@@ -76,25 +76,42 @@ router.get("/confirm-email-address", limiter, async (request, response) => {
         { $inc: { usersRegistered: 1 } },
         { returnOriginal: false, new: true }
       ).clone();
-      log.info("There are now " + (userCount + 1) + " users registered.");
+      console.log(
+        addLogMessageMetadata(
+          "There are now " + (userCount + 1) + " users registered.",
+          LogMessageLevel.INFO
+        )
+      );
       await userModelToSave.save();
 
-      log.info(`User ${pendingUserRecord["username"]} validated!`);
+      console.log(
+        addLogMessageMetadata(
+          `User ${pendingUserRecord["username"]} validated!`,
+          LogMessageLevel.INFO
+        )
+      );
       PendingUser.deleteOne({ emailAddress: email }, (error: any) => {
         if (error) {
-          log.error(error.stack);
+          console.error(
+            addLogMessageMetadata(error.stack, LogMessageLevel.ERROR)
+          );
         }
       });
       response.redirect("/?verifiedemail=true");
 
       return;
     } catch (error: any) {
-      log.error(error.stack);
+      console.error(addLogMessageMetadata(error.stack, LogMessageLevel.ERROR));
       response.redirect("/?erroroccurred=true");
       return;
     }
   } else {
-    log.error(`No user with verification code ${code} found!`);
+    console.error(
+      addLogMessageMetadata(
+        `No user with verification code ${code} found!`,
+        LogMessageLevel.ERROR
+      )
+    );
     response.redirect("/?erroroccurred=true");
     return;
   }

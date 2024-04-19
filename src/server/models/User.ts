@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 
 interface UserInterface {
-  _id: string;
   username: string;
   usernameInAllLowercase: string;
   emailAddress: string;
@@ -20,7 +19,6 @@ interface UserInterface {
       actionsPerformed: number;
       enemiesKilled: number;
       enemiesCreated: number;
-      globalRank: number;
     };
     personalBestScoreOnStandardSingleplayerMode: {
       score: number;
@@ -29,7 +27,6 @@ interface UserInterface {
       actionsPerformed: number;
       enemiesKilled: number;
       enemiesCreated: number;
-      globalRank: number;
     };
     multiplayer: {
       gamesPlayed: number;
