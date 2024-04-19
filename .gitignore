@@ -530,6 +530,8 @@ server/core/mail.js
 migration-finished-html-pages/
 server/core/configuration.js
 ignored
+package-lock.json
+
 
 # production builds
 .dist/
