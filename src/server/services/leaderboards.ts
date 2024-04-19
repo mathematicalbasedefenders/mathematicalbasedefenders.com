@@ -1,4 +1,4 @@
-import { addLogMessageMetadata, LogMessageLevel } from "../core/log.js";
+import { log } from "../core/log.js";
 import { User } from "../models/User.js";
 // Stolen from play subdomain's repository
 async function getScoresOfTopPlayers(gameMode: string, amount: number) {
@@ -17,12 +17,7 @@ async function getScoresOfTopPlayers(gameMode: string, amount: number) {
       break;
     }
   }
-  console.log(
-    addLogMessageMetadata(
-      `Starting ${key} score querying.`,
-      LogMessageLevel.INFO
-    )
-  );
+  log.info(`Starting ${key} score querying.`);
   let sorted = players
     .filter(
       // TODO: For now, but it works, so don't touch it!
@@ -38,12 +33,7 @@ async function getScoresOfTopPlayers(gameMode: string, amount: number) {
     )
     .reverse()
     .slice(0, amount);
-  console.log(
-    addLogMessageMetadata(
-      `${key} score querying took ${Date.now() - startTime}ms`,
-      LogMessageLevel.INFO
-    )
-  );
+  log.info(`${key} score querying took ${Date.now() - startTime}ms`);
   return sorted;
 }
 
