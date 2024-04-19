@@ -1,4 +1,4 @@
-import * as log from "../core/log.js";
+import { log } from "../core/log.js";
 import * as mail from "../core/mail.js";
 
 async function sendMailToUnverifiedUser(
@@ -12,18 +12,9 @@ async function sendMailToUnverifiedUser(
       redirectTo: "?erroroccurred=true&errorreason=internalerror"
     };
   }
-  console.log(
-    log.addLogMessageMetadata(
-      `Successfully sent verification message to ${desiredUsername}'s e-mail address!`,
-      log.LogMessageLevel.INFO
-    )
-  );
-  console.log(
-    log.addLogMessageMetadata(
-      "New Unconfirmed User: " + desiredUsername,
-      log.LogMessageLevel.INFO
-    )
-  );
+
+  log.info(`Sent verification message to ${desiredUsername}'s e-mail address!`);
+  log.info("New Unconfirmed User: " + desiredUsername);
 
   return {
     success: true,
