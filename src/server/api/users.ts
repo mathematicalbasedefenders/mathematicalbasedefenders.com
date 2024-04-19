@@ -17,7 +17,7 @@ const usernameRegex = /[A-Za-z0-9_]{3,20}/;
 const userIDRegex = /[0-9a-f]{24}/g;
 
 function validateUserQuery(query: string) {
-  return !(
+  return (
     (usernameRegex.test(query) && query.length >= 3 && query.length <= 20) ||
     (userIDRegex.test(query) && query.length == 24)
   );
