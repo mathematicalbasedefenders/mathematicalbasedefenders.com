@@ -9,6 +9,7 @@ const limiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false
 });
+
 const UserService = require("../../server/services/user.js");
 const MailService = require("../../server/services/mail.js");
 const parseForm = bodyParser.urlencoded({ extended: false });
@@ -49,7 +50,7 @@ router.post(
     let fetchResponseJSON: any = await fetchResponse.json();
     if (!fetchResponseJSON.success) {
       // bad - give error
-      // TODO: Complete this
+      response.redirect("?erroroccurred=true&errorreason=captchanotcomplete");
       return;
     }
     // Info Validation
@@ -77,11 +78,13 @@ router.post(
       return;
     }
     // Send Mail
+
     await MailService.sendMailToUnverifiedUser(
       username,
       email,
       addUserResult.emailConfirmationCode
     );
+
     // Finish
     response.redirect("/?registered=true");
   }

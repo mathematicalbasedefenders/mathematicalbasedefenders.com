@@ -104,7 +104,7 @@ router.post(
       let fetchResponseJSON: any = await fetchResponse.json();
       if (!fetchResponseJSON.success) {
         // bad - give error
-        // TODO: Complete this
+        response.redirect("?erroroccurred=true&errorreason=captchanotcomplete");
         return;
       }
 
@@ -155,8 +155,8 @@ router.post(
     let fetchResponse = await fetch(reCaptchaURL, { method: "post" });
     let fetchResponseJSON: any = await fetchResponse.json();
     if (!fetchResponseJSON.success) {
-      // bad - give error
-      // TODO: Complete this
+      // give error
+      response.redirect("?erroroccurred=true&errorreason=captchanotcomplete");
       return;
     }
     let query: any = request.query;
