@@ -1,5 +1,5 @@
 import { log } from "../core/log.js";
-import { User } from "../models/User.js";
+import { User, UserInterface } from "../models/User.js";
 // Stolen from play subdomain's repository
 async function getScoresOfTopPlayers(gameMode: string, amount: number) {
   let startTime = Date.now();

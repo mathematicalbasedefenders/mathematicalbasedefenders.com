@@ -125,7 +125,7 @@ app.get("*", function (request: Request, response: Response) {
 
 // stuff that needs to be at the end
 app.use(
-  (error: any, request: Request, response: Response, next: NextFunction) => {
+  (error: Error, request: Request, response: Response, next: NextFunction) => {
     log.error(error.stack);
     response.status(500);
     response.render(__dirname + "/server/views/pages/error.ejs");

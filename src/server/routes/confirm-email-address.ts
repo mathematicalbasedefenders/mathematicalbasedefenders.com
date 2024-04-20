@@ -80,16 +80,22 @@ router.get("/confirm-email-address", limiter, async (request, response) => {
       await userModelToSave.save();
 
       log.info(`User ${pendingUserRecord["username"]} validated!`);
-      PendingUser.deleteOne({ emailAddress: email }, (error: any) => {
-        if (error) {
+      PendingUser.deleteOne({ emailAddress: email }, (error) => {
+        if (error instanceof Error) {
           log.error(error.stack);
+        } else {
+          log.error(`Unknown pending user validation error: ${error}`);
         }
       });
       response.redirect("/?verifiedemail=true");
 
       return;
-    } catch (error: any) {
-      log.error(error.stack);
+    } catch (error) {
+      if (error instanceof Error) {
+        log.error(error.stack);
+      } else {
+        log.error(`Unknown license error: ${error}`);
+      }
       response.redirect("/?erroroccurred=true");
       return;
     }
