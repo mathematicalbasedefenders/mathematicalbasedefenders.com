@@ -53,16 +53,20 @@ router.get("/api/users/:user", limiter, async (request, response) => {
   }
 
   // get easy leaderboard data
+  const easyLeaderboardResponse = await fetch(`${host}/api/leaderboards/easy`);
   const easyLeaderboardData: Array<EasyModeLeaderboardsAPIResponse> =
-    Array.from(await fetch(`${host}/api/leaderboards/easy`));
+    await easyLeaderboardResponse.json();
   const easyLeaderboardDataRank = easyLeaderboardData.findIndex(
     (record: EasyModeLeaderboardsAPIResponse) =>
       data._id === record.playerID.toString()
   );
 
   // get standard leaderboards data
+  const standardLeaderboardResponse = await fetch(
+    `${host}/api/leaderboards/standard`
+  );
   const standardLeaderboardData: Array<StandardModeLeaderboardsAPIResponse> =
-    Array.from(await fetch(`${host}/api/leaderboards/standard`));
+    await standardLeaderboardResponse.json();
   const standardLeaderboardDataRank = standardLeaderboardData.findIndex(
     (record: StandardModeLeaderboardsAPIResponse) =>
       data._id === record.playerID.toString()
