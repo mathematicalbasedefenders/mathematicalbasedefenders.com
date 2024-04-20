@@ -1,6 +1,7 @@
 import express, { Request } from "express";
 var router = express.Router();
 import rateLimit from "express-rate-limit";
+import { MembershipInterface } from "../typings/MembershipInterface";
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
@@ -147,7 +148,7 @@ function getLevel(experiencePoints: number | undefined) {
 }
 
 // TODO: change type
-function getRank(membership: any) {
+function getRank(membership: MembershipInterface) {
   // TODO: Refactor this stupid thing already
   if (membership?.isDeveloper) {
     return { title: "Developer", color: "#ff0000" };

@@ -12,6 +12,8 @@ const fetch = require("node-fetch");
 import _ from "lodash";
 import { log } from "../core/log";
 import { User, UserInterface } from "../models/User";
+import { EasyModeLeaderboardsAPIResponse } from "../typings/EasyModeLeaderboardsAPIResponse";
+import { StandardModeLeaderboardsAPIResponse } from "../typings/StandardModeLeaderboardsAPIResponse";
 
 const usernameRegex = /[A-Za-z0-9_]{3,20}/;
 const userIDRegex = /[0-9a-f]{24}/g;
@@ -44,24 +46,26 @@ router.get("/api/users/:user", limiter, async (request, response) => {
     return;
   }
   // get data
-  let data: UserInterface = _.cloneDeep(await getUserData(sanitized));
+  const data: UserInterface = _.cloneDeep(await getUserData(sanitized));
   if (!data) {
     response.status(404).json("Not Found.");
     return;
   }
-  // get leaderboard data
-  const easyLeaderboardData = await fetch(`${host}/api/leaderboards/easy`);
-  const easyLeaderboardDataJSON = await easyLeaderboardData.json();
-  const easyLeaderboardDataRank = easyLeaderboardDataJSON.findIndex(
-    (record: any) => data._id === record.playerID.toString()
+
+  // get easy leaderboard data
+  const easyLeaderboardData: Array<EasyModeLeaderboardsAPIResponse> =
+    Array.from(await fetch(`${host}/api/leaderboards/easy`));
+  const easyLeaderboardDataRank = easyLeaderboardData.findIndex(
+    (record: EasyModeLeaderboardsAPIResponse) =>
+      data._id === record.playerID.toString()
   );
-  //
-  const standardLeaderboardData = await fetch(
-    `${host}/api/leaderboards/standard`
-  );
-  const standardLeaderboardDataJSON = await standardLeaderboardData.json();
-  const standardLeaderboardDataRank = standardLeaderboardDataJSON.findIndex(
-    (record: any) => data._id === record.playerID.toString()
+
+  // get standard leaderboards data
+  const standardLeaderboardData: Array<StandardModeLeaderboardsAPIResponse> =
+    Array.from(await fetch(`${host}/api/leaderboards/standard`));
+  const standardLeaderboardDataRank = standardLeaderboardData.findIndex(
+    (record: StandardModeLeaderboardsAPIResponse) =>
+      data._id === record.playerID.toString()
   );
   // add leaderboards data
   if (easyLeaderboardDataRank !== -1) {

@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Request, Response } from "express";
 var router = express.Router();
 import { v4 as uuidv4 } from "uuid";
 import url from "url";
@@ -34,7 +34,7 @@ const { generateToken, doubleCsrfProtection } = doubleCsrf({
 router.get(
   "/change-password",
   [limiter],
-  async (request: any, response: any) => {
+  async (request: Request, response: Response) => {
     let query: any = url.parse(request.url, true).query;
 
     if (typeof query.email === "string" && typeof query.code === "string") {
@@ -79,7 +79,7 @@ router.get(
 router.post(
   "/request-password-change",
   [parseForm, doubleCsrfProtection, limiter],
-  async (request: any, response: any) => {
+  async (request: Request, response: Response) => {
     const responseKey = DOMPurify.sanitize(
       request.body["g-recaptcha-response"]
     );
@@ -142,7 +142,7 @@ router.post(
 router.post(
   "/change-password",
   [parseForm, doubleCsrfProtection, limiter],
-  async (request: any, response: any) => {
+  async (request: Request, response: Response) => {
     const responseKey = DOMPurify.sanitize(
       request.body["g-recaptcha-response"]
     );
@@ -213,8 +213,12 @@ router.post(
       ).clone();
       log.info("Successfully changed password for a user!");
       response.redirect("/?changedpassword=true");
-    } catch (error: any) {
-      log.error(error.stack);
+    } catch (error) {
+      if (error instanceof Error) {
+        log.error(error.stack);
+      } else {
+        log.error(`Unknown password reset error: ${error}`);
+      }
       response.redirect("/?erroroccurred=true");
     }
   }

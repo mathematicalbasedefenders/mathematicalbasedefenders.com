@@ -40,8 +40,12 @@ async function sendMailForPasswordReset(
   };
   try {
     await transporter.sendMail(message);
-  } catch (error: any) {
-    log.error(error.stack);
+  } catch (error) {
+    if (error instanceof Error) {
+      log.error(error.stack);
+    } else {
+      log.error(`Unknown mail error: ${error}`);
+    }
     return false;
   }
   return true;
@@ -67,8 +71,12 @@ async function sendMailToNewlyRegisteredUser(
   };
   try {
     await transporter.sendMail(message);
-  } catch (error: any) {
-    log.error(error.stack);
+  } catch (error) {
+    if (error instanceof Error) {
+      log.error(error.stack);
+    } else {
+      log.error(`Unknown mail error: ${error}`);
+    }
     return false;
   }
   return true;

@@ -47,7 +47,7 @@ PendingUserSchema.static(
   "findUserAndCode",
   async function (email: string, confirmationCode: string) {
     // could be none, if none exists.
-    let user: any = await this.find({
+    let user: unknown = await this.find({
       $and: [
         { emailAddress: email },
         { emailConfirmationCode: confirmationCode }

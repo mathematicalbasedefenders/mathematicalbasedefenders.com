@@ -15,7 +15,7 @@ router.get("/api/metadata", limiter, async (request, response) => {
   let data = Object.create(null);
   data.usersRegistered = await User.countDocuments(
     {},
-    function (error: any, count: any) {
+    function (error: Error, count: number) {
       if (error) {
         log.error(error.stack);
       }

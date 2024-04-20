@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Request, Response } from "express";
 var router = express.Router();
 import bodyParser from "body-parser";
 import rateLimit from "express-rate-limit";
@@ -9,7 +9,6 @@ const limiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false
 });
-const cookieParser = require("cookie-parser");
 const UserService = require("../../server/services/user.js");
 const MailService = require("../../server/services/mail.js");
 const parseForm = bodyParser.urlencoded({ extended: false });
@@ -35,7 +34,7 @@ router.get("/register", limiter, (request, response) => {
 router.post(
   "/register",
   [parseForm, doubleCsrfProtection, limiter],
-  async (request: any, response: any) => {
+  async (request: Request, response: Response) => {
     // process registration
     // is response good?
     const responseKey = DOMPurify.sanitize(
@@ -88,7 +87,7 @@ router.post(
   }
 );
 
-function getUserDetails(request: any) {
+function getUserDetails(request: Request) {
   let desiredUsername = DOMPurify.sanitize(
     mongoDBSanitize.sanitize(request.body.username)
   );
