@@ -94,17 +94,17 @@ body {
 }
 
 #front-page__introduction h1 {
-  font-size: 350%;
-  margin: 8px 0;
+  font-size: 400%;
+  margin: 4px 0;
   font-weight: normal;
 }
 
 #front-page__introduction p {
-  font-size: 150%;
+  font-size: 200%;
 }
 
 #front-page__introduction .text--description {
-  margin: 8px 0;
+  margin: 4px 0;
 }
 
 #front-page__content--gamemodes {
@@ -155,7 +155,7 @@ body {
   color: #ffffff;
   border: 2px #108800 solid;
   transition-duration: var(--transition-duration-regular);
-  width: max(36vh, 320px);
+  width: max(24vh, 320px);
   height: max(6vh, 48px);
   font-size: 3vh;
   text-align: center;
