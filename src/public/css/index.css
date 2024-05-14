@@ -131,6 +131,17 @@ body {
   width: 80%;
 }
 
+/* TODO: Side by side and handle <768px */
+#front-page__call-to-actions {
+  display: flex;
+  flex-direction: row;
+  margin-top: 4px;
+}
+
+.call-to-action-form + .call-to-action-form {
+  margin-left: 12px;
+}
+
 .front-page__filler {
   height: 128px;
   background: #000000;
@@ -165,6 +176,26 @@ body {
 }
 
 .button--play-now:hover {
+  filter: brightness(1.05);
+  background-color: #15aa01;
+  border: 2px #15aa01 solid;
+}
+
+.button--register {
+  background-color: #108800;
+  border-radius: 6px;
+  color: #ffffff;
+  border: 2px #108800 solid;
+  transition-duration: var(--transition-duration-regular);
+  width: max(24vh, 144px);
+  height: max(6vh, 48px);
+  font-size: 225%;
+  text-align: center;
+  font-family: "Computer Modern Unicode Serif";
+  cursor: pointer;
+}
+
+.button--register:hover {
   filter: brightness(1.05);
   background-color: #15aa01;
   border: 2px #15aa01 solid;
