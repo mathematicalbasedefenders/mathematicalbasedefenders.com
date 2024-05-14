@@ -182,10 +182,10 @@ body {
 }
 
 .button--register {
-  background-color: #108800;
+  background-color: transparent;
   border-radius: 6px;
   color: #ffffff;
-  border: 2px #108800 solid;
+  border: 2px #ffffff solid;
   transition-duration: var(--transition-duration-regular);
   width: max(24vh, 144px);
   height: max(6vh, 48px);
@@ -197,8 +197,9 @@ body {
 
 .button--register:hover {
   filter: brightness(1.05);
-  background-color: #15aa01;
-  border: 2px #15aa01 solid;
+  background-color: #ffffff;
+  border: 2px #ffffff solid;
+  color: #000000;
 }
 
 #front-page-header a {
