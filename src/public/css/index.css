@@ -108,26 +108,26 @@ body {
   font-size: 175%;
 }
 
-#front-page__content--gamemodes {
+#front-page__content {
   background-color: #2b2b2b;
   flex-direction: row;
 }
 
-#front-page__content--gamemodes > div {
+#front-page__content > div {
   top: 96px;
   z-index: 7;
 }
 
-#front-page__content--gamemodes h2,
-#front-page__content--gamemodes p {
+#front-page__content h2,
+#front-page__content p {
   display: relative;
 }
 
-#front-page__content--gamemodes h2 {
+#front-page__content h2 {
   font-size: 200%;
 }
 
-#front-page__content--gamemodes > div {
+#front-page__content > div {
   width: 80%;
 }
 
