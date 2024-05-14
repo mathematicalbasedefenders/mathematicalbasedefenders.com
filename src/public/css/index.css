@@ -173,6 +173,7 @@ body {
   text-align: center;
   font-family: "Computer Modern Unicode Serif";
   cursor: pointer;
+  text-align: center;
 }
 
 .button--play-now:hover {
@@ -193,6 +194,7 @@ body {
   text-align: center;
   font-family: "Computer Modern Unicode Serif";
   cursor: pointer;
+  text-align: center;
 }
 
 .button--register:hover {
