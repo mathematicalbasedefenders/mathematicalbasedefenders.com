@@ -135,7 +135,7 @@ body {
 #front-page__call-to-actions {
   display: flex;
   flex-direction: row;
-  margin-top: 4px;
+  margin: 4px 0;
 }
 
 .call-to-action-form + .call-to-action-form {
