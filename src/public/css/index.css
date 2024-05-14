@@ -216,12 +216,8 @@ body {
 }
 
 .text--disclaimer {
-  opacity: 0.3;
-  font-size: 60% !important;
-}
-
-.text--darkened {
   opacity: 0.6;
+  font-size: 90%;
 }
 
 main h1,
