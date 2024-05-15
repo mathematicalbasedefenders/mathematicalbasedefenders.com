@@ -164,6 +164,7 @@ body {
   background: #000000;
   background: linear-gradient(180deg, #000000 0%, #111111 20%, #2b2b2b 80%);
   border: none;
+  margin-bottom: 32px;
 }
 
 .feature-tile h1 {
@@ -202,7 +203,7 @@ body {
 .feature-tile p {
   text-align: left;
   text-indent: 32px;
-  font-size: 125%;
+  font-size: 110%;
   padding: 0 8px;
 }
 
@@ -394,13 +395,17 @@ main h3 {
 @media only screen and (max-width: 768px) {
 }
 
-@media only screen and (max-width: 1024px) {
+@media only screen and (max-width: 1280px) {
   .front-page__feature-showcase {
     display: flex;
     padding: 16px 0px;
   }
 
-  .feature-tile:nth-last-child(1) {
+  .feature-tile {
+    margin: unset;
+  }
+
+  .feature-tile:nth-last-of-type(1) {
     margin-bottom: 64px;
   }
 
