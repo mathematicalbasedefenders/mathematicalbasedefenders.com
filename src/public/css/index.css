@@ -172,6 +172,33 @@ body {
   text-align: center;
 }
 
+.feature-icon div {
+  width: 104px;
+  height: 104px;
+  padding: 24px;
+  background-color: #0f87e9;
+  z-index: 9;
+  position: relative;
+}
+
+.feature-icon {
+  bottom: 64px;
+  width: 100%;
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+.feature-tile .feature-icon {
+  text-align: center;
+}
+
+.feature-tile p,
+.feature-tile h1 {
+  bottom: 64px;
+  margin: 4px;
+  position: relative;
+}
+
 #front-page__content > div {
   top: 108px;
   z-index: 7;
