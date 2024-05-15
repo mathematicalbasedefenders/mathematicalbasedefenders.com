@@ -126,6 +126,8 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 #front-page__feature-showcase-wrapper {
@@ -197,6 +199,13 @@ body {
   bottom: 64px;
   margin: 4px;
   position: relative;
+}
+
+.feature-tile p {
+  text-align: left;
+  text-indent: 32px;
+  font-size: 125%;
+  padding: 0 8px;
 }
 
 #front-page__content > div {
