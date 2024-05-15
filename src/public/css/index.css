@@ -290,6 +290,7 @@ body {
   background-color: #0f87e9;
   z-index: 9;
   position: relative;
+  user-select: none;
 }
 
 .feature-icon div span {
