@@ -161,9 +161,13 @@ body {
 .feature-tile {
   width: 90%;
   height: 100%;
+  background: #000000;
+  background: linear-gradient(180deg, #000000 0%, #111111 20%, #2b2b2b 80%);
+  border: none;
 }
 
 #front-page__content > div {
+  top: 108px;
   z-index: 7;
 }
 
