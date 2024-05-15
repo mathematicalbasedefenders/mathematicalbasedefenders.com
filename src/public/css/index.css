@@ -166,6 +166,12 @@ body {
   border: none;
 }
 
+.feature-tile h1 {
+  font-size: 250%;
+  font-weight: normal;
+  text-align: center;
+}
+
 #front-page__content > div {
   top: 108px;
   z-index: 7;
