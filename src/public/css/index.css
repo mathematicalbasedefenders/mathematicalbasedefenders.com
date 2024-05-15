@@ -3,6 +3,10 @@ body {
   overflow-x: hidden;
 }
 
+#front-page {
+  width: 100% !important;
+}
+
 #front-page__content--demonstration {
   display: flex;
   justify-content: space-between;
@@ -16,6 +20,7 @@ body {
   width: 80vw;
   position: absolute;
   top: 8px;
+  left: 10vw;
 }
 
 #front-page__logo,
@@ -110,8 +115,7 @@ body {
   /* background-color: #2b2b2b;
   flex-direction: row;
    */
-  left: 10vw;
-  width: 80%;
+  background-color: #ff0000;
 }
 
 .front-page__feature-showcase {
