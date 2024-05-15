@@ -131,13 +131,12 @@ body {
 #front-page__feature-showcase-wrapper {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(2, 1fr);
+  /* grid-template-rows: repeat(2, 1fr); */
   grid-column-gap: 12px;
   grid-row-gap: 12px;
-  height: 100vh;
+  height: 70vh;
   width: 80%;
   position: relative;
-  left: 10vw;
 }
 
 #feature-showcase-1 {
@@ -149,7 +148,7 @@ body {
 #feature-showcase-3 {
   grid-area: 1 / 3 / 2 / 4;
 }
-#feature-showcase-4 {
+/* #feature-showcase-4 {
   grid-area: 2 / 1 / 3 / 2;
 }
 #feature-showcase-5 {
@@ -157,16 +156,14 @@ body {
 }
 #feature-showcase-6 {
   grid-area: 2 / 3 / 3 / 4;
-}
+} */
 
 .feature-tile {
-  background-color: #ff0000;
-  width: 80%;
-  height: 40%;
+  width: 90%;
+  height: 100%;
 }
 
 #front-page__content > div {
-  top: 96px;
   z-index: 7;
 }
 
