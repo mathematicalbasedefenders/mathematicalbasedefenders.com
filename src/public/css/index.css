@@ -1,6 +1,116 @@
-/* TODO: Remove old code. */
+/* based on ez singleplayer, st singleplayer, ct singleplayer, df multiplayer */
+@keyframes gamemodes {
+  0% {
+    background-color: #b62a00;
+  }
+  20% {
+    background-color: #b62a00;
+  }
+  25% {
+    background-color: #00851d;
+  }
+  45% {
+    background-color: #00851d;
+  }
+  50% {
+    background-color: #9802b6;
+  }
+  70% {
+    background-color: #9802b6;
+  }
+  75% {
+    background-color: #3867e9;
+  }
+  95% {
+    background-color: #3867e9;
+  }
+  100% {
+    background-color: #b62a00;
+  }
+}
+
+/* adapted from https://stackoverflow.com/a/39725748 */
+@keyframes rainbow {
+  0% {
+    background-color: #ff0000;
+  }
+  12.5% {
+    background-color: #ff0000;
+  }
+  25% {
+    background-color: #ffa500;
+  }
+  37.5% {
+    background-color: #ffff00;
+  }
+  50% {
+    background-color: #7fff00;
+  }
+  62.5% {
+    background-color: #00ffff;
+  }
+  75% {
+    background-color: #0000ff;
+  }
+  87.5% {
+    background-color: #9932cc;
+  }
+  100% {
+    background-color: #ff1493;
+  }
+}
+
+/* based on top1,top2,top3,top4-10 colors */
+@keyframes ranking {
+  0% {
+    background-color: #8ba1ed;
+  }
+  20% {
+    background-color: #8ba1ed;
+  }
+  25% {
+    background-color: #cd7f32;
+  }
+  45% {
+    background-color: #cd7f32;
+  }
+  50% {
+    background-color: #c0c0c0;
+  }
+  70% {
+    background-color: #c0c0c0;
+  }
+  75% {
+    background-color: #ffd700;
+  }
+  95% {
+    background-color: #ffd700;
+  }
+  100% {
+    background-color: #8ba1ed;
+  }
+}
+
 body {
   overflow-x: hidden;
+}
+
+#feature-icon--1:hover {
+  animation-duration: 5000ms;
+  animation-iteration-count: infinite;
+  animation-name: gamemodes;
+}
+
+#feature-icon--2:hover {
+  animation-duration: 5000ms;
+  animation-iteration-count: infinite;
+  animation-name: rainbow;
+}
+
+#feature-icon--3:hover {
+  animation-duration: 5000ms;
+  animation-iteration-count: infinite;
+  animation-name: ranking;
 }
 
 #front-page {
@@ -180,6 +290,10 @@ body {
   background-color: #0f87e9;
   z-index: 9;
   position: relative;
+}
+
+.feature-icon div span {
+  font-size: 104px;
 }
 
 .feature-icon {
