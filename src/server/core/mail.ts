@@ -7,7 +7,7 @@ import createDOMPurify from "dompurify";
 const window: any = new JSDOM("").window;
 const DOMPurify = createDOMPurify(window);
 import nodemailer from "nodemailer";
-import * as log from "../core/log.js";
+import { log } from "../core/log.js";
 
 const handlebarOptions: NodemailerExpressHandlebarsOptions = {
   viewEngine: {
