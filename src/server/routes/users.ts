@@ -60,7 +60,7 @@ async function getData(request: Request) {
   let standardRank =
     data?.statistics?.personalBestScoreOnStandardSingleplayerMode?.globalRank;
   let easyRankText =
-    easyRank === 0 || easyRank > 100 || isNaN(easyRank)
+    easyRank <= 0 || easyRank > 100 || isNaN(easyRank)
       ? ""
       : `Global Rank #${easyRank}`;
   let easyRankClass = "";
@@ -79,7 +79,7 @@ async function getData(request: Request) {
   // easy rank
 
   let standardRankText =
-    standardRank === 0 || standardRank > 100 || isNaN(standardRank)
+    standardRank <= 0 || standardRank > 100 || isNaN(standardRank)
       ? ""
       : `Global Rank #${standardRank}`;
   let standardRankClass = "";

@@ -52,13 +52,17 @@ router.get("/api/users/:user", limiter, async (request, response) => {
     return;
   }
 
+  // set placeholder values
+  data.statistics.personalBestScoreOnEasySingleplayerMode.globalRank = -1;
+  data.statistics.personalBestScoreOnStandardSingleplayerMode.globalRank = -1;
+
   // get easy leaderboard data
   const easyLeaderboardResponse = await fetch(`${host}/api/leaderboards/easy`);
   const easyLeaderboardData: Array<EasyModeLeaderboardsAPIResponse> =
     await easyLeaderboardResponse.json();
   const easyLeaderboardDataRank = easyLeaderboardData.findIndex(
     (record: EasyModeLeaderboardsAPIResponse) =>
-      data._id === record.playerID.toString()
+      data._id.toString() === record.playerID.toString()
   );
 
   // get standard leaderboards data
@@ -69,7 +73,7 @@ router.get("/api/users/:user", limiter, async (request, response) => {
     await standardLeaderboardResponse.json();
   const standardLeaderboardDataRank = standardLeaderboardData.findIndex(
     (record: StandardModeLeaderboardsAPIResponse) =>
-      data._id === record.playerID.toString()
+      data._id.toString() === record.playerID.toString()
   );
   // add leaderboards data
   if (easyLeaderboardDataRank !== -1) {
