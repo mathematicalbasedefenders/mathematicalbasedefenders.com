@@ -74,7 +74,8 @@ const UserSchema = new mongoose.Schema<UserInterface, UserModel>({
       scoreSubmissionDateAndTime: Date,
       actionsPerformed: Number,
       enemiesKilled: Number,
-      enemiesCreated: Number
+      enemiesCreated: Number,
+      globalRank: Number
     },
     personalBestScoreOnStandardSingleplayerMode: {
       score: Number,
@@ -82,7 +83,8 @@ const UserSchema = new mongoose.Schema<UserInterface, UserModel>({
       scoreSubmissionDateAndTime: Date,
       actionsPerformed: Number,
       enemiesKilled: Number,
-      enemiesCreated: Number
+      enemiesCreated: Number,
+      globalRank: Number
     },
     multiplayer: {
       gamesPlayed: Number,

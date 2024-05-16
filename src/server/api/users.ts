@@ -52,6 +52,10 @@ router.get("/api/users/:user", limiter, async (request, response) => {
     return;
   }
 
+  // set placeholder values
+  data.statistics.personalBestScoreOnEasySingleplayerMode.globalRank = -1;
+  data.statistics.personalBestScoreOnStandardSingleplayerMode.globalRank = -1;
+
   // get easy leaderboard data
   const easyLeaderboardResponse = await fetch(`${host}/api/leaderboards/easy`);
   const easyLeaderboardData: Array<EasyModeLeaderboardsAPIResponse> =
