@@ -1,4 +1,4 @@
-import { addLogMessageMetadata, LogMessageLevel } from "./log";
+import { log } from "./log";
 import licenseChecker from "license-checker";
 import path from "path";
 import fs from "fs";
@@ -21,15 +21,13 @@ async function getLicenses() {
       {
         start: path.join(__dirname, "..", "..", "..")
       },
-      async function (error: any, packages: any) {
+      async function (error: Error, packages: object) {
         if (error) {
-          console.log(
-            addLogMessageMetadata(error.stack, LogMessageLevel.ERROR)
-          );
+          log.error(error.stack);
         } else {
           let licensesToReturn = <LicenseData>{};
           let moduleNames: Array<string> = [];
-          for (let key of Object.keys(packages)) {
+          for (const key of Object.keys(packages)) {
             let toAdd = key;
             toAdd = toAdd.replace(licenseNameRegEx, "$1$2");
             moduleNames.push(toAdd);
@@ -78,13 +76,8 @@ async function getRepositoryLink(path: string): Promise<string> {
       return "";
     }
     return JSON.parse(data)?.repository?.url;
-  } catch (error: any) {
-    console.warn(
-      addLogMessageMetadata(
-        `No node_modules directory for ${path} found.`,
-        LogMessageLevel.WARNING
-      )
-    );
+  } catch (error) {
+    log.warn(`No node_modules directory for ${path} found.`);
   }
   // (Error loading repository link.)
   return "";
@@ -107,8 +100,12 @@ async function readLicenseFile(path: string): Promise<string> {
         return md.render(content);
       }
     }
-  } catch (error: any) {
-    console.error(addLogMessageMetadata(error.stack, LogMessageLevel.ERROR));
+  } catch (error) {
+    if (error instanceof Error) {
+      log.error(error.stack);
+    } else {
+      log.error(`Unknown license error: ${error}`);
+    }
     return "(Error loading LICENSE file.)";
   }
   return "(No LICENSE file found.)";

@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Request, Response } from "express";
 var router = express.Router();
 import { v4 as uuidv4 } from "uuid";
 import url from "url";
@@ -18,7 +18,7 @@ const limiter = rateLimit({
   legacyHeaders: false
 });
 const fetch = require("node-fetch");
-import { addLogMessageMetadata, LogMessageLevel } from "../core/log";
+import { log } from "../core/log";
 import * as validation from "../core/validation";
 import * as mail from "../core/mail.js";
 import { User } from "../models/User";
@@ -34,7 +34,7 @@ const { generateToken, doubleCsrfProtection } = doubleCsrf({
 router.get(
   "/change-password",
   [limiter],
-  async (request: any, response: any) => {
+  async (request: Request, response: Response) => {
     let query: any = url.parse(request.url, true).query;
 
     if (typeof query.email === "string" && typeof query.code === "string") {
@@ -79,7 +79,7 @@ router.get(
 router.post(
   "/request-password-change",
   [parseForm, doubleCsrfProtection, limiter],
-  async (request: any, response: any) => {
+  async (request: Request, response: Response) => {
     const responseKey = DOMPurify.sanitize(
       request.body["g-recaptcha-response"]
     );
@@ -104,7 +104,7 @@ router.post(
       let fetchResponseJSON: any = await fetchResponse.json();
       if (!fetchResponseJSON.success) {
         // bad - give error
-        // TODO: Complete this
+        response.redirect("?erroroccurred=true&errorreason=captchanotcomplete");
         return;
       }
 
@@ -117,9 +117,7 @@ router.post(
       let pendingPasswordResetToSave = new PendingPasswordReset(dataToSave);
       pendingPasswordResetToSave.save((error4) => {
         if (error4) {
-          console.log(
-            addLogMessageMetadata(error4.stack, LogMessageLevel.INFO)
-          );
+          log.info(error4.stack);
           response.redirect("/?resetpassword=fail");
         } else {
           if (
@@ -135,12 +133,7 @@ router.post(
         }
       });
     } else {
-      console.error(
-        addLogMessageMetadata(
-          `No user with e-mail address ${desiredEmail} found!`,
-          LogMessageLevel.ERROR
-        )
-      );
+      log.error(`No user with e-mail address ${desiredEmail} found!`);
       response.redirect("?erroroccurred=true");
     }
   }
@@ -149,7 +142,7 @@ router.post(
 router.post(
   "/change-password",
   [parseForm, doubleCsrfProtection, limiter],
-  async (request: any, response: any) => {
+  async (request: Request, response: Response) => {
     const responseKey = DOMPurify.sanitize(
       request.body["g-recaptcha-response"]
     );
@@ -162,8 +155,8 @@ router.post(
     let fetchResponse = await fetch(reCaptchaURL, { method: "post" });
     let fetchResponseJSON: any = await fetchResponse.json();
     if (!fetchResponseJSON.success) {
-      // bad - give error
-      // TODO: Complete this
+      // give error
+      response.redirect("?erroroccurred=true&errorreason=captchanotcomplete");
       return;
     }
     let query: any = request.query;
@@ -218,15 +211,14 @@ router.post(
           new: true
         }
       ).clone();
-      console.log(
-        addLogMessageMetadata(
-          "Successfully changed password for a user!",
-          LogMessageLevel.INFO
-        )
-      );
+      log.info("Successfully changed password for a user!");
       response.redirect("/?changedpassword=true");
-    } catch (error: any) {
-      console.error(addLogMessageMetadata(error.stack, LogMessageLevel.ERROR));
+    } catch (error) {
+      if (error instanceof Error) {
+        log.error(error.stack);
+      } else {
+        log.error(`Unknown password reset error: ${error}`);
+      }
       response.redirect("/?erroroccurred=true");
     }
   }

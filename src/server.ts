@@ -14,7 +14,7 @@ const corsOptions = {
   credentials: true
 };
 dotenv.config({ path: path.join(__dirname, "../credentials/.env") });
-import { addLogMessageMetadata, LogMessageLevel } from "./server/core/log";
+import { log } from "./server/core/log";
 import { getLicenses } from "./server/core/licenses";
 
 const PORT = 8000;
@@ -100,12 +100,7 @@ if (typeof DATABASE_URI === "string") {
   mongoose.connect(DATABASE_URI);
 }
 mongoose.connection.on("connected", () => {
-  console.log(
-    addLogMessageMetadata(
-      "Successfully connected to mongoose.",
-      LogMessageLevel.INFO
-    )
-  );
+  log.info("Connected to mongoose.");
 });
 
 // Routes
@@ -130,8 +125,8 @@ app.get("*", function (request: Request, response: Response) {
 
 // stuff that needs to be at the end
 app.use(
-  (error: any, request: Request, response: Response, next: NextFunction) => {
-    console.error(addLogMessageMetadata(error.stack, LogMessageLevel.ERROR));
+  (error: Error, request: Request, response: Response, next: NextFunction) => {
+    log.error(error.stack);
     response.status(500);
     response.render(__dirname + "/server/views/pages/error.ejs");
   }
@@ -140,27 +135,15 @@ app.use(
 // load licenses
 async function loadLicenses() {
   licenses = await getLicenses();
-  console.log(
-    addLogMessageMetadata("Finished reading licenses.", LogMessageLevel.INFO)
-  );
+  log.info("Finished reading licenses.");
 }
 // start
 loadLicenses();
-app.listen(PORT, () => {
-  console.log(
-    addLogMessageMetadata(
-      `App listening at http://localhost:${PORT}`,
-      LogMessageLevel.INFO
-    )
-  );
 
+app.listen(PORT, () => {
+  log.info(`App listening at http://localhost:${PORT}`);
   if (process.env.CREDENTIAL_SET_USED === "testing") {
-    console.log(
-      addLogMessageMetadata(
-        `Using testing credentials.`,
-        LogMessageLevel.WARNING
-      )
-    );
+    log.warn(`Using testing credentials.`);
   }
 });
 

@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Request, Response } from "express";
 var router = express.Router();
 import rateLimit from "express-rate-limit";
 const limiter = rateLimit({
@@ -10,7 +10,7 @@ const limiter = rateLimit({
 import https from "https";
 import { marked } from "marked";
 
-router.get("/about", limiter, async (request: any, response: any) => {
+router.get("/about", limiter, async (request: Request, response: Response) => {
   response.render("pages/about", {
     data: { aboutText: marked.parse((await loadAboutText()) as string) }
   });

@@ -7,7 +7,7 @@ import createDOMPurify from "dompurify";
 const window: any = new JSDOM("").window;
 const DOMPurify = createDOMPurify(window);
 import nodemailer from "nodemailer";
-import * as log from "../core/log.js";
+import { log } from "../core/log.js";
 
 const handlebarOptions: NodemailerExpressHandlebarsOptions = {
   viewEngine: {
@@ -40,10 +40,12 @@ async function sendMailForPasswordReset(
   };
   try {
     await transporter.sendMail(message);
-  } catch (error: any) {
-    console.error(
-      log.addLogMessageMetadata(error.stack, log.LogMessageLevel.ERROR)
-    );
+  } catch (error) {
+    if (error instanceof Error) {
+      log.error(error.stack);
+    } else {
+      log.error(`Unknown mail error: ${error}`);
+    }
     return false;
   }
   return true;
@@ -69,10 +71,12 @@ async function sendMailToNewlyRegisteredUser(
   };
   try {
     await transporter.sendMail(message);
-  } catch (error: any) {
-    console.error(
-      log.addLogMessageMetadata(error.stack, log.LogMessageLevel.ERROR)
-    );
+  } catch (error) {
+    if (error instanceof Error) {
+      log.error(error.stack);
+    } else {
+      log.error(`Unknown mail error: ${error}`);
+    }
     return false;
   }
   return true;

@@ -127,7 +127,7 @@ main h3 {
 
 .bottom-footer__link img {
   width: auto;
-  height: max(1.6vw, 32px);
+  height: 32px;
 }
 
 @media only screen and (max-width: 768px) {
