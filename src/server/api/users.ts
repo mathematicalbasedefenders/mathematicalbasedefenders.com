@@ -58,7 +58,7 @@ router.get("/api/users/:user", limiter, async (request, response) => {
     await easyLeaderboardResponse.json();
   const easyLeaderboardDataRank = easyLeaderboardData.findIndex(
     (record: EasyModeLeaderboardsAPIResponse) =>
-      data._id === record.playerID.toString()
+      data._id.toString() === record.playerID.toString()
   );
 
   // get standard leaderboards data
@@ -69,7 +69,7 @@ router.get("/api/users/:user", limiter, async (request, response) => {
     await standardLeaderboardResponse.json();
   const standardLeaderboardDataRank = standardLeaderboardData.findIndex(
     (record: StandardModeLeaderboardsAPIResponse) =>
-      data._id === record.playerID.toString()
+      data._id.toString() === record.playerID.toString()
   );
   // add leaderboards data
   if (easyLeaderboardDataRank !== -1) {
