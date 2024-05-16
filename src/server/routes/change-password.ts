@@ -18,7 +18,7 @@ const limiter = rateLimit({
   legacyHeaders: false
 });
 const fetch = require("node-fetch");
-import { log } from "../core/log";
+import { addLogMessageMetadata, LogMessageLevel } from "../core/log";
 import * as validation from "../core/validation";
 import * as mail from "../core/mail.js";
 import { User } from "../models/User";
@@ -117,7 +117,9 @@ router.post(
       let pendingPasswordResetToSave = new PendingPasswordReset(dataToSave);
       pendingPasswordResetToSave.save((error4) => {
         if (error4) {
-          log.info(error4.stack);
+          console.log(
+            addLogMessageMetadata(error4.stack, LogMessageLevel.INFO)
+          );
           response.redirect("/?resetpassword=fail");
         } else {
           if (
@@ -133,7 +135,12 @@ router.post(
         }
       });
     } else {
-      log.error(`No user with e-mail address ${desiredEmail} found!`);
+      console.error(
+        addLogMessageMetadata(
+          `No user with e-mail address ${desiredEmail} found!`,
+          LogMessageLevel.ERROR
+        )
+      );
       response.redirect("?erroroccurred=true");
     }
   }
@@ -211,7 +218,12 @@ router.post(
           new: true
         }
       ).clone();
-      log.info("Successfully changed password for a user!");
+      console.log(
+        addLogMessageMetadata(
+          "Successfully changed password for a user!",
+          LogMessageLevel.INFO
+        )
+      );
       response.redirect("/?changedpassword=true");
     } catch (error) {
       if (error instanceof Error) {

@@ -17,7 +17,12 @@ async function getScoresOfTopPlayers(gameMode: string, amount: number) {
       break;
     }
   }
-  log.info(`Starting ${key} score querying.`);
+  console.log(
+    addLogMessageMetadata(
+      `Starting ${key} score querying.`,
+      LogMessageLevel.INFO
+    )
+  );
   let sorted = players
     .filter(
       // TODO: For now, but it works, so don't touch it!
@@ -33,7 +38,12 @@ async function getScoresOfTopPlayers(gameMode: string, amount: number) {
     )
     .reverse()
     .slice(0, amount);
-  log.info(`${key} score querying took ${Date.now() - startTime}ms`);
+  console.log(
+    addLogMessageMetadata(
+      `${key} score querying took ${Date.now() - startTime}ms`,
+      LogMessageLevel.INFO
+    )
+  );
   return sorted;
 }
 

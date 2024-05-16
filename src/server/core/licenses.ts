@@ -1,4 +1,4 @@
-import { log } from "./log";
+import { addLogMessageMetadata, LogMessageLevel } from "./log";
 import licenseChecker from "license-checker";
 import path from "path";
 import fs from "fs";
@@ -23,7 +23,9 @@ async function getLicenses() {
       },
       async function (error: Error, packages: object) {
         if (error) {
-          log.error(error.stack);
+          console.log(
+            addLogMessageMetadata(error.stack, LogMessageLevel.ERROR)
+          );
         } else {
           let licensesToReturn = <LicenseData>{};
           let moduleNames: Array<string> = [];

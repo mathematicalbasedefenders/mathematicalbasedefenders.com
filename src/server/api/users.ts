@@ -10,38 +10,26 @@ const limiter = rateLimit({
 });
 const fetch = require("node-fetch");
 import _ from "lodash";
-import { log } from "../core/log";
+import { addLogMessageMetadata, LogMessageLevel } from "../core/log";
 import { User, UserInterface } from "../models/User";
 import { EasyModeLeaderboardsAPIResponse } from "../typings/EasyModeLeaderboardsAPIResponse";
 import { StandardModeLeaderboardsAPIResponse } from "../typings/StandardModeLeaderboardsAPIResponse";
 
-const usernameRegex = /[A-Za-z0-9_]{3,20}/;
-const userIDRegex = /[0-9a-f]{24}/g;
-
-function validateUserQuery(query: string) {
-  return (
-    (usernameRegex.test(query) && query.length >= 3 && query.length <= 20) ||
-    (userIDRegex.test(query) && query.length == 24)
-  );
-}
-
-async function getUserData(query: string) {
-  return userIDRegex.test(query)
-    ? await User.findByUserIDUsingAPI(query)
-    : await User.findByUsernameUsingAPI(query);
-}
-
 router.get("/api/users/:user", limiter, async (request, response) => {
   if (!request?.params?.user) {
-    log.info(`Invalid User Request: Missing user parameter.`);
     response.status(400).json("Invalid Request.");
     return;
   }
-  const user: any = request.params.user;
-  const sanitized: string = mongoDBSanitize.sanitize(user) as string;
-  const host = `${request.protocol}://${request.get("Host")}`;
-  if (!validateUserQuery(sanitized)) {
-    log.info(`Invalid User Request: Invalid user username/ID.`);
+  let user: any = request.params.user;
+  let sanitized: string = mongoDBSanitize.sanitize(user) as string;
+  if (
+    !(
+      (/[A-Za-z0-9_]{3,20}/.test(user) &&
+        user.length >= 3 &&
+        user.length <= 20) ||
+      (/[0-9a-f]{24}/g.test(user) && user.length == 24)
+    )
+  ) {
     response.status(400).json("Invalid Request.");
     return;
   }
@@ -84,7 +72,6 @@ router.get("/api/users/:user", limiter, async (request, response) => {
     data.statistics.personalBestScoreOnStandardSingleplayerMode.globalRank =
       standardLeaderboardDataRank + 1;
   }
-  // send data
   response.status(200).json(data);
 });
 
