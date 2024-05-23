@@ -86,7 +86,8 @@ app.use(
           "https://*.googlesyndication.com",
           "https://storage.mistertfy64.com"
         ],
-        "script-src-attr": ["'self'", "'unsafe-inline'"]
+        "script-src-attr": ["'self'", "'unsafe-inline'"],
+        "form-action": ["'self'", "https://play.mathematicalbasedefenders.com"]
       }
     }
   })
