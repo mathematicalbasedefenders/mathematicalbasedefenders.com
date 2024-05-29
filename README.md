@@ -6,7 +6,7 @@
 
 This is the source code for the non-`play` subdomain portion for Mathematical Base Defenders.
 
-### Usage on Other Servers
+## Usage on Other Servers
 
 Because this is open-source, you are free to use it on your own servers/domains. Feel free to modify the (horrible) source code, add your own modifications, and share!
 
@@ -16,6 +16,10 @@ Finally, please note that if the Game Master decides to do something stupid (e.g
 
 But this isn't the repository with the game content. Why would you want to host this on your own server?
 
-### Contributing
+## Contributing
 
 If you instead want to contribute to the official server, feel free to open an issue/pull request!
+
+## License
+
+AGPLv3, however earlier commits (before [`8b6e2b41837f22eec4b600b667c2bea80a00b5e3`](https://github.com/mathematicalbasedefenders/mathematicalbasedefenders.com/commit/8b6e2b41837f22eec4b600b667c2bea80a00b5e3)) used a different license, because of mistertfy64's lack of knowledge and indecisiveness. See the [LICENSE](https://github.com/mathematicalbasedefenders/play.mathematicalbasedefenders.com/blob/master/LICENSE) file for details.
