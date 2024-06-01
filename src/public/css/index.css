@@ -376,13 +376,13 @@ body {
   color: #ffffff;
   border: 2px #108800 solid;
   transition-duration: var(--transition-duration-regular);
-  width: max(24vh, 144px);
+  width: max(24vh, 192px);
   height: max(6vh, 48px);
   font-size: 225%;
   text-align: center;
   font-family: "Computer Modern Unicode Serif";
   cursor: pointer;
-  text-align: center;
+  font-weight: normal;
 }
 
 .button--play-now:hover {
@@ -397,13 +397,13 @@ body {
   color: #ffffff;
   border: 2px #ffffff solid;
   transition-duration: var(--transition-duration-regular);
-  width: max(24vh, 144px);
+  width: max(24vh, 192px);
   height: max(6vh, 48px);
   font-size: 225%;
   text-align: center;
   font-family: "Computer Modern Unicode Serif";
   cursor: pointer;
-  text-align: center;
+  font-weight: normal;
 }
 
 .button--register:hover {
@@ -558,5 +558,10 @@ main h3 {
 
   .feature-tile {
     height: unset;
+  }
+
+  .button--play-now,
+  .button--register {
+    width: max(24vh, 240px);
   }
 }
