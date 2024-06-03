@@ -31,7 +31,7 @@ async function sendMailForPasswordReset(
   confirmationLink += `&code=${code}`;
   const message = {
     subject: "Password Reset Confirmation for Mathematical Base Defenders",
-    from: "Mathematical Base Defenders <support@mathematicalbasedefenders.com>",
+    from: "Mathematical Base Defenders <noreply@mathematicalbasedefenders.com>",
     template: "password-reset",
     to: recipientEmail,
     context: {
@@ -62,7 +62,7 @@ async function sendMailToNewlyRegisteredUser(
   confirmationLink += `&code=${code}`;
   let message = {
     subject: "New Account Confirmation for Mathematical Base Defenders",
-    from: "Mathematical Base Defenders <support@mathematicalbasedefenders.com>",
+    from: "Mathematical Base Defenders <noreply@mathematicalbasedefenders.com>",
     template: "new-account",
     to: recipientEmail,
     context: {
@@ -86,7 +86,6 @@ function getNodemailerOptionsObject() {
   let toReturn = {
     host: process.env.EMAIL_HOST,
     port: 587,
-    secure: false, // for now, fix
     auth: {
       user: process.env.EMAIL_USERNAME,
       pass: process.env.EMAIL_PASSWORD
