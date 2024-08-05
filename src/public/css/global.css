@@ -1,8 +1,3 @@
-@font-face {
-  font-family: "Computer Modern Unicode Serif";
-  src: url("../assets/fonts/computermodernunicodeserif.ttf");
-}
-
 :root {
   --color-background-primary: #eeeeee;
   --color-background-primary-dark: #dedede;
@@ -17,7 +12,7 @@ html {
 }
 
 body {
-  font-family: "Computer Modern Unicode Serif";
+  font-family: "Noto Sans";
   font-variant-ligatures: none;
   margin: 0;
   padding: 0;
