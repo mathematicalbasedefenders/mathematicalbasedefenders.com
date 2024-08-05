@@ -380,7 +380,7 @@ body {
   height: max(6vh, 48px);
   font-size: 225%;
   text-align: center;
-  font-family: "Computer Modern Unicode Serif";
+  font-family: "Noto Sans";
   cursor: pointer;
   font-weight: normal;
 }
@@ -401,7 +401,7 @@ body {
   height: max(6vh, 48px);
   font-size: 225%;
   text-align: center;
-  font-family: "Computer Modern Unicode Serif";
+  font-family: "Noto Sans";
   cursor: pointer;
   font-weight: normal;
 }

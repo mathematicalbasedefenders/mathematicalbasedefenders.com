@@ -9,7 +9,7 @@ main h3 {
 .register-form__text-input {
   width: 100%;
   font-size: 125%;
-  font-family: "Computer Modern Unicode Serif";
+  font-family: "Noto Sans";
 }
 
 .register-button {
@@ -21,7 +21,7 @@ main h3 {
   width: 320px;
   height: 64px;
   font-size: 175%;
-  font-family: "Computer Modern Unicode Serif";
+  font-family: "Noto Sans";
 }
 
 .register-button:hover {
