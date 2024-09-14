@@ -12,7 +12,7 @@ nav {
   height: 60px;
 }
 
-#header #header-content {
+#header #header__content {
   text-align: center;
 }
 
@@ -25,9 +25,30 @@ nav {
   font-size: 30px;
 }
 
+#header h3 {
+  margin: 0;
+}
+
 #header .button--call-to-action {
-  width: 240px;
+  width: 270px;
   height: 60px;
+}
+
+#header a {
+  color: black;
+}
+
+#header #header__latest-versions {
+  display: flex;
+  justify-content: space-around;
+  flex-direction: row;
+  width: 50%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#header .version-number {
+  font-size: 30px;
 }
 
 #header #button--play {
@@ -35,5 +56,5 @@ nav {
   color: #ffffff;
   border: 2px #108800 solid;
   border-radius: 4px;
-  font-size: 32px;
+  font-size: 36px;
 }
