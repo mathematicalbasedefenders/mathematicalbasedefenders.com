@@ -1,5 +1,6 @@
 body {
   overflow-x: hidden;
+  margin: 0;
 }
 
 button {
@@ -7,7 +8,11 @@ button {
   font-variant-ligatures: none;
 }
 
-#header {
+nav {
+  height: 60px;
+}
+
+#header #header-content {
   text-align: center;
 }
 
@@ -30,6 +35,5 @@ button {
   color: #ffffff;
   border: 2px #108800 solid;
   border-radius: 4px;
-  font-size: 40px;
-  padding: 8px;
+  font-size: 32px;
 }
