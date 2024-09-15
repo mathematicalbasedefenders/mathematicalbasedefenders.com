@@ -47,6 +47,12 @@ nav {
   margin-right: auto;
 }
 
+#header .version-indicator {
+  background-color: #cccccc;
+  padding: 8px;
+  border-radius: 4px;
+}
+
 #header .version-number {
   font-size: 30px;
 }
