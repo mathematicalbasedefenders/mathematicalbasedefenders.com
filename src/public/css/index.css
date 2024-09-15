@@ -12,6 +12,8 @@ nav {
   height: 60px;
 }
 
+/* HEADER */
+
 #header #header__content {
   text-align: center;
 }
@@ -63,4 +65,15 @@ nav {
   border: 2px #108800 solid;
   border-radius: 4px;
   font-size: 36px;
+}
+
+/* PREVIEW */
+
+#preview {
+  text-align: center;
+}
+
+#preview .preview__video {
+  width: 50%;
+  height: 50%;
 }
