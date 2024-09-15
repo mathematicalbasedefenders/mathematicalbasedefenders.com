@@ -20,7 +20,7 @@
           <br>
           or with others in a fast-paced environment.
         </h2>
-        <br>
+        <br><br>
         <button class="button--call-to-action" id="button--play">
           <span>Play</span>
         </button>
@@ -30,13 +30,13 @@
         <div id="header__latest-versions">
           <div>
             <h3>Latest Game Version</h3>
-            <div class="version-number">?.?.?</div>
-            <div>September 14, 2024</div>
+            <div class="version-number"><%= versions.game.version %></div>
+            <div>Released <%= versions.game.releaseDate %></div>
           </div>
           <div>
             <h3>Latest Website Version</h3>
-            <div class="version-number">?.?.?</div>
-            <div>September 14, 2024</div>
+            <div class="version-number"><%= versions.website.version %></div>
+            <div>Released <%= versions.website.releaseDate %></div>
           </div>
         </div>
       </div>
