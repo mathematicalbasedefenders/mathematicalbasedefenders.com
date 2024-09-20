@@ -16,6 +16,7 @@ nav {
 
 #header #header__content {
   text-align: center;
+  min-height: 100vh;
 }
 
 #header h1 {
@@ -53,6 +54,7 @@ nav {
   background-color: #cccccc;
   padding: 8px;
   border-radius: 4px;
+  width: 250px;
 }
 
 #header .version-number {

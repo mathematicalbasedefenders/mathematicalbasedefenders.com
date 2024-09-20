@@ -10,8 +10,8 @@
 </head>
 
 <body>
-  <nav></nav>
   <main>
+    <nav>nav1 nav2 nav3</nav>
     <div id="header">
       <div id="header__content">
         <h1>A competitive multiplayer mental math game.</h1>
@@ -39,16 +39,18 @@
             <div>Released <%= versions.website.releaseDate %></div>
           </div>
         </div>
+        <br><br>
+        <div id="preview">
+          <div id="preview__content">
+            <video class="preview__video" muted autoplay loop style="pointer-events: none;">
+              <source src="/assets/videos/mathematicalbasedefenders.com-preview.mp4" type="video/mp4">
+            </video>
+          </div>
+        </div>
       </div>
     </div>
-    <br><br>
-    <div id="preview">
-      <div id="preview__content">
-        <video class="preview__video" muted autoplay loop style="pointer-events: none;">
-          <source src="/assets/videos/mathematicalbasedefenders.com-preview.mp4" type="video/mp4">
-        </video>
-      </div>
-    </div>
+    <br>
+    <div id="information">blah blah blah</div>
   </main>
 </body>
 <%- include("../partials/footer.ejs") %>
