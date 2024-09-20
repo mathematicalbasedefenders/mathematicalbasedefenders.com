@@ -8,7 +8,10 @@ button {
   font-variant-ligatures: none;
 }
 
+/* NAVIGATION BAR */
+
 nav {
+  text-align: center;
   height: 60px;
 }
 
