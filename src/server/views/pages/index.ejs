@@ -28,16 +28,20 @@
         <a href="/register">...or register for an account</a>
         <br><br>
         <div id="header__latest-versions">
-          <div class="version-indicator">
-            <h3>Latest Game Version</h3>
-            <div class="version-number"><%= versions.game.version %></div>
-            <div>Released <%= versions.game.releaseDate %></div>
-          </div>
-          <div class="version-indicator">
-            <h3>Latest Website Version</h3>
-            <div class="version-number"><%= versions.website.version %></div>
-            <div>Released <%= versions.website.releaseDate %></div>
-          </div>
+          <a class="no-text-decoration" href="/changelog/game">
+            <div class="version-indicator">
+              <h3>Latest Game Version</h3>
+              <div class="version-number"><%= versions.game.version %></div>
+              <div>Released <%= versions.game.releaseDate %></div>
+            </div>
+          </a>
+          <a class="no-text-decoration" href="/changelog/website">
+            <div class="version-indicator">
+              <h3>Latest Website Version</h3>
+              <div class="version-number"><%= versions.website.version %></div>
+              <div>Released <%= versions.website.releaseDate %></div>
+            </div>
+          </a>
         </div>
         <br><br>
         <div class="preview">

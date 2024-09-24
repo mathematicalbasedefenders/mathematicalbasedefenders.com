@@ -16,6 +16,10 @@ button {
   pointer-events: none;
 }
 
+.no-text-decoration {
+  text-decoration: none;
+}
+
 /* ICONS */
 .icon {
   font-size: 48px !important;
