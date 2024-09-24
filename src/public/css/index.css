@@ -85,11 +85,11 @@ nav {
 
 /* PREVIEW */
 
-#preview {
+.preview {
   text-align: center;
 }
 
-#preview .preview__video {
+.preview #video-preview {
   width: 50%;
   height: 50%;
 }
@@ -104,4 +104,14 @@ nav {
 
 #information #information__content {
   text-align: center;
+}
+
+#single-player-previews {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+#single-player-previews .preview__image--singleplayer {
+  width: 20vw;
+  height: auto;
 }
