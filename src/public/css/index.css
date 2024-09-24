@@ -111,27 +111,27 @@ nav {
   height: 50%;
 }
 
-/* INFORMATION */
+/* GAMEPLAY INFORMATION */
 
-#information {
+#gameplay-information {
   background-color: #dddddd;
   padding: 8px;
   width: 100vw;
 }
 
-#information h1 {
+#gameplay-information h1 {
   font-size: 48px;
   font-weight: 500;
   text-align: center;
 }
 
-#information #information__preview {
+#gameplay-information #gameplay-information__preview {
   width: 75%;
   margin-left: auto;
   margin-right: auto;
 }
 
-#information #information__content {
+#gameplay-information #gameplay-information__content {
   padding: 16px;
   text-align: center;
   width: 80%;
