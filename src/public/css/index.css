@@ -10,6 +10,12 @@ button {
   font-variant-ligatures: none;
 }
 
+.preview__video,
+.preview__image {
+  user-select: none;
+  pointer-events: none;
+}
+
 /* ICONS */
 .icon {
   font-size: 48px !important;
