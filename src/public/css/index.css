@@ -178,8 +178,8 @@ nav {
 }
 
 #customization-previews .preview__image--customization {
-  width: 20vw;
-  height: auto;
+  width: auto;
+  height: 50vh;
 }
 
 /* MISC. INFORMATION */
