@@ -20,8 +20,16 @@ button {
   text-decoration: none;
 }
 
+.text-align--left {
+  text-align: left;
+}
+
 .text-align--right {
   text-align: right;
+}
+
+.text--small {
+  font-size: 75%;
 }
 
 /* ICONS */
@@ -295,4 +303,11 @@ nav {
 
 .feature-card__back {
   transform: rotateY(180deg);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.feature-card__back p {
+  padding: 8px;
 }
