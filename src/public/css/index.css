@@ -20,6 +20,10 @@ button {
   text-decoration: none;
 }
 
+.text-align--right {
+  text-align: right;
+}
+
 /* ICONS */
 
 .icon {
@@ -217,6 +221,15 @@ nav {
   grid-row-gap: 4px;
 }
 
+#miscellaneous-information__card-container-container {
+  width: fit-content;
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  margin: auto;
+}
+
 #feature-card-1 {
   grid-area: 1 / 1 / 2 / 2;
 }
@@ -231,6 +244,15 @@ nav {
 }
 
 /* adapted from https://www.w3schools.com/howto/howto_css_flip_card.asp */
+
+.feature-card .icon {
+  vertical-align: -24px;
+  font-size: 300% !important;
+}
+
+.feature-card h2 {
+  font-size: 200%;
+}
 
 .feature-card__container {
   background-color: transparent;
@@ -253,6 +275,13 @@ nav {
   background-color: #d4d4d4;
   width: 20vw;
   height: 10vw;
+}
+
+.feature-card__front {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .feature-card__front,
