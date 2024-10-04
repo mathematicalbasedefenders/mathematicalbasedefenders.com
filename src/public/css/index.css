@@ -89,7 +89,8 @@ nav {
   margin: 0;
 }
 
-#header a {
+#header a,
+#call-to-action a {
   color: black;
 }
 
@@ -332,4 +333,10 @@ nav {
   justify-content: space-between;
   align-items: center;
   height: 100%;
+}
+
+#call-to-action__button {
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
 }
