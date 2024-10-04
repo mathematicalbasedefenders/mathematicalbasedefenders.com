@@ -32,6 +32,19 @@ button {
   font-size: 75%;
 }
 
+.button--call-to-action {
+  width: 270px;
+  height: 60px;
+}
+
+.button--play {
+  background-color: #108800;
+  color: #ffffff;
+  border: 2px #108800 solid;
+  border-radius: 4px;
+  font-size: 225%;
+}
+
 /* ICONS */
 
 .icon {
@@ -76,11 +89,6 @@ nav {
   margin: 0;
 }
 
-#header .button--call-to-action {
-  width: 270px;
-  height: 60px;
-}
-
 #header a {
   color: black;
 }
@@ -103,14 +111,6 @@ nav {
 
 #header .version-number {
   font-size: 200%;
-}
-
-#header #button--play {
-  background-color: #108800;
-  color: #ffffff;
-  border: 2px #108800 solid;
-  border-radius: 4px;
-  font-size: 225%;
 }
 
 /* PREVIEW */
@@ -310,4 +310,26 @@ nav {
 
 .feature-card__back p {
   padding: 8px;
+}
+
+/* CALL TO ACTION */
+#call-to-action {
+  width: 100vw;
+  height: 20vh;
+}
+
+#call-to-action #call-to-action__content {
+  padding: 16px;
+  text-align: center;
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+  height: 100%;
+}
+
+#call-to-action__message {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
 }
