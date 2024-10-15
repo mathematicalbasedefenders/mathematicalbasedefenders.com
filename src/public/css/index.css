@@ -44,6 +44,10 @@ button {
   font-size: 225%;
 }
 
+.preview__content {
+  width: 60vw;
+}
+
 /* ICONS */
 
 .icon {
@@ -90,7 +94,6 @@ h1 .icon {
   display: flex;
   justify-content: space-around;
   flex-direction: row;
-  width: 50%;
   margin-left: auto;
   margin-right: auto;
 }
@@ -177,14 +180,20 @@ h1 .icon {
   min-height: 50vh;
 }
 
+#customization-information {
+  width: 75%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 #customization-previews {
   display: flex;
   justify-content: space-evenly;
 }
 
 #customization-previews .preview__image--customization {
-  width: auto;
-  height: 50vh;
+  width: 20vw;
+  height: auto;
 }
 
 /* MISC. INFORMATION */
@@ -330,4 +339,30 @@ h1 .icon {
   display: flex;
   flex-direction: column;
   justify-content: end;
+}
+
+@media only screen and (max-width: 768px) {
+  #header__latest-versions {
+    flex-direction: column !important;
+    align-items: center;
+  }
+
+  .version-indicator {
+    margin: 8px 0;
+  }
+
+  .preview__content {
+    display: flex;
+    flex-direction: column !important;
+    align-items: center;
+  }
+
+  .preview__content div {
+    margin: 8px 0;
+  }
+
+  .preview__image img {
+    width: auto !important;
+    height: 50vh !important;
+  }
 }
