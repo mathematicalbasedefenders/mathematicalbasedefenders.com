@@ -55,13 +55,6 @@ h1 .icon {
   vertical-align: -12px; /* to make icon align (almost) perfectly */
 }
 
-/* NAVIGATION BAR */
-
-nav {
-  text-align: center;
-  height: 60px;
-}
-
 /* HEADER */
 
 #header {
