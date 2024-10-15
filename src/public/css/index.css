@@ -41,7 +41,6 @@ button {
   background-color: #108800;
   color: #ffffff;
   border: 2px #108800 solid;
-  border-radius: 4px;
   font-size: 225%;
 }
 
@@ -99,7 +98,6 @@ h1 .icon {
 #header .version-indicator {
   background-color: #cccccc;
   padding: 8px;
-  border-radius: 4px;
   width: 250px;
 }
 
