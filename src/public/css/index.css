@@ -221,7 +221,7 @@ h1 .icon {
 
 #miscellaneous-information__card-container {
   display: grid;
-  width: 40vw;
+  width: 80vw;
   margin-left: auto;
   margin-right: auto;
   grid-template-columns: repeat(2, 1fr);
@@ -276,13 +276,11 @@ h1 .icon {
 
 .feature-card {
   position: relative;
-  width: 100%;
-  height: 100%;
   text-align: center;
   transition: transform 500ms;
   transform-style: preserve-3d;
   background-color: #d4d4d4;
-  width: 20vw;
+  width: 40vw;
   height: 10vw;
 }
 
@@ -341,6 +339,36 @@ h1 .icon {
   justify-content: end;
 }
 
+@media only screen and (max-width: 1280px) {
+  #miscellaneous-information__card-container {
+    width: 80vw;
+    height: 80vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  .feature-card__container {
+    width: 100%;
+    height: 25%;
+  }
+
+  .feature-card {
+    width: 100%;
+    height: 100%;
+  }
+
+  .feature-card__back p {
+    font-size: 100%;
+  }
+  /*
+  .feature-card__back,
+  .text-small {
+    font-size: 50% !important;
+  } */
+}
+
 @media only screen and (max-width: 768px) {
   #header__latest-versions {
     flex-direction: column !important;
@@ -381,5 +409,23 @@ h1 .icon {
   #top-navbar nav a {
     width: 100%;
     padding: 4px;
+  }
+
+  .feature-card__back p {
+    font-size: 100% !important;
+  }
+
+  #miscellaneous-information__card-container {
+    width: 80vw;
+    height: 160vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  .feature-card__container {
+    width: 100%;
+    height: 25%;
   }
 }
