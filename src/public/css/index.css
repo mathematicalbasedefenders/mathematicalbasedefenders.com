@@ -365,4 +365,21 @@ h1 .icon {
     width: auto !important;
     height: 50vh !important;
   }
+
+  #top-navbar {
+    padding: 0;
+  }
+
+  #top-navbar nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 100vw;
+  }
+
+  #top-navbar nav a {
+    width: 100%;
+    padding: 4px;
+  }
 }
