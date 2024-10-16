@@ -115,8 +115,8 @@ h1 .icon {
 }
 
 .preview #video-preview {
-  width: 50%;
-  height: 50%;
+  min-width: 1024px;
+  height: auto;
 }
 
 /* GAMEPLAY INFORMATION */
