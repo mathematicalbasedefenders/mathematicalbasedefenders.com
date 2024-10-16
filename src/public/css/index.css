@@ -369,6 +369,11 @@ h1 .icon {
     align-items: center;
   }
 
+  .preview__image img {
+    width: auto !important;
+    height: 50vh !important;
+  }
+
   #video-preview__container {
     display: flex;
     flex-direction: column !important;
