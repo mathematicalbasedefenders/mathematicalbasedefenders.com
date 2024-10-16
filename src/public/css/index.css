@@ -115,7 +115,7 @@ h1 .icon {
 }
 
 .preview #video-preview {
-  min-width: 1024px;
+  width: 100%;
   height: auto;
 }
 
@@ -362,6 +362,22 @@ h1 .icon {
   .feature-card__back p {
     font-size: 100%;
   }
+
+  .preview__content {
+    display: flex;
+    flex-direction: column !important;
+    align-items: center;
+  }
+
+  #video-preview__container {
+    display: flex;
+    flex-direction: column !important;
+    align-items: center;
+  }
+
+  #video-preview {
+    width: 1024px;
+  }
   /*
   .feature-card__back,
   .text-small {
@@ -386,6 +402,16 @@ h1 .icon {
   }
 
   .preview__content div {
+    margin: 8px 0;
+  }
+
+  #video-preview__container {
+    display: flex;
+    flex-direction: column !important;
+    align-items: center;
+  }
+
+  #video-preview__container div {
     margin: 8px 0;
   }
 
