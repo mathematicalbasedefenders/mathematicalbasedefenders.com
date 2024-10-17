@@ -7,8 +7,18 @@ main h3 {
 }
 
 #leaderboards-table {
-  border-collapse: collapse;
   width: 100%;
+}
+
+#leaderboards-table,
+#leaderboards-table thead tr th,
+.leaderboards__record td {
+  border: 2px solid #000000;
+  border-collapse: collapse;
+}
+
+.rank--unclaimed {
+  opacity: 0.5;
 }
 
 #leaderboards-table tr:nth-child(1) {
@@ -23,12 +33,17 @@ main h3 {
   background-color: #cd7f32;
 }
 
-#leaderboards-table tr:nth-child(2n + 4) {
-  background-color: #dddddd;
+th {
+  font-weight: normal;
+  text-align: center;
+  padding: 2px 4px;
+  background-color: #eeeeee;
 }
 
-#leaderboards-table tr:nth-child(2n + 5) {
-  background-color: #cccccc;
+.leaderboards__record td {
+  font-size: 125%;
+  text-align: center;
+  padding: 4px;
 }
 
 #leaderboards-table a {
@@ -37,34 +52,24 @@ main h3 {
 }
 
 #leaderboards-table .rank__number {
-  font-size: 150%;
-  width: 20%;
+  width: 5%;
 }
 
 #leaderboards-table .rank__username {
-  width: 40%;
-  font-size: 150%;
-  text-align: center;
+  font-weight: 600;
+  width: 25%;
 }
 
 #leaderboards-table .rank__score {
-  font-size: 150%;
-  width: 20%;
-  text-align: right;
-}
-
-#leaderboards-table .rank__game-data {
-  font-size: 50%;
-  white-space: nowrap;
-  margin-top: 0;
-  margin-bottom: 0;
+  font-weight: 600;
+  width: 30%;
 }
 
 .center-align {
   text-align: center;
 }
 
-@media only screen and (max-width: 768px) {
+/* @media only screen and (max-width: 768px) {
   .leaderboards__record {
     display: flex;
     flex-direction: column;
@@ -77,4 +82,4 @@ main h3 {
     text-align: center !important;
     width: 100% !important;
   }
-}
+} */
