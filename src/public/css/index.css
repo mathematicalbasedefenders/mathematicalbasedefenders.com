@@ -119,6 +119,15 @@ h1 .icon {
   height: auto;
 }
 
+#video-preview__container__container {
+  display: flex;
+  justify-content: center;
+}
+
+#video-preview__container {
+  width: 1024px;
+}
+
 /* GAMEPLAY INFORMATION */
 
 #gameplay-information {
