@@ -8,12 +8,16 @@ main h3 {
 
 #leaderboards-table {
   width: 100%;
+  overflow-x: auto;
+  border: 2px solid #000000;
+  border-collapse: collapse;
 }
 
 #leaderboards-table,
 #leaderboards-table thead tr th,
 .leaderboards__record td {
-  border: 2px solid #000000;
+  border-top: 2px solid #000000;
+  border-bottom: 2px solid #000000;
   border-collapse: collapse;
 }
 
@@ -23,14 +27,17 @@ main h3 {
 
 #leaderboards-table tr:nth-child(1) {
   background-color: #ffd700;
+  border: 2px solid #ffd700;
 }
 
 #leaderboards-table tr:nth-child(2) {
   background-color: #c0c0c0;
+  border: 2px solid #c0c0c0;
 }
 
 #leaderboards-table tr:nth-child(3) {
   background-color: #cd7f32;
+  border: 2px solid #cd7f32;
 }
 
 th {
@@ -69,17 +76,11 @@ th {
   text-align: center;
 }
 
-/* @media only screen and (max-width: 768px) {
-  .leaderboards__record {
-    display: flex;
-    flex-direction: column;
+@media only screen and (max-width: 1280px) {
+  #leaderboards-table {
+    overflow-x: scroll;
+    width: 100vw;
+    transform: translateX(-10%);
+    display: block;
   }
-
-  .leaderboards__record .rank__number,
-  .leaderboards__record .rank__username,
-  .leaderboards__record .rank__game-data,
-  .leaderboards__record .rank__score {
-    text-align: center !important;
-    width: 100% !important;
-  }
-} */
+}
