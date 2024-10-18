@@ -27,17 +27,14 @@ main h3 {
 
 #leaderboards-table tr:nth-child(1) {
   background-color: #ffd700;
-  border: 2px solid #ffd700;
 }
 
 #leaderboards-table tr:nth-child(2) {
   background-color: #c0c0c0;
-  border: 2px solid #c0c0c0;
 }
 
 #leaderboards-table tr:nth-child(3) {
   background-color: #cd7f32;
-  border: 2px solid #cd7f32;
 }
 
 th {
