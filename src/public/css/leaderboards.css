@@ -47,6 +47,7 @@ th {
 .leaderboards__record td {
   font-size: 125%;
   text-align: center;
+  white-space: nowrap;
   padding: 4px;
 }
 
