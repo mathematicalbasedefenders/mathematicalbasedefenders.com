@@ -156,7 +156,7 @@ main h3 {
 .user-statistics-box {
   background-color: #dddddd;
   width: 100%;
-  margin: 0 4px;
+  margin: 0 16px 0 0;
 }
 
 .text--wide {
