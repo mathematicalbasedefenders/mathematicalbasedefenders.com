@@ -49,3 +49,6 @@ main h3 {
 header {
   width: 100vw;
 }
+.text--dimmed {
+  opacity: 0.5;
+}
