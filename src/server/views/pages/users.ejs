@@ -28,7 +28,7 @@
           <!-- TODO: ??? -->
           <div class="user-statistics-box">
             <h2>General</h2>
-            <p class="text--large text--wide">&nbsp; Level <%-data.level.current || "0"%> </p>
+            <p style="margin: 8px 0;" class="text--large text--wide">&nbsp; Level <%-data.level.current || "0"%> </p>
             <div class="user-statistics-box__detailed">
               <hr>
               <div class="user-statistics-box__field--detailed">
@@ -49,6 +49,21 @@
                 <div><%-data.joinDate%></div>
               </div>
             </div>
+          </div>
+          <br>
+          <div class="user-statistics-box">
+            <h2>Standard Singleplayer</h2>
+            <% if (data.easyBest.score) { %>
+            <p style="margin: 8px 0;" class="text--large text--wide">
+              &nbsp;
+              <%-  data.easyBest.score %>
+            </p>
+            <% } else { %>
+            <p style="margin: 8px 0;" class="text--dimmed text--large">
+              &nbsp;
+              (never played)
+            </p>
+            <% } %>
           </div>
         </div>
       </div>
