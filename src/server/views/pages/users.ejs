@@ -152,6 +152,38 @@
             </div>
             <% } %>
           </div>
+          <br>
+          <div class="user-statistics-box">
+            <h2>Multiplayer</h2>
+            <% if (!(data.multiplayer.played === 0 || isNaN(data.multiplayer.played))) { %>
+            <div class="user-statistics-box__score">
+              <div>
+                <p style="margin: 8px 0;" class="text--large text--wide">
+                  &nbsp;
+                  <%-`${(data.multiplayer.won/data.multiplayer.played*100).toFixed(3)}%` %>
+                </p>
+              </div>
+            </div>
+            <div class="user-statistics-box__detailed">
+              <hr>
+              <div class="user-statistics-box__field--detailed">
+                <div>Multiplayer Games Won/Played</div>
+                <div><%-data.multiplayer.won || 0%><span class="text--dimmed">/<%-data.multiplayer.played%></span>
+                </div>
+              </div>
+            </div>
+            <% } else { %>
+            <!-- TODO: test me -->
+            <div class="user-statistics-box__score">
+              <div>
+                <p style="margin: 8px 0;" class="text--large text--wide">
+                  &nbsp;
+                  (never played)
+                </p>
+              </div>
+            </div>
+            <% } %>
+          </div>
         </div>
       </div>
     </div>
