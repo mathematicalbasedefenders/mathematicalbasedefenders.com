@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-  <title>User Lookup | Mathematical Base Defenders</title>
+  <title><%-data.username%> | Mathematical Base Defenders</title>
   <%- include("../partials/head.ejs") %>
   <link rel="stylesheet" type="text/css" href="/css/users.css" />
   <style>
@@ -53,10 +53,13 @@
           <br>
           <div class="user-statistics-box">
             <h2>Standard Singleplayer</h2>
-            <% if (data.easyBest.score) { %>
+            <% if (data.standardBest.score) { %>
             <p style="margin: 8px 0;" class="text--large text--wide">
               &nbsp;
-              <%-  data.easyBest.score %>
+              <%-  data.standardBest.score %>
+              <% if (data.standardRank){ %>
+              <%- include("../partials/top-global-rank-badge.ejs",{rank:data.standardRank}) %>
+              <% } %>
             </p>
             <% } else { %>
             <p style="margin: 8px 0;" class="text--dimmed text--large">
