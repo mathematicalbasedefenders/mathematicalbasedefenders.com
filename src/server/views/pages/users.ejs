@@ -54,13 +54,41 @@
           <div class="user-statistics-box">
             <h2>Standard Singleplayer</h2>
             <% if (data.standardBest.score) { %>
-            <p style="margin: 8px 0;" class="text--large text--wide">
-              &nbsp;
-              <%-  data.standardBest.score %>
-              <% if (data.standardRank){ %>
-              <%- include("../partials/top-global-rank-badge.ejs",{rank:data.standardRank}) %>
-              <% } %>
-            </p>
+            <div class="user-statistics-box__score">
+              <div>
+                <p style="margin: 8px 0;" class="text--large text--wide">
+                  &nbsp;
+                  <%-  data.standardBest.score %>
+                </p>
+              </div>
+              <div>
+                <% if (data.standardRank){ %>
+                <%- include("../partials/top-global-rank-badge.ejs",{rank:data.standardRank,class:data.standardRankClass}) %>
+                <% } %>
+              </div>
+            </div>
+            <div class="user-statistics-box__detailed">
+              <hr>
+              <div class="user-statistics-box__field--detailed">
+                <div>Enemies Killed/Spawned</div>
+                <div><%-data.standardBest.enemiesKilled%><span class="text--dimmed">/<%-data.standardBest.enemiesCreated%></span>
+                </div>
+              </div>
+              <div class="user-statistics-box__field--detailed">
+                <div>Speed</div>
+                <div>
+                  <%- (data.standardBest.actionsPerformed/(data.standardBest.timeInMilliseconds/60000)).toFixed(3)%>APM
+                </div>
+              </div>
+              <div class="user-statistics-box__field--detailed">
+                <div>In Game Time</div>
+                <div><%-data.standardBest.timeInMilliseconds%>ms</div>
+              </div>
+              <div class="user-statistics-box__field--detailed">
+                <div>Submission Timestamp</div>
+                <div><%-data.standardBest.scoreSubmissionDateAndTime%></div>
+              </div>
+            </div>
             <% } else { %>
             <p style="margin: 8px 0;" class="text--dimmed text--large">
               &nbsp;
