@@ -184,7 +184,7 @@ main h3 {
 }
 
 .user-statistics-box__detailed
-  .user-statistics-box__field--detailed:nth-of-type(odd) {
+  .user-statistics-box__field--detailed:nth-of-type(even) {
   background-color: #cccccc;
 }
 
