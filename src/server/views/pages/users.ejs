@@ -63,7 +63,7 @@
               </div>
               <div>
                 <% if (data.standardRank){ %>
-                <%- include("../partials/top-global-rank-badge.ejs",{rank:data.standardRank,class:data.standardRankClass}) %>
+                <%- include("../partials/top-global-rank-badge.ejs",{rank:data.standardRank,badgeClass:data.standardRankClass}) %>
                 <% } %>
               </div>
             </div>
@@ -114,7 +114,7 @@
               </div>
               <div>
                 <% if (data.easyRank){ %>
-                <%- include("../partials/top-global-rank-badge.ejs",{rank:data.easyRank,class:data.easyRankClass}) %>
+                <%- include("../partials/top-global-rank-badge.ejs",{rank:data.easyRank,badgeClass:data.easyRankClass}) %>
                 <% } %>
               </div>
             </div>
