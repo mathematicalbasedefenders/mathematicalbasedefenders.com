@@ -101,6 +101,57 @@
             </div>
             <% } %>
           </div>
+          <br>
+          <div class="user-statistics-box">
+            <h2>Easy Singleplayer</h2>
+            <% if (data.easyBest.score) { %>
+            <div class="user-statistics-box__score">
+              <div>
+                <p style="margin: 8px 0;" class="text--large text--wide">
+                  &nbsp;
+                  <%-  data.easyBest.score %>
+                </p>
+              </div>
+              <div>
+                <% if (data.easyRank){ %>
+                <%- include("../partials/top-global-rank-badge.ejs",{rank:data.easyRank,class:data.easyRankClass}) %>
+                <% } %>
+              </div>
+            </div>
+            <div class="user-statistics-box__detailed">
+              <hr>
+              <div class="user-statistics-box__field--detailed">
+                <div>Enemies Killed/Spawned</div>
+                <div><%-data.easyBest.enemiesKilled%><span class="text--dimmed">/<%-data.easyBest.enemiesCreated%></span>
+                </div>
+              </div>
+              <div class="user-statistics-box__field--detailed">
+                <div>Speed</div>
+                <div>
+                  <%- (data.easyBest.actionsPerformed/(data.easyBest.timeInMilliseconds/60000)).toFixed(3)%>APM
+                </div>
+              </div>
+              <div class="user-statistics-box__field--detailed">
+                <div>In Game Time</div>
+                <div><%-data.easyBest.timeInMilliseconds%>ms</div>
+              </div>
+              <div class="user-statistics-box__field--detailed">
+                <div>Submission Timestamp</div>
+                <div><%-data.easyBest.scoreSubmissionDateAndTime%></div>
+              </div>
+            </div>
+            <% } else { %>
+            <!-- TODO: test me -->
+            <div class="user-statistics-box__score">
+              <div>
+                <p style="margin: 8px 0;" class="text--large text--wide">
+                  &nbsp;
+                  (never played)
+                </p>
+              </div>
+            </div>
+            <% } %>
+          </div>
         </div>
       </div>
     </div>
