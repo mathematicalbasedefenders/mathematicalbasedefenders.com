@@ -112,7 +112,8 @@ main h3 {
 .user-data-box__gamemode.user-data-box__stat--gold {
   border: 4px #ffd700 solid;
 }
-.user-data-box__gamemode .user-data-box__stat.user-data-box__stat--gold {
+
+.user-data-box__stat--gold {
   background-color: #ffd700;
 }
 
@@ -120,7 +121,7 @@ main h3 {
   border: 4px #c0c0c0 solid;
 }
 
-.user-data-box__gamemode .user-data-box__stat.user-data-box__stat--silver {
+.user-data-box__stat--silver {
   background-color: #c0c0c0;
 }
 
@@ -128,7 +129,7 @@ main h3 {
   border: 4px #cd7f32 solid;
 }
 
-.user-data-box__gamemode .user-data-box__stat.user-data-box__stat--bronze {
+.user-data-box__stat--bronze {
   background-color: #cd7f32;
 }
 
@@ -136,7 +137,7 @@ main h3 {
   border: 4px #8ba1ed solid;
 }
 
-.user-data-box__gamemode .user-data-box__stat.user-data-box__stat--top10 {
+.user-data-box__stat--top10 {
   background-color: #8ba1ed;
 }
 
@@ -144,7 +145,7 @@ main h3 {
   border: 4px #ab93db solid;
 }
 
-.user-data-box__gamemode .user-data-box__stat.user-data-box__stat--top100 {
+.user-data-box__stat--top100 {
   background-color: #ab93db;
 }
 
@@ -158,7 +159,7 @@ main h3 {
   background-color: #dddddd;
   width: 100%;
   margin: 0 0 0 16px;
-  padding: 0 4px;
+  padding: 4px 4px;
 }
 
 .text--wide {
@@ -199,4 +200,22 @@ main h3 {
   flex-direction: row;
   font-size: 12px;
   align-items: center;
+}
+
+.user-statistics-box__rank-badge {
+  text-align: center;
+  width: 56px;
+  padding: 4px 32px;
+  margin: 0px 16px;
+}
+
+.user-statistics-box__score {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  margin: 8px 0;
+}
+
+.user-statistics-box__rank {
+  font-size: 200%;
 }
