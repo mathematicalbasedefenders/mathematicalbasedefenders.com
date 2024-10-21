@@ -47,8 +47,8 @@ main h3 {
 }
 
 header {
-  width: 100vw;
+  width: 100%;
 }
 .text--dimmed {
-  opacity: 0.5;
+  color: rgba(0, 0, 0, 0.6);
 }
