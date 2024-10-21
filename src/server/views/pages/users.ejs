@@ -2,119 +2,193 @@
 <html lang="en">
 
 <head>
-  <title>User Lookup | Mathematical Base Defenders</title>
+  <title><%=data.username%> | Mathematical Base Defenders</title>
   <%- include("../partials/head.ejs") %>
   <link rel="stylesheet" type="text/css" href="/css/users.css" />
+  <style>
+    #level-bar {
+      --progress: <%=data.level.toNext*100%>%;
+      background: linear-gradient(to right, #000000, #000000 var(--progress), #000000 var(--progress), #fafafa var(--progress), #fafafa 100%);
+      background-color: #fafafa;
+    }
+  </style>
 </head>
 
 <body> <%- include("../partials/header.ejs") %>
   <main>
     <div>
       <br>
+      <h1 id="username"><%-data.username%></h1>
       <div id="user-data-box">
         <div id="user-data-box__profile">
-          <img title="Profile pictures are coming in a future update." alt="Profile pictures are coming in a future update." src="/assets/images/default-avatar.png" width="128" height="128">
-          <div id="user-data-box__username">
-            <p id="user-data-box__rank" style=<%-`background-color:${data.rank.color}`%>><%- data.rank.rank %></p>
-            <h1><%- data.username%></h1>
-          </div>
+          <img id="user-data-box__profile-picture" title="Profile pictures are coming in a future update." alt="Profile pictures are coming in a future update." src="/assets/images/default-avatar.png">
+          <h3 id="user-data-box__rank" style=<%=`background-color:${data.rank.color}`%>><%=data.rank.rank %></h3>
         </div>
-        <br>
         <div id="user-data-box__statistics">
-          <div class="user-data-box__gamemode">
-            <div class="user-data-box__gamemode-title">
-              <h2>General</h2>
-              <p class="large-font">Level <%-data.level.current || "0"%></p>
+          <!-- TODO: ??? -->
+          <div class="user-statistics-box">
+            <h2>General</h2>
+            <p style="margin: 8px 0;" class="text--large text--wide">&nbsp; Level <%=data.level.current || "0"%> </p>
+            <div class="user-statistics-box__detailed">
+              <hr>
+              <div class="user-statistics-box__field--detailed">
+                <div>Total Experience Points</div>
+                <div style="text-align: right;">
+                  <%= data.level.totalEXP %>EXP
+                  <br>
+                  <div id="level-bar-container" class="user-statistics-box__field--extra-detailed" title="<%= (data.level.toNext*100).toFixed(3)%>% to next level">
+                    <%=data.level.current || "0"%>
+                    <div id="level-bar">
+                    </div>
+                    <%=data.level.current+1 || "1"%>
+                  </div>
+                </div>
+              </div>
+              <div class="user-statistics-box__field--detailed">
+                <div>Join Date</div>
+                <div><%=data.joinDate%></div>
+              </div>
             </div>
-            <div class="user-data-box__stat">
-              <span>Experience Points</span>
-              <span><%- data.level.totalEXP %>EXP (<%- (data.level.toNext*100).toFixed(3)%>% to next)</span>
-            </div>
-            <div class="user-data-box__stat">
-              <span>Join Date</span>
-              <span><%- data.joinDate %></span>
-            </div>
-
           </div>
           <br>
-          <div class="user-data-box__gamemode <%-data.easyRankClass%>">
-            <div class="user-data-box__gamemode-title">
-              <h2>Easy Singleplayer</h2>
-              <!-- TODO: Consider that other no scores are possible (e.g. null) -->
-              <p class="large-font"><%- (data.easyBest.score>-1)? data.easyBest.score  : "???" %></p>
+          <div class="user-statistics-box">
+            <h2>Standard Singleplayer</h2>
+            <% if (data.standardBest.score) { %>
+            <div class="user-statistics-box__score">
+              <div>
+                <p style="margin: 8px 0;" class="text--large text--wide">
+                  &nbsp;
+                  <%= data.standardBest.score %>
+                </p>
+              </div>
+              <div>
+                <% if (data.standardRank){ %>
+                <%- include("../partials/top-global-rank-badge.ejs",{rank:data.standardRank,badgeClass:data.standardRankClass}) %>
+                <% } %>
+              </div>
             </div>
-            <% if (data.easyBest.score  >-1&& data.easyBest.score !== "N/A") { %>
-
-
-            <div class="user-data-box__stat">
-              <span>Actions Per Minute</span>
-              <span><%-(data.easyBest.actionsPerformed/(data.easyBest.timeInMilliseconds/60000)).toFixed(3)%>APM</span>
-            </div>
-            <div class="user-data-box__stat">
-              <span>In Game Time</span>
-              <span><%-data.easyBest.timeInMilliseconds%>ms</span>
-            </div>
-            <div class="user-data-box__stat">
-              <span>Enemies Killed/Spawned</span>
-              <span><%-data.easyBest.enemiesKilled%>/<%-data.easyBest.enemiesCreated%></span>
-            </div>
-            <div class="user-data-box__stat">
-              <span>Submitted On</span>
-              <span><%-data.easyBest.scoreSubmissionDateAndTime%></span>
+            <div class="user-statistics-box__detailed">
+              <hr>
+              <div class="user-statistics-box__field--detailed">
+                <div>Enemies Killed/Spawned</div>
+                <div><%=data.standardBest.enemiesKilled%><span class="text--dimmed">/<%=data.standardBest.enemiesCreated%></span>
+                </div>
+              </div>
+              <div class="user-statistics-box__field--detailed">
+                <div>Speed</div>
+                <div>
+                  <% if (data.standardBest.timeInMilliseconds > 0) { %>
+                  <%= (data.standardBest.actionsPerformed / (data.standardBest.timeInMilliseconds / 60000)).toFixed(3) %>APM
+                  <% } else { %>
+                  N/A
+                  <% } %>
+                </div>
+              </div>
+              <div class="user-statistics-box__field--detailed">
+                <div>In Game Time</div>
+                <div><%=data.standardBest.timeInMilliseconds%>ms</div>
+              </div>
+              <div class="user-statistics-box__field--detailed">
+                <div>Submission Timestamp</div>
+                <div><%-data.standardBest.scoreSubmissionDateAndTime%></div>
+              </div>
             </div>
             <% } else { %>
-            <p class="text--center-align">(No Easy Singleplayer record.)</p>
-            <% } %>
-            <div class="user-data-box__stat <%-data.easyRankClass%>">
-              <span></span>
-              <div><%- data.easyRankText %></div>
+            <!-- TODO: test me -->
+            <div class="user-statistics-box__score">
+              <div>
+                <p style="margin: 8px 0;" class="text--large text--wide">
+                  &nbsp;
+                  (never played)
+                </p>
+              </div>
             </div>
-
+            <% } %>
           </div>
           <br>
-          <div class="user-data-box__gamemode <%-data.standardRankClass%>">
-            <div class="user-data-box__gamemode-title">
-              <h2>Standard Singleplayer</h2>
-              <!-- TODO: Consider that other no scores are possible (e.g. null) -->
-              <p class="large-font"><%- (data.standardBest.score>-1)? data.standardBest.score : "???" %></p>
+          <div class="user-statistics-box">
+            <h2>Easy Singleplayer</h2>
+            <% if (data.easyBest.score) { %>
+            <div class="user-statistics-box__score">
+              <div>
+                <p style="margin: 8px 0;" class="text--large text--wide">
+                  &nbsp;
+                  <%= data.easyBest.score %>
+                </p>
+              </div>
+              <div>
+                <% if (data.easyRank){ %>
+                <%- include("../partials/top-global-rank-badge.ejs",{rank:data.easyRank,badgeClass:data.easyRankClass}) %>
+                <% } %>
+              </div>
             </div>
-            <% if (data.standardBest.score  >-1&& data.standardBest.score !== "N/A") { %>
-            <div class="user-data-box__stat">
-              <span>Actions Per Minute</span>
-              <span><%-(data.standardBest.actionsPerformed/(data.standardBest.timeInMilliseconds/60000)).toFixed(3)%>APM</span>
-            </div>
-            <div class="user-data-box__stat">
-              <span>In Game Time</span>
-              <span><%-data.standardBest.timeInMilliseconds%>ms</span>
-            </div>
-            <div class="user-data-box__stat">
-              <span>Enemies Killed/Spawned</span>
-              <span><%-data.standardBest.enemiesKilled%>/<%-data.standardBest.enemiesCreated%></span>
-            </div>
-            <div class="user-data-box__stat">
-              <span>Submitted On</span>
-              <span><%-data.standardBest.scoreSubmissionDateAndTime%></span>
+            <div class="user-statistics-box__detailed">
+              <hr>
+              <div class="user-statistics-box__field--detailed">
+                <div>Enemies Killed/Spawned</div>
+                <div><%=data.easyBest.enemiesKilled%><span class="text--dimmed">/<%=data.easyBest.enemiesCreated%></span>
+                </div>
+              </div>
+              <div class="user-statistics-box__field--detailed">
+                <div>Speed</div>
+                <div>
+                  <% if (data.easyBest.timeInMilliseconds > 0) { %>
+                  <%= (data.easyBest.actionsPerformed / (data.easyBest.timeInMilliseconds / 60000)).toFixed(3) %>APM
+                  <% } else { %>
+                  N/A
+                  <% } %>
+                </div>
+              </div>
+              <div class="user-statistics-box__field--detailed">
+                <div>In Game Time</div>
+                <div><%=data.easyBest.timeInMilliseconds%>ms</div>
+              </div>
+              <div class="user-statistics-box__field--detailed">
+                <div>Submission Timestamp</div>
+                <div><%-data.easyBest.scoreSubmissionDateAndTime%></div>
+              </div>
             </div>
             <% } else { %>
-            <p class="text--center-align">(No Standard Singleplayer record.)</p>
-            <% } %>
-            <div class="user-data-box__stat <%-data.standardRankClass%>">
-              <span></span>
-              <div><%- data.standardRankText %></div>
+            <!-- TODO: test me -->
+            <div class="user-statistics-box__score">
+              <div>
+                <p style="margin: 8px 0;" class="text--large text--wide">
+                  &nbsp;
+                  (never played)
+                </p>
+              </div>
             </div>
+            <% } %>
           </div>
           <br>
-          <div class="user-data-box__gamemode">
-            <div class="user-data-box__gamemode-title">
-              <h2>Multiplayer</h2>
-              <p class="large-font"><%- data.multiplayer.played === 0 || isNaN(data.multiplayer.played)  ? "N/A" : `${(data.multiplayer.won/data.multiplayer.played*100).toFixed(3)}%` %></p>
+          <div class="user-statistics-box">
+            <h2>Multiplayer</h2>
+            <% if (!(data.multiplayer.played === 0 || isNaN(data.multiplayer.played))) { %>
+            <div class="user-statistics-box__score">
+              <div>
+                <p style="margin: 8px 0;" class="text--large text--wide">
+                  &nbsp;
+                  <%-`${(data.multiplayer.won/data.multiplayer.played*100).toFixed(3)}%` %>
+                </p>
+              </div>
             </div>
-            <% if (data.multiplayer.played === 0 || isNaN(data.multiplayer.played)) { %>
-            <p class="text--center-align">(No Multiplayer record.)</p>
-            <%} else {%>
-            <div class="user-data-box__stat">
-              <span>Games Won/Played</span>
-              <span><%-data.multiplayer.won || 0%>/<%-data.multiplayer.played%></span>
+            <div class="user-statistics-box__detailed">
+              <hr>
+              <div class="user-statistics-box__field--detailed">
+                <div>Multiplayer Games Won/Played</div>
+                <div><%=data.multiplayer.won || 0%><span class="text--dimmed">/<%=data.multiplayer.played%></span>
+                </div>
+              </div>
+            </div>
+            <% } else { %>
+            <!-- TODO: test me -->
+            <div class="user-statistics-box__score">
+              <div>
+                <p style="margin: 8px 0;" class="text--large text--wide">
+                  &nbsp;
+                  (never played)
+                </p>
+              </div>
             </div>
             <% } %>
           </div>

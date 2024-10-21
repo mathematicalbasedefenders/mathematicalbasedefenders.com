@@ -21,6 +21,7 @@
     "LICENCE",
     "mathematicalbasedefenders",
     "mpath",
+    "opsz",
     "passwordnotvalid",
     "pixi",
     "pixijs",
@@ -33,6 +34,7 @@
     "usernamenotvalid",
     "uuidv",
     "verifiedemail",
+    "wght",
     "XVRB"
   ],
   "python.linting.pylintEnabled": true,

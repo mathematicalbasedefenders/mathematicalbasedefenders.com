@@ -1,0 +1,30 @@
+#top-navbar {
+  background-color: var(--color-background-secondary);
+  color: var(--color-text-light);
+  display: flex;
+  padding: 4px 0;
+  justify-content: space-between;
+}
+
+/* #top-navbar > div:nth-of-type(2) > a {
+  font-size: 175%;
+}
+
+#top-navbar > div:nth-of-type(2) {
+  text-align: right;
+} */
+
+#top-navbar nav a {
+  text-decoration: none !important;
+  color: var(--color-text-light);
+  font-size: 150%;
+  padding: 12px;
+  text-align: center;
+}
+
+#top-navbar nav a:hover {
+  background-color: var(--color-background-primary);
+  color: var(--color-text-dark);
+  cursor: pointer;
+  transition-duration: var(--transition-duration-regular);
+}

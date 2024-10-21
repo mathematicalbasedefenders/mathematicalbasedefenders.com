@@ -15,6 +15,17 @@
       <h1>Leaderboards: <%-mode%> Singleplayer </h1>
       <p class="center-align"><a href="/leaderboards/easy">Easy Singleplayer</a> | <a href="/leaderboards/standard">Standard Singleplayer</a></p>
       <table id="leaderboards-table">
+        <thead>
+          <tr>
+            <th scope="col">Rank</th>
+            <th scope="col">Username</th>
+            <th scope="col">Submission Timestamp</th>
+            <th scope="col">In Game Time</th>
+            <th scope="col">Enemies Killed</th>
+            <th scope="col">Speed</th>
+            <th scope="col">Score</th>
+          </tr>
+        </thead>
         <% for (let i = 0; i < 100; i++) { %>
         <% if (i < data.length) { %>
         <%- include("../partials/leaderboards-record.ejs", {record:data[i],rank:i+1}) %>
