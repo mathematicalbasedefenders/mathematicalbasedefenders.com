@@ -36,11 +36,8 @@
   padding: 4px;
 }
 
-.bottom-footer__link > img {
-  vertical-align: middle;
-}
-
 .bottom-footer__link img {
+  vertical-align: middle;
   width: auto;
   height: 32px;
 }
