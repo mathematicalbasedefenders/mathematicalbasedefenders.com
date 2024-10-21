@@ -76,7 +76,7 @@ th {
 
 @media only screen and (max-width: 1280px) {
   #leaderboards-table {
-    overflow-x: scroll;
+    overflow-x: auto;
     width: 100vw;
     transform: translateX(-10%);
     display: block;
