@@ -2,12 +2,12 @@
 <html lang="en">
 
 <head>
-  <title><%-data.username%> | Mathematical Base Defenders</title>
+  <title><%=data.username%> | Mathematical Base Defenders</title>
   <%- include("../partials/head.ejs") %>
   <link rel="stylesheet" type="text/css" href="/css/users.css" />
   <style>
     #level-bar {
-      --progress: <%-data.level.toNext*100%>%;
+      --progress: <%=data.level.toNext*100%>%;
       background: linear-gradient(to right, #000000, #000000 var(--progress), #000000 var(--progress), #fafafa var(--progress), #fafafa 100%);
       background-color: #fafafa;
     }
@@ -22,31 +22,31 @@
       <div id="user-data-box">
         <div id="user-data-box__profile">
           <img id="user-data-box__profile-picture" title="Profile pictures are coming in a future update." alt="Profile pictures are coming in a future update." src="/assets/images/default-avatar.png">
-          <h3 id="user-data-box__rank" style=<%-`background-color:${data.rank.color}`%>><%- data.rank.rank %></h3>
+          <h3 id="user-data-box__rank" style=<%=`background-color:${data.rank.color}`%>><%=data.rank.rank %></h3>
         </div>
         <div id="user-data-box__statistics">
           <!-- TODO: ??? -->
           <div class="user-statistics-box">
             <h2>General</h2>
-            <p style="margin: 8px 0;" class="text--large text--wide">&nbsp; Level <%-data.level.current || "0"%> </p>
+            <p style="margin: 8px 0;" class="text--large text--wide">&nbsp; Level <%=data.level.current || "0"%> </p>
             <div class="user-statistics-box__detailed">
               <hr>
               <div class="user-statistics-box__field--detailed">
                 <div>Total Experience Points</div>
                 <div style="text-align: right;">
-                  <%- data.level.totalEXP %>EXP
+                  <%= data.level.totalEXP %>EXP
                   <br>
-                  <div id="level-bar-container" class="user-statistics-box__field--extra-detailed" title="<%- (data.level.toNext*100).toFixed(3)%>% to next level">
-                    <%-data.level.current || "0"%>
+                  <div id="level-bar-container" class="user-statistics-box__field--extra-detailed" title="<%= (data.level.toNext*100).toFixed(3)%>% to next level">
+                    <%=data.level.current || "0"%>
                     <div id="level-bar">
                     </div>
-                    <%-data.level.current+1 || "1"%>
+                    <%=data.level.current+1 || "1"%>
                   </div>
                 </div>
               </div>
               <div class="user-statistics-box__field--detailed">
                 <div>Join Date</div>
-                <div><%-data.joinDate%></div>
+                <div><%=data.joinDate%></div>
               </div>
             </div>
           </div>
@@ -58,7 +58,7 @@
               <div>
                 <p style="margin: 8px 0;" class="text--large text--wide">
                   &nbsp;
-                  <%-  data.standardBest.score %>
+                  <%= data.standardBest.score %>
                 </p>
               </div>
               <div>
@@ -71,18 +71,22 @@
               <hr>
               <div class="user-statistics-box__field--detailed">
                 <div>Enemies Killed/Spawned</div>
-                <div><%-data.standardBest.enemiesKilled%><span class="text--dimmed">/<%-data.standardBest.enemiesCreated%></span>
+                <div><%=data.standardBest.enemiesKilled%><span class="text--dimmed">/<%=data.standardBest.enemiesCreated%></span>
                 </div>
               </div>
               <div class="user-statistics-box__field--detailed">
                 <div>Speed</div>
                 <div>
-                  <%- (data.standardBest.actionsPerformed/(data.standardBest.timeInMilliseconds/60000)).toFixed(3)%>APM
+                  <% if (data.standardBest.timeInMilliseconds > 0) { %>
+                  <%= (data.standardBest.actionsPerformed / (data.standardBest.timeInMilliseconds / 60000)).toFixed(3) %>APM
+                  <% } else { %>
+                  N/A
+                  <% } %>
                 </div>
               </div>
               <div class="user-statistics-box__field--detailed">
                 <div>In Game Time</div>
-                <div><%-data.standardBest.timeInMilliseconds%>ms</div>
+                <div><%=data.standardBest.timeInMilliseconds%>ms</div>
               </div>
               <div class="user-statistics-box__field--detailed">
                 <div>Submission Timestamp</div>
@@ -109,7 +113,7 @@
               <div>
                 <p style="margin: 8px 0;" class="text--large text--wide">
                   &nbsp;
-                  <%-  data.easyBest.score %>
+                  <%= data.easyBest.score %>
                 </p>
               </div>
               <div>
@@ -122,18 +126,22 @@
               <hr>
               <div class="user-statistics-box__field--detailed">
                 <div>Enemies Killed/Spawned</div>
-                <div><%-data.easyBest.enemiesKilled%><span class="text--dimmed">/<%-data.easyBest.enemiesCreated%></span>
+                <div><%=data.easyBest.enemiesKilled%><span class="text--dimmed">/<%=data.easyBest.enemiesCreated%></span>
                 </div>
               </div>
               <div class="user-statistics-box__field--detailed">
                 <div>Speed</div>
                 <div>
-                  <%- (data.easyBest.actionsPerformed/(data.easyBest.timeInMilliseconds/60000)).toFixed(3)%>APM
+                  <% if (data.easyBest.timeInMilliseconds > 0) { %>
+                  <%= (data.easyBest.actionsPerformed / (data.easyBest.timeInMilliseconds / 60000)).toFixed(3) %>APM
+                  <% } else { %>
+                  N/A
+                  <% } %>
                 </div>
               </div>
               <div class="user-statistics-box__field--detailed">
                 <div>In Game Time</div>
-                <div><%-data.easyBest.timeInMilliseconds%>ms</div>
+                <div><%=data.easyBest.timeInMilliseconds%>ms</div>
               </div>
               <div class="user-statistics-box__field--detailed">
                 <div>Submission Timestamp</div>
@@ -168,7 +176,7 @@
               <hr>
               <div class="user-statistics-box__field--detailed">
                 <div>Multiplayer Games Won/Played</div>
-                <div><%-data.multiplayer.won || 0%><span class="text--dimmed">/<%-data.multiplayer.played%></span>
+                <div><%=data.multiplayer.won || 0%><span class="text--dimmed">/<%=data.multiplayer.played%></span>
                 </div>
               </div>
             </div>
