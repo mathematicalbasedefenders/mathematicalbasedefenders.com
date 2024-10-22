@@ -1,0 +1,14 @@
+{
+  "extensions": [
+    "cjs",
+    "js",
+    "ts",
+    "tsx"
+  ],
+  "spec": [
+    "tests/**/*.spec.*"
+  ],
+  "watch-files": [
+    "src"
+  ]
+}
