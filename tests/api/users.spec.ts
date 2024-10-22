@@ -48,8 +48,7 @@ describe("/api/users api route", function () {
     const result = await fetch(`${BASE_URL}/api/users/mistertfy64`);
     const statusCode = result.status;
     const data = await result.json();
-    statusCode.should.not.equal(400);
-    statusCode.should.not.equal(404);
+    statusCode.should.equal(200);
     data.should.have.property("statistics");
     data.should.have.nested.property(
       "statistics.personalBestScoreOnEasySingleplayerMode"
