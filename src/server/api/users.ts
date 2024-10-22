@@ -45,7 +45,11 @@ async function organizeData(data: UserInterface, host: string) {
 
   // get leaderboards rank
   const easyLeaderboardRank = await getRankForUser(data._id, `easy`, host);
-  const standardLeaderboardRank = await getRankForUser(data._id, `easy`, host);
+  const standardLeaderboardRank = await getRankForUser(
+    data._id,
+    `standard`,
+    host
+  );
 
   // add leaderboards data
   if (easyLeaderboardRank !== null) {
