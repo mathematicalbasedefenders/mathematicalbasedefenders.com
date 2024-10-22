@@ -10,5 +10,12 @@
   ],
   "watch-files": [
     "src"
-  ]
+  ],
+  "require": [
+    "tests/hooks.spec.ts"
+  ],
+  "import": [
+    "tsx"
+  ],
+  "recursive": true
 }

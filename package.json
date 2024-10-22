@@ -4,7 +4,7 @@
   "description": "Website for Mathematical Base Defenders.",
   "main": "app.js",
   "scripts": {
-    "test": "mocha --recursive --require tests/hooks.spec.ts --import=tsx tests/**/*.spec.*",
+    "test": "mocha",
     "build": "tsc",
     "copyStaticFiles": "copyfiles --up 1 \"src/**/*\" -e \"**/*.ts\" dist",
     "start": "npm run build && npm run copyStaticFiles && node ./dist/server.js"
