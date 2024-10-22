@@ -17,14 +17,18 @@ import { StandardModeLeaderboardsAPIResponse } from "../typings/StandardModeLead
 type LeaderboardsAPIResponse =
   | EasyModeLeaderboardsAPIResponse
   | StandardModeLeaderboardsAPIResponse;
-const usernameRegex = /^[A-Za-z0-9_\-]{3,20}$/g;
-const userIDRegex = /^[0-9a-f]{24}$/g;
+const usernameRegex = /^[A-Za-z0-9_\-]{3,20}$/;
+const userIDRegex = /^[0-9a-f]{24}$/;
 
+/**
+ * Returns if a query is in a correct format to go further.
+ * @param query The query.
+ * @returns true if the query is a valid username OR userID format (doesn't have to actually exist)
+ */
 function validateUserQuery(query: string) {
-  return (
-    (usernameRegex.test(query) && query.length >= 3 && query.length <= 20) ||
-    (userIDRegex.test(query) && query.length === 24)
-  );
+  const isValidUsername = usernameRegex.test(query);
+  const isValidUserID = userIDRegex.test(query);
+  return isValidUserID || isValidUsername;
 }
 
 async function getUserData(query: string) {
@@ -81,7 +85,7 @@ async function getRankForUser(userID: string, mode: string, host: string) {
 router.get("/api/users/:user", limiter, async (request, response) => {
   // check if user is actually specified
   if (!request?.params?.user) {
-    log.info(`Invalid User Request: Missing user parameter.`);
+    log.warn(`Invalid User Request: Missing user parameter.`);
     response.status(400).json("Invalid Request.");
     return;
   }
@@ -91,7 +95,7 @@ router.get("/api/users/:user", limiter, async (request, response) => {
   const sanitized: string = mongoDBSanitize.sanitize(user) as string;
   const host = `${request.protocol}://${request.get("Host")}`;
   if (!validateUserQuery(sanitized)) {
-    log.info(`Invalid User Request: Invalid user username/ID.`);
+    log.warn(`Invalid User Request: Invalid user username/ID. (${sanitized})`);
     response.status(400).json("Invalid Request.");
     return;
   }
@@ -99,6 +103,7 @@ router.get("/api/users/:user", limiter, async (request, response) => {
   // get data
   const data: UserInterface = _.cloneDeep(await getUserData(sanitized));
   if (!data) {
+    log.warn(`Invalid User Request: User not found. (${sanitized})`);
     response.status(404).json("Not Found.");
     return;
   }
