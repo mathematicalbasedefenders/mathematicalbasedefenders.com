@@ -77,6 +77,7 @@
     "@types/lodash": "^4.14.191",
     "@types/markdown-it": "^12.2.3",
     "@types/marked": "^4.0.8",
+    "@types/mocha": "^10.0.9",
     "@types/nodemailer": "^6.4.7",
     "@types/nodemailer-express-handlebars": "^4.0.5",
     "@types/serve-favicon": "^2.5.3",
