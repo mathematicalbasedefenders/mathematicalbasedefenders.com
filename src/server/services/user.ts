@@ -197,7 +197,7 @@ function getUserRank(membership: MembershipInterface) {
     return { title: "Donator", color: "#26e02c" };
   }
   // No rank
-  return { title: "(No Rank)", color: "#eeeeee" };
+  return { title: "(No Rank)", color: "" };
 }
 
 export { addUnverifiedUser, validateNewUser, getUserRank };
