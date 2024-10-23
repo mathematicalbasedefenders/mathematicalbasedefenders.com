@@ -62,7 +62,7 @@
                 </p>
               </div>
               <div>
-                <% if (data.standardRank){ %>
+                <% if (data.standardRank && data.standardRank !== -1){ %>
                 <%- include("../partials/top-global-rank-badge.ejs",{rank:data.standardRank,badgeClass:data.standardRankClass}) %>
                 <% } %>
               </div>
@@ -117,7 +117,7 @@
                 </p>
               </div>
               <div>
-                <% if (data.easyRank){ %>
+                <% if (data.easyRank && data.easyRank !== -1){ %>
                 <%- include("../partials/top-global-rank-badge.ejs",{rank:data.easyRank,badgeClass:data.easyRankClass}) %>
                 <% } %>
               </div>

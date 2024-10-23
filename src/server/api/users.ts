@@ -64,6 +64,8 @@ async function organizeData(data: UserInterface, host: string) {
     data.statistics.personalBestScoreOnStandardSingleplayerMode.globalRank =
       standardLeaderboardRank;
   }
+
+  return data;
 }
 
 /**
@@ -77,7 +79,7 @@ async function getRankForUser(userID: string, mode: string, host: string) {
   const response = await fetch(`${host}/api/leaderboards/${mode}`);
   const data: Array<LeaderboardsAPIResponse> = await response.json();
   const rank = data.findIndex(
-    (r: LeaderboardsAPIResponse) => r.playerID.toString() === userID
+    (r: LeaderboardsAPIResponse) => r.playerID.toString() === userID.toString()
   );
   return rank === -1 ? null : rank + 1;
 }
@@ -109,7 +111,7 @@ router.get("/api/users/:user", limiter, async (request, response) => {
   }
 
   // organize data
-  organizeData(data, host);
+  await organizeData(data, host);
   // send data
   response.status(200).json(data);
 });
