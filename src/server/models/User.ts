@@ -149,6 +149,7 @@ UserSchema.static("getAllEasySingleplayerBestScores", async function () {
     .select({
       _id: 1,
       "username": 1,
+      "membership": 1,
       "statistics.personalBestScoreOnEasySingleplayerMode": 1
     })
     .clone()
@@ -167,6 +168,7 @@ UserSchema.static("getAllStandardSingleplayerBestScores", async function () {
     .select({
       _id: 1,
       "username": 1,
+      "membership": 1,
       "statistics.personalBestScoreOnStandardSingleplayerMode": 1
     })
     .clone()
