@@ -5,6 +5,7 @@ const { v4: uuidv4 } = require("uuid");
 // var User = require("../models/User.js");
 import { PendingUser } from "../models/PendingUser";
 import { User } from "../models/User";
+import { MembershipInterface } from "../typings/MembershipInterface";
 
 async function validateNewUser(
   desiredUsername: string,
@@ -175,4 +176,28 @@ function checkPasswordValidity(plaintextPassword: string) {
   );
 }
 
-export { addUnverifiedUser, validateNewUser };
+function getUserRank(membership: MembershipInterface) {
+  // TODO: Refactor this stupid thing already
+  if (membership?.isDeveloper) {
+    return { title: "Developer", color: "#ff0000" };
+  }
+  if (membership?.isAdministrator) {
+    return { title: "Administrator", color: "#da1717" };
+  }
+  if (membership?.isModerator) {
+    return { title: "Moderator", color: "#ff7f00" };
+  }
+  if (membership?.isContributor) {
+    return { title: "Contributor", color: "#01acff" };
+  }
+  if (membership?.isTester) {
+    return { title: "Tester", color: "#5bb1e0" };
+  }
+  if (membership?.isDonator) {
+    return { title: "Donator", color: "#26e02c" };
+  }
+  // No rank
+  return { title: "(No Rank)", color: "#eeeeee" };
+}
+
+export { addUnverifiedUser, validateNewUser, getUserRank };
