@@ -8,9 +8,6 @@
   "spec": [
     "tests/**/*.spec.*"
   ],
-  "watch-files": [
-    "src"
-  ],
   "require": [
     "tests/hooks.spec.ts"
   ],
