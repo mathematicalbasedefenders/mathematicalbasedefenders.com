@@ -18,11 +18,13 @@
   <main>
     <div>
       <br>
-      <h1 id="username" style=<%=`color:${data.rank.color}`%>><%-data.username%></h1>
+      <h1 id="username" style=<%=`color:${data.rank.rank === "(No Rank)" ? "#000000" : data.rank.color}`%>><%-data.username%></h1>
       <div id="user-data-box">
         <div id="user-data-box__profile">
           <img id="user-data-box__profile-picture" title="Profile pictures are coming in a future update." alt="Profile pictures are coming in a future update." src="/assets/images/default-avatar.png">
-          <h3 id="user-data-box__rank" style=<%=`background-color:${data.rank.color}`%>><%=data.rank.rank %></h3>
+          <% if (data.rank.rank !== "(No Rank)") { %>
+          <h3 id="user-data-box__rank" style=<%=`background-color:${data.rank.color}`%>><%=data.rank.rank%></h3>
+          <% } %>
         </div>
         <div id="user-data-box__statistics">
           <!-- TODO: ??? -->
