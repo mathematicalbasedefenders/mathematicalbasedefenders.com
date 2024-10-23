@@ -13,6 +13,7 @@ const limiter = rateLimit({
 import _ from "lodash";
 import { UserInterface } from "../models/User";
 import { log } from "../core/log";
+import { getUserRank } from "../services/user";
 
 router.get("/api/leaderboards/:mode", limiter, async (request, response) => {
   const modeName = `${request.params.mode}Singleplayer`;
@@ -27,7 +28,8 @@ function condenseData(data: Array<UserInterface>, modeName: string) {
       return {
         statistics: player.statistics.personalBestScoreOnEasySingleplayerMode,
         playerID: player._id,
-        username: player.username
+        username: player.username,
+        color: getUserRank(player.membership).color
       };
     });
     return newData;
@@ -37,7 +39,8 @@ function condenseData(data: Array<UserInterface>, modeName: string) {
         statistics:
           player.statistics.personalBestScoreOnStandardSingleplayerMode,
         playerID: player._id,
-        username: player.username
+        username: player.username,
+        color: getUserRank(player.membership).color
       };
     });
     return newData;
