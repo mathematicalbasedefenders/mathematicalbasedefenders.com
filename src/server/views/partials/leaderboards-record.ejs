@@ -9,7 +9,7 @@
       <%=record?.username%>
     </a>
   </td>
-  <td><%=record.statistics.scoreSubmissionDateAndTime%></td>
+  <td><%=record.statistics.timeSinceRecord%></td>
   <td><%=record.statistics.time%></td>
   <td title="<%-record.statistics.enemiesCreated.toLocaleString("en-US")%> enemies spawned"><%=record.statistics.enemiesKilled.toLocaleString("en-US")%></td>
   <td><%=(record.statistics.actionsPerformed / record.statistics.timeInMilliseconds*60000).toFixed(3).toLocaleString("en-US")%></td>
