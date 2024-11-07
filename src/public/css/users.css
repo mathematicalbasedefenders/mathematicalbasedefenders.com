@@ -223,6 +223,10 @@ main h3 {
   font-size: 200%;
 }
 
+.user-statistics-box h2 {
+  margin-left: 8px;
+}
+
 @media only screen and (max-width: 768px) {
   #user-data-box {
     display: flex;

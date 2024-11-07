@@ -2,6 +2,10 @@ import express, { Request } from "express";
 var router = express.Router();
 import rateLimit from "express-rate-limit";
 import { MembershipInterface } from "../typings/MembershipInterface";
+import {
+  formatToRelativeTime,
+  millisecondsToTime
+} from "../core/format-number";
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
@@ -95,7 +99,25 @@ async function getData(request: Request) {
     standardRankClass = "user-data-box__stat--top100";
   }
 
-  let formattedData = {
+  // relative format data
+  const timeSinceJoin =
+    Date.now() - new Date(data.creationDateAndTime).getTime();
+
+  const timeSinceStandardPB =
+    Date.now() -
+    new Date(
+      data?.statistics?.personalBestScoreOnStandardSingleplayerMode
+        ?.scoreSubmissionDateAndTime || 1
+    ).getTime();
+
+  const timeSinceEasyPB =
+    Date.now() -
+    new Date(
+      data?.statistics?.personalBestScoreOnEasySingleplayerMode
+        ?.scoreSubmissionDateAndTime || 1
+    ).getTime();
+
+  const formattedData = {
     username: data.username,
     level: {
       current: level.level,
@@ -123,7 +145,22 @@ async function getData(request: Request) {
     easyRankClass: easyRankClass,
     standardRank: standardRank,
     standardRankText: standardRankText,
-    standardRankClass: standardRankClass
+    standardRankClass: standardRankClass,
+    // new stuff in 0.6.0
+    // general
+    timeSinceJoinDate: formatToRelativeTime(timeSinceJoin, 1, false),
+    // standard
+    timeSinceStandardBest: formatToRelativeTime(timeSinceStandardPB, 1, false),
+    formattedStandardBestTime: millisecondsToTime(
+      data?.statistics?.personalBestScoreOnStandardSingleplayerMode
+        .timeInMilliseconds || 0
+    ),
+    // easy
+    timeSinceEasyBest: formatToRelativeTime(timeSinceEasyPB, 1, false),
+    formattedEasyBestTime: millisecondsToTime(
+      data?.statistics?.personalBestScoreOnEasySingleplayerMode
+        .timeInMilliseconds || 0
+    )
   };
   return formattedData;
 }

@@ -18,35 +18,37 @@
   <main>
     <div>
       <br>
-      <h1 id="username"><%-data.username%></h1>
+      <h1 id="username" style=<%=`color:${data.rank.rank === "(No Rank)" ? "#000000" : data.rank.color}`%>><%-data.username%></h1>
       <div id="user-data-box">
         <div id="user-data-box__profile">
           <img id="user-data-box__profile-picture" title="Profile pictures are coming in a future update." alt="Profile pictures are coming in a future update." src="/assets/images/default-avatar.png">
-          <h3 id="user-data-box__rank" style=<%=`background-color:${data.rank.color}`%>><%=data.rank.rank %></h3>
+          <% if (data.rank.rank !== "(No Rank)") { %>
+          <h3 id="user-data-box__rank" style=<%=`background-color:${data.rank.color}`%>><%=data.rank.rank%></h3>
+          <% } %>
         </div>
         <div id="user-data-box__statistics">
           <!-- TODO: ??? -->
           <div class="user-statistics-box">
             <h2>General</h2>
-            <p style="margin: 8px 0;" class="text--large text--wide">&nbsp; Level <%=data.level.current || "0"%> </p>
+            <p style="margin: 8px 0;" class="text--large text--wide">&nbsp; Level <%=data.level.current.toLocaleString("en-US") || "0"%> </p>
             <div class="user-statistics-box__detailed">
               <hr>
               <div class="user-statistics-box__field--detailed">
                 <div>Total Experience Points</div>
                 <div style="text-align: right;">
-                  <%= data.level.totalEXP %>EXP
+                  <%= data.level.totalEXP.toLocaleString("en-US") %>EXP
                   <br>
                   <div id="level-bar-container" class="user-statistics-box__field--extra-detailed" title="<%= (data.level.toNext*100).toFixed(3)%>% to next level">
-                    <%=data.level.current || "0"%>
+                    <%=(data.level.current).toLocaleString("en-US") || "0"%>
                     <div id="level-bar">
                     </div>
-                    <%=data.level.current+1 || "1"%>
+                    <%=(data.level.current+1).toLocaleString("en-US") || "1"%>
                   </div>
                 </div>
               </div>
               <div class="user-statistics-box__field--detailed">
-                <div>Join Date</div>
-                <div><%=data.joinDate%></div>
+                <div>Member For</div>
+                <div><%=data.timeSinceJoinDate%></div>
               </div>
             </div>
           </div>
@@ -58,11 +60,11 @@
               <div>
                 <p style="margin: 8px 0;" class="text--large text--wide">
                   &nbsp;
-                  <%= data.standardBest.score %>
+                  <%= data.standardBest.score.toLocaleString("en-US") %>
                 </p>
               </div>
               <div>
-                <% if (data.standardRank){ %>
+                <% if (data.standardRank && data.standardRank !== -1){ %>
                 <%- include("../partials/top-global-rank-badge.ejs",{rank:data.standardRank,badgeClass:data.standardRankClass}) %>
                 <% } %>
               </div>
@@ -71,14 +73,14 @@
               <hr>
               <div class="user-statistics-box__field--detailed">
                 <div>Enemies Killed/Spawned</div>
-                <div><%=data.standardBest.enemiesKilled%><span class="text--dimmed">/<%=data.standardBest.enemiesCreated%></span>
+                <div><%=data.standardBest.enemiesKilled.toLocaleString("en-US")%><span class="text--dimmed">/<%=data.standardBest.enemiesCreated.toLocaleString("en-US")%></span>
                 </div>
               </div>
               <div class="user-statistics-box__field--detailed">
                 <div>Speed</div>
                 <div>
                   <% if (data.standardBest.timeInMilliseconds > 0) { %>
-                  <%= (data.standardBest.actionsPerformed / (data.standardBest.timeInMilliseconds / 60000)).toFixed(3) %>APM
+                  <%= (data.standardBest.actionsPerformed / (data.standardBest.timeInMilliseconds / 60000)).toLocaleString("en-US",{minimumFractionDigits:3,maximumFractionDigits:3}) %>APM
                   <% } else { %>
                   N/A
                   <% } %>
@@ -86,11 +88,11 @@
               </div>
               <div class="user-statistics-box__field--detailed">
                 <div>In Game Time</div>
-                <div><%=data.standardBest.timeInMilliseconds%>ms</div>
+                <div title="<%= data.standardBest.timeInMilliseconds%>ms"><%=data.formattedStandardBestTime%></div>
               </div>
               <div class="user-statistics-box__field--detailed">
-                <div>Submission Timestamp</div>
-                <div><%-data.standardBest.scoreSubmissionDateAndTime%></div>
+                <div>Time Since Submission</div>
+                <div title="<%=data.standardBest.scoreSubmissionDateAndTime%>"><%=data.timeSinceStandardBest%></div>
               </div>
             </div>
             <% } else { %>
@@ -113,11 +115,11 @@
               <div>
                 <p style="margin: 8px 0;" class="text--large text--wide">
                   &nbsp;
-                  <%= data.easyBest.score %>
+                  <%= data.easyBest.score.toLocaleString("en-US") %>
                 </p>
               </div>
               <div>
-                <% if (data.easyRank){ %>
+                <% if (data.easyRank && data.easyRank !== -1){ %>
                 <%- include("../partials/top-global-rank-badge.ejs",{rank:data.easyRank,badgeClass:data.easyRankClass}) %>
                 <% } %>
               </div>
@@ -126,14 +128,14 @@
               <hr>
               <div class="user-statistics-box__field--detailed">
                 <div>Enemies Killed/Spawned</div>
-                <div><%=data.easyBest.enemiesKilled%><span class="text--dimmed">/<%=data.easyBest.enemiesCreated%></span>
+                <div><%=data.easyBest.enemiesKilled.toLocaleString("en-US")%><span class="text--dimmed">/<%=data.easyBest.enemiesCreated.toLocaleString("en-US")%></span>
                 </div>
               </div>
               <div class="user-statistics-box__field--detailed">
                 <div>Speed</div>
                 <div>
                   <% if (data.easyBest.timeInMilliseconds > 0) { %>
-                  <%= (data.easyBest.actionsPerformed / (data.easyBest.timeInMilliseconds / 60000)).toFixed(3) %>APM
+                  <%= (data.easyBest.actionsPerformed / (data.easyBest.timeInMilliseconds / 60000)).toLocaleString("en-US",{minimumFractionDigits:3,maximumFractionDigits:3}) %>APM
                   <% } else { %>
                   N/A
                   <% } %>
@@ -141,11 +143,11 @@
               </div>
               <div class="user-statistics-box__field--detailed">
                 <div>In Game Time</div>
-                <div><%=data.easyBest.timeInMilliseconds%>ms</div>
+                <div title="<%= data.easyBest.timeInMilliseconds%>ms"><%=data.formattedEasyBestTime%></div>
               </div>
               <div class="user-statistics-box__field--detailed">
-                <div>Submission Timestamp</div>
-                <div><%-data.easyBest.scoreSubmissionDateAndTime%></div>
+                <div>Time Since Submission</div>
+                <div title="<%=data.easyBest.scoreSubmissionDateAndTime%>"><%=data.timeSinceEasyBest%></div>
               </div>
             </div>
             <% } else { %>
@@ -176,7 +178,7 @@
               <hr>
               <div class="user-statistics-box__field--detailed">
                 <div>Multiplayer Games Won/Played</div>
-                <div><%=data.multiplayer.won || 0%><span class="text--dimmed">/<%=data.multiplayer.played%></span>
+                <div><%=data.multiplayer.won.toLocaleString("en-US") || 0%><span class="text--dimmed">/<%=data.multiplayer.played.toLocaleString("en-US")%></span>
                 </div>
               </div>
             </div>

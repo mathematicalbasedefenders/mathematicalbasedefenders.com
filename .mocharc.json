@@ -1,0 +1,18 @@
+{
+  "extensions": [
+    "cjs",
+    "js",
+    "ts",
+    "tsx"
+  ],
+  "spec": [
+    "tests/**/*.spec.*"
+  ],
+  "require": [
+    "tests/hooks.spec.ts"
+  ],
+  "import": [
+    "tsx"
+  ],
+  "recursive": true
+}
