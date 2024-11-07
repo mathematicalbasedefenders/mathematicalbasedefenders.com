@@ -115,7 +115,7 @@
               <div>
                 <p style="margin: 8px 0;" class="text--large text--wide">
                   &nbsp;
-                  <%= data.easyBest.score %>
+                  <%= data.easyBest.score.toLocaleString("en-US") %>
                 </p>
               </div>
               <div>
@@ -128,14 +128,14 @@
               <hr>
               <div class="user-statistics-box__field--detailed">
                 <div>Enemies Killed/Spawned</div>
-                <div><%=data.easyBest.enemiesKilled%><span class="text--dimmed">/<%=data.easyBest.enemiesCreated%></span>
+                <div><%=data.easyBest.enemiesKilled.toLocaleString("en-US")%><span class="text--dimmed">/<%=data.easyBest.enemiesCreated.toLocaleString("en-US")%></span>
                 </div>
               </div>
               <div class="user-statistics-box__field--detailed">
                 <div>Speed</div>
                 <div>
                   <% if (data.easyBest.timeInMilliseconds > 0) { %>
-                  <%= (data.easyBest.actionsPerformed / (data.easyBest.timeInMilliseconds / 60000)).toFixed(3) %>APM
+                  <%= (data.easyBest.actionsPerformed / (data.easyBest.timeInMilliseconds / 60000)).toLocaleString("en-US",{minimumFractionDigits:3,maximumFractionDigits:3}) %>APM
                   <% } else { %>
                   N/A
                   <% } %>
@@ -143,11 +143,11 @@
               </div>
               <div class="user-statistics-box__field--detailed">
                 <div>In Game Time</div>
-                <div><%=data.easyBest.timeInMilliseconds%>ms</div>
+                <div title="<%= data.easyBest.timeInMilliseconds%>ms"><%=data.formattedEasyBestTime%></div>
               </div>
               <div class="user-statistics-box__field--detailed">
-                <div>Submission Timestamp</div>
-                <div><%-data.easyBest.scoreSubmissionDateAndTime%></div>
+                <div>Time Since Submission</div>
+                <div title="<%=data.easyBest.scoreSubmissionDateAndTime%>"><%=data.timeSinceEasyBest%></div>
               </div>
             </div>
             <% } else { %>
