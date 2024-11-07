@@ -178,7 +178,7 @@
               <hr>
               <div class="user-statistics-box__field--detailed">
                 <div>Multiplayer Games Won/Played</div>
-                <div><%=data.multiplayer.won || 0%><span class="text--dimmed">/<%=data.multiplayer.played%></span>
+                <div><%=data.multiplayer.won.toLocaleString("en-US") || 0%><span class="text--dimmed">/<%=data.multiplayer.played.toLocaleString("en-US")%></span>
                 </div>
               </div>
             </div>
