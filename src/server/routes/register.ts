@@ -26,11 +26,30 @@ import { JSDOM } from "jsdom";
 import createDOMPurify from "dompurify";
 const window: any = new JSDOM("").window;
 const DOMPurify = createDOMPurify(window);
-//
-router.get("/register", limiter, (request, response) => {
-  let csrfToken = generateToken(response, request);
-  response.render("pages/register", { csrfToken: csrfToken });
-});
+
+const ERROR_MESSAGES: { [key: string]: string } = {
+  "captchaIncomplete": "Complete the CAPTCHA to register!",
+  "usernameUnavailable": "Username is already taken!",
+  "usernameInvalid": "Username is invalid!",
+  "emailUnavailable": "E-mail is already taken!",
+  "emailInvalid": "E-mail is invalid!",
+  "passwordInvalid": "Password is invalid!",
+  "internalError":
+    "An internal error has occurred! If this persists, please contact the administrator!"
+};
+
+router.get(
+  "/register",
+  limiter,
+  async (request: Request, response: Response) => {
+    const csrfToken = generateToken(response, request);
+    const errorMessage = ERROR_MESSAGES[request.query.errorID as string];
+    response.render("pages/register", {
+      csrfToken: csrfToken,
+      errorMessage: errorMessage
+    });
+  }
+);
 
 router.post(
   "/register",
@@ -38,30 +57,20 @@ router.post(
   async (request: Request, response: Response) => {
     // process registration
     // is response good?
-    const responseKey = DOMPurify.sanitize(
-      request.body["g-recaptcha-response"]
-    );
-    const reCaptchaSecretKey = process.env.RECAPTCHA_SECRET_KEY;
-    const reCaptchaURL = DOMPurify.sanitize(
-      `https://www.google.com/recaptcha/api/siteverify?secret=${reCaptchaSecretKey}&response=${responseKey}`
-    );
-    // Captcha
-    let fetchResponse = await fetch(reCaptchaURL, { method: "post" });
-    let fetchResponseJSON: any = await fetchResponse.json();
-    if (!fetchResponseJSON.success) {
-      // bad - give error
-      response.redirect("?erroroccurred=true&errorreason=captchanotcomplete");
+
+    // check captcha
+    if (!checkCAPTCHA(request)) {
+      response.redirect("?errorID=captchaIncomplete");
       return;
     }
-    // Info Validation
 
-    let username, email, password;
-    [username, email, password] = getUserDetails(request);
-    let validationResult = await UserService.validateNewUser(
+    const [username, email, password] = getUserDetails(request);
+    const validationResult = await UserService.validateNewUser(
       username,
       email,
       password
     );
+
     if (!validationResult.success) {
       // TODO: Redo URLs
       response.redirect(validationResult.redirectTo);
@@ -101,6 +110,21 @@ function getUserDetails(request: Request) {
     mongoDBSanitize.sanitize(request.body.password)
   );
   return [desiredUsername, desiredEmail, plaintextPassword];
+}
+
+async function checkCAPTCHA(request: Request) {
+  // get keys
+  const responseKey = DOMPurify.sanitize(request.body["g-recaptcha-response"]);
+  const reCaptchaSecretKey = process.env.RECAPTCHA_SECRET_KEY;
+  // check url
+  const reCaptchaURL = DOMPurify.sanitize(
+    `https://www.google.com/recaptcha/api/siteverify?secret=${reCaptchaSecretKey}&response=${responseKey}`
+  );
+  // get response
+  const fetchResponse = await fetch(reCaptchaURL, { method: "post" });
+  const fetchResponseJSON: any = await fetchResponse.json();
+  // return response
+  return fetchResponseJSON.success;
 }
 
 export { router };

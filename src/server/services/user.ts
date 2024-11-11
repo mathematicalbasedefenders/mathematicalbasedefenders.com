@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const { v4: uuidv4 } = require("uuid");
 
+import { log } from "../core/log";
 // var PendingUser = require("../models/PendingUser.js");
 // var User = require("../models/User.js");
 import { PendingUser } from "../models/PendingUser";
@@ -17,7 +18,7 @@ async function validateNewUser(
     // registration failed - username already taken
     return {
       success: false,
-      redirectTo: "?erroroccurred=true&errorreason=usernamealreadytaken"
+      redirectTo: "?errorID=usernameUnavailable"
     };
   }
 
@@ -25,7 +26,7 @@ async function validateNewUser(
     // registration failed - username not valid
     return {
       success: false,
-      redirectTo: "?erroroccurred=true&errorreason=usernamenotvalid"
+      redirectTo: "?errorID=usernameInvalid"
     };
   }
 
@@ -34,7 +35,7 @@ async function validateNewUser(
     // registration failed - email already taken
     return {
       success: false,
-      redirectTo: "?erroroccurred=true&errorreason=emailalreadytaken"
+      redirectTo: "?errorID=emailUnavailable"
     };
   }
 
@@ -42,14 +43,14 @@ async function validateNewUser(
     // registration failed - email not valid
     return {
       success: false,
-      redirectTo: "?erroroccurred=true&errorreason=emailnotvalid"
+      redirectTo: "?errorID=emailInvalid"
     };
   }
 
   if (!checkPasswordValidity(plaintextPassword)) {
     return {
       success: false,
-      redirectTo: "?erroroccurred=true&errorreason=passwordnotvalid"
+      redirectTo: "?errorID=passwordInvalid"
     };
   }
 
@@ -63,27 +64,29 @@ async function addUnverifiedUser(
   desiredEmail: string,
   plaintextPassword: string
 ) {
-  let emailConfirmationCode = uuidv4();
+  const emailConfirmationCode = uuidv4();
   let salt, hashedPassword;
   try {
     salt = await bcrypt.genSalt(14);
-  } catch (error) {
+  } catch (error: any) {
+    log.error(error.stack);
     return {
       success: false,
-      redirectTo: "?erroroccurred=true&errorreason=internalerror"
+      redirectTo: "?errorID=internalError"
     };
   }
 
   try {
     hashedPassword = await bcrypt.hash(plaintextPassword, salt);
-  } catch (error) {
+  } catch (error: any) {
+    log.error(error.stack);
     return {
       success: false,
-      redirectTo: "?erroroccurred=true&errorreason=internalerror"
+      redirectTo: "?errorID=internalError"
     };
   }
 
-  let dataToSave = {
+  const dataToSave = {
     username: desiredUsername,
     usernameInAllLowercase: desiredUsername.toLowerCase(),
     emailAddress: desiredEmail,
@@ -93,14 +96,15 @@ async function addUnverifiedUser(
     expiresAt: new Date(Date.now() + 1800000).getTime()
   };
 
-  let pendingUserModelToSave = new PendingUser(dataToSave);
+  const pendingUserModelToSave = new PendingUser(dataToSave);
 
   try {
     pendingUserModelToSave.save();
-  } catch (error) {
+  } catch (error: any) {
+    log.error(error.stack);
     return {
       success: false,
-      redirectTo: "?erroroccurred=true&errorreason=internalerror"
+      redirectTo: "?errorID=internalError"
     };
   }
 
