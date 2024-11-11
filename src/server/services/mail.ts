@@ -18,7 +18,7 @@ async function sendMailToUnverifiedUser(
 
   return {
     success: true,
-    redirectTo: "/?registered-true"
+    redirectTo: "/?registered=true"
   };
 }
 
