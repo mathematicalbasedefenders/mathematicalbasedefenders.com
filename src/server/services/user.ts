@@ -86,7 +86,7 @@ async function addUnverifiedUser(
     };
   }
 
-  let dataToSave = {
+  const dataToSave = {
     username: desiredUsername,
     usernameInAllLowercase: desiredUsername.toLowerCase(),
     emailAddress: desiredEmail,
@@ -96,7 +96,7 @@ async function addUnverifiedUser(
     expiresAt: new Date(Date.now() + 1800000).getTime()
   };
 
-  let pendingUserModelToSave = new PendingUser(dataToSave);
+  const pendingUserModelToSave = new PendingUser(dataToSave);
 
   try {
     pendingUserModelToSave.save();
