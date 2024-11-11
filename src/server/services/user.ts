@@ -17,7 +17,7 @@ async function validateNewUser(
     // registration failed - username already taken
     return {
       success: false,
-      redirectTo: "?erroroccurred=true&errorreason=usernamealreadytaken"
+      redirectTo: "?errorID=usernameUnavailable"
     };
   }
 
@@ -25,7 +25,7 @@ async function validateNewUser(
     // registration failed - username not valid
     return {
       success: false,
-      redirectTo: "?erroroccurred=true&errorreason=usernamenotvalid"
+      redirectTo: "?errorID=usernameInvalid"
     };
   }
 
@@ -34,7 +34,7 @@ async function validateNewUser(
     // registration failed - email already taken
     return {
       success: false,
-      redirectTo: "?erroroccurred=true&errorreason=emailalreadytaken"
+      redirectTo: "?errorID=emailUnavailable"
     };
   }
 
@@ -42,14 +42,14 @@ async function validateNewUser(
     // registration failed - email not valid
     return {
       success: false,
-      redirectTo: "?erroroccurred=true&errorreason=emailnotvalid"
+      redirectTo: "?errorID=emailInvalid"
     };
   }
 
   if (!checkPasswordValidity(plaintextPassword)) {
     return {
       success: false,
-      redirectTo: "?erroroccurred=true&errorreason=passwordnotvalid"
+      redirectTo: "?errorID=passwordInvalid"
     };
   }
 
