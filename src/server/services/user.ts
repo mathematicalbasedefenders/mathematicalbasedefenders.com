@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const { v4: uuidv4 } = require("uuid");
 
+import { log } from "../core/log";
 // var PendingUser = require("../models/PendingUser.js");
 // var User = require("../models/User.js");
 import { PendingUser } from "../models/PendingUser";
@@ -67,7 +68,8 @@ async function addUnverifiedUser(
   let salt, hashedPassword;
   try {
     salt = await bcrypt.genSalt(14);
-  } catch (error) {
+  } catch (error: any) {
+    log.error(error.stack);
     return {
       success: false,
       redirectTo: "?errorID=internalError"
@@ -76,7 +78,8 @@ async function addUnverifiedUser(
 
   try {
     hashedPassword = await bcrypt.hash(plaintextPassword, salt);
-  } catch (error) {
+  } catch (error: any) {
+    log.error(error.stack);
     return {
       success: false,
       redirectTo: "?errorID=internalError"
@@ -97,7 +100,8 @@ async function addUnverifiedUser(
 
   try {
     pendingUserModelToSave.save();
-  } catch (error) {
+  } catch (error: any) {
+    log.error(error.stack);
     return {
       success: false,
       redirectTo: "?errorID=internalError"
