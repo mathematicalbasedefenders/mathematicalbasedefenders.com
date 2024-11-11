@@ -91,6 +91,7 @@ function generateNewUserMail(email: string, code: string) {
   In order to fully activate your account, and to be able to log in, please click on the activation link below.\n
   ${confirmationLink}\n
   This link will expire in 30 minutes. After that, your account will be deleted, but you may use the same e-mail address to sign up again.\n
+  If you need any assistance, please e-mail support@mathematicalbasedefenders.com.\n
   `;
   return text;
 }
