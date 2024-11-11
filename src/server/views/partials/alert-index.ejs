@@ -1,0 +1,18 @@
+<script>
+  function checkURLQueryParameters() {
+    const url = new URL(window.location.href);
+    const registered = url.searchParams.get("registered");
+
+    if (registered != null) {
+      if (registered == "true") {
+        alert(
+          "Successfully registered! Check your email for a confirmation link!",
+          "#259125"
+        );
+        return;
+      }
+    }
+
+  }
+  checkURLQueryParameters();
+</script>
