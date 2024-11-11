@@ -17,17 +17,12 @@ async function sendMailForPasswordReset(
 ) {
   const email = DOMPurify.sanitize(encodeURIComponent(recipientEmail));
   const code = DOMPurify.sanitize(confirmationCode);
-  let confirmationLink = `https://mathematicalbasedefenders.com/change-password`;
-  confirmationLink += `?email=${email}`;
-  confirmationLink += `&code=${code}`;
+
   const message = {
     subject: "Password Reset Confirmation for Mathematical Base Defenders",
     from: "Mathematical Base Defenders <noreply@mathematicalbasedefenders.com>",
-    template: "password-reset",
-    to: recipientEmail,
-    context: {
-      confirmationLink: confirmationLink
-    }
+    text: generatePasswordChangeMail(email, code),
+    to: recipientEmail
   };
   try {
     await transporter.sendMail(message);
@@ -91,6 +86,21 @@ function generateNewUserMail(email: string, code: string) {
   In order to fully activate your account, and to be able to log in, please click on the activation link below.\n
   ${confirmationLink}\n
   This link will expire in 30 minutes. After that, your account will be deleted, but you may use the same e-mail address to sign up again.\n
+  If you need any assistance, please e-mail support@mathematicalbasedefenders.com.\n
+  `;
+  return text;
+}
+
+function generatePasswordChangeMail(email: string, code: string) {
+  const confirmationBaseURL = `https://mathematicalbasedefenders.com/change-password`;
+  const emailURL = `?email=${email}`;
+  const codeURL = `&code=${code}`;
+  const confirmationLink = confirmationBaseURL + emailURL + codeURL;
+  const text = `
+  A password reset for your Mathematical Base Defenders account has been requested.\n
+  If you want to continue, please click this link.\n 
+  ${confirmationLink}\n
+  This link will expire in 30 minutes. After that, you may request a new password reset link.\n
   If you need any assistance, please e-mail support@mathematicalbasedefenders.com.\n
   `;
   return text;
