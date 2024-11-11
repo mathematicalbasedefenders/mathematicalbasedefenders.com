@@ -63,14 +63,14 @@ async function addUnverifiedUser(
   desiredEmail: string,
   plaintextPassword: string
 ) {
-  let emailConfirmationCode = uuidv4();
+  const emailConfirmationCode = uuidv4();
   let salt, hashedPassword;
   try {
     salt = await bcrypt.genSalt(14);
   } catch (error) {
     return {
       success: false,
-      redirectTo: "?erroroccurred=true&errorreason=internalerror"
+      redirectTo: "?errorID=internalError"
     };
   }
 
@@ -79,7 +79,7 @@ async function addUnverifiedUser(
   } catch (error) {
     return {
       success: false,
-      redirectTo: "?erroroccurred=true&errorreason=internalerror"
+      redirectTo: "?errorID=internalError"
     };
   }
 
@@ -100,7 +100,7 @@ async function addUnverifiedUser(
   } catch (error) {
     return {
       success: false,
-      redirectTo: "?erroroccurred=true&errorreason=internalerror"
+      redirectTo: "?errorID=internalError"
     };
   }
 

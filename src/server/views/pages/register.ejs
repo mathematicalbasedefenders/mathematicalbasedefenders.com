@@ -44,9 +44,9 @@
           <br>
           By registering, you agree to the <a href="/privacy-policy">Privacy Policy</a>.
           <br>
-          <span color="#ff0000"><%= errorMessage ?? "" %></span>
-          <br>
+          <span style="color:#ff0000"><%= errorMessage ?? "" %></span>
           <input type="hidden" name="csrf-token" value=<%-csrfToken%>>
+          <br>
           <input type="submit" class="register-button">
         </form>
         <br>

@@ -33,7 +33,9 @@ const ERROR_MESSAGES: { [key: string]: string } = {
   "usernameInvalid": "Username is invalid!",
   "emailUnavailable": "E-mail is already taken!",
   "emailInvalid": "E-mail is invalid!",
-  "passwordInvalid": "Password is invalid!"
+  "passwordInvalid": "Password is invalid!",
+  "internalError":
+    "An internal error has occurred! If this persists, please contact the administrator!"
 };
 
 router.get(
