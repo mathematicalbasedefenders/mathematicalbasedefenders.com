@@ -64,7 +64,11 @@ router.get("/confirm-email-address", limiter, async (request, response) => {
       log.error(`Unknown user validation error: ${error}`);
     }
     response.redirect("/?activated=false");
+    return;
   }
+
+  log.info(`User activation for ${pendingUserRecord["username"]} OK!`);
+  response.redirect("/?activated=true");
 });
 
 function getDataFromQueryString(request: any) {
