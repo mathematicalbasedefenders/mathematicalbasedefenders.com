@@ -2,7 +2,7 @@
   function checkURLQueryParameters() {
     const url = new URL(window.location.href);
     const registered = url.searchParams.get("registered");
-    const verified = url.searchParams.get("verified");
+    const activated = url.searchParams.get("activated");
 
     if (registered != null) {
       if (registered == "true") {
@@ -13,10 +13,10 @@
       }
     }
 
-    if (verified != null) {
-      if (verified == "true") {
+    if (activated != null) {
+      if (activated == "true") {
         alert(
-          "Successfully verified your account! You may now log in!"
+          "Successfully activated your account! You may now log in!"
         );
         return;
       }
