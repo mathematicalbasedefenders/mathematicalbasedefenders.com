@@ -222,8 +222,8 @@ async function checkCAPTCHA(responseKey: string) {
     `https://www.google.com/recaptcha/api/siteverify?secret=${reCaptchaSecretKey}&response=${responseKey}`
   );
 
-  let fetchResponse = await fetch(reCaptchaURL, { method: "post" });
-  let fetchResponseJSON = await fetchResponse.json();
+  const fetchResponse = await fetch(reCaptchaURL, { method: "post" });
+  const fetchResponseJSON = await fetchResponse.json();
   return fetchResponseJSON.success;
 }
 
