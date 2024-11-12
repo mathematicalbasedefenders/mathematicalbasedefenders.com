@@ -86,7 +86,7 @@ router.post(
     const user = await User.findOne({ emailAddress: email }).clone();
 
     if (!user) {
-      log.error(`No user with e-mail address ${email} found!`);
+      log.error(`Request PW change: e-mail address ${email} found!`);
       response.send("no good - no user");
       return;
     }
@@ -125,84 +125,108 @@ router.post(
   "/change-password",
   [parseForm, doubleCsrfProtection, limiter],
   async (request: Request, response: Response) => {
-    const responseKey = DOMPurify.sanitize(
-      request.body["g-recaptcha-response"]
-    );
-    const reCaptchaSecretKey = DOMPurify.sanitize(
-      process.env.RECAPTCHA_SECRET_KEY as string
-    );
-    const reCaptchaURL = DOMPurify.sanitize(
-      `https://www.google.com/recaptcha/api/siteverify?secret=${reCaptchaSecretKey}&response=${responseKey}`
-    );
-    let fetchResponse = await fetch(reCaptchaURL, { method: "post" });
-    let fetchResponseJSON: any = await fetchResponse.json();
-    if (!fetchResponseJSON.success) {
-      // give error
-      response.redirect("?erroroccurred=true&errorreason=captchanotcomplete");
+    //   const responseKey = DOMPurify.sanitize(
+    //     request.body["g-recaptcha-response"]
+    //   );
+    //   const reCaptchaSecretKey = DOMPurify.sanitize(
+    //     process.env.RECAPTCHA_SECRET_KEY as string
+    //   );
+    //   const reCaptchaURL = DOMPurify.sanitize(
+    //     `https://www.google.com/recaptcha/api/siteverify?secret=${reCaptchaSecretKey}&response=${responseKey}`
+    //   );
+    //   let fetchResponse = await fetch(reCaptchaURL, { method: "post" });
+    //   let fetchResponseJSON: any = await fetchResponse.json();
+    //   if (!fetchResponseJSON.success) {
+    //     // give error
+    //     response.redirect("?erroroccurred=true&errorreason=captchanotcomplete");
+    //     return;
+    //   }
+
+    // check captcha
+    if (!checkCAPTCHA(request.body["g-recaptcha-response"])) {
+      response.send("no good - captcha");
       return;
     }
-    let query: any = request.query;
-    let email = DOMPurify.sanitize(
-      decodeURIComponent(
-        mongoDBSanitize.sanitize(query.email)
-      ) as unknown as string
-    );
-    let code = DOMPurify.sanitize(
-      decodeURIComponent(
-        mongoDBSanitize.sanitize(query.code)
-      ) as unknown as string
-    );
-    let newPassword = DOMPurify.sanitize(
+
+    //   let query: any = request.query;
+    //   let email = DOMPurify.sanitize(
+    //     decodeURIComponent(
+    //       mongoDBSanitize.sanitize(query.email)
+    //     ) as unknown as string
+    //   );
+    //   let code = DOMPurify.sanitize(
+    //     decodeURIComponent(
+    //       mongoDBSanitize.sanitize(query.code)
+    //     ) as unknown as string
+    //   );
+
+    const [email, code] = getChangePasswordQueryString(request);
+
+    const record = await PendingPasswordReset.findOne({
+      $and: [{ emailAddress: email }, { passwordResetConfirmationCode: code }]
+    }).clone();
+    if (!record) {
+      log.error(`Perform PW change: no e-mail  ${email} (record) found!`);
+      response.send("no good - no record");
+      return;
+    }
+    //   if (
+    //     !(
+    //       validation.validatePassword(newPassword) &&
+    //       newPassword === confirmNewPassword
+    //     )
+    //   ) {
+    //     response.redirect("/?erroroccurred=true");
+    //   }
+
+    const newPassword = DOMPurify.sanitize(
       mongoDBSanitize.sanitize(request.body["new-password"])
     );
-    let confirmNewPassword = DOMPurify.sanitize(
+    const confirmNewPassword = DOMPurify.sanitize(
       mongoDBSanitize.sanitize(request.body["confirm-new-password"])
     );
 
-    let record = await PendingPasswordReset.findOne({
-      $and: [{ emailAddress: email }, { passwordResetConfirmationCode: code }]
-    }).clone();
-
-    if (!record) {
-      response.redirect("/?erroroccurred=true");
-      return;
-    }
-    if (
-      !(
-        validation.validatePassword(newPassword) &&
-        newPassword === confirmNewPassword
-      )
-    ) {
-      response.redirect("/?erroroccurred=true");
+    if (!validation.validatePassword(newPassword)) {
+      response.send("no good - password doesn't match");
     }
 
-    try {
-      let hashedNewPasswordSalt: string = await bcrypt.genSalt(14);
-      let hashedNewPassword: string = await bcrypt.hash(
-        newPassword,
-        hashedNewPasswordSalt
-      );
-      await PendingPasswordReset.deleteOne({ emailAddress: email });
-      await User.findOneAndUpdate(
-        { emailAddress: email },
-        {
-          hashedPassword: hashedNewPassword
-        },
-        {
-          useFindAndModify: true,
-          new: true
-        }
-      ).clone();
-      log.info("Successfully changed password for a user!");
-      response.redirect("/?changedpassword=true");
-    } catch (error) {
-      if (error instanceof Error) {
-        log.error(error.stack);
-      } else {
-        log.error(`Unknown password reset error: ${error}`);
-      }
-      response.redirect("/?erroroccurred=true");
+    if (!validation.validatePassword(confirmNewPassword)) {
+      response.send("no good - confirm password doesn't match");
     }
+
+    if (newPassword !== confirmNewPassword) {
+      response.send("no good - new & confirm password doesn't match");
+    }
+
+    //   try {
+    //     let hashedNewPasswordSalt: string = await bcrypt.genSalt(14);
+    //     let hashedNewPassword: string = await bcrypt.hash(
+    //       newPassword,
+    //       hashedNewPasswordSalt
+    //     );
+    //     await PendingPasswordReset.deleteOne({ emailAddress: email });
+    //     await User.findOneAndUpdate(
+    //       { emailAddress: email },
+    //       {
+    //         hashedPassword: hashedNewPassword
+    //       },
+    //       {
+    //         useFindAndModify: true,
+    //         new: true
+    //       }
+    //     ).clone();
+    //     log.info("Successfully changed password for a user!");
+    //     response.redirect("/?changedpassword=true");
+    //   } catch (error) {
+    //     if (error instanceof Error) {
+    //       log.error(error.stack);
+    //     } else {
+    //       log.error(`Unknown password reset error: ${error}`);
+    //     }
+    //     response.redirect("/?erroroccurred=true");
+    //   }
+
+    // await applyPasswordChange(email,newPassword);
   }
 );
 
@@ -238,5 +262,21 @@ function createPasswordResetRequestRecord(email: string, code: string) {
   };
   return dataToSave;
 }
+
+function getChangePasswordQueryString(request: any) {
+  function parseString(what: any) {
+    const databaseSanitized = mongoDBSanitize.sanitize(what);
+    const decoded = decodeURIComponent(databaseSanitized) as unknown as string;
+    const htmlSanitized = DOMPurify.sanitize(decoded);
+    return htmlSanitized;
+  }
+
+  const query: any = request.query;
+  const email = parseString(query.email);
+  const code = parseString(query.code);
+  return [email, code];
+}
+
+function applyPasswordChange() {}
 
 export { router };
