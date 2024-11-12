@@ -115,9 +115,6 @@ async function deletePendingUserRecord(email: string) {
       log.error("Pending user record deletion error");
       log.error(error.stack);
       return false;
-    } else {
-      log.error(`Unknown pending user record deletion error: ${error}`);
-      return false;
     }
   });
   log.error("Deleted pending user record (user verified).");
