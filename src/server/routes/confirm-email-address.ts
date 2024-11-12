@@ -27,7 +27,7 @@ router.get("/confirm-email-address", limiter, async (request, response) => {
 
   if (!email || !code) {
     log.warn(`Invalid e-mail and/or code supplied while verifying! (${code})`);
-    response.redirect("/?verified=false");
+    response.redirect("/?activated=false");
     return;
   }
 
@@ -35,7 +35,7 @@ router.get("/confirm-email-address", limiter, async (request, response) => {
 
   if (!pendingUserRecord) {
     log.warn(`Pending user record not found! (${code})`);
-    response.redirect("/?verified=false");
+    response.redirect("/?activated=false");
     return;
   }
 
@@ -63,7 +63,7 @@ router.get("/confirm-email-address", limiter, async (request, response) => {
     } else {
       log.error(`Unknown user validation error: ${error}`);
     }
-    response.redirect("/?verified=false");
+    response.redirect("/?activated=false");
   }
 });
 
