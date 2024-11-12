@@ -155,7 +155,7 @@ function createUserObject(
       isAdministrator: false,
       isModerator: false,
       isContributor: false,
-      isTester: true,
+      isTester: false,
       isDonator: false,
       specialRank: ""
     }
