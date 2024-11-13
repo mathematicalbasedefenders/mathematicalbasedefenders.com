@@ -198,35 +198,34 @@ router.post(
       response.send("no good - new & confirm password doesn't match");
     }
 
-    //   try {
-    //     let hashedNewPasswordSalt: string = await bcrypt.genSalt(14);
-    //     let hashedNewPassword: string = await bcrypt.hash(
-    //       newPassword,
-    //       hashedNewPasswordSalt
-    //     );
-    //     await PendingPasswordReset.deleteOne({ emailAddress: email });
-    //     await User.findOneAndUpdate(
-    //       { emailAddress: email },
-    //       {
-    //         hashedPassword: hashedNewPassword
-    //       },
-    //       {
-    //         useFindAndModify: true,
-    //         new: true
-    //       }
-    //     ).clone();
-    //     log.info("Successfully changed password for a user!");
-    //     response.redirect("/?changedpassword=true");
-    //   } catch (error) {
-    //     if (error instanceof Error) {
-    //       log.error(error.stack);
-    //     } else {
-    //       log.error(`Unknown password reset error: ${error}`);
-    //     }
-    //     response.redirect("/?erroroccurred=true");
-    //   }
-
-    // await applyPasswordChange(email,newPassword);
+    try {
+      const hashedNewPasswordSalt: string = await bcrypt.genSalt(14);
+      const hashedNewPassword: string = await bcrypt.hash(
+        newPassword,
+        hashedNewPasswordSalt
+      );
+      await User.findOneAndUpdate(
+        { emailAddress: email },
+        {
+          hashedPassword: hashedNewPassword
+        },
+        {
+          useFindAndModify: true,
+          new: true
+        }
+      ).clone();
+      log.info("Successfully changed password for a user!");
+      response.redirect("/?changedpassword=true");
+      await PendingPasswordReset.deleteOne({ emailAddress: email });
+      log.info("Successfully deleted password reset record for said user!");
+    } catch (error) {
+      if (error instanceof Error) {
+        log.error(error.stack);
+      } else {
+        log.error(`Unknown password reset error: ${error}`);
+      }
+      response.send("no good - server side error");
+    }
   }
 );
 
