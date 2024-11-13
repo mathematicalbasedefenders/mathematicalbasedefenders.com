@@ -116,7 +116,7 @@ router.post(
       return;
     }
 
-    log.error(`Successfully sent password reset e-mail to ${email}`);
+    log.info(`Successfully sent password reset e-mail to ${email}`);
     response.redirect("/?sentpasswordresetlink=true");
   }
 );
