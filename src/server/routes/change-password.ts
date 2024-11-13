@@ -130,40 +130,11 @@ router.post(
   "/change-password",
   [parseForm, doubleCsrfProtection, limiter],
   async (request: Request, response: Response) => {
-    //   const responseKey = DOMPurify.sanitize(
-    //     request.body["g-recaptcha-response"]
-    //   );
-    //   const reCaptchaSecretKey = DOMPurify.sanitize(
-    //     process.env.RECAPTCHA_SECRET_KEY as string
-    //   );
-    //   const reCaptchaURL = DOMPurify.sanitize(
-    //     `https://www.google.com/recaptcha/api/siteverify?secret=${reCaptchaSecretKey}&response=${responseKey}`
-    //   );
-    //   let fetchResponse = await fetch(reCaptchaURL, { method: "post" });
-    //   let fetchResponseJSON: any = await fetchResponse.json();
-    //   if (!fetchResponseJSON.success) {
-    //     // give error
-    //     response.redirect("?erroroccurred=true&errorreason=captchanotcomplete");
-    //     return;
-    //   }
-
     // check captcha
     if (!checkCAPTCHA(request.body["g-recaptcha-response"])) {
       response.send("no good - captcha");
       return;
     }
-
-    //   let query: any = request.query;
-    //   let email = DOMPurify.sanitize(
-    //     decodeURIComponent(
-    //       mongoDBSanitize.sanitize(query.email)
-    //     ) as unknown as string
-    //   );
-    //   let code = DOMPurify.sanitize(
-    //     decodeURIComponent(
-    //       mongoDBSanitize.sanitize(query.code)
-    //     ) as unknown as string
-    //   );
 
     const [email, code] = getChangePasswordQueryString(request);
 
@@ -175,14 +146,6 @@ router.post(
       response.send("no good - no record");
       return;
     }
-    //   if (
-    //     !(
-    //       validation.validatePassword(newPassword) &&
-    //       newPassword === confirmNewPassword
-    //     )
-    //   ) {
-    //     response.redirect("/?erroroccurred=true");
-    //   }
 
     const newPassword = DOMPurify.sanitize(
       mongoDBSanitize.sanitize(request.body["new-password"])
