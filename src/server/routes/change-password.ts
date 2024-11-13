@@ -38,7 +38,11 @@ router.get(
     const query: any = url.parse(request.url, true).query;
 
     // if invalid query, redirect to bad page.
-    if (typeof query.email === "string" || typeof query.code === "string") {
+    // this catches if EITHER email or code is supplied, but not both.
+    if (
+      (typeof query.email === "string" || typeof query.code === "string") &&
+      !(typeof query.email === "string" && typeof query.code === "string")
+    ) {
       response.redirect("/?erroroccurred=true");
       return;
     }
@@ -52,7 +56,8 @@ router.get(
       const record = await getPendingPasswordResetRecord(email, code);
 
       // if no record, redirect to bad page
-      if (record) {
+      if (!record) {
+        log.warn(`No password reset record with code ${code} found`);
         response.redirect("/?erroroccurred=true");
         return;
       }
@@ -187,15 +192,18 @@ router.post(
     );
 
     if (!validation.validatePassword(newPassword)) {
-      response.send("no good - password doesn't match");
+      response.send("no good - password invalid");
+      return;
     }
 
     if (!validation.validatePassword(confirmNewPassword)) {
-      response.send("no good - confirm password doesn't match");
+      response.send("no good - confirm password invalid");
+      return;
     }
 
     if (newPassword !== confirmNewPassword) {
       response.send("no good - new & confirm password doesn't match");
+      return;
     }
 
     try {
@@ -218,6 +226,7 @@ router.post(
       response.redirect("/?changedpassword=true");
       await PendingPasswordReset.deleteOne({ emailAddress: email });
       log.info("Successfully deleted password reset record for said user!");
+      return;
     } catch (error) {
       if (error instanceof Error) {
         log.error(error.stack);
@@ -225,6 +234,7 @@ router.post(
         log.error(`Unknown password reset error: ${error}`);
       }
       response.send("no good - server side error");
+      return;
     }
   }
 );
