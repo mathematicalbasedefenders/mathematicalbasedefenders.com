@@ -170,7 +170,7 @@
               <div>
                 <p style="margin: 8px 0;" class="text--large text--wide">
                   &nbsp;
-                  <%-`${(data.multiplayer.won/data.multiplayer.played*100).toFixed(3)}%` %>
+                  <%-`${data.multiplayer.played > 0 ? (data.multiplayer.won/data.multiplayer.played*100).toFixed(3) : "0.000"}%` %>
                 </p>
               </div>
             </div>
