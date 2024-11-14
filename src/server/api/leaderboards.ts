@@ -46,7 +46,7 @@ function condenseData(data: Array<UserInterface>, modeName: string) {
     return newData;
   } else {
     log.error(`Unknown mode name while getting top player data: ${modeName}`);
-    throw new Error(`Unknown mode name while getting player data: ${modeName}`);
+    return null;
   }
 }
 
