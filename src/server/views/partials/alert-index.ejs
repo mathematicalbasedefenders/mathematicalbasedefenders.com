@@ -3,6 +3,8 @@
     const url = new URL(window.location.href);
     const registered = url.searchParams.get("registered");
     const activated = url.searchParams.get("activated");
+    const requested = url.searchParams.get("requested");
+
 
     if (registered != null) {
       if (registered == "true") {
@@ -24,6 +26,12 @@
           "Unable to activate account! Please try again or contact the administrator!"
         )
         return;
+      }
+    }
+
+    if (requested != null) {
+      if (requested == "true") {
+        alert("Successfully sent a password reset link to your e-mail address!");
       }
     }
 
