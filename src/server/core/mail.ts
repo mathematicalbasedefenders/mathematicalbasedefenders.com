@@ -108,7 +108,17 @@ function generatePasswordChangeMail(email: string, code: string) {
   return text;
 }
 
+function validateUrlParameters(base: string, email: string, code: string) {
+  const validBase = ["confirm-email-address", "change-password"];
+  const baseIsValid = validBase.includes(base);
+  return base && email && code && baseIsValid;
+}
+
 function constructConfirmationUrl(base: string, email: string, code: string) {
+  if (!validateUrlParameters(base, email, code)) {
+    log.warn("URL parameters is invalid, confirmation link not sent.");
+    return `[CONFIRMATION LINK NOT SHOWN DUE TO ERROR, PLEASE CONTACT ADMINISTRATOR!]`;
+  }
   return `https://mathematicalbasedefenders.com/${base}?email=${email}&code=${code}`;
 }
 
