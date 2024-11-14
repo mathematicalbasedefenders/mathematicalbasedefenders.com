@@ -77,8 +77,7 @@ function sortPlayersData(
       throw new Error(`Unknown key name while sorting data: ${key}`);
     }
   }
-  sorted.reverse().slice(0, amount);
-  return sorted;
+  return sorted.reverse().slice(0, amount);
 }
 
 export { getScoresOfTopPlayers };
