@@ -31,6 +31,15 @@ const { generateToken, doubleCsrfProtection } = doubleCsrf({
     return req.body["csrf-token"];
   }
 });
+
+const ERROR_MESSAGES: { [key: string]: string } = {
+  "captchaIncomplete": "Complete the CAPTCHA to request a password change!",
+  "noUser": "User with the specified e-mail address doesn't exist!",
+  "mailError": "Unable to send mail to your e-mail address!",
+  "internalError":
+    "An internal error has occurred! If this persists, please contact the administrator!"
+};
+
 router.get(
   "/change-password",
   [limiter],
@@ -72,7 +81,11 @@ router.get(
 
     // if nothing supplied, give entry page
     const csrfToken = generateToken(response, request);
-    response.render("pages/change-password-entry", { csrfToken: csrfToken });
+    const errorMessage = ERROR_MESSAGES[request.query.errorID as string];
+    response.render("pages/change-password-entry", {
+      csrfToken: csrfToken,
+      errorMessage: errorMessage
+    });
   }
 );
 
@@ -82,7 +95,7 @@ router.post(
   async (request: Request, response: Response) => {
     // check for captcha completion
     if (!checkCAPTCHA(request.body["g-recaptcha-response"])) {
-      response.send("no good - captcha");
+      response.redirect("?errorID=captchaIncomplete");
       return;
     }
 
@@ -91,8 +104,8 @@ router.post(
     const user = await User.findOne({ emailAddress: email }).clone();
 
     if (!user) {
-      log.error(`Request PW change: e-mail address ${email} found!`);
-      response.send("no good - no user");
+      log.error(`Request PW change: e-mail address ${email} not found!`);
+      response.redirect("?errorID=noUser");
       return;
     }
 
@@ -111,13 +124,13 @@ router.post(
       } else {
         log.error(error);
       }
-      response.send("no good - internal error");
+      response.redirect("?errorID=internalError");
       return;
     }
 
     if (!mail.sendMailForPasswordReset(email, code)) {
       log.error(`Unable to send mail to ${email} for password request/`);
-      response.send("no good - email error");
+      response.redirect("?errorID=mailError");
       return;
     }
 
