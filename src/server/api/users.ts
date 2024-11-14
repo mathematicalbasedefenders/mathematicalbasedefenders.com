@@ -76,12 +76,20 @@ async function organizeData(data: UserInterface, host: string) {
  * @returns Rank number if record exists in leaderboard (top N), null otherwise.
  */
 async function getRankForUser(userID: string, mode: string, host: string) {
-  const response = await fetch(`${host}/api/leaderboards/${mode}`);
-  const data: Array<LeaderboardsAPIResponse> = await response.json();
-  const rank = data.findIndex(
-    (r: LeaderboardsAPIResponse) => r.playerID.toString() === userID.toString()
-  );
-  return rank === -1 ? null : rank + 1;
+  try {
+    const response = await fetch(`${host}/api/leaderboards/${mode}`);
+    const data: Array<LeaderboardsAPIResponse> = await response.json();
+    const rank = data.findIndex(
+      (r: LeaderboardsAPIResponse) =>
+        r.playerID.toString() === userID.toString()
+    );
+    return rank === -1 ? null : rank + 1;
+  } catch (error) {
+    log.error(
+      `Failed to fetch leaderboard data for user ${userID} on mode ${mode}: ${error}`
+    );
+    return null;
+  }
 }
 
 router.get("/api/users/:user", limiter, async (request, response) => {
