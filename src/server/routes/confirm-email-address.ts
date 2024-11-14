@@ -52,6 +52,7 @@ router.get("/confirm-email-address", limiter, async (request, response) => {
     if (userCount === -1) {
       log.error("Unable to get metadata document. User not verified.");
       response.redirect("/?activated=false");
+      return;
     }
 
     // create user
