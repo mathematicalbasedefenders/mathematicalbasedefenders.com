@@ -284,6 +284,4 @@ function getChangePasswordQueryString(request: any) {
   return [email, code];
 }
 
-function applyPasswordChange() {}
-
 export { router };
