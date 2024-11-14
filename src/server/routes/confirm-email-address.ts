@@ -49,6 +49,10 @@ router.get("/confirm-email-address", limiter, async (request, response) => {
   try {
     // get user count
     const userCount = await getUserCount();
+    if (userCount === -1) {
+      log.error("Unable to get metadata document. User not verified.");
+      response.redirect("/?activated=false");
+    }
 
     // create user
     const dataToSave = createUserObject(pendingUserRecord, userCount);
@@ -129,9 +133,7 @@ async function getUserCount() {
   const metadataDocument = await Metadata.findOne({
     documentIsMetadata: true
   }).clone();
-  const stringifiedJSON = JSON.stringify(metadataDocument);
-  const object = JSON.parse(stringifiedJSON);
-  const userCount = object["usersRegistered"];
+  const userCount = metadataDocument?.usersRegistered || -1;
   return userCount;
 }
 
@@ -148,18 +150,13 @@ async function deletePendingUserRecord(email: string) {
 }
 
 async function updateMetadata() {
-  const metadataDocument = await Metadata.findOne({
-    documentIsMetadata: true
-  }).clone();
-  const stringifiedJSON = JSON.stringify(metadataDocument);
-  const object = JSON.parse(stringifiedJSON);
-  const userCount = object["usersRegistered"];
-  await Metadata.findOneAndUpdate(
+  const updatedMetadata = await Metadata.findOneAndUpdate(
     { documentIsMetadata: true },
     { $inc: { usersRegistered: 1 } },
     { returnOriginal: false, new: true }
   ).clone();
-  log.info("There are now " + (userCount + 1) + " users registered.");
+  const userCount = updatedMetadata?.usersRegistered || "an unknown number of";
+  log.info("There are now " + userCount + " users registered.");
 }
 
 function createUserObject(
