@@ -89,7 +89,7 @@ function getDataFromQueryString(request: any) {
 
 async function getPendingUser(email: string, code: string) {
   const user = await PendingUser.findOne({
-    $and: [{ emailAddress: email }, { code: code }]
+    $and: [{ emailAddress: email }, { emailConfirmationCode: code }]
   }).clone();
   return user;
 }
