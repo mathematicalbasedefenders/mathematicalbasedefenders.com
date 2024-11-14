@@ -136,15 +136,15 @@ async function getUserCount() {
 }
 
 async function deletePendingUserRecord(email: string) {
-  PendingUser.deleteOne({ emailAddress: email }, (error) => {
-    if (error instanceof Error) {
-      log.error("Pending user record deletion error");
-      log.error(error.stack);
-      return false;
-    }
-  });
-  log.error("Deleted pending user record (user verified).");
-  return true;
+  try {
+    await PendingUser.deleteOne({ emailAddress: email }).clone();
+    log.info("Deleted pending user record (user verified).");
+    return true;
+  } catch (error) {
+    log.error("Pending user record deletion error");
+    log.error(error);
+    return false;
+  }
 }
 
 async function updateMetadata() {
