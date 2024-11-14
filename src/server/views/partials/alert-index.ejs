@@ -1,0 +1,66 @@
+<script>
+  function sanitizeParam(param) {
+    return param ? param.replace(/[^a-zA-Z0-9]/g, '') : null;
+  }
+
+  function checkURLQueryParameters() {
+    const url = new URL(window.location.href);
+
+    const registered = sanitizeParam(url.searchParams.get("registered")); // registered (but not activated)
+    const activated = sanitizeParam(url.searchParams.get("activated")); // account activated
+    const requested = sanitizeParam(url.searchParams.get("requested")); // password change requested
+    const changed = sanitizeParam(url.searchParams.get("changed")); // password changed
+
+    if (registered != null) {
+      if (registered == "true") {
+        alert(
+          "Successfully registered! Check your email for a confirmation link!"
+        );
+        return;
+      }
+    }
+
+    if (activated != null) {
+      if (activated == "true") {
+        alert(
+          "Successfully activated your account! You may now log in!"
+        );
+        return;
+      } else {
+        alert(
+          "Unable to activate account! Please try again or contact the administrator!"
+        )
+        return;
+      }
+    }
+
+    if (requested != null) {
+      if (requested == "true") {
+        alert("Request processed! If an account with the specified e-mail address exists, a link to reset your password will be given!");
+      }
+      return;
+    }
+
+    if (changed != null) {
+      if (changed == "true") {
+        alert("Password for your account successfully changed!");
+      } else {
+        alert(
+          "Unable to change password! Please try again or contact the administrator!"
+        )
+      }
+    }
+
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    checkURLQueryParameters();
+    // clean up url
+    const url = new URL(window.location.href);
+    url.searchParams.delete('registered');
+    url.searchParams.delete('activated');
+    url.searchParams.delete('requested');
+    url.searchParams.delete('changed');
+    window.history.replaceState({}, '', url);
+  });
+</script>

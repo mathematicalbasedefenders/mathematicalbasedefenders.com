@@ -6,14 +6,31 @@ main h3 {
   margin-bottom: 4px;
 }
 
+#username {
+  font-weight: 600;
+}
+
 #user-data-box {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+}
+
+#user-data-box hr {
+  margin: 2px 0;
+  color: #aaaaaa;
+  border-style: solid;
 }
 
 #user-data-box__profile {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+  width: 20%;
+  margin: 0;
+}
+
+#user-data-box__profile-picture {
+  width: 100%;
+  height: auto;
 }
 
 /* TODO: May break later */
@@ -34,9 +51,12 @@ main h3 {
 }
 
 #user-data-box__rank {
-  padding: 4px 40px;
-  font-size: 110%;
+  padding: 4px 0;
+  width: 100%;
   color: #ffffff;
+  text-align: center;
+  margin: 4px 0;
+  font-size: 125%;
 }
 
 .user-data-box__gamemode {
@@ -75,10 +95,6 @@ main h3 {
   font-size: 125%;
 }
 
-.user-data-box__gamemode.user-data-box__stat--gold {
-  border: 4px #ffd700 solid;
-}
-
 .user-data-box__gamemode .user-data-box__stat.user-data-box__stat--gold,
 .user-data-box__gamemode .user-data-box__stat.user-data-box__stat--silver,
 .user-data-box__gamemode .user-data-box__stat.user-data-box__stat--bronze,
@@ -92,7 +108,8 @@ main h3 {
 .user-data-box__gamemode.user-data-box__stat--gold {
   border: 4px #ffd700 solid;
 }
-.user-data-box__gamemode .user-data-box__stat.user-data-box__stat--gold {
+
+.user-data-box__stat--gold {
   background-color: #ffd700;
 }
 
@@ -100,7 +117,7 @@ main h3 {
   border: 4px #c0c0c0 solid;
 }
 
-.user-data-box__gamemode .user-data-box__stat.user-data-box__stat--silver {
+.user-data-box__stat--silver {
   background-color: #c0c0c0;
 }
 
@@ -108,7 +125,7 @@ main h3 {
   border: 4px #cd7f32 solid;
 }
 
-.user-data-box__gamemode .user-data-box__stat.user-data-box__stat--bronze {
+.user-data-box__stat--bronze {
   background-color: #cd7f32;
 }
 
@@ -116,7 +133,7 @@ main h3 {
   border: 4px #8ba1ed solid;
 }
 
-.user-data-box__gamemode .user-data-box__stat.user-data-box__stat--top10 {
+.user-data-box__stat--top10 {
   background-color: #8ba1ed;
 }
 
@@ -124,6 +141,113 @@ main h3 {
   border: 4px #ab93db solid;
 }
 
-.user-data-box__gamemode .user-data-box__stat.user-data-box__stat--top100 {
+.user-data-box__stat--top100 {
   background-color: #ab93db;
+}
+
+/* end before renovation */
+
+#user-data-box__statistics {
+  width: 100%;
+}
+
+.user-statistics-box {
+  background-color: #dddddd;
+  width: 100%;
+  margin: 0 0 0 16px;
+  padding: 4px 4px;
+}
+
+.text--wide {
+  font-weight: 500;
+}
+
+.text--large {
+  font-size: 250%;
+}
+
+.user-statistics-box__detailed {
+  margin: 0px 8px;
+  font-size: 125%;
+}
+
+.user-statistics-box__field--extra-detailed {
+  font-size: 100%;
+}
+
+.user-statistics-box__field--detailed {
+  display: flex;
+  justify-content: space-between;
+}
+.user-statistics-box__detailed div {
+  margin: 0 2px;
+}
+
+.user-statistics-box__detailed
+  .user-statistics-box__field--detailed:nth-of-type(even) {
+  background-color: #cccccc;
+}
+
+#level-bar {
+  width: 400px;
+  margin: 4px;
+  height: 4px;
+}
+
+#level-bar-container {
+  display: flex;
+  flex-direction: row;
+  font-size: 12px;
+  align-items: center;
+}
+
+.user-statistics-box__rank-badge {
+  text-align: center;
+  width: 56px;
+  padding: 4px 32px;
+  margin: 0px 16px;
+}
+
+.user-statistics-box__score {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  margin: 8px 0;
+}
+
+.user-statistics-box__rank {
+  font-size: 200%;
+}
+
+.user-statistics-box h2 {
+  margin-left: 8px;
+}
+
+@media only screen and (max-width: 768px) {
+  #user-data-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  #user-data-box__profile {
+    width: 80%;
+  }
+
+  .user-statistics-box__field--detailed {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .user-statistics-box__field--detailed div:nth-last-child(1) {
+    text-align: right;
+  }
+
+  .user-statistics-box {
+    margin: 0;
+  }
+
+  #user-data-box__statistics {
+    margin: 16px 0 0 0;
+  }
 }

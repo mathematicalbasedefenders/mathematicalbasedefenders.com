@@ -9,7 +9,7 @@ async function sendMailToUnverifiedUser(
   if (!mail.sendMailToNewlyRegisteredUser(email, confirmationCode)) {
     return {
       success: false,
-      redirectTo: "?erroroccurred=true&errorreason=internalerror"
+      redirectTo: "?errorID=internalError"
     };
   }
 
@@ -18,7 +18,7 @@ async function sendMailToUnverifiedUser(
 
   return {
     success: true,
-    redirectTo: "/?registered-true"
+    redirectTo: "/?registered=true"
   };
 }
 
