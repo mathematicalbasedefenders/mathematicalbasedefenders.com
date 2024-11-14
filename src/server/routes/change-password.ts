@@ -169,17 +169,17 @@ router.post(
     );
 
     if (!validation.validatePassword(newPassword)) {
-      response.send("/?changed=false");
+      response.redirect("/?changed=false");
       return;
     }
 
     if (!validation.validatePassword(confirmNewPassword)) {
-      response.send("/?changed=false");
+      response.redirect("/?changed=false");
       return;
     }
 
     if (newPassword !== confirmNewPassword) {
-      response.send("/?changed=false");
+      response.redirect("/?changed=false");
       return;
     }
 
@@ -210,7 +210,7 @@ router.post(
       } else {
         log.error(`Unknown password reset error: ${error}`);
       }
-      response.send("/?changed=false");
+      response.redirect("/?changed=false");
       return;
     }
   }
