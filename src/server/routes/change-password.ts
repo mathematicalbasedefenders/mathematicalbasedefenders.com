@@ -222,7 +222,7 @@ router.post(
 // other functions
 async function getPendingPasswordResetRecord(email: any, code: any) {
   const pendingPasswordResetRecord = await PendingPasswordReset.findOne({
-    $and: [{ emailAddress: email }, { code: code }]
+    $and: [{ emailAddress: email }, { passwordResetConfirmationCode: code }]
   }).clone();
   return pendingPasswordResetRecord;
 }
