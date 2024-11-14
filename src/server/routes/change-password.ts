@@ -96,7 +96,7 @@ router.post(
   async (request: Request, response: Response) => {
     // check for captcha completion
     if (!checkCAPTCHA(request.body["g-recaptcha-response"])) {
-      response.redirect("?errorID=captchaIncomplete");
+      response.redirect("/change-password?errorID=captchaIncomplete");
       return;
     }
 
@@ -106,7 +106,7 @@ router.post(
 
     if (!user) {
       log.error(`Request PW change: e-mail address ${email} not found!`);
-      response.redirect("?errorID=noUser");
+      response.redirect("/change-password?errorID=noUser");
       return;
     }
 
@@ -125,13 +125,13 @@ router.post(
       } else {
         log.error(error);
       }
-      response.redirect("?errorID=internalError");
+      response.redirect("/change-password?errorID=internalError");
       return;
     }
 
     if (!mail.sendMailForPasswordReset(email, code)) {
       log.error(`Unable to send mail to ${email} for password request!`);
-      response.redirect("?errorID=mailError");
+      response.redirect("/change-password?errorID=mailError");
       return;
     }
 
