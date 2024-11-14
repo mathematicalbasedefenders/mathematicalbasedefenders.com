@@ -181,7 +181,6 @@ function checkPasswordValidity(plaintextPassword: string) {
 }
 
 function getUserRank(membership: MembershipInterface) {
-  // TODO: Refactor this stupid thing already
   if (membership?.isDeveloper) {
     return { title: "Developer", color: "#ff0000" };
   }
