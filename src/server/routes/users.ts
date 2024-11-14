@@ -100,22 +100,9 @@ async function getData(request: Request) {
   }
 
   // relative format data
-  const timeSinceJoin =
-    Date.now() - new Date(data.creationDateAndTime).getTime();
 
-  const timeSinceStandardPB =
-    Date.now() -
-    new Date(
-      data?.statistics?.personalBestScoreOnStandardSingleplayerMode
-        ?.scoreSubmissionDateAndTime || 1
-    ).getTime();
-
-  const timeSinceEasyPB =
-    Date.now() -
-    new Date(
-      data?.statistics?.personalBestScoreOnEasySingleplayerMode
-        ?.scoreSubmissionDateAndTime || 1
-    ).getTime();
+  const [timeSinceJoin, timeSinceStandardPB, timeSinceEasyPB] =
+    relativeFormatTimes(data);
 
   const formattedData = {
     username: data.username,
@@ -163,6 +150,27 @@ async function getData(request: Request) {
     )
   };
   return formattedData;
+}
+
+function relativeFormatTimes(data: any) {
+  const timeSinceJoin = data.creationDateAndTime
+    ? Date.now() - new Date(data.creationDateAndTime).getTime()
+    : null;
+  const timeSinceStandardPB = data?.statistics
+    ?.personalBestScoreOnStandardSingleplayerMode?.scoreSubmissionDateAndTime
+    ? Date.now() -
+      new Date(
+        data.statistics.personalBestScoreOnStandardSingleplayerMode.scoreSubmissionDateAndTime
+      ).getTime()
+    : null;
+  const timeSinceEasyPB = data?.statistics
+    ?.personalBestScoreOnEasySingleplayerMode?.scoreSubmissionDateAndTime
+    ? Date.now() -
+      new Date(
+        data.statistics.personalBestScoreOnEasySingleplayerMode.scoreSubmissionDateAndTime
+      ).getTime()
+    : null;
+  return [timeSinceJoin, timeSinceStandardPB, timeSinceEasyPB];
 }
 
 function getLevel(experiencePoints: number | undefined) {
