@@ -20,10 +20,15 @@ router.get("/api/leaderboards/:mode", limiter, async (request, response) => {
     response.status(400).json({ error: "Invalid leaderboards mode." });
   }
 
-  const modeName = `${request.params.mode}Singleplayer`;
-  const data = await getScoresOfTopPlayers(modeName, 100);
-  const condensedData = condenseData(data, modeName);
-  response.status(200).json(condensedData);
+  try {
+    const modeName = `${request.params.mode}Singleplayer`;
+    const data = await getScoresOfTopPlayers(modeName, 100);
+    const condensedData = condenseData(data, modeName);
+    response.status(200).json(condensedData);
+  } catch (error) {
+    log.error(`Error while fetching data through API: ${error}`);
+    response.status(500).json({ error: "Internal Server Error." });
+  }
 });
 
 function condenseData(data: Array<UserInterface>, modeName: string) {
