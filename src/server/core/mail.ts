@@ -76,10 +76,11 @@ function getNodemailerOptionsObject() {
 }
 
 function generateNewUserMail(email: string, code: string) {
-  const confirmationBaseURL = `https://mathematicalbasedefenders.com/confirm-email-address`;
-  const emailURL = `?email=${email}`;
-  const codeURL = `&code=${code}`;
-  const confirmationLink = confirmationBaseURL + emailURL + codeURL;
+  const confirmationLink = constructConfirmationUrl(
+    "confirm-email-address",
+    email,
+    code
+  );
   const text = `
   Thank you for signing up to Mathematical Base Defenders!\n
   Your account is currently in a pending state, and can't be logged into.\n 
@@ -92,10 +93,11 @@ function generateNewUserMail(email: string, code: string) {
 }
 
 function generatePasswordChangeMail(email: string, code: string) {
-  const confirmationBaseURL = `https://mathematicalbasedefenders.com/change-password`;
-  const emailURL = `?email=${email}`;
-  const codeURL = `&code=${code}`;
-  const confirmationLink = confirmationBaseURL + emailURL + codeURL;
+  const confirmationLink = constructConfirmationUrl(
+    "change-password",
+    email,
+    code
+  );
   const text = `
   A password reset for your Mathematical Base Defenders account has been requested.\n
   If you want to continue, please click this link.\n 
@@ -104,6 +106,10 @@ function generatePasswordChangeMail(email: string, code: string) {
   If you need any assistance, please e-mail support@mathematicalbasedefenders.com.\n
   `;
   return text;
+}
+
+function constructConfirmationUrl(base: string, email: string, code: string) {
+  return `https://mathematicalbasedefenders.com/${base}?email=${email}&code=${code}`;
 }
 
 export { sendMailToNewlyRegisteredUser, sendMailForPasswordReset };
