@@ -24,6 +24,7 @@ import mongoDBSanitize from "express-mongo-sanitize";
 const fetch = require("node-fetch");
 import { JSDOM } from "jsdom";
 import createDOMPurify from "dompurify";
+import { log } from "../core/log";
 const window: any = new JSDOM("").window;
 const DOMPurify = createDOMPurify(window);
 
@@ -115,21 +116,29 @@ function getUserDetails(request: Request) {
 
 async function checkCAPTCHA(request: Request) {
   // get keys
-  const responseKey = request.body["g-recaptcha-response"];
-  const reCaptchaSecretKey = process.env.RECAPTCHA_SECRET_KEY ?? "";
-  // check url
-  const reCaptchaURL = "https://www.google.com/recaptcha/api/siteverify";
-  const parameters = new URLSearchParams();
-  parameters.append("secret", reCaptchaSecretKey);
-  parameters.append("response", responseKey);
-  // get response
-  const fetchResponse = await fetch(reCaptchaURL, {
-    method: "post",
-    body: parameters
-  });
-  const fetchResponseJSON: any = await fetchResponse.json();
-  // return response
-  return fetchResponseJSON.success;
+  try {
+    const responseKey = request.body["g-recaptcha-response"];
+    const reCaptchaSecretKey = process.env.RECAPTCHA_SECRET_KEY ?? "";
+    // check url
+    const reCaptchaURL = "https://www.google.com/recaptcha/api/siteverify";
+    const parameters = new URLSearchParams();
+    parameters.append("secret", reCaptchaSecretKey);
+    parameters.append("response", responseKey);
+    // get response
+    const fetchResponse = await fetch(reCaptchaURL, {
+      method: "post",
+      body: parameters
+    });
+    const fetchResponseJSON: any = await fetchResponse.json();
+    // return response
+    return fetchResponseJSON.success;
+  } catch (error) {
+    // this is mostly caused by external network resources
+    // e.g. reCAPTCHA servers are down
+    log.error("Error WHILE verifying CAPTCHA:");
+    log.error(error);
+    return false;
+  }
 }
 
 export { router };
