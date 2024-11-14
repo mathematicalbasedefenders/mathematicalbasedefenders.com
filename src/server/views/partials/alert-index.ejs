@@ -1,11 +1,15 @@
 <script>
+  function sanitizeParam(param) {
+    return param ? param.replace(/[^a-zA-Z0-9]/g, '') : null;
+  }
+
   function checkURLQueryParameters() {
     const url = new URL(window.location.href);
 
-    const registered = url.searchParams.get("registered"); // registered (but not activated)
-    const activated = url.searchParams.get("activated"); // account activated
-    const requested = url.searchParams.get("requested"); // password change requested
-    const changed = url.searchParams.get("changed") // password changed
+    const registered = sanitizeParam(url.searchParams.get("registered")); // registered (but not activated)
+    const activated = sanitizeParam(url.searchParams.get("activated")); // account activated
+    const requested = sanitizeParam(url.searchParams.get("requested")); // password change requested
+    const changed = sanitizeParam(url.searchParams.get("changed")); // password changed
 
     if (registered != null) {
       if (registered == "true") {
