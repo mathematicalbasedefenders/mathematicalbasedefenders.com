@@ -79,7 +79,15 @@ function convertToRelativeTime(x: number, countYears: boolean) {
   return duration;
 }
 
+/**
+ * Converts time in milliseconds to a X:YY.ZZZ format, which is more human readable.
+ * @param milliseconds The number of milliseconds to convert into "clock" format
+ * @returns The X:YY.ZZZ format of the amount of milliseconds.
+ */
 function millisecondsToTime(milliseconds: number) {
+  if (!Number.isFinite(milliseconds) || milliseconds < 0) {
+    log.warn("Number given is not a positive finite number.");
+  }
   let m = Math.floor(milliseconds / 60000);
   let s = Math.floor((milliseconds % 60000) / 1000)
     .toString()
