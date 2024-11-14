@@ -266,9 +266,9 @@ function createPasswordResetRequestRecord(email: string, code: string) {
 
 function getChangePasswordQueryString(request: any) {
   function parseString(what: any) {
-    const databaseSanitized = mongoDBSanitize.sanitize(what);
-    const decoded = decodeURIComponent(databaseSanitized) as unknown as string;
-    const htmlSanitized = DOMPurify.sanitize(decoded);
+    const decoded = decodeURIComponent(what);
+    const databaseSanitized = mongoDBSanitize.sanitize(decoded as any);
+    const htmlSanitized = DOMPurify.sanitize(databaseSanitized);
     return htmlSanitized;
   }
 
