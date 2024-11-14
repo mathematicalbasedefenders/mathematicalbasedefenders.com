@@ -115,12 +115,10 @@ function getUserDetails(request: Request) {
 
 async function checkCAPTCHA(request: Request) {
   // get keys
-  const responseKey = DOMPurify.sanitize(request.body["g-recaptcha-response"]);
+  const responseKey = request.body["g-recaptcha-response"];
   const reCaptchaSecretKey = process.env.RECAPTCHA_SECRET_KEY;
   // check url
-  const reCaptchaURL = DOMPurify.sanitize(
-    `https://www.google.com/recaptcha/api/siteverify?secret=${reCaptchaSecretKey}&response=${responseKey}`
-  );
+  const reCaptchaURL = `https://www.google.com/recaptcha/api/siteverify?secret=${reCaptchaSecretKey}&response=${responseKey}`;
   // get response
   const fetchResponse = await fetch(reCaptchaURL, { method: "post" });
   const fetchResponseJSON: any = await fetchResponse.json();
