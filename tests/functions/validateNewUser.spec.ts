@@ -42,7 +42,7 @@ describe("checking new user registration details ", function () {
     );
     result.should.include({ success: false });
     result.should.include({
-      redirectTo: "?erroroccurred=true&errorreason=usernamealreadytaken"
+      redirectTo: "?errorID=usernameUnavailable"
     });
   });
 
@@ -54,7 +54,7 @@ describe("checking new user registration details ", function () {
     );
     result.should.include({ success: false });
     result.should.include({
-      redirectTo: "?erroroccurred=true&errorreason=usernamenotvalid"
+      redirectTo: "?errorID=usernameInvalid"
     });
   });
 
@@ -66,7 +66,7 @@ describe("checking new user registration details ", function () {
     );
     result.should.include({ success: false });
     result.should.include({
-      redirectTo: "?erroroccurred=true&errorreason=emailalreadytaken"
+      redirectTo: "?errorID=emailUnavailable"
     });
   });
 
@@ -78,7 +78,7 @@ describe("checking new user registration details ", function () {
     );
     result.should.include({ success: false });
     result.should.include({
-      redirectTo: "?erroroccurred=true&errorreason=emailnotvalid"
+      redirectTo: "?errorID=emailInvalid"
     });
   });
 
@@ -90,7 +90,43 @@ describe("checking new user registration details ", function () {
     );
     result.should.include({ success: false });
     result.should.include({
-      redirectTo: "?erroroccurred=true&errorreason=passwordnotvalid"
+      redirectTo: "?errorID=passwordInvalid"
+    });
+  });
+
+  it("should return false with correct reason if username is empty", async function () {
+    const result = await validateNewUser(
+      "",
+      TEST_USER.email,
+      TEST_USER.plaintextPassword
+    );
+    result.should.include({ success: false });
+    result.should.include({
+      redirectTo: "?errorID=usernameInvalid"
+    });
+  });
+
+  it("should return false with correct reason if e-mail is empty", async function () {
+    const result = await validateNewUser(
+      TEST_USER.username,
+      "",
+      TEST_USER.plaintextPassword
+    );
+    result.should.include({ success: false });
+    result.should.include({
+      redirectTo: "?errorID=emailInvalid"
+    });
+  });
+
+  it("should return false with correct reason if password is empty", async function () {
+    const result = await validateNewUser(
+      TEST_USER.username,
+      TEST_USER.email,
+      ""
+    );
+    result.should.include({ success: false });
+    result.should.include({
+      redirectTo: "?errorID=passwordInvalid"
     });
   });
 });
