@@ -44,8 +44,7 @@ router.get(
   limiter,
   async (request: Request, response: Response) => {
     const csrfToken = generateToken(response, request);
-    const errorMessage =
-      ERROR_MESSAGES[request.query.errorID as string] || "none";
+    const errorMessage = ERROR_MESSAGES[request.query.errorID as string];
     response.render("pages/register", {
       csrfToken: csrfToken,
       errorMessage: errorMessage
