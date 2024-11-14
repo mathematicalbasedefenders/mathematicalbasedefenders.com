@@ -169,16 +169,19 @@ router.post(
     );
 
     if (!validation.validatePassword(newPassword)) {
+      log.error(`New password doesn't fit validation criteria!`);
       response.redirect("/?changed=false");
       return;
     }
 
     if (!validation.validatePassword(confirmNewPassword)) {
+      log.error(`New password doesn't fit validation criteria!`);
       response.redirect("/?changed=false");
       return;
     }
 
     if (newPassword !== confirmNewPassword) {
+      log.error(`New passwords don't match!`);
       response.redirect("/?changed=false");
       return;
     }
