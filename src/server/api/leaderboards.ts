@@ -16,6 +16,10 @@ import { log } from "../core/log";
 import { getUserRank } from "../services/user";
 
 router.get("/api/leaderboards/:mode", limiter, async (request, response) => {
+  if (!["easy", "standard"].includes(request.params.modes)) {
+    response.status(400).json({ error: "Invalid leaderboards mode." });
+  }
+
   const modeName = `${request.params.mode}Singleplayer`;
   const data = await getScoresOfTopPlayers(modeName, 100);
   const condensedData = condenseData(data, modeName);

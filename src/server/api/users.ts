@@ -88,7 +88,7 @@ router.get("/api/users/:user", limiter, async (request, response) => {
   // check if user is actually specified
   if (!request?.params?.user) {
     log.warn(`Invalid User Request: Missing user parameter.`);
-    response.status(400).json("Invalid Request.");
+    response.status(400).json({ error: "Missing user parameter for lookup." });
     return;
   }
 
@@ -98,7 +98,7 @@ router.get("/api/users/:user", limiter, async (request, response) => {
   const host = `${request.protocol}://${request.get("Host")}`;
   if (!validateUserQuery(sanitized)) {
     log.warn(`Invalid User Request: Invalid user username/ID. (${sanitized})`);
-    response.status(400).json("Invalid Request.");
+    response.status(400).json({ error: "Invalid user parameter for lookup." });
     return;
   }
 
