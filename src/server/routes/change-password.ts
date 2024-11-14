@@ -129,7 +129,7 @@ router.post(
     }
 
     if (!mail.sendMailForPasswordReset(email, code)) {
-      log.error(`Unable to send mail to ${email} for password request/`);
+      log.error(`Unable to send mail to ${email} for password request!`);
       response.redirect("?errorID=mailError");
       return;
     }
