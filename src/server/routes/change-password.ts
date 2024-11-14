@@ -136,7 +136,7 @@ router.post(
     }
 
     log.info(`Successfully sent password reset e-mail to ${email}`);
-    response.redirect("/?sentpasswordresetlink=true");
+    response.redirect("/?requested=true");
   }
 );
 
@@ -169,17 +169,17 @@ router.post(
     );
 
     if (!validation.validatePassword(newPassword)) {
-      response.send("no good - password invalid");
+      response.send("/?changed=false");
       return;
     }
 
     if (!validation.validatePassword(confirmNewPassword)) {
-      response.send("no good - confirm password invalid");
+      response.send("/?changed=false");
       return;
     }
 
     if (newPassword !== confirmNewPassword) {
-      response.send("no good - new & confirm password doesn't match");
+      response.send("/?changed=false");
       return;
     }
 
@@ -200,7 +200,7 @@ router.post(
         }
       ).clone();
       log.info("Successfully changed password for a user!");
-      response.redirect("/?changedpassword=true");
+      response.redirect("/?changed=true");
       await PendingPasswordReset.deleteOne({ emailAddress: email });
       log.info("Successfully deleted password reset record for said user!");
       return;
@@ -210,7 +210,7 @@ router.post(
       } else {
         log.error(`Unknown password reset error: ${error}`);
       }
-      response.send("no good - server side error");
+      response.send("/?changed=false");
       return;
     }
   }
