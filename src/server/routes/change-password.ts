@@ -37,7 +37,8 @@ const ERROR_MESSAGES: { [key: string]: string } = {
   "noUser": "User with the specified e-mail address doesn't exist!",
   "mailError": "Unable to send mail to your e-mail address!",
   "internalError":
-    "An internal error has occurred! If this persists, please contact the administrator!"
+    "An internal error has occurred! If this persists, please contact the administrator!",
+  "none": ""
 };
 
 router.get(
@@ -81,7 +82,7 @@ router.get(
 
     // if nothing supplied, give entry page
     const csrfToken = generateToken(response, request);
-    const errorMessage = ERROR_MESSAGES[request.query.errorID as string];
+    const errorMessage = ERROR_MESSAGES[request.query.errorID as string] || "";
     response.render("pages/change-password-entry", {
       csrfToken: csrfToken,
       errorMessage: errorMessage
