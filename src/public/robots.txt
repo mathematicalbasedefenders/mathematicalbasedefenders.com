@@ -1,3 +1,5 @@
 User-agent: *
 Allow: /
 Disallow: /change-password
+Disallow: /register
+Disallow: /request-password-change
