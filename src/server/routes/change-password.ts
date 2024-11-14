@@ -103,6 +103,7 @@ router.post(
     // check if user actually exists
     const email = mongoDBSanitize.sanitize(request.body.email);
     const user = await User.findOne({ emailAddress: email }).clone();
+    let ok = true;
 
     if (!user) {
       log.warn(
@@ -110,7 +111,8 @@ router.post(
           email.length
         }) not found!`
       );
-      response.redirect("/change-password?errorID=noUser");
+      // response.redirect("/change-password?errorID=noUser");
+      ok = false;
       return;
     }
 
@@ -129,7 +131,8 @@ router.post(
       } else {
         log.error(error);
       }
-      response.redirect("/change-password?errorID=internalError");
+      // response.redirect("/change-password?errorID=internalError");
+      ok = false;
       return;
     }
 
@@ -139,15 +142,18 @@ router.post(
           email.length
         }) for password request!`
       );
-      response.redirect("/change-password?errorID=mailError");
+      // response.redirect("/change-password?errorID=mailError");
+      ok = false;
       return;
     }
 
-    log.info(
-      `Successfully sent password reset e-mail to ${email.charAt(0)} (length ${
-        email.length
-      })`
-    );
+    if (ok) {
+      log.info(
+        `Successfully sent password reset e-mail to ${email.charAt(
+          0
+        )} (length ${email.length})`
+      );
+    }
     response.redirect("/?requested=true");
   }
 );
