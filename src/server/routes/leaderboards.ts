@@ -14,6 +14,15 @@ const limiter = rateLimit({
   legacyHeaders: false
 });
 
+interface LeaderboardsRecord {
+  statistics: {
+    timeInMilliseconds: number;
+    scoreSubmissionDateAndTime: Date | string;
+    time: string;
+    timeSinceRecord: string;
+  };
+}
+
 router.get("/leaderboards", limiter, async (request, response) => {
   response.redirect("/leaderboards/standard");
 });
@@ -28,7 +37,7 @@ router.get("/leaderboards/:mode", limiter, async (request, response) => {
     }`
   );
   data = await data.json();
-  data.map((record: { [key: string]: any }) => {
+  data.map((record: LeaderboardsRecord) => {
     record.statistics.time = millisecondsToTime(
       record.statistics.timeInMilliseconds
     );
@@ -41,7 +50,7 @@ router.get("/leaderboards/:mode", limiter, async (request, response) => {
       false
     );
   });
-  let mode = _.startCase(request.params.mode);
+  const mode = _.startCase(request.params.mode);
   response.render("pages/leaderboards", { data: data, mode: mode });
 });
 
