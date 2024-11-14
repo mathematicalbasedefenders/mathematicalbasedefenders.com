@@ -12,10 +12,14 @@ function addCommasToNumber(x: number) {
 }
 
 function formatToRelativeTime(
-  x: number,
+  x: number | null,
   precision: number,
   countYears: boolean
 ) {
+  if (x == null) {
+    log.warn("Null value given to format a time period. Returning null value.");
+    return "(not available)";
+  }
   if (x < 0) {
     log.warn(`Formatting a negative time period. Beware of results.`);
   }
