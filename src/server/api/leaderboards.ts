@@ -16,8 +16,9 @@ import { log } from "../core/log";
 import { getUserRank } from "../services/user";
 
 router.get("/api/leaderboards/:mode", limiter, async (request, response) => {
-  if (!["easy", "standard"].includes(request.params.modes)) {
+  if (!["easy", "standard"].includes(request.params.mode)) {
     response.status(400).json({ error: "Invalid leaderboards mode." });
+    return;
   }
 
   try {
