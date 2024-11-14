@@ -95,7 +95,7 @@ router.post(
   [parseForm, doubleCsrfProtection, limiter],
   async (request: Request, response: Response) => {
     // check for captcha completion
-    if (!checkCAPTCHA(request.body["g-recaptcha-response"])) {
+    if (!(await checkCAPTCHA(request.body["g-recaptcha-response"]))) {
       response.redirect("/change-password?errorID=captchaIncomplete");
       return;
     }
@@ -145,7 +145,7 @@ router.post(
   [parseForm, doubleCsrfProtection, limiter],
   async (request: Request, response: Response) => {
     // check captcha
-    if (!checkCAPTCHA(request.body["g-recaptcha-response"])) {
+    if (!(await checkCAPTCHA(request.body["g-recaptcha-response"]))) {
       response.redirect("/?changed=false");
       return;
     }
