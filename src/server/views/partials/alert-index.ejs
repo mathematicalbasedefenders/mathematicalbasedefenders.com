@@ -48,5 +48,15 @@
     }
 
   }
-  checkURLQueryParameters();
+
+  document.addEventListener('DOMContentLoaded', () => {
+    checkURLQueryParameters();
+    // clean up url
+    const url = new URL(window.location.href);
+    url.searchParams.delete('registered');
+    url.searchParams.delete('activated');
+    url.searchParams.delete('requested');
+    url.searchParams.delete('changed');
+    window.history.replaceState({}, '', url);
+  });
 </script>
