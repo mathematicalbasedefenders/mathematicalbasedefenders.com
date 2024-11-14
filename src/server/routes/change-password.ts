@@ -146,7 +146,7 @@ router.post(
   async (request: Request, response: Response) => {
     // check captcha
     if (!checkCAPTCHA(request.body["g-recaptcha-response"])) {
-      response.send("no good - captcha");
+      response.redirect("/?changed=false");
       return;
     }
 
@@ -157,7 +157,7 @@ router.post(
     }).clone();
     if (!record) {
       log.error(`Perform PW change: no e-mail ${email} (record) found!`);
-      response.send("no good - no record");
+      response.redirect("/?changed=false");
       return;
     }
 
