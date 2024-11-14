@@ -17,17 +17,12 @@ async function sendMailForPasswordReset(
 ) {
   const email = DOMPurify.sanitize(encodeURIComponent(recipientEmail));
   const code = DOMPurify.sanitize(confirmationCode);
-  let confirmationLink = `https://mathematicalbasedefenders.com/change-password`;
-  confirmationLink += `?email=${email}`;
-  confirmationLink += `&code=${code}`;
+
   const message = {
     subject: "Password Reset Confirmation for Mathematical Base Defenders",
     from: "Mathematical Base Defenders <noreply@mathematicalbasedefenders.com>",
-    template: "password-reset",
-    to: recipientEmail,
-    context: {
-      confirmationLink: confirmationLink
-    }
+    text: generatePasswordChangeMail(email, code),
+    to: recipientEmail
   };
   try {
     await transporter.sendMail(message);
@@ -81,10 +76,11 @@ function getNodemailerOptionsObject() {
 }
 
 function generateNewUserMail(email: string, code: string) {
-  const confirmationBaseURL = `https://mathematicalbasedefenders.com/confirm-email-address`;
-  const emailURL = `?email=${email}`;
-  const codeURL = `&code=${code}`;
-  const confirmationLink = confirmationBaseURL + emailURL + codeURL;
+  const confirmationLink = constructConfirmationUrl(
+    "confirm-email-address",
+    email,
+    code
+  );
   const text = `
   Thank you for signing up to Mathematical Base Defenders!\n
   Your account is currently in a pending state, and can't be logged into.\n 
@@ -94,6 +90,26 @@ function generateNewUserMail(email: string, code: string) {
   If you need any assistance, please e-mail support@mathematicalbasedefenders.com.\n
   `;
   return text;
+}
+
+function generatePasswordChangeMail(email: string, code: string) {
+  const confirmationLink = constructConfirmationUrl(
+    "change-password",
+    email,
+    code
+  );
+  const text = `
+  A password reset for your Mathematical Base Defenders account has been requested.\n
+  If you want to continue, please click this link.\n 
+  ${confirmationLink}\n
+  This link will expire in 30 minutes. After that, you may request a new password reset link.\n
+  If you need any assistance, please e-mail support@mathematicalbasedefenders.com.\n
+  `;
+  return text;
+}
+
+function constructConfirmationUrl(base: string, email: string, code: string) {
+  return `https://mathematicalbasedefenders.com/${base}?email=${email}&code=${code}`;
 }
 
 export { sendMailToNewlyRegisteredUser, sendMailForPasswordReset };

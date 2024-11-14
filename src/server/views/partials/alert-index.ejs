@@ -1,7 +1,11 @@
 <script>
   function checkURLQueryParameters() {
     const url = new URL(window.location.href);
-    const registered = url.searchParams.get("registered");
+
+    const registered = url.searchParams.get("registered"); // registered (but not activated)
+    const activated = url.searchParams.get("activated"); // account activated
+    const requested = url.searchParams.get("requested"); // password change requested
+    const changed = url.searchParams.get("changed") // password changed
 
     if (registered != null) {
       if (registered == "true") {
@@ -9,6 +13,37 @@
           "Successfully registered! Check your email for a confirmation link!"
         );
         return;
+      }
+    }
+
+    if (activated != null) {
+      if (activated == "true") {
+        alert(
+          "Successfully activated your account! You may now log in!"
+        );
+        return;
+      } else {
+        alert(
+          "Unable to activate account! Please try again or contact the administrator!"
+        )
+        return;
+      }
+    }
+
+    if (requested != null) {
+      if (requested == "true") {
+        alert("Successfully sent a password reset link to your e-mail address!");
+      }
+      return;
+    }
+
+    if (changed != null) {
+      if (changed == "true") {
+        alert("Password for your account successfully changed!");
+      } else {
+        alert(
+          "Unable to change password! Please try again or contact the administrator!"
+        )
       }
     }
 

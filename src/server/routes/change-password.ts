@@ -31,48 +31,62 @@ const { generateToken, doubleCsrfProtection } = doubleCsrf({
     return req.body["csrf-token"];
   }
 });
+
+const ERROR_MESSAGES: { [key: string]: string } = {
+  "captchaIncomplete": "Complete the CAPTCHA to request a password change!",
+  "noUser": "User with the specified e-mail address doesn't exist!",
+  "mailError": "Unable to send mail to your e-mail address!",
+  "internalError":
+    "An internal error has occurred! If this persists, please contact the administrator!",
+  "none": ""
+};
+
 router.get(
   "/change-password",
   [limiter],
   async (request: Request, response: Response) => {
-    let query: any = url.parse(request.url, true).query;
+    const query: any = url.parse(request.url, true).query;
 
-    if (typeof query.email === "string" && typeof query.code === "string") {
-      let email = DOMPurify.sanitize(
-        mongoDBSanitize.sanitize(query.email) as unknown as string
-      );
-      let code = DOMPurify.sanitize(
-        mongoDBSanitize.sanitize(query.code) as unknown as string
-      );
-      var pendingPasswordResetRecord = await PendingPasswordReset.findOne({
-        emailAddress: email
-      }).clone();
-
-      if (pendingPasswordResetRecord) {
-        if (
-          pendingPasswordResetRecord["passwordResetConfirmationCode"] === code
-        ) {
-          // here
-          let csrfToken = generateToken(response, request);
-          response.render("pages/change-password-change", {
-            csrfToken: csrfToken
-          });
-          return;
-        } else {
-          response.redirect("/?erroroccurred=true");
-          return;
-        }
-      }
-    } else if (
-      typeof query.email === "string" ||
-      typeof query.code === "string"
+    // if invalid query, redirect to bad page.
+    // this catches if EITHER email or code is supplied, but not both.
+    if (
+      (typeof query.email === "string" || typeof query.code === "string") &&
+      !(typeof query.email === "string" && typeof query.code === "string")
     ) {
       response.redirect("/?erroroccurred=true");
       return;
     }
-    // here
-    let csrfToken = generateToken(response, request);
-    response.render("pages/change-password-entry", { csrfToken: csrfToken });
+
+    if (typeof query.email === "string" && typeof query.code === "string") {
+      // sanitize email and code
+      const email = mongoDBSanitize.sanitize(query.email) as unknown as string;
+      const code = mongoDBSanitize.sanitize(query.code) as unknown as string;
+
+      // find record
+      const record = await getPendingPasswordResetRecord(email, code);
+
+      // if no record, redirect to bad page
+      if (!record) {
+        log.warn(`No password reset record with code ${code} found`);
+        response.redirect("/?erroroccurred=true");
+        return;
+      }
+
+      // if valid record found, render actual change password page
+      const csrfToken = generateToken(response, request);
+      response.render("pages/change-password-change", {
+        csrfToken: csrfToken
+      });
+      return;
+    }
+
+    // if nothing supplied, give entry page
+    const csrfToken = generateToken(response, request);
+    const errorMessage = ERROR_MESSAGES[request.query.errorID as string] || "";
+    response.render("pages/change-password-entry", {
+      csrfToken: csrfToken,
+      errorMessage: errorMessage
+    });
   }
 );
 
@@ -80,62 +94,49 @@ router.post(
   "/request-password-change",
   [parseForm, doubleCsrfProtection, limiter],
   async (request: Request, response: Response) => {
-    const responseKey = DOMPurify.sanitize(
-      request.body["g-recaptcha-response"]
-    );
-    const reCaptchaSecretKey = DOMPurify.sanitize(
-      process.env.RECAPTCHA_SECRET_KEY as string
-    );
-    const reCaptchaURL = DOMPurify.sanitize(
-      `https://www.google.com/recaptcha/api/siteverify?secret=${reCaptchaSecretKey}&response=${responseKey}`
-    );
-
-    let desiredEmail = DOMPurify.sanitize(
-      mongoDBSanitize.sanitize(request.body.email)
-    );
-    let passwordResetConfirmationCode = DOMPurify.sanitize(uuidv4());
-
-    let playerData = await User.findOne({
-      emailAddress: desiredEmail
-    }).clone();
-
-    if (playerData) {
-      let fetchResponse = await fetch(reCaptchaURL, { method: "post" });
-      let fetchResponseJSON: any = await fetchResponse.json();
-      if (!fetchResponseJSON.success) {
-        // bad - give error
-        response.redirect("?erroroccurred=true&errorreason=captchanotcomplete");
-        return;
-      }
-
-      let dataToSave = {
-        emailAddress: desiredEmail,
-        passwordResetConfirmationLink: `https://mathematicalbasedefenders.com/change-password?email=${desiredEmail}&code=${passwordResetConfirmationCode}`,
-        passwordResetConfirmationCode: passwordResetConfirmationCode,
-        expiresAt: new Date(Date.now() + 1800000).getTime()
-      };
-      let pendingPasswordResetToSave = new PendingPasswordReset(dataToSave);
-      pendingPasswordResetToSave.save((error4) => {
-        if (error4) {
-          log.info(error4.stack);
-          response.redirect("/?resetpassword=fail");
-        } else {
-          if (
-            !mail.sendMailForPasswordReset(
-              desiredEmail,
-              passwordResetConfirmationCode
-            )
-          ) {
-            response.redirect("?erroroccurred=true");
-          } else {
-            response.redirect("/?sentpasswordresetlink=true");
-          }
-        }
-      });
-    } else {
-      log.error(`No user with e-mail address ${desiredEmail} found!`);
-      response.redirect("?erroroccurred=true");
+    // check for captcha completion
+    if (!(await checkCAPTCHA(request.body["g-recaptcha-response"]))) {
+      response.redirect("/change-password?errorID=captchaIncomplete");
+      return;
     }
+
+    // check if user actually exists
+    const email = mongoDBSanitize.sanitize(request.body.email);
+    const user = await User.findOne({ emailAddress: email }).clone();
+
+    if (!user) {
+      log.warn(`Request PW change: e-mail address ${email} not found!`);
+      response.redirect("/change-password?errorID=noUser");
+      return;
+    }
+
+    // create record
+    const code = uuidv4();
+    const record = createPasswordResetRequestRecord(email, code);
+    const pendingPasswordResetToSave = new PendingPasswordReset(record);
+
+    // save record
+    try {
+      await pendingPasswordResetToSave.save();
+    } catch (error: any) {
+      log.error("Internal error while resetting password:");
+      if (error instanceof Error) {
+        log.error(error.stack);
+      } else {
+        log.error(error);
+      }
+      response.redirect("/change-password?errorID=internalError");
+      return;
+    }
+
+    if (!mail.sendMailForPasswordReset(email, code)) {
+      log.error(`Unable to send mail to ${email} for password request!`);
+      response.redirect("/change-password?errorID=mailError");
+      return;
+    }
+
+    log.info(`Successfully sent password reset e-mail to ${email}`);
+    response.redirect("/?requested=true");
   }
 );
 
@@ -143,64 +144,54 @@ router.post(
   "/change-password",
   [parseForm, doubleCsrfProtection, limiter],
   async (request: Request, response: Response) => {
-    const responseKey = DOMPurify.sanitize(
-      request.body["g-recaptcha-response"]
-    );
-    const reCaptchaSecretKey = DOMPurify.sanitize(
-      process.env.RECAPTCHA_SECRET_KEY as string
-    );
-    const reCaptchaURL = DOMPurify.sanitize(
-      `https://www.google.com/recaptcha/api/siteverify?secret=${reCaptchaSecretKey}&response=${responseKey}`
-    );
-    let fetchResponse = await fetch(reCaptchaURL, { method: "post" });
-    let fetchResponseJSON: any = await fetchResponse.json();
-    if (!fetchResponseJSON.success) {
-      // give error
-      response.redirect("?erroroccurred=true&errorreason=captchanotcomplete");
+    // check captcha
+    if (!(await checkCAPTCHA(request.body["g-recaptcha-response"]))) {
+      response.redirect("/?changed=false");
       return;
     }
-    let query: any = request.query;
-    let email = DOMPurify.sanitize(
-      decodeURIComponent(
-        mongoDBSanitize.sanitize(query.email)
-      ) as unknown as string
-    );
-    let code = DOMPurify.sanitize(
-      decodeURIComponent(
-        mongoDBSanitize.sanitize(query.code)
-      ) as unknown as string
-    );
-    let newPassword = DOMPurify.sanitize(
+
+    const [email, code] = getChangePasswordQueryString(request);
+
+    const record = await PendingPasswordReset.findOne({
+      $and: [{ emailAddress: email }, { passwordResetConfirmationCode: code }]
+    }).clone();
+    if (!record) {
+      log.warn(`Perform PW change: no e-mail ${email} (record) found!`);
+      response.redirect("/?changed=false");
+      return;
+    }
+
+    const newPassword = DOMPurify.sanitize(
       mongoDBSanitize.sanitize(request.body["new-password"])
     );
-    let confirmNewPassword = DOMPurify.sanitize(
+    const confirmNewPassword = DOMPurify.sanitize(
       mongoDBSanitize.sanitize(request.body["confirm-new-password"])
     );
 
-    let record = await PendingPasswordReset.findOne({
-      $and: [{ emailAddress: email }, { passwordResetConfirmationCode: code }]
-    }).clone();
-
-    if (!record) {
-      response.redirect("/?erroroccurred=true");
+    if (!validation.validatePassword(newPassword)) {
+      log.warn(`New password doesn't fit validation criteria!`);
+      response.redirect("/?changed=false");
       return;
     }
-    if (
-      !(
-        validation.validatePassword(newPassword) &&
-        newPassword === confirmNewPassword
-      )
-    ) {
-      response.redirect("/?erroroccurred=true");
+
+    if (!validation.validatePassword(confirmNewPassword)) {
+      log.warn(`New password doesn't fit validation criteria!`);
+      response.redirect("/?changed=false");
+      return;
+    }
+
+    if (newPassword !== confirmNewPassword) {
+      log.warn(`New passwords don't match!`);
+      response.redirect("/?changed=false");
+      return;
     }
 
     try {
-      let hashedNewPasswordSalt: string = await bcrypt.genSalt(14);
-      let hashedNewPassword: string = await bcrypt.hash(
+      const hashedNewPasswordSalt: string = await bcrypt.genSalt(14);
+      const hashedNewPassword: string = await bcrypt.hash(
         newPassword,
         hashedNewPasswordSalt
       );
-      await PendingPasswordReset.deleteOne({ emailAddress: email });
       await User.findOneAndUpdate(
         { emailAddress: email },
         {
@@ -212,16 +203,69 @@ router.post(
         }
       ).clone();
       log.info("Successfully changed password for a user!");
-      response.redirect("/?changedpassword=true");
+      response.redirect("/?changed=true");
+      await PendingPasswordReset.deleteOne({ emailAddress: email });
+      log.info("Successfully deleted password reset record for said user!");
+      return;
     } catch (error) {
       if (error instanceof Error) {
         log.error(error.stack);
       } else {
         log.error(`Unknown password reset error: ${error}`);
       }
-      response.redirect("/?erroroccurred=true");
+      response.redirect("/?changed=false");
+      return;
     }
   }
 );
+
+// other functions
+async function getPendingPasswordResetRecord(email: any, code: any) {
+  const pendingPasswordResetRecord = await PendingPasswordReset.findOne({
+    $and: [{ emailAddress: email }, { passwordResetConfirmationCode: code }]
+  }).clone();
+  return pendingPasswordResetRecord;
+}
+
+async function checkCAPTCHA(responseKey: string) {
+  const reCaptchaSecretKey = DOMPurify.sanitize(
+    process.env.RECAPTCHA_SECRET_KEY as string
+  );
+  const reCaptchaURL = DOMPurify.sanitize(
+    `https://www.google.com/recaptcha/api/siteverify?secret=${reCaptchaSecretKey}&response=${responseKey}`
+  );
+
+  const fetchResponse = await fetch(reCaptchaURL, { method: "post" });
+  const fetchResponseJSON = await fetchResponse.json();
+  return fetchResponseJSON.success;
+}
+
+function createPasswordResetRequestRecord(email: string, code: string) {
+  // create password reset request record
+  const passwordResetConfirmationCode = code;
+  const dataToSave = {
+    emailAddress: email,
+    passwordResetConfirmationLink: `https://mathematicalbasedefenders.com/change-password?email=${email}&code=${passwordResetConfirmationCode}`,
+    passwordResetConfirmationCode: passwordResetConfirmationCode,
+    expiresAt: new Date(Date.now() + 1800000).getTime()
+  };
+  return dataToSave;
+}
+
+function getChangePasswordQueryString(request: any) {
+  function parseString(what: any) {
+    const databaseSanitized = mongoDBSanitize.sanitize(what);
+    const decoded = decodeURIComponent(databaseSanitized) as unknown as string;
+    const htmlSanitized = DOMPurify.sanitize(decoded);
+    return htmlSanitized;
+  }
+
+  const query: any = request.query;
+  const email = parseString(query.email);
+  const code = parseString(query.code);
+  return [email, code];
+}
+
+function applyPasswordChange() {}
 
 export { router };

@@ -35,7 +35,8 @@ const ERROR_MESSAGES: { [key: string]: string } = {
   "emailInvalid": "E-mail is invalid!",
   "passwordInvalid": "Password is invalid!",
   "internalError":
-    "An internal error has occurred! If this persists, please contact the administrator!"
+    "An internal error has occurred! If this persists, please contact the administrator!",
+  "none": ""
 };
 
 router.get(
@@ -43,7 +44,8 @@ router.get(
   limiter,
   async (request: Request, response: Response) => {
     const csrfToken = generateToken(response, request);
-    const errorMessage = ERROR_MESSAGES[request.query.errorID as string];
+    const errorMessage =
+      ERROR_MESSAGES[request.query.errorID as string] || "none";
     response.render("pages/register", {
       csrfToken: csrfToken,
       errorMessage: errorMessage
