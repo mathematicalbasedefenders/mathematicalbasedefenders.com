@@ -156,7 +156,7 @@ router.post(
       $and: [{ emailAddress: email }, { passwordResetConfirmationCode: code }]
     }).clone();
     if (!record) {
-      log.error(`Perform PW change: no e-mail  ${email} (record) found!`);
+      log.error(`Perform PW change: no e-mail ${email} (record) found!`);
       response.send("no good - no record");
       return;
     }
