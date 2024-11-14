@@ -60,7 +60,7 @@ router.post(
     // is response good?
 
     // check captcha
-    if (!checkCAPTCHA(request)) {
+    if (!(await checkCAPTCHA(request))) {
       response.redirect("?errorID=captchaIncomplete");
       return;
     }
