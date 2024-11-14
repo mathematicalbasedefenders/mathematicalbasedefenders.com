@@ -105,7 +105,11 @@ router.post(
     const user = await User.findOne({ emailAddress: email }).clone();
 
     if (!user) {
-      log.warn(`Request PW change: e-mail address ${email} not found!`);
+      log.warn(
+        `Request PW change: e-mail ${email.charAt(0)} (length ${
+          email.length
+        }) not found!`
+      );
       response.redirect("/change-password?errorID=noUser");
       return;
     }
@@ -130,12 +134,20 @@ router.post(
     }
 
     if (!mail.sendMailForPasswordReset(email, code)) {
-      log.error(`Unable to send mail to ${email} for password request!`);
+      log.error(
+        `Unable to send mail to ${email.charAt(0)} (length ${
+          email.length
+        }) for password request!`
+      );
       response.redirect("/change-password?errorID=mailError");
       return;
     }
 
-    log.info(`Successfully sent password reset e-mail to ${email}`);
+    log.info(
+      `Successfully sent password reset e-mail to ${email.charAt(0)} (length ${
+        email.length
+      })`
+    );
     response.redirect("/?requested=true");
   }
 );
