@@ -13,6 +13,14 @@ async function validateNewUser(
   desiredEmail: string,
   plaintextPassword: string
 ) {
+  if (!checkUsernameValidity(desiredUsername)) {
+    // registration failed - username not valid
+    return {
+      success: false,
+      redirectTo: "?errorID=usernameInvalid"
+    };
+  }
+
   const usernameOK = await checkUsernameAvailability(desiredUsername);
   if (!usernameOK) {
     // registration failed - username already taken
@@ -22,11 +30,11 @@ async function validateNewUser(
     };
   }
 
-  if (!checkUsernameValidity(desiredUsername)) {
-    // registration failed - username not valid
+  if (!checkEmailValidity(desiredEmail)) {
+    // registration failed - email not valid
     return {
       success: false,
-      redirectTo: "?errorID=usernameInvalid"
+      redirectTo: "?errorID=emailInvalid"
     };
   }
 
@@ -36,14 +44,6 @@ async function validateNewUser(
     return {
       success: false,
       redirectTo: "?errorID=emailUnavailable"
-    };
-  }
-
-  if (!checkEmailValidity(desiredEmail)) {
-    // registration failed - email not valid
-    return {
-      success: false,
-      redirectTo: "?errorID=emailInvalid"
     };
   }
 
