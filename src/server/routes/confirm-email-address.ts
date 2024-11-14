@@ -31,7 +31,14 @@ router.get("/confirm-email-address", limiter, async (request, response) => {
     return;
   }
 
-  const pendingUserRecord = await getPendingUser(email, code);
+  let pendingUserRecord;
+  try {
+    pendingUserRecord = await getPendingUser(email, code);
+  } catch (error) {
+    log.error("Error retrieving pending user record:", error);
+    response.redirect("/?activated=false");
+    return;
+  }
 
   if (!pendingUserRecord) {
     log.warn(`Pending user record not found! (${code})`);
