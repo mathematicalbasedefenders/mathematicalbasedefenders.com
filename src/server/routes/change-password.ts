@@ -105,7 +105,7 @@ router.post(
     const user = await User.findOne({ emailAddress: email }).clone();
 
     if (!user) {
-      log.error(`Request PW change: e-mail address ${email} not found!`);
+      log.warn(`Request PW change: e-mail address ${email} not found!`);
       response.redirect("/change-password?errorID=noUser");
       return;
     }
@@ -156,7 +156,7 @@ router.post(
       $and: [{ emailAddress: email }, { passwordResetConfirmationCode: code }]
     }).clone();
     if (!record) {
-      log.error(`Perform PW change: no e-mail ${email} (record) found!`);
+      log.warn(`Perform PW change: no e-mail ${email} (record) found!`);
       response.redirect("/?changed=false");
       return;
     }
@@ -169,19 +169,19 @@ router.post(
     );
 
     if (!validation.validatePassword(newPassword)) {
-      log.error(`New password doesn't fit validation criteria!`);
+      log.warn(`New password doesn't fit validation criteria!`);
       response.redirect("/?changed=false");
       return;
     }
 
     if (!validation.validatePassword(confirmNewPassword)) {
-      log.error(`New password doesn't fit validation criteria!`);
+      log.warn(`New password doesn't fit validation criteria!`);
       response.redirect("/?changed=false");
       return;
     }
 
     if (newPassword !== confirmNewPassword) {
-      log.error(`New passwords don't match!`);
+      log.warn(`New passwords don't match!`);
       response.redirect("/?changed=false");
       return;
     }
