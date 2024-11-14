@@ -116,11 +116,17 @@ function getUserDetails(request: Request) {
 async function checkCAPTCHA(request: Request) {
   // get keys
   const responseKey = request.body["g-recaptcha-response"];
-  const reCaptchaSecretKey = process.env.RECAPTCHA_SECRET_KEY;
+  const reCaptchaSecretKey = process.env.RECAPTCHA_SECRET_KEY ?? "";
   // check url
-  const reCaptchaURL = `https://www.google.com/recaptcha/api/siteverify?secret=${reCaptchaSecretKey}&response=${responseKey}`;
+  const reCaptchaURL = "https://www.google.com/recaptcha/api/siteverify";
+  const parameters = new URLSearchParams();
+  parameters.append("secret", reCaptchaSecretKey);
+  parameters.append("response", responseKey);
   // get response
-  const fetchResponse = await fetch(reCaptchaURL, { method: "post" });
+  const fetchResponse = await fetch(reCaptchaURL, {
+    method: "post",
+    body: parameters
+  });
   const fetchResponseJSON: any = await fetchResponse.json();
   // return response
   return fetchResponseJSON.success;
