@@ -95,10 +95,6 @@ main h3 {
   font-size: 125%;
 }
 
-.user-data-box__gamemode.user-data-box__stat--gold {
-  border: 4px #ffd700 solid;
-}
-
 .user-data-box__gamemode .user-data-box__stat.user-data-box__stat--gold,
 .user-data-box__gamemode .user-data-box__stat.user-data-box__stat--silver,
 .user-data-box__gamemode .user-data-box__stat.user-data-box__stat--bronze,
