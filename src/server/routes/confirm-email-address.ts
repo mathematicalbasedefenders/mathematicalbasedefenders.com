@@ -71,20 +71,39 @@ router.get("/confirm-email-address", limiter, async (request, response) => {
   response.redirect("/?activated=true");
 });
 
-function getDataFromQueryString(request: any) {
-  const query: any = url.parse(request.url, true).query; // possibly none
+function getDataFromQueryString(request: express.Request) {
+  function sanitizeString(what: any) {
+    const databaseSanitized = mongoDBSanitize.sanitize(what) as string;
+    return DOMPurify.sanitize(databaseSanitized);
+  }
+
+  const parsedURL = url.parse(request.url, true); // possibly none
+  const query = parsedURL.query;
   if (query == null) {
     return [null, null];
   }
-  // get email
-  const uriDecodedEmail: any = decodeURIComponent(query.email) as string;
-  // sanitize email
-  const email: string =
-    DOMPurify.sanitize(mongoDBSanitize.sanitize(uriDecodedEmail)) ?? null;
-  // get code
-  const code: string =
-    DOMPurify.sanitize(mongoDBSanitize.sanitize(query.code)) ?? null;
-  return [email, code];
+  // // get email
+  // const uriDecodedEmail: any = decodeURIComponent(query.email) as string;
+  // // sanitize email
+  // const email: string =
+  //   DOMPurify.sanitize(mongoDBSanitize.sanitize(uriDecodedEmail)) ?? null;
+  // // get code
+  // const code: string =
+  //   DOMPurify.sanitize(mongoDBSanitize.sanitize(query.code)) ?? null;
+
+  const rawEmail = query.email as string;
+  const sanitizedEmail = sanitizeString(rawEmail) ?? null;
+  const decodedEmail = sanitizedEmail
+    ? decodeURIComponent(sanitizedEmail.trim())
+    : null;
+
+  const rawCode = query.code as string;
+  const sanitizedCode = sanitizeString(rawCode) ?? null;
+  const decodedCode = sanitizedCode
+    ? decodeURIComponent(sanitizedCode.trim())
+    : null;
+
+  return [decodedEmail, decodedCode];
 }
 
 async function getPendingUser(email: string, code: string) {
