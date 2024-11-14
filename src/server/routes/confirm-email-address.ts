@@ -104,18 +104,14 @@ function getDataFromQueryString(request: express.Request) {
   //   DOMPurify.sanitize(mongoDBSanitize.sanitize(query.code)) ?? null;
 
   const rawEmail = query.email as string;
-  const sanitizedEmail = sanitizeString(rawEmail) ?? null;
-  const decodedEmail = sanitizedEmail
-    ? decodeURIComponent(sanitizedEmail.trim())
-    : null;
+  const decodedEmail = rawEmail ? decodeURIComponent(rawEmail.trim()) : null;
+  const sanitizedEmail = sanitizeString(decodedEmail) ?? null;
 
   const rawCode = query.code as string;
-  const sanitizedCode = sanitizeString(rawCode) ?? null;
-  const decodedCode = sanitizedCode
-    ? decodeURIComponent(sanitizedCode.trim())
-    : null;
+  const decodedCode = rawCode ? decodeURIComponent(rawCode.trim()) : null;
+  const sanitizedCode = sanitizeString(decodedCode) ?? null;
 
-  return [decodedEmail, decodedCode];
+  return [sanitizedEmail, sanitizedCode];
 }
 
 async function getPendingUser(email: string, code: string) {
