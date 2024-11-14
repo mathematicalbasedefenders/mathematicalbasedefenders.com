@@ -18,9 +18,9 @@ const PLACEHOLDER_VERSION_DATA = {
     "releaseDate": "August 1, 2024"
   },
   "website": {
-    "version": "0.5.10",
-    "released": "2024-06-03",
-    "releaseDate": "June 3, 2024"
+    "version": "0.6.0",
+    "released": "2024-11-14",
+    "releaseDate": "November 14, 2024"
   }
 };
 
