@@ -154,7 +154,7 @@ async function updateMetadata() {
   const updatedMetadata = await Metadata.findOneAndUpdate(
     { documentIsMetadata: true },
     { $inc: { usersRegistered: 1 } },
-    { returnOriginal: false, new: true }
+    { returnDocument: "after" }
   ).clone();
   const userCount = updatedMetadata?.usersRegistered || "an unknown number of";
   log.info("There are now " + userCount + " users registered.");
