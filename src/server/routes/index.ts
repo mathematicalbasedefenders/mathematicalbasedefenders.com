@@ -55,6 +55,7 @@ async function getVersions() {
     return result;
   } catch (error) {
     log.warn("Error on fetching version data.");
+    log.warn(error);
     return PLACEHOLDER_VERSION_DATA;
   }
 }
