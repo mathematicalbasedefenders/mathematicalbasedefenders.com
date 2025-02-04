@@ -28,3 +28,22 @@
   cursor: pointer;
   transition-duration: var(--transition-duration-regular);
 }
+
+@media only screen and (max-width: 768px) {
+  #top-navbar {
+    padding: 0;
+  }
+
+  #top-navbar nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 100vw;
+  }
+
+  #top-navbar nav a {
+    width: 100%;
+    padding: 4px;
+  }
+}
