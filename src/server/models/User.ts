@@ -121,7 +121,7 @@ UserSchema.static("safeFindByUserID", async function (userID: string) {
 });
 
 UserSchema.static("findByUsernameUsingAPI", async function (username: string) {
-  return this.findOne({ username: username })
+  return this.findOne({ usernameInAllLowercase: username.toLowerCase() })
     .select({
       username: 1,
       creationDateAndTime: 1,
