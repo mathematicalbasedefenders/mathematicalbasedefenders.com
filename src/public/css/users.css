@@ -250,4 +250,9 @@ main h3 {
   #user-data-box__statistics {
     margin: 16px 0 0 0;
   }
+
+  .user-statistics-box__score {
+    flex-direction: column;
+    align-items: start;
+  }
 }
