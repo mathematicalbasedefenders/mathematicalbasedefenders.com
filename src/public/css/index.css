@@ -455,4 +455,9 @@ h1 .icon {
     align-items: center;
     flex-direction: column;
   }
+
+  #call-to-action {
+    width: 100vw;
+    height: calc(20vh + 64px);
+  }
 }
