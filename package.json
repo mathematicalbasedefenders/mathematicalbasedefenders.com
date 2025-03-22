@@ -41,6 +41,7 @@
     "lodash": "^4.17.21",
     "markdown-it": "^13.0.1",
     "marked": "^4.0.10",
+    "md5": "^2.3.0",
     "mongo-sanitize": "^1.1.0",
     "mongodb": "^3.7.4",
     "mongoose": "^6.8.3",
