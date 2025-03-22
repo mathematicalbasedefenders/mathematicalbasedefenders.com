@@ -5,6 +5,8 @@ import { PendingUser, PendingUserInterface } from "../models/PendingUser.js";
 import { User, UserInterface } from "../models/User";
 import Metadata from "../models/Metadata.js";
 
+const md5 = require("md5");
+
 import url from "url";
 import { JSDOM } from "jsdom";
 import createDOMPurify from "dompurify";
@@ -33,7 +35,7 @@ router.get("/confirm-email-address", limiter, async (request, response) => {
 
   let pendingUserRecord;
   try {
-    pendingUserRecord = await getPendingUser(email, code);
+    pendingUserRecord = await getPendingUser(code);
   } catch (error) {
     log.error("Error retrieving pending user record:", error);
     response.redirect("/?activated=false");
@@ -114,9 +116,10 @@ function getDataFromQueryString(request: express.Request) {
   return [sanitizedEmail, sanitizedCode];
 }
 
-async function getPendingUser(email: string, code: string) {
+async function getPendingUser(code: string) {
+  const hashedCode = md5(code);
   const user = await PendingUser.findOne({
-    $and: [{ emailAddress: email }, { emailConfirmationCode: code }]
+    $and: [{ emailConfirmationCode: hashedCode }]
   }).clone();
   return user;
 }
