@@ -12,6 +12,9 @@ import { log } from "../core/log.js";
 const transporter = nodemailer.createTransport(getNodemailerOptionsObject());
 
 const { SendMailClient } = require("zeptomail");
+const EMAIL_URL = process.env.EMAIL_URL;
+const EMAIL_TOKEN = process.env.EMAIL_TOKEN;
+const client = new SendMailClient({ EMAIL_URL, EMAIL_TOKEN });
 
 async function sendMailForPasswordReset(
   recipientEmail: string,
