@@ -49,7 +49,7 @@ async function sendMailForPasswordReset(
     if (error instanceof Error) {
       log.error(error.stack);
     } else {
-      log.error(`Unknown mail error: ${error}`);
+      log.error(`Unknown mail error: ${JSON.stringify(error)}`);
     }
     return false;
   }
