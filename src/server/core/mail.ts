@@ -12,12 +12,13 @@ import { log } from "../core/log.js";
 const transporter = nodemailer.createTransport(getNodemailerOptionsObject());
 
 const { SendMailClient } = require("zeptomail");
+
 const EMAIL_URL = process.env.EMAIL_URL;
 const EMAIL_TOKEN = process.env.EMAIL_TOKEN;
-const EMAIL_FROM = process.env.EMAIL_FROM;
+const EMAIL_FROM_ADDRESS = process.env.EMAIL_FROM_ADDRESS;
 const EMAIL_FROM_NAME = process.env.EMAIL_FROM_NAME;
 
-const client = new SendMailClient({ EMAIL_URL, EMAIL_TOKEN });
+const client = new SendMailClient({ url: EMAIL_URL, token: EMAIL_TOKEN });
 
 async function sendMailForPasswordReset(
   recipientEmail: string,
@@ -50,13 +51,13 @@ async function sendMailToNewlyRegisteredUser(
   recipientEmail: string,
   confirmationCode: string
 ) {
-  const email = DOMPurify.sanitize(encodeURIComponent(recipientEmail));
+  const email = DOMPurify.sanitize(recipientEmail);
   const code = DOMPurify.sanitize(confirmationCode);
 
   const toSend = {
     "from": {
-      "address": process.env.EMAIL_FROM,
-      "name": process.env.EMAIL_FROM_NAME
+      "address": EMAIL_FROM_ADDRESS,
+      "name": EMAIL_FROM_NAME
     },
     "to": [
       {
@@ -75,7 +76,7 @@ async function sendMailToNewlyRegisteredUser(
     if (error instanceof Error) {
       log.error(error.stack);
     } else {
-      log.error(`Unknown mail error: ${error}`);
+      log.error(`Unknown mail error: ${JSON.stringify(error)}`);
     }
     return false;
   }
