@@ -144,6 +144,7 @@ router.post(
           email.length
         }) for password request!`
       );
+      await PendingPasswordReset.deleteOne({ emailAddress: email });
       // response.redirect("/change-password?errorID=mailError");
       ok = false;
       return;
