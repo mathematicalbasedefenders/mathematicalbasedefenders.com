@@ -175,6 +175,8 @@ router.post(
       return;
     }
 
+    const email = record.emailAddress;
+
     const newPassword = DOMPurify.sanitize(
       mongoDBSanitize.sanitize(request.body["new-password"])
     );
