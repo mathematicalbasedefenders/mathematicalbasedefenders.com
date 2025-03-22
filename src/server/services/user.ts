@@ -92,7 +92,7 @@ async function addUnverifiedUser(
     emailAddress: desiredEmail,
     hashedPassword: hashedPassword,
     emailConfirmationLink: `https://mathematicalbasedefenders.com/confirm-email-address?email=${desiredEmail}&code=${emailConfirmationCode}`,
-    emailConfirmationCode: emailConfirmationCode,
+    emailConfirmationCode: md5(emailConfirmationCode),
     expiresAt: new Date(Date.now() + 1800000).getTime()
   };
 
@@ -204,3 +204,6 @@ function getUserRank(membership: MembershipInterface) {
 }
 
 export { addUnverifiedUser, validateNewUser, getUserRank };
+function md5(emailConfirmationCode: any) {
+  throw new Error("Function not implemented.");
+}
