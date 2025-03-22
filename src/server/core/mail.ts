@@ -144,11 +144,13 @@ function validateUrlParameters(base: string, email: string, code: string) {
 }
 
 function constructConfirmationUrl(base: string, email: string, code: string) {
+  const encodedEmail = encodeURI(email);
+  const encodedCode = encodeURI(code);
   if (!validateUrlParameters(base, email, code)) {
     log.warn("URL parameters is invalid, confirmation link not sent.");
     return `[CONFIRMATION LINK NOT SHOWN DUE TO ERROR, PLEASE CONTACT ADMINISTRATOR!]`;
   }
-  return `https://mathematicalbasedefenders.com/${base}?email=${email}&code=${code}`;
+  return `https://mathematicalbasedefenders.com/${base}?email=${encodedEmail}&code=${encodedCode}`;
 }
 
 export { sendMailToNewlyRegisteredUser, sendMailForPasswordReset };
