@@ -260,7 +260,7 @@ function createPasswordResetRequestRecord(email: string, code: string) {
   const hashedPasswordResetConfirmationCode = md5(code);
   const dataToSave = {
     emailAddress: email,
-    passwordResetConfirmationLink: `https://mathematicalbasedefenders.com/change-password?email=${email}&code=${passwordResetConfirmationCode}`,
+    passwordResetConfirmationLink: `https://mathematicalbasedefenders.com/change-password?email=${email}&code=${hashedPasswordResetConfirmationCode}`,
     passwordResetConfirmationCode: hashedPasswordResetConfirmationCode,
     expiresAt: new Date(Date.now() + 1800000).getTime()
   };
