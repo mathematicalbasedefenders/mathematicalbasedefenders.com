@@ -257,11 +257,11 @@ async function checkCAPTCHA(responseKey: string) {
 
 function createPasswordResetRequestRecord(email: string, code: string) {
   // create password reset request record
-  const passwordResetConfirmationCode = code;
+  const hashedPasswordResetConfirmationCode = md5(code);
   const dataToSave = {
     emailAddress: email,
     passwordResetConfirmationLink: `https://mathematicalbasedefenders.com/change-password?email=${email}&code=${passwordResetConfirmationCode}`,
-    passwordResetConfirmationCode: passwordResetConfirmationCode,
+    passwordResetConfirmationCode: hashedPasswordResetConfirmationCode,
     expiresAt: new Date(Date.now() + 1800000).getTime()
   };
   return dataToSave;
