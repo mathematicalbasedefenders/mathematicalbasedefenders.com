@@ -31,7 +31,7 @@ const { generateToken, doubleCsrfProtection } = doubleCsrf({
     return req.body["csrf-token"];
   }
 });
-const md5 = require("md5");
+const sha256 = require("js-sha256");
 
 const ERROR_MESSAGES: { [key: string]: string } = {
   "captchaIncomplete": "Complete the CAPTCHA to request a password change!",
@@ -164,7 +164,7 @@ router.post(
 
     const code = getChangePasswordQueryString(request);
 
-    const hashedCode = md5(code);
+    const hashedCode = sha256(code);
 
     const record = await PendingPasswordReset.findOne({
       $and: [{ passwordResetConfirmationCode: hashedCode }]
@@ -237,7 +237,7 @@ router.post(
 
 // other functions
 async function getPendingPasswordResetRecord(code: string) {
-  const hashedCode = md5(code);
+  const hashedCode = sha256(code);
   const pendingPasswordResetRecord = await PendingPasswordReset.findOne({
     $and: [{ passwordResetConfirmationCode: hashedCode }]
   }).clone();
@@ -259,7 +259,7 @@ async function checkCAPTCHA(responseKey: string) {
 
 function createPasswordResetRequestRecord(email: string, code: string) {
   // create password reset request record
-  const hashedPasswordResetConfirmationCode = md5(code);
+  const hashedPasswordResetConfirmationCode = sha256(code);
   const dataToSave = {
     emailAddress: email,
     passwordResetConfirmationLink: `https://mathematicalbasedefenders.com/change-password?email=${email}&code=${hashedPasswordResetConfirmationCode}`,

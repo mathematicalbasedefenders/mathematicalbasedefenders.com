@@ -36,6 +36,7 @@
     "express-rate-limit": "^6.1.0",
     "fontfaceobserver": "^2.1.0",
     "helmet": "^7.1.0",
+    "js-sha256": "^0.11.0",
     "jsdom": "^19.0.0",
     "license-checker": "^8.0.1",
     "lodash": "^4.17.21",

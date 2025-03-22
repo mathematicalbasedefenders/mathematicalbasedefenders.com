@@ -5,7 +5,7 @@ import { PendingUser, PendingUserInterface } from "../models/PendingUser.js";
 import { User, UserInterface } from "../models/User";
 import Metadata from "../models/Metadata.js";
 
-const md5 = require("md5");
+const sha256 = require("js-sha256");
 
 import url from "url";
 import { JSDOM } from "jsdom";
@@ -118,7 +118,7 @@ function getDataFromQueryString(request: express.Request) {
 }
 
 async function getPendingUser(code: string) {
-  const hashedCode = md5(code);
+  const hashedCode = sha256(code);
   const user = await PendingUser.findOne({
     $and: [{ emailConfirmationCode: hashedCode }]
   }).clone();

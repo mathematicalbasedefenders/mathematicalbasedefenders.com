@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt");
 const { v4: uuidv4 } = require("uuid");
-const md5 = require("md5");
+const sha256 = require("js-sha256");
 
 import { log } from "../core/log";
 // var PendingUser = require("../models/PendingUser.js");
@@ -87,7 +87,7 @@ async function addUnverifiedUser(
     };
   }
 
-  const hashedEmailConfirmationCode = md5(emailConfirmationCode);
+  const hashedEmailConfirmationCode = sha256(emailConfirmationCode);
 
   const dataToSave = {
     username: desiredUsername,
