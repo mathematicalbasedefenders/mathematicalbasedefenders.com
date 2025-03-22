@@ -14,6 +14,9 @@ const transporter = nodemailer.createTransport(getNodemailerOptionsObject());
 const { SendMailClient } = require("zeptomail");
 const EMAIL_URL = process.env.EMAIL_URL;
 const EMAIL_TOKEN = process.env.EMAIL_TOKEN;
+const EMAIL_FROM = process.env.EMAIL_FROM;
+const EMAIL_FROM_NAME = process.env.EMAIL_FROM_NAME;
+
 const client = new SendMailClient({ EMAIL_URL, EMAIL_TOKEN });
 
 async function sendMailForPasswordReset(
@@ -29,6 +32,7 @@ async function sendMailForPasswordReset(
     text: generatePasswordChangeMail(email, code),
     to: recipientEmail
   };
+
   try {
     await transporter.sendMail(message);
   } catch (error) {
@@ -48,15 +52,25 @@ async function sendMailToNewlyRegisteredUser(
 ) {
   const email = DOMPurify.sanitize(encodeURIComponent(recipientEmail));
   const code = DOMPurify.sanitize(confirmationCode);
-  const message = {
-    subject: "New Account Confirmation for Mathematical Base Defenders",
-    from: "Mathematical Base Defenders <noreply@mathematicalbasedefenders.com>",
-    text: generateNewUserMail(email, code),
-    to: recipientEmail
+
+  const toSend = {
+    "from": {
+      "address": process.env.EMAIL_FROM,
+      "name": process.env.EMAIL_FROM_NAME
+    },
+    "to": [
+      {
+        "email_address": {
+          "address": email
+        }
+      }
+    ],
+    "subject": "New Account Confirmation for Mathematical Base Defenders",
+    "textBody": generateNewUserMail(email, code)
   };
 
   try {
-    await transporter.sendMail(message);
+    await client.sendMail(toSend);
   } catch (error) {
     if (error instanceof Error) {
       log.error(error.stack);
