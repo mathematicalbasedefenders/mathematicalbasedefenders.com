@@ -87,13 +87,15 @@ async function addUnverifiedUser(
     };
   }
 
+  const hashedEmailConfirmationCode = md5(emailConfirmationCode);
+
   const dataToSave = {
     username: desiredUsername,
     usernameInAllLowercase: desiredUsername.toLowerCase(),
     emailAddress: desiredEmail,
     hashedPassword: hashedPassword,
     emailConfirmationLink: `https://mathematicalbasedefenders.com/confirm-email-address?email=${desiredEmail}&code=${emailConfirmationCode}`,
-    emailConfirmationCode: md5(emailConfirmationCode),
+    emailConfirmationCode: hashedEmailConfirmationCode,
     expiresAt: new Date(Date.now() + 1800000).getTime()
   };
 
