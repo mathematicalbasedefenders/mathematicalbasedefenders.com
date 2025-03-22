@@ -6,7 +6,7 @@ async function sendMailToUnverifiedUser(
   email: string,
   confirmationCode: string
 ) {
-  if (!mail.sendMailToNewlyRegisteredUser(email, confirmationCode)) {
+  if (!(await mail.sendMailToNewlyRegisteredUser(email, confirmationCode))) {
     return {
       success: false,
       redirectTo: "?errorID=internalError"
