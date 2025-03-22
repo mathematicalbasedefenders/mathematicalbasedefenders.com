@@ -75,7 +75,8 @@ router.get(
       // if valid record found, render actual change password page
       const csrfToken = generateToken(response, request);
       response.render("pages/change-password-change", {
-        csrfToken: csrfToken
+        csrfToken: csrfToken,
+        recaptchaSiteKey: process.env.RECAPTCHA_SITE_KEY
       });
       return;
     }
@@ -85,7 +86,8 @@ router.get(
     const errorMessage = ERROR_MESSAGES[request.query.errorID as string] || "";
     response.render("pages/change-password-entry", {
       csrfToken: csrfToken,
-      errorMessage: errorMessage
+      errorMessage: errorMessage,
+      recaptchaSiteKey: process.env.RECAPTCHA_SITE_KEY
     });
   }
 );
