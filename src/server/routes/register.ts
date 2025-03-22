@@ -9,7 +9,6 @@ const limiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false
 });
-
 const UserService = require("../../server/services/user.js");
 const MailService = require("../../server/services/mail.js");
 const parseForm = bodyParser.urlencoded({ extended: false });
@@ -25,6 +24,9 @@ const fetch = require("node-fetch");
 import { JSDOM } from "jsdom";
 import createDOMPurify from "dompurify";
 import { log } from "../core/log";
+
+import { SendMailClient } from "zeptomail";
+
 const window: any = new JSDOM("").window;
 const DOMPurify = createDOMPurify(window);
 
