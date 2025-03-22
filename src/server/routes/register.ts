@@ -91,11 +91,15 @@ router.post(
     }
     // Send Mail
 
-    await MailService.sendMailToUnverifiedUser(
+    const mailResult = await MailService.sendMailToUnverifiedUser(
       username,
       email,
       addUserResult.emailConfirmationCode
     );
+    if (!mailResult.success) {
+      response.redirect(mailResult.redirectTo);
+      return;
+    }
 
     // Finish
     response.redirect("/?registered=true");
