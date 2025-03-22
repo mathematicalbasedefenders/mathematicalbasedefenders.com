@@ -162,18 +162,18 @@ router.post(
       return;
     }
 
-    const [email, code] = getChangePasswordQueryString(request);
+    const code = getChangePasswordQueryString(request);
 
     const hashedCode = md5(code);
 
-    // const record = await PendingPasswordReset.findOne({
-    //   $and: [{ passwordResetConfirmationCode: hashedCode }]
-    // }).clone();
-    // if (!record) {
-    //   log.warn(`Perform PW change: no e-mail ${email} (record) found!`);
-    //   response.redirect("/?changed=false");
-    //   return;
-    // }
+    const record = await PendingPasswordReset.findOne({
+      $and: [{ passwordResetConfirmationCode: hashedCode }]
+    }).clone();
+    if (!record) {
+      log.warn(`Perform PW change: no code ${code} (record) found!`);
+      response.redirect("/?changed=false");
+      return;
+    }
 
     const newPassword = DOMPurify.sanitize(
       mongoDBSanitize.sanitize(request.body["new-password"])
@@ -278,7 +278,7 @@ function getChangePasswordQueryString(request: any) {
   const query: any = request.query;
   const email = parseString(query.email);
   const code = parseString(query.code);
-  return [email, code];
+  return code;
 }
 
 export { router };
