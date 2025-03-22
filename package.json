@@ -1,6 +1,6 @@
 {
   "name": "mathematicalbasedefenders.com",
-  "version": "0.6.1",
+  "version": "0.6.3",
   "description": "Website for Mathematical Base Defenders.",
   "main": "app.js",
   "scripts": {
@@ -17,7 +17,6 @@
   },
   "dependencies": {
     "@types/isomorphic-fetch": "^0.0.36",
-    "axios": "^1.6.2",
     "bcrypt": "^5.0.1",
     "body-parser": "^1.19.1",
     "chai": "^5.1.1",
@@ -28,7 +27,7 @@
     "copyfiles": "^2.4.1",
     "cors": "^2.8.5",
     "csrf-csrf": "^2.2.3",
-    "dompurify": "^2.3.4",
+    "dompurify": "^3.2.4",
     "dotenv": "^16.0.2",
     "ejs": "^3.0.2",
     "express": "^4.17.1",
@@ -36,6 +35,7 @@
     "express-rate-limit": "^6.1.0",
     "fontfaceobserver": "^2.1.0",
     "helmet": "^7.1.0",
+    "js-sha256": "^0.11.0",
     "jsdom": "^19.0.0",
     "license-checker": "^8.0.1",
     "lodash": "^4.17.21",
@@ -51,7 +51,8 @@
     "nodemailer-express-handlebars": "^6.1.0",
     "serve-favicon": "^2.5.0",
     "typescript": "^4.8.4",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "zeptomail": "^6.2.0"
   },
   "repository": {
     "type": "git",

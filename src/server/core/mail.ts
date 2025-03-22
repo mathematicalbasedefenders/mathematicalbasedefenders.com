@@ -11,26 +11,45 @@ import { log } from "../core/log.js";
 
 const transporter = nodemailer.createTransport(getNodemailerOptionsObject());
 
+const { SendMailClient } = require("zeptomail");
+
+const EMAIL_URL = process.env.EMAIL_URL;
+const EMAIL_TOKEN = process.env.EMAIL_TOKEN;
+const EMAIL_FROM_ADDRESS = process.env.EMAIL_FROM_ADDRESS;
+const EMAIL_FROM_NAME = process.env.EMAIL_FROM_NAME;
+
+const client = new SendMailClient({ url: EMAIL_URL, token: EMAIL_TOKEN });
+
 async function sendMailForPasswordReset(
   recipientEmail: string,
   confirmationCode: string
 ) {
-  const email = DOMPurify.sanitize(encodeURIComponent(recipientEmail));
+  const email = DOMPurify.sanitize(recipientEmail);
   const code = DOMPurify.sanitize(confirmationCode);
 
-  const message = {
-    subject: "Password Reset Confirmation for Mathematical Base Defenders",
-    from: "Mathematical Base Defenders <noreply@mathematicalbasedefenders.com>",
-    text: generatePasswordChangeMail(email, code),
-    to: recipientEmail
+  const toSend = {
+    "from": {
+      "address": EMAIL_FROM_ADDRESS,
+      "name": EMAIL_FROM_NAME
+    },
+    "to": [
+      {
+        "email_address": {
+          "address": email
+        }
+      }
+    ],
+    "subject": "Password Reset Confirmation for Mathematical Base Defenders",
+    "textBody": generatePasswordChangeMail(email, code)
   };
+
   try {
-    await transporter.sendMail(message);
+    await client.sendMail(toSend);
   } catch (error) {
     if (error instanceof Error) {
       log.error(error.stack);
     } else {
-      log.error(`Unknown mail error: ${error}`);
+      log.error(`Unknown mail error: ${JSON.stringify(error)}`);
     }
     return false;
   }
@@ -41,22 +60,32 @@ async function sendMailToNewlyRegisteredUser(
   recipientEmail: string,
   confirmationCode: string
 ) {
-  const email = DOMPurify.sanitize(encodeURIComponent(recipientEmail));
+  const email = DOMPurify.sanitize(recipientEmail);
   const code = DOMPurify.sanitize(confirmationCode);
-  const message = {
-    subject: "New Account Confirmation for Mathematical Base Defenders",
-    from: "Mathematical Base Defenders <noreply@mathematicalbasedefenders.com>",
-    text: generateNewUserMail(email, code),
-    to: recipientEmail
+
+  const toSend = {
+    "from": {
+      "address": EMAIL_FROM_ADDRESS,
+      "name": EMAIL_FROM_NAME
+    },
+    "to": [
+      {
+        "email_address": {
+          "address": email
+        }
+      }
+    ],
+    "subject": "New Account Confirmation for Mathematical Base Defenders",
+    "textBody": generateNewUserMail(email, code)
   };
 
   try {
-    await transporter.sendMail(message);
+    await client.sendMail(toSend);
   } catch (error) {
     if (error instanceof Error) {
       log.error(error.stack);
     } else {
-      log.error(`Unknown mail error: ${error}`);
+      log.error(`Unknown mail error: ${JSON.stringify(error)}`);
     }
     return false;
   }
@@ -115,11 +144,17 @@ function validateUrlParameters(base: string, email: string, code: string) {
 }
 
 function constructConfirmationUrl(base: string, email: string, code: string) {
+  const encodedEmail = encodeURI(email);
+  const encodedCode = encodeURI(code);
+  let domain = "http://localhost:8000";
   if (!validateUrlParameters(base, email, code)) {
     log.warn("URL parameters is invalid, confirmation link not sent.");
     return `[CONFIRMATION LINK NOT SHOWN DUE TO ERROR, PLEASE CONTACT ADMINISTRATOR!]`;
   }
-  return `https://mathematicalbasedefenders.com/${base}?email=${email}&code=${code}`;
+  if (process.env.CREDENTIAL_SET_USED === "production") {
+    domain = "https://mathematicalbasedefenders.com";
+  }
+  return `${domain}/${base}?code=${encodedCode}`;
 }
 
 export { sendMailToNewlyRegisteredUser, sendMailForPasswordReset };

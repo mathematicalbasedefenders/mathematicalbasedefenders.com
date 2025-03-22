@@ -55,7 +55,7 @@
           <br>
           <div class="user-statistics-box">
             <h2>Standard Singleplayer</h2>
-            <% if (data.standardBest.score) { %>
+            <% if (data.standardBest.score !== null && data.standardBest.score !== undefined) { %>
             <div class="user-statistics-box__score">
               <div>
                 <p style="margin: 8px 0;" class="text--large text--wide">
@@ -110,7 +110,7 @@
           <br>
           <div class="user-statistics-box">
             <h2>Easy Singleplayer</h2>
-            <% if (data.easyBest.score) { %>
+            <% if (data.easyBest.score !== null && data.easyBest.score !== undefined) { %>
             <div class="user-statistics-box__score">
               <div>
                 <p style="margin: 8px 0;" class="text--large text--wide">
