@@ -48,23 +48,13 @@ router.get(
   async (request: Request, response: Response) => {
     const query: any = url.parse(request.url, true).query;
 
-    // if invalid query, redirect to bad page.
-    // this catches if EITHER email or code is supplied, but not both.
-    if (
-      (typeof query.email === "string" || typeof query.code === "string") &&
-      !(typeof query.email === "string" && typeof query.code === "string")
-    ) {
-      response.redirect("/?erroroccurred=true");
-      return;
-    }
-
-    if (typeof query.email === "string" && typeof query.code === "string") {
+    if (typeof query.code === "string") {
       // sanitize email and code
       const email = mongoDBSanitize.sanitize(query.email) as unknown as string;
       const code = mongoDBSanitize.sanitize(query.code) as unknown as string;
 
       // find record
-      const record = await getPendingPasswordResetRecord(email, code);
+      const record = await getPendingPasswordResetRecord(code);
 
       // if no record, redirect to bad page
       if (!record) {
@@ -244,7 +234,7 @@ router.post(
 );
 
 // other functions
-async function getPendingPasswordResetRecord(email: any, code: any) {
+async function getPendingPasswordResetRecord(code: string) {
   const hashedCode = md5(code);
   const pendingPasswordResetRecord = await PendingPasswordReset.findOne({
     $and: [{ passwordResetConfirmationCode: hashedCode }]
