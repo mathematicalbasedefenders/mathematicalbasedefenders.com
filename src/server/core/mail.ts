@@ -24,18 +24,27 @@ async function sendMailForPasswordReset(
   recipientEmail: string,
   confirmationCode: string
 ) {
-  const email = DOMPurify.sanitize(encodeURIComponent(recipientEmail));
+  const email = DOMPurify.sanitize(recipientEmail);
   const code = DOMPurify.sanitize(confirmationCode);
 
-  const message = {
-    subject: "Password Reset Confirmation for Mathematical Base Defenders",
-    from: "Mathematical Base Defenders <noreply@mathematicalbasedefenders.com>",
-    text: generatePasswordChangeMail(email, code),
-    to: recipientEmail
+  const toSend = {
+    "from": {
+      "address": EMAIL_FROM_ADDRESS,
+      "name": EMAIL_FROM_NAME
+    },
+    "to": [
+      {
+        "email_address": {
+          "address": email
+        }
+      }
+    ],
+    "subject": "Password Reset Confirmation for Mathematical Base Defenders",
+    "textBody": generatePasswordChangeMail(email, code)
   };
 
   try {
-    await transporter.sendMail(message);
+    await client.sendMail(toSend);
   } catch (error) {
     if (error instanceof Error) {
       log.error(error.stack);
