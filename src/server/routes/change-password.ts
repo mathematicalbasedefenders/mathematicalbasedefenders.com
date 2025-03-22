@@ -31,6 +31,7 @@ const { generateToken, doubleCsrfProtection } = doubleCsrf({
     return req.body["csrf-token"];
   }
 });
+const md5 = require("md5");
 
 const ERROR_MESSAGES: { [key: string]: string } = {
   "captchaIncomplete": "Complete the CAPTCHA to request a password change!",
@@ -173,14 +174,16 @@ router.post(
 
     const [email, code] = getChangePasswordQueryString(request);
 
-    const record = await PendingPasswordReset.findOne({
-      $and: [{ emailAddress: email }, { passwordResetConfirmationCode: code }]
-    }).clone();
-    if (!record) {
-      log.warn(`Perform PW change: no e-mail ${email} (record) found!`);
-      response.redirect("/?changed=false");
-      return;
-    }
+    const hashedCode = md5(code);
+
+    // const record = await PendingPasswordReset.findOne({
+    //   $and: [{ passwordResetConfirmationCode: hashedCode }]
+    // }).clone();
+    // if (!record) {
+    //   log.warn(`Perform PW change: no e-mail ${email} (record) found!`);
+    //   response.redirect("/?changed=false");
+    //   return;
+    // }
 
     const newPassword = DOMPurify.sanitize(
       mongoDBSanitize.sanitize(request.body["new-password"])
@@ -242,8 +245,9 @@ router.post(
 
 // other functions
 async function getPendingPasswordResetRecord(email: any, code: any) {
+  const hashedCode = md5(code);
   const pendingPasswordResetRecord = await PendingPasswordReset.findOne({
-    $and: [{ emailAddress: email }, { passwordResetConfirmationCode: code }]
+    $and: [{ passwordResetConfirmationCode: hashedCode }]
   }).clone();
   return pendingPasswordResetRecord;
 }
