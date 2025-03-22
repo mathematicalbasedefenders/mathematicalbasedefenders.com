@@ -31,6 +31,7 @@ const { generateToken, doubleCsrfProtection } = doubleCsrf({
     return req.body["csrf-token"];
   }
 });
+const sha256 = require("js-sha256");
 
 const ERROR_MESSAGES: { [key: string]: string } = {
   "captchaIncomplete": "Complete the CAPTCHA to request a password change!",
@@ -47,23 +48,13 @@ router.get(
   async (request: Request, response: Response) => {
     const query: any = url.parse(request.url, true).query;
 
-    // if invalid query, redirect to bad page.
-    // this catches if EITHER email or code is supplied, but not both.
-    if (
-      (typeof query.email === "string" || typeof query.code === "string") &&
-      !(typeof query.email === "string" && typeof query.code === "string")
-    ) {
-      response.redirect("/?erroroccurred=true");
-      return;
-    }
-
-    if (typeof query.email === "string" && typeof query.code === "string") {
+    if (typeof query.code === "string") {
       // sanitize email and code
       const email = mongoDBSanitize.sanitize(query.email) as unknown as string;
       const code = mongoDBSanitize.sanitize(query.code) as unknown as string;
 
       // find record
-      const record = await getPendingPasswordResetRecord(email, code);
+      const record = await getPendingPasswordResetRecord(code);
 
       // if no record, redirect to bad page
       if (!record) {
@@ -144,6 +135,7 @@ router.post(
           email.length
         }) for password request!`
       );
+      await PendingPasswordReset.deleteOne({ emailAddress: email });
       // response.redirect("/change-password?errorID=mailError");
       ok = false;
       return;
@@ -170,16 +162,20 @@ router.post(
       return;
     }
 
-    const [email, code] = getChangePasswordQueryString(request);
+    const code = getChangePasswordQueryString(request);
+
+    const hashedCode = sha256(code);
 
     const record = await PendingPasswordReset.findOne({
-      $and: [{ emailAddress: email }, { passwordResetConfirmationCode: code }]
+      $and: [{ passwordResetConfirmationCode: hashedCode }]
     }).clone();
     if (!record) {
-      log.warn(`Perform PW change: no e-mail ${email} (record) found!`);
+      log.warn(`Perform PW change: no code ${code} (record) found!`);
       response.redirect("/?changed=false");
       return;
     }
+
+    const email = record.emailAddress;
 
     const newPassword = DOMPurify.sanitize(
       mongoDBSanitize.sanitize(request.body["new-password"])
@@ -240,9 +236,10 @@ router.post(
 );
 
 // other functions
-async function getPendingPasswordResetRecord(email: any, code: any) {
+async function getPendingPasswordResetRecord(code: string) {
+  const hashedCode = sha256(code);
   const pendingPasswordResetRecord = await PendingPasswordReset.findOne({
-    $and: [{ emailAddress: email }, { passwordResetConfirmationCode: code }]
+    $and: [{ passwordResetConfirmationCode: hashedCode }]
   }).clone();
   return pendingPasswordResetRecord;
 }
@@ -262,11 +259,11 @@ async function checkCAPTCHA(responseKey: string) {
 
 function createPasswordResetRequestRecord(email: string, code: string) {
   // create password reset request record
-  const passwordResetConfirmationCode = code;
+  const hashedPasswordResetConfirmationCode = sha256(code);
   const dataToSave = {
     emailAddress: email,
-    passwordResetConfirmationLink: `https://mathematicalbasedefenders.com/change-password?email=${email}&code=${passwordResetConfirmationCode}`,
-    passwordResetConfirmationCode: passwordResetConfirmationCode,
+    passwordResetConfirmationLink: `https://mathematicalbasedefenders.com/change-password?email=${email}&code=${hashedPasswordResetConfirmationCode}`,
+    passwordResetConfirmationCode: hashedPasswordResetConfirmationCode,
     expiresAt: new Date(Date.now() + 1800000).getTime()
   };
   return dataToSave;
@@ -283,7 +280,7 @@ function getChangePasswordQueryString(request: any) {
   const query: any = request.query;
   const email = parseString(query.email);
   const code = parseString(query.code);
-  return [email, code];
+  return code;
 }
 
 export { router };

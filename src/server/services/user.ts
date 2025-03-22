@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt");
 const { v4: uuidv4 } = require("uuid");
+const sha256 = require("js-sha256");
 
 import { log } from "../core/log";
 // var PendingUser = require("../models/PendingUser.js");
@@ -86,13 +87,15 @@ async function addUnverifiedUser(
     };
   }
 
+  const hashedEmailConfirmationCode = sha256(emailConfirmationCode);
+
   const dataToSave = {
     username: desiredUsername,
     usernameInAllLowercase: desiredUsername.toLowerCase(),
     emailAddress: desiredEmail,
     hashedPassword: hashedPassword,
     emailConfirmationLink: `https://mathematicalbasedefenders.com/confirm-email-address?email=${desiredEmail}&code=${emailConfirmationCode}`,
-    emailConfirmationCode: emailConfirmationCode,
+    emailConfirmationCode: hashedEmailConfirmationCode,
     expiresAt: new Date(Date.now() + 1800000).getTime()
   };
 

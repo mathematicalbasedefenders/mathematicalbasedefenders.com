@@ -5,6 +5,8 @@ import { PendingUser, PendingUserInterface } from "../models/PendingUser.js";
 import { User, UserInterface } from "../models/User";
 import Metadata from "../models/Metadata.js";
 
+const sha256 = require("js-sha256");
+
 import url from "url";
 import { JSDOM } from "jsdom";
 import createDOMPurify from "dompurify";
@@ -23,17 +25,17 @@ const limiter = rateLimit({
 import { log } from "../core/log.js";
 
 router.get("/confirm-email-address", limiter, async (request, response) => {
-  const [email, code] = getDataFromQueryString(request);
+  const code = getDataFromQueryString(request);
 
-  if (!email || !code) {
-    log.warn(`Invalid e-mail and/or code supplied while verifying! (${code})`);
+  if (!code) {
+    log.warn(`Invalid code supplied while verifying! (${code})`);
     response.redirect("/?activated=false");
     return;
   }
 
   let pendingUserRecord;
   try {
-    pendingUserRecord = await getPendingUser(email, code);
+    pendingUserRecord = await getPendingUser(code);
   } catch (error) {
     log.error("Error retrieving pending user record:", error);
     response.redirect("/?activated=false");
@@ -64,6 +66,7 @@ router.get("/confirm-email-address", limiter, async (request, response) => {
     log.info(`User ${pendingUserRecord["username"]} validated!`);
 
     // delete pending user record
+    const email = pendingUserRecord.emailAddress;
     await deletePendingUserRecord(email);
 
     // update metadata
@@ -92,7 +95,7 @@ function getDataFromQueryString(request: express.Request) {
   const parsedURL = url.parse(request.url, true); // possibly none
   const query = parsedURL.query;
   if (query == null) {
-    return [null, null];
+    return null;
   }
   // // get email
   // const uriDecodedEmail: any = decodeURIComponent(query.email) as string;
@@ -111,12 +114,13 @@ function getDataFromQueryString(request: express.Request) {
   const decodedCode = rawCode ? decodeURIComponent(rawCode.trim()) : null;
   const sanitizedCode = sanitizeString(decodedCode) ?? null;
 
-  return [sanitizedEmail, sanitizedCode];
+  return sanitizedCode;
 }
 
-async function getPendingUser(email: string, code: string) {
+async function getPendingUser(code: string) {
+  const hashedCode = sha256(code);
   const user = await PendingUser.findOne({
-    $and: [{ emailAddress: email }, { emailConfirmationCode: code }]
+    $and: [{ emailConfirmationCode: hashedCode }]
   }).clone();
   return user;
 }

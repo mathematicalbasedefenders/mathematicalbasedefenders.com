@@ -9,7 +9,6 @@ const limiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false
 });
-
 const UserService = require("../../server/services/user.js");
 const MailService = require("../../server/services/mail.js");
 const parseForm = bodyParser.urlencoded({ extended: false });
@@ -25,6 +24,7 @@ const fetch = require("node-fetch");
 import { JSDOM } from "jsdom";
 import createDOMPurify from "dompurify";
 import { log } from "../core/log";
+
 const window: any = new JSDOM("").window;
 const DOMPurify = createDOMPurify(window);
 
@@ -91,11 +91,15 @@ router.post(
     }
     // Send Mail
 
-    await MailService.sendMailToUnverifiedUser(
+    const mailResult = await MailService.sendMailToUnverifiedUser(
       username,
       email,
       addUserResult.emailConfirmationCode
     );
+    if (!mailResult.success) {
+      response.redirect(mailResult.redirectTo);
+      return;
+    }
 
     // Finish
     response.redirect("/?registered=true");

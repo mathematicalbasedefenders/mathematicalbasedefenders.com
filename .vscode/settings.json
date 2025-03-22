@@ -36,7 +36,8 @@
     "uuidv",
     "verifiedemail",
     "wght",
-    "XVRB"
+    "XVRB",
+    "zeptomail"
   ],
   "python.linting.pylintEnabled": true,
   "python.linting.enabled": true
