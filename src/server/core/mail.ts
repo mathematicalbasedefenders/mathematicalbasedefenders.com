@@ -146,11 +146,15 @@ function validateUrlParameters(base: string, email: string, code: string) {
 function constructConfirmationUrl(base: string, email: string, code: string) {
   const encodedEmail = encodeURI(email);
   const encodedCode = encodeURI(code);
+  let domain = "http://localhost:8000";
   if (!validateUrlParameters(base, email, code)) {
     log.warn("URL parameters is invalid, confirmation link not sent.");
     return `[CONFIRMATION LINK NOT SHOWN DUE TO ERROR, PLEASE CONTACT ADMINISTRATOR!]`;
   }
-  return `https://mathematicalbasedefenders.com/${base}?email=${encodedEmail}&code=${encodedCode}`;
+  if (process.env.CREDENTIAL_SET_USED === "production") {
+    domain = "https://mathematicalbasedefenders.com";
+  }
+  return `${domain}/${base}?code=${encodedCode}`;
 }
 
 export { sendMailToNewlyRegisteredUser, sendMailForPasswordReset };
