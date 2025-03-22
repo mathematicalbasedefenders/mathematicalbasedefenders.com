@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt");
 const { v4: uuidv4 } = require("uuid");
+const md5 = require("md5");
 
 import { log } from "../core/log";
 // var PendingUser = require("../models/PendingUser.js");
@@ -204,6 +205,3 @@ function getUserRank(membership: MembershipInterface) {
 }
 
 export { addUnverifiedUser, validateNewUser, getUserRank };
-function md5(emailConfirmationCode: any) {
-  throw new Error("Function not implemented.");
-}
