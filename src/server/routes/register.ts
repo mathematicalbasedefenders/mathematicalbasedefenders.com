@@ -48,7 +48,8 @@ router.get(
     const errorMessage = ERROR_MESSAGES[request.query.errorID as string];
     response.render("pages/register", {
       csrfToken: csrfToken,
-      errorMessage: errorMessage
+      errorMessage: errorMessage,
+      recaptchaSiteKey: process.env.RECAPTCHA_SITE_KEY
     });
   }
 );
