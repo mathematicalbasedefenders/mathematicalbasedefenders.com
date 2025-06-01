@@ -115,7 +115,7 @@ function generateNewUserMail(email: string, code: string) {
   Your account is currently in a pending state, and can't be logged into.\n 
   In order to fully activate your account, and to be able to log in, please click on the activation link below.\n
   ${confirmationLink}\n
-  This link will expire in 30 minutes. After that, your account will be deleted, but you may use the same e-mail address to sign up again.\n
+  This link will expire in 60 minutes. After that, your account will be deleted, but you may use the same e-mail address to sign up again.\n
   If you need any assistance, please e-mail support@mathematicalbasedefenders.com.\n
   `;
   return text;
@@ -131,7 +131,7 @@ function generatePasswordChangeMail(email: string, code: string) {
   A password reset for your Mathematical Base Defenders account has been requested.\n
   If you want to continue, please click this link.\n 
   ${confirmationLink}\n
-  This link will expire in 30 minutes. After that, you may request a new password reset link.\n
+  This link will expire in 60 minutes. After that, you may request a new password reset link.\n
   If you need any assistance, please e-mail support@mathematicalbasedefenders.com.\n
   `;
   return text;
