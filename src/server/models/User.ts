@@ -52,8 +52,10 @@ interface UserModel extends mongoose.Model<UserInterface> {
   safeFindByUserID(userID: string): Promise<UserInterface>;
   findByUsernameUsingAPI(username: string): Promise<UserInterface>;
   findByUserIDUsingAPI(userID: string): Promise<UserInterface>;
-  getAllEasySingleplayerBestScores(): Promise<Array<UserInterface>>;
-  getAllStandardSingleplayerBestScores(): Promise<Array<UserInterface>>;
+  getEasySingleplayerBestScores(limit: number): Promise<Array<UserInterface>>;
+  getStandardSingleplayerBestScores(
+    limit: number
+  ): Promise<Array<UserInterface>>;
 }
 
 const UserSchema = new mongoose.Schema<UserInterface, UserModel>({
@@ -142,43 +144,51 @@ UserSchema.static("findByUserIDUsingAPI", async function (userID: string) {
     .clone();
 });
 
-UserSchema.static("getAllEasySingleplayerBestScores", async function () {
-  let players: Array<object> = [];
-  let loaded: Array<object> = [];
-  let cursor = this.find({})
-    .select({
-      _id: 1,
-      "username": 1,
-      "membership": 1,
-      "statistics.personalBestScoreOnEasySingleplayerMode": 1
-    })
-    .clone()
-    .lean(true)
-    .cursor();
-  for await (let player of cursor) {
-    loaded.push(player);
+UserSchema.static(
+  "getEasySingleplayerBestScores",
+  async function (limit: number) {
+    let players: Array<object> = [];
+    let loaded: Array<object> = [];
+    let cursor = this.find({})
+      .select({
+        _id: 1,
+        "username": 1,
+        "membership": 1,
+        "statistics.personalBestScoreOnEasySingleplayerMode": 1
+      })
+      .limit(limit)
+      .clone()
+      .lean(true)
+      .cursor();
+    for await (let player of cursor) {
+      loaded.push(player);
+    }
+    return loaded;
   }
-  return loaded;
-});
+);
 
-UserSchema.static("getAllStandardSingleplayerBestScores", async function () {
-  let players: Array<object> = [];
-  let loaded: Array<object> = [];
-  let cursor = this.find({})
-    .select({
-      _id: 1,
-      "username": 1,
-      "membership": 1,
-      "statistics.personalBestScoreOnStandardSingleplayerMode": 1
-    })
-    .clone()
-    .lean(true)
-    .cursor();
-  for await (let player of cursor) {
-    loaded.push(player);
+UserSchema.static(
+  "getStandardSingleplayerBestScores",
+  async function (limit: number) {
+    let players: Array<object> = [];
+    let loaded: Array<object> = [];
+    let cursor = this.find({})
+      .select({
+        _id: 1,
+        "username": 1,
+        "membership": 1,
+        "statistics.personalBestScoreOnStandardSingleplayerMode": 1
+      })
+      .limit(limit)
+      .clone()
+      .lean(true)
+      .cursor();
+    for await (let player of cursor) {
+      loaded.push(player);
+    }
+    return loaded;
   }
-  return loaded;
-});
+);
 
 const User = mongoose.model<UserInterface, UserModel>(
   "User",
