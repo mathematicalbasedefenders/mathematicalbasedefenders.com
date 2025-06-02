@@ -52,8 +52,10 @@ interface UserModel extends mongoose.Model<UserInterface> {
   safeFindByUserID(userID: string): Promise<UserInterface>;
   findByUsernameUsingAPI(username: string): Promise<UserInterface>;
   findByUserIDUsingAPI(userID: string): Promise<UserInterface>;
-  getAllEasySingleplayerBestScores(): Promise<Array<UserInterface>>;
-  getAllStandardSingleplayerBestScores(): Promise<Array<UserInterface>>;
+  getEasySingleplayerBestScores(limit: number): Promise<Array<UserInterface>>;
+  getStandardSingleplayerBestScores(
+    limit: number
+  ): Promise<Array<UserInterface>>;
 }
 
 const UserSchema = new mongoose.Schema<UserInterface, UserModel>({
