@@ -28,11 +28,11 @@ async function fetchPlayersData(gameMode: string) {
   let players: Array<UserInterface> = [];
   switch (gameMode) {
     case "easySingleplayer": {
-      players = await User.getAllEasySingleplayerBestScores();
+      players = await User.getEasySingleplayerBestScores(100);
       break;
     }
     case "standardSingleplayer": {
-      players = await User.getAllStandardSingleplayerBestScores();
+      players = await User.getStandardSingleplayerBestScores(100);
       break;
     }
     default: {

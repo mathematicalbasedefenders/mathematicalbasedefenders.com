@@ -13,6 +13,11 @@
   <td title="<%=record.statistics.enemiesCreated.toLocaleString("en-US")%> enemies spawned"><%=record.statistics.enemiesKilled.toLocaleString("en-US")%></td>
   <td><%=(record.statistics.actionsPerformed / record.statistics.timeInMilliseconds*60000).toLocaleString("en-US",{minimumFractionDigits:3,maximumFractionDigits:3})%></td>
   <td class="rank__score"><%=record.statistics.score.toLocaleString("en-US");%></td>
+  <% if (record.statistics.replayID) { %>
+  <td><a class="rank__replay-link" href=<%=`https://play.mathematicalbasedefenders.com?replayID=${record.statistics.replayID}`%>>View</a></td>
+  <%} else {%>
+  <td class="rank--unclaimed">N/A</td>
+  <% } %>
   <%}else{%>
   <td class="rank__number rank--unclaimed">
     #<%=rank.toString()%>
@@ -20,10 +25,11 @@
   <td class="rank__username rank--unclaimed">
     ???
   </td>
-  <td class="rank--unclaimed">(not available)</td>
-  <td class="rank--unclaimed">(not available)</td>
-  <td class="rank--unclaimed">(not available)</td>
-  <td class="rank--unclaimed">(not available)</td>
+  <td class="rank--unclaimed">???</td>
+  <td class="rank--unclaimed">???</td>
+  <td class="rank--unclaimed">???</td>
+  <td class="rank--unclaimed">???</td>
   <td class="rank__score rank--unclaimed">0</td>
+  <td class="rank--unclaimed">N/A</td>
   <%}%>
 </tr>
