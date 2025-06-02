@@ -7,13 +7,17 @@ import mongoDBSanitize from "express-mongo-sanitize";
 import mongoose from "mongoose";
 import rateLimit from "express-rate-limit";
 import path from "path";
-import dotenv from "dotenv";
+
+require("@dotenvx/dotenvx").config({
+  path: path.join(__dirname, "../credentials/.env")
+});
+
 const cors = require("cors");
 const corsOptions = {
   origin: ["https://mathematicalbasedefenders.com", "http://localhost:8000"],
   credentials: true
 };
-dotenv.config({ path: path.join(__dirname, "../credentials/.env") });
+
 import { log } from "./server/core/log";
 import { getLicenses } from "./server/core/licenses";
 
