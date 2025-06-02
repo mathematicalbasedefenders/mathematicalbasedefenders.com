@@ -51,11 +51,6 @@ th {
   padding: 4px;
 }
 
-#leaderboards-table a {
-  color: black;
-  text-decoration: none;
-}
-
 #leaderboards-table .rank__number {
   width: 5%;
 }
@@ -63,6 +58,11 @@ th {
 #leaderboards-table .rank__username {
   font-weight: 600;
   width: 25%;
+  color: black;
+}
+
+#leaderboards-table .rank__username > a {
+  text-decoration: none !important;
 }
 
 #leaderboards-table .rank__score {
