@@ -83,7 +83,7 @@ router.get("/confirm-email-address", limiter, async (request, response) => {
   }
 
   log.info(`User activation for ${pendingUserRecord["username"]} OK!`);
-  response.redirect("/?activated=true");
+  response.render("pages/confirm-email-address-complete");
 });
 
 function getDataFromQueryString(request: express.Request) {
