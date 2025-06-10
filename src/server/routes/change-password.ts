@@ -220,7 +220,7 @@ router.post(
         }
       ).clone();
       log.info("Successfully changed password for a user!");
-      response.redirect("/?changed=true");
+      response.render("pages/change-password-change-complete");
       await PendingPasswordReset.deleteOne({ emailAddress: email });
       log.info("Successfully deleted password reset record for said user!");
       return;
