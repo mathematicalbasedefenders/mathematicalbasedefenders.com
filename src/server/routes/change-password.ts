@@ -148,7 +148,8 @@ router.post(
         )} (length ${email.length})`
       );
     }
-    response.redirect("/?requested=true");
+
+    response.render("pages/change-password-entry-complete");
   }
 );
 
