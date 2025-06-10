@@ -104,7 +104,7 @@ router.post(
           email.length
         }) not found!`
       );
-      response.redirect("/change-password?errorID=noUser");
+      response.render("pages/change-password-entry-complete");
       ok = false;
       return;
     }
