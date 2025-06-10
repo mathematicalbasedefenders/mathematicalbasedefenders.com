@@ -102,7 +102,7 @@ router.post(
     }
 
     // Finish
-    response.redirect("/?registered=true");
+    response.render("pages/registration-complete");
   }
 );
 
