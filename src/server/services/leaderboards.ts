@@ -1,3 +1,4 @@
+import _ from "lodash";
 import { log } from "../core/log";
 import { User, UserInterface } from "../models/User";
 
@@ -57,18 +58,22 @@ function sortPlayersData(
   );
   switch (key) {
     case "Easy": {
-      sorted.sort(
-        (a: UserInterface, b: UserInterface) =>
-          a.statistics.personalBestScoreOnEasySingleplayerMode.score -
-          b.statistics.personalBestScoreOnEasySingleplayerMode.score
+      const scoreKey =
+        "statistics.personalBestScoreOnEasySingleplayerMode.score";
+      const timestampKey =
+        "statistics.personalBestScoreOnEasySingleplayerMode.scoreSubmissionDateAndTime";
+      sorted.sort((a: UserInterface, b: UserInterface) =>
+        sortRank(a, b, scoreKey, timestampKey)
       );
       break;
     }
     case "Standard": {
-      sorted.sort(
-        (a: UserInterface, b: UserInterface) =>
-          a.statistics.personalBestScoreOnStandardSingleplayerMode.score -
-          b.statistics.personalBestScoreOnStandardSingleplayerMode.score
+      const scoreKey =
+        "statistics.personalBestScoreOnStandardSingleplayerMode.score";
+      const timestampKey =
+        "statistics.personalBestScoreOnStandardSingleplayerMode.scoreSubmissionDateAndTime";
+      sorted.sort((a: UserInterface, b: UserInterface) =>
+        sortRank(a, b, scoreKey, timestampKey)
       );
       break;
     }
@@ -78,6 +83,18 @@ function sortPlayersData(
     }
   }
   return sorted.reverse().slice(0, amount);
+}
+
+function sortRank(
+  a: UserInterface,
+  b: UserInterface,
+  scoreKey: string,
+  timestampKey: string
+) {
+  if (_.get(a, scoreKey) === _.get(b, scoreKey)) {
+    return _.get(a, timestampKey) < _.get(b, timestampKey) ? 1 : -1;
+  }
+  return _.get(a, scoreKey) > _.get(b, scoreKey) ? 1 : -1;
 }
 
 export { getScoresOfTopPlayers };

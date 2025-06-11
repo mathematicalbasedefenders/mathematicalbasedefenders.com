@@ -104,7 +104,7 @@ router.post(
           email.length
         }) not found!`
       );
-      // response.redirect("/change-password?errorID=noUser");
+      response.render("pages/change-password-entry-complete");
       ok = false;
       return;
     }
@@ -124,7 +124,7 @@ router.post(
       } else {
         log.error(error);
       }
-      // response.redirect("/change-password?errorID=internalError");
+      response.redirect("/change-password?errorID=internalError");
       ok = false;
       return;
     }
@@ -136,7 +136,7 @@ router.post(
         }) for password request!`
       );
       await PendingPasswordReset.deleteOne({ emailAddress: email });
-      // response.redirect("/change-password?errorID=mailError");
+      response.redirect("/change-password?errorID=mailError");
       ok = false;
       return;
     }
