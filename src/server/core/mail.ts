@@ -1,15 +1,8 @@
-import path from "path";
-import hbs, {
-  NodemailerExpressHandlebarsOptions
-} from "nodemailer-express-handlebars";
 import { JSDOM } from "jsdom";
 import createDOMPurify from "dompurify";
 const window: any = new JSDOM("").window;
 const DOMPurify = createDOMPurify(window);
-import nodemailer from "nodemailer";
 import { log } from "../core/log.js";
-
-const transporter = nodemailer.createTransport(getNodemailerOptionsObject());
 
 const { SendMailClient } = require("zeptomail");
 
@@ -90,18 +83,6 @@ async function sendMailToNewlyRegisteredUser(
     return false;
   }
   return true;
-}
-
-function getNodemailerOptionsObject() {
-  let toReturn = {
-    host: process.env.EMAIL_HOST,
-    port: 587,
-    auth: {
-      user: process.env.EMAIL_USERNAME,
-      pass: process.env.EMAIL_PASSWORD
-    }
-  };
-  return toReturn;
 }
 
 function generateNewUserMail(email: string, code: string) {
