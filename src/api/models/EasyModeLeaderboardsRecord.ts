@@ -31,7 +31,9 @@ const EasyModeLeaderboardsRecordSchema = new mongoose.Schema<
 });
 
 EasyModeLeaderboardsRecordSchema.static("getAll", async function () {
-  return this.find({ rankNumber: { $lt: 51 } }).clone();
+  return this.find({ rankNumber: { $lt: 51 } })
+    .clone()
+    .sort({ rankNumber: 1 });
 });
 
 const EasyModeLeaderboardsRecord = mongoose.model<
