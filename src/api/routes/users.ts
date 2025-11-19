@@ -1,5 +1,5 @@
 import express from "express";
-import UserRepository from "../repositories/User";
+import UserRepository from "../repositories/UserRepository";
 const router = express.Router();
 
 router.get("/user/:query", async function (request, response) {
