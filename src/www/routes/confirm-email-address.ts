@@ -2,7 +2,7 @@ import express from "express";
 var router = express.Router();
 
 import { PendingUser, PendingUserInterface } from "../models/PendingUser.js";
-import { User, UserInterface } from "../models/User";
+import { User, UserInterface } from "../models/User.js";
 import Metadata from "../models/Metadata.js";
 
 const sha256 = require("js-sha256");

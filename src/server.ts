@@ -18,8 +18,8 @@ const corsOptions = {
   credentials: true
 };
 
-import { log } from "./server/core/log";
-import { getLicenses } from "./server/core/licenses";
+import { log } from "./www/core/log";
+import { getLicenses } from "./www/core/licenses";
 
 const PORT = 8000;
 const DATABASE_URI: string | undefined = process.env.DATABASE_CONNECTION_URI;

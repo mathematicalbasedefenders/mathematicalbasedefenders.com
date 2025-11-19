@@ -2,7 +2,7 @@ import { JSDOM } from "jsdom";
 import createDOMPurify from "dompurify";
 const window: any = new JSDOM("").window;
 const DOMPurify = createDOMPurify(window);
-import { log } from "../core/log.js";
+import { log } from "./log.js";
 
 const { SendMailClient } = require("zeptomail");
 
