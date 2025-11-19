@@ -23,9 +23,16 @@ const DATABASE_URI: string | undefined = process.env.DATABASE_CONNECTION_URI;
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 100,
+  max: 15 * 60,
   standardHeaders: true,
-  legacyHeaders: false
+  legacyHeaders: false,
+  handler: function (request, response) {
+    log.warn(`Rate limited IP ${request.ip}`);
+    response
+      .status(429)
+      .json({ success: false, error: "You are being rate limited." });
+    return;
+  }
 });
 
 const app = express();
