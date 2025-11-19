@@ -9,8 +9,8 @@ const limiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false
 });
-const UserService = require("../../server/services/user.js");
-const MailService = require("../../server/services/mail.js");
+const UserService = require("../../www/services/user.js");
+const MailService = require("../../www/services/mail.js");
 const parseForm = bodyParser.urlencoded({ extended: false });
 const { generateToken, doubleCsrfProtection } = doubleCsrf({
   getSecret: () => "Secret",
