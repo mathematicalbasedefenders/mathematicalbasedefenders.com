@@ -5,9 +5,10 @@
   "main": "app.js",
   "scripts": {
     "test": "mocha 'tests/**/*.spec.*'",
-    "build": "tsc",
+    "build": "tsc && npm run copyStaticFiles",
     "copyStaticFiles": "copyfiles --up 1 \"src/**/*\" -e \"**/*.ts\" dist",
-    "start": "npm run build && npm run copyStaticFiles && node ./dist/server.js"
+    "start-www": "node ./dist/server.js",
+    "start-api": "node ./dist/api.js"
   },
   "private": true,
   "author": "mistertfy64",
