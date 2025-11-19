@@ -17,6 +17,7 @@ export default class MetadataRepository {
       };
     }
 
+    log.info(`Returning data from MetadataRepository.`);
     return {
       success: true,
       status: 200,
