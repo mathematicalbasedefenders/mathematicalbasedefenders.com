@@ -6,6 +6,7 @@ import {
   formatToRelativeTime,
   millisecondsToTime
 } from "../core/format-number";
+import { apiBaseURL } from "../../server";
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
@@ -46,10 +47,9 @@ async function getData(request: Request) {
   ) {
     return;
   }
-  let data = await fetch(
-    `${request.protocol}://${request.get("Host")}/api/users/${query}`
-  );
-  data = await data.json();
+  const fetchResponse = await fetch(`${apiBaseURL}/users/${query}`);
+  const responseJSON = await fetchResponse.json();
+  const data = responseJSON.data;
   // TODO: Find a better way instead of just comparing for "Not Found."
   if (data.status === 404 || data === "Not Found.") {
     return null;

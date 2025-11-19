@@ -7,6 +7,7 @@ import {
   formatToRelativeTime,
   millisecondsToTime
 } from "../core/format-number";
+import { apiBaseURL } from "../../server";
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
@@ -31,12 +32,12 @@ router.get("/leaderboards/:mode", limiter, async (request, response) => {
   if (request.params.mode !== "easy" && request.params.mode !== "standard") {
     return;
   }
-  let data = await fetch(
-    `${request.protocol}://${request.get("Host")}/api/leaderboards/${
-      request.params.mode
-    }`
+  const fetchResponse = await fetch(
+    `${apiBaseURL}/leaderboards/${request.params.mode}`
   );
-  data = await data.json();
+  const responseJSON = await fetchResponse.json();
+  const data = responseJSON.data;
+  console.debug(0, data);
   data.map((record: LeaderboardsRecord) => {
     record.statistics.time = millisecondsToTime(
       record.statistics.timeInMilliseconds

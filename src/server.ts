@@ -22,6 +22,7 @@ import { log } from "./www/core/log";
 import { getLicenses } from "./www/core/licenses";
 
 const PORT = 8000;
+const API_PORT = 9000;
 const DATABASE_URI: string | undefined = process.env.DATABASE_CONNECTION_URI;
 
 const limiter = rateLimit({
@@ -99,6 +100,7 @@ app.use(
 app.use(cookieParser());
 
 let licenses;
+let apiBaseURL: string = "";
 
 // mongoose
 if (!DATABASE_URI) {
@@ -152,8 +154,12 @@ loadLicenses();
 app.listen(PORT, () => {
   log.info(`App listening at http://localhost:${PORT}`);
   if (process.env.CREDENTIAL_SET_USED === "testing") {
+    apiBaseURL = `http://localhost:${API_PORT}`;
     log.warn(`Using testing credentials.`);
+  } else {
+    apiBaseURL = `https://api.mathematicalbasedefenders.com`;
+    log.info(`Using production credentials.`);
   }
 });
 
-export { licenses };
+export { licenses, apiBaseURL };
