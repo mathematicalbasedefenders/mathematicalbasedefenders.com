@@ -148,7 +148,9 @@ UserSchema.static(
   "getEasySingleplayerBestScores",
   async function (limit: number) {
     const loaded: Array<object> = [];
-    const cursor = this.find({})
+    const cursor = this.find({
+      "statistics.personalBestScoreOnEasySingleplayerMode": { $ne: null }
+    })
       .select({
         _id: 1,
         "username": 1,
@@ -167,7 +169,13 @@ UserSchema.static(
       .lean(true)
       .cursor();
     for await (const player of cursor) {
-      loaded.push(player);
+      const formattedPlayer = {
+        _id: player._id,
+        username: player.username,
+        membership: player.membership,
+        statistics: player.statistics.personalBestScoreOnEasySingleplayerMode
+      };
+      loaded.push(formattedPlayer);
     }
     return loaded;
   }
@@ -177,7 +185,9 @@ UserSchema.static(
   "getStandardSingleplayerBestScores",
   async function (limit: number) {
     const loaded: Array<object> = [];
-    const cursor = this.find({})
+    const cursor = this.find({
+      "statistics.personalBestScoreOnStandardSingleplayerMode": { $ne: null }
+    })
       .select({
         _id: 1,
         "username": 1,
@@ -196,7 +206,14 @@ UserSchema.static(
       .lean(true)
       .cursor();
     for await (const player of cursor) {
-      loaded.push(player);
+      const formattedPlayer = {
+        _id: player._id,
+        username: player.username,
+        membership: player.membership,
+        statistics:
+          player.statistics.personalBestScoreOnStandardSingleplayerMode
+      };
+      loaded.push(formattedPlayer);
     }
     return loaded;
   }
