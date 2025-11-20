@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import express, { NextFunction, Request, Response } from "express";
 var router = express.Router();
 import bodyParser from "body-parser";
 import rateLimit from "express-rate-limit";
@@ -24,6 +24,8 @@ const fetch = require("node-fetch");
 import { JSDOM } from "jsdom";
 import createDOMPurify from "dompurify";
 import { log } from "../core/log";
+import { apiBaseURL } from "../../server";
+import path from "path";
 
 const window: any = new JSDOM("").window;
 const DOMPurify = createDOMPurify(window);
@@ -40,110 +42,128 @@ const ERROR_MESSAGES: { [key: string]: string } = {
   "none": ""
 };
 
-router.get(
-  "/register",
-  limiter,
-  async (request: Request, response: Response) => {
-    const csrfToken = generateToken(response, request);
-    const errorMessage = ERROR_MESSAGES[request.query.errorID as string];
+const renderRegisterPage = async (
+  request: Request & { context?: { error: string } },
+  response: Response,
+  next: NextFunction
+) => {
+  try {
+    const csrfTokenRequest = await fetch(`${apiBaseURL}/csrf`);
+    const csrfTokenRequestJSON = await csrfTokenRequest.json();
+    if (!csrfTokenRequestJSON.success) {
+      const error = new Error(`Failed to get CSRF token for register page.`);
+      error.name = "InternalError";
+      throw error;
+    }
     response.render("pages/register", {
-      csrfToken: csrfToken,
-      errorMessage: errorMessage,
+      csrfToken: csrfTokenRequestJSON.csrfToken,
+      errorMessage: request.context?.error,
       recaptchaSiteKey: process.env.RECAPTCHA_SITE_KEY
     });
+  } catch (error) {
+    log.error(`Unable to get CSRF token for register page`);
+    next(error);
+    return;
   }
-);
+};
+
+const processRegistrationInformation = async (
+  request: Request & { context?: { error: string } },
+  response: Response,
+  next: NextFunction
+) => {
+  // process registration
+  // is response good?
+
+  // // check captcha
+  // if (!(await checkCAPTCHA(request))) {
+  //   response.redirect("?errorID=captchaIncomplete");
+  //   return;
+  // }
+
+  // const [username, email, password] = getUserDetails(request);
+  // const validationResult = await UserService.validateNewUser(
+  //   username,
+  //   email,
+  //   password
+  // );
+
+  // if (!validationResult.success) {
+  //   // TODO: Redo URLs
+  //   response.redirect(validationResult.redirectTo);
+  //   return;
+  // }
+  // // Add User
+  // let addUserResult = await UserService.addUnverifiedUser(
+  //   username,
+  //   email,
+  //   password
+  // );
+  // if (!addUserResult.success) {
+  //   response.redirect(addUserResult.redirectTo);
+  //   return;
+  // }
+  // // Send Mail
+
+  // const mailResult = await MailService.sendMailToUnverifiedUser(
+  //   username,
+  //   email,
+  //   addUserResult.emailConfirmationCode
+  // );
+  // if (!mailResult.success) {
+  //   response.redirect(mailResult.redirectTo);
+  //   return;
+  // }
+
+  // Finish
+
+  try {
+    const body = request.body;
+    const addUserResult = await fetch(`${apiBaseURL}/pending-users`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(body)
+    });
+    const addUserResultJSON = await addUserResult.json();
+    if (!addUserResultJSON.success) {
+      if (addUserResultJSON.statusCode === 400) {
+        request.context = {
+          error: addUserResultJSON.error
+        };
+        next();
+        return;
+      }
+
+      if (addUserResultJSON.statusCode === 403) {
+        const error = new Error(
+          "Unable to add user for register page (forbidden error)"
+        );
+        error.name = "ForbiddenError";
+        throw error;
+      }
+
+      const error = new Error(
+        "Unable to add user for register page (internal error)"
+      );
+      error.name = "InternalError";
+      throw error;
+    }
+
+    response.render("pages/registration-complete");
+  } catch (error) {
+    next(error);
+  }
+};
+
+router.get("/register", limiter, renderRegisterPage);
 
 router.post(
   "/register",
-  [parseForm, doubleCsrfProtection, limiter],
-  async (request: Request, response: Response) => {
-    // process registration
-    // is response good?
-
-    // check captcha
-    if (!(await checkCAPTCHA(request))) {
-      response.redirect("?errorID=captchaIncomplete");
-      return;
-    }
-
-    const [username, email, password] = getUserDetails(request);
-    const validationResult = await UserService.validateNewUser(
-      username,
-      email,
-      password
-    );
-
-    if (!validationResult.success) {
-      // TODO: Redo URLs
-      response.redirect(validationResult.redirectTo);
-      return;
-    }
-    // Add User
-    let addUserResult = await UserService.addUnverifiedUser(
-      username,
-      email,
-      password
-    );
-    if (!addUserResult.success) {
-      response.redirect(addUserResult.redirectTo);
-      return;
-    }
-    // Send Mail
-
-    const mailResult = await MailService.sendMailToUnverifiedUser(
-      username,
-      email,
-      addUserResult.emailConfirmationCode
-    );
-    if (!mailResult.success) {
-      response.redirect(mailResult.redirectTo);
-      return;
-    }
-
-    // Finish
-    response.render("pages/registration-complete");
-  }
+  [parseForm, limiter],
+  processRegistrationInformation,
+  renderRegisterPage
 );
-
-function getUserDetails(request: Request) {
-  let desiredUsername = DOMPurify.sanitize(
-    mongoDBSanitize.sanitize(request.body.username)
-  );
-  let desiredEmail = DOMPurify.sanitize(
-    mongoDBSanitize.sanitize(request.body.email)
-  );
-  let plaintextPassword = DOMPurify.sanitize(
-    mongoDBSanitize.sanitize(request.body.password)
-  );
-  return [desiredUsername, desiredEmail, plaintextPassword];
-}
-
-async function checkCAPTCHA(request: Request) {
-  // get keys
-  try {
-    const responseKey = request.body["g-recaptcha-response"];
-    const reCaptchaSecretKey = process.env.RECAPTCHA_SECRET_KEY ?? "";
-    // check url
-    const reCaptchaURL = "https://www.google.com/recaptcha/api/siteverify";
-    const parameters = new URLSearchParams();
-    parameters.append("secret", reCaptchaSecretKey);
-    parameters.append("response", responseKey);
-    // get response
-    const fetchResponse = await fetch(reCaptchaURL, {
-      method: "post",
-      body: parameters
-    });
-    const fetchResponseJSON: any = await fetchResponse.json();
-    // return response
-    return fetchResponseJSON.success;
-  } catch (error) {
-    // this is mostly caused by external network resources
-    // e.g. reCAPTCHA servers are down
-    log.error("Error WHILE verifying CAPTCHA:");
-    log.error(error);
-    return false;
-  }
-}
 
 export { router };
