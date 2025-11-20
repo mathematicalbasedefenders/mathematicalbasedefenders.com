@@ -6,6 +6,36 @@ import mongoDBSanitize from "express-mongo-sanitize";
 import mongoose from "mongoose";
 import rateLimit from "express-rate-limit";
 import path from "path";
+import bodyParser from "body-parser";
+import { doubleCsrf } from "csrf-csrf";
+const {
+  invalidCsrfTokenError,
+  generateToken,
+  validateRequest,
+  doubleCsrfProtection
+} = doubleCsrf({
+  getSecret: () => process.env.CSRF_SECRET as string,
+  cookieName:
+    process.env.ENVIRONMENT === "production"
+      ? "__Host-psifi.x-csrf-token"
+      : "testing",
+  getTokenFromRequest: (request) => {
+    console.log(request.body?.["csrf-token"]);
+    return request.body?.["csrf-token"];
+  }
+});
+
+const setCSRFToken = async function (
+  request: express.Request,
+  response: express.Response,
+  next: NextFunction
+) {
+  const csrfToken = generateToken(response, request);
+  request.csrfToken = () => {
+    return csrfToken;
+  };
+  next();
+};
 
 require("@dotenvx/dotenvx").config({
   path: path.join(__dirname, "../credentials/.env")
@@ -17,7 +47,10 @@ const corsOptions = {
   credentials: true
 };
 
+const jsonParser = bodyParser.json();
+
 import log from "./api/core/log";
+import { brotliDecompress } from "zlib";
 const PORT = 9000;
 const DATABASE_URI: string | undefined = process.env.DATABASE_CONNECTION_URI;
 
@@ -51,7 +84,10 @@ app.use(
     }
   })
 );
+app.use(jsonParser);
 app.use(cookieParser());
+app.use(setCSRFToken);
+app.use(doubleCsrfProtection);
 
 // mongoose
 if (!DATABASE_URI) {
