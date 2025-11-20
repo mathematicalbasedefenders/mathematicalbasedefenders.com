@@ -19,10 +19,7 @@ const {
     process.env.ENVIRONMENT === "production"
       ? "__Host-psifi.x-csrf-token"
       : "testing",
-  getTokenFromRequest: (request) => {
-    console.log(request.body?.["csrf-token"]);
-    return request.body?.["csrf-token"];
-  }
+  getTokenFromRequest: (request) => request.body?.["csrf-token"]
 });
 
 const setCSRFToken = async function (
