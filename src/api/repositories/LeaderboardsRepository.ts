@@ -11,7 +11,7 @@ export default class LeaderboardsRepository {
     log.info(`Returned Easy Mode data from LeaderboardsRepository.`);
     return {
       success: true,
-      status: 200,
+      statusCode: 200,
       data: data
     };
   }
@@ -23,7 +23,7 @@ export default class LeaderboardsRepository {
     log.info(`Returned Standard Mode data from LeaderboardsRepository.`);
     return {
       success: true,
-      status: 200,
+      statusCode: 200,
       data: data
     };
   }

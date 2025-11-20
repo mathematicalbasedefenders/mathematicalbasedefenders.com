@@ -6,7 +6,7 @@ router.get("/leaderboards/easy", async function (request, response, next) {
   try {
     const leaderboardsRepository = new LeaderboardsRepository();
     const data = await leaderboardsRepository.getEasySingleplayerLeaderboards();
-    response.status(data.status).json(data);
+    response.status(data.statusCode).json(data);
   } catch (error) {
     next(error);
   }
@@ -18,7 +18,7 @@ router.get("/leaderboards/standard", async function (request, response, next) {
     const leaderboardsRepository = new LeaderboardsRepository();
     const data =
       await leaderboardsRepository.getStandardSingleplayerLeaderboards();
-    response.status(data.status).json(data);
+    response.status(data.statusCode).json(data);
   } catch (error) {
     next(error);
   }

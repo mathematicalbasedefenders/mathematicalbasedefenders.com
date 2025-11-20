@@ -6,7 +6,7 @@ router.post("/pending-users", async function (request, response, next) {
   try {
     const pendingUserRepository = new PendingUserRepository();
     const data = await pendingUserRepository.createPendingUser(request.body);
-    response.status(data.status).json(data);
+    response.status(data.statusCode).json(data);
   } catch (error) {
     next(error);
   }

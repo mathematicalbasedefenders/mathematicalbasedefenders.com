@@ -22,7 +22,7 @@ export default class PendingUserRepository {
       log.warn(`Refused to create pending user due to invalid email.`);
       return {
         success: false,
-        status: 400,
+        statusCode: 400,
         error: "Invalid e-mail format."
       };
     }
@@ -33,7 +33,7 @@ export default class PendingUserRepository {
       );
       return {
         success: false,
-        status: 400,
+        statusCode: 400,
         error: "Invalid username format."
       };
     }
@@ -42,7 +42,7 @@ export default class PendingUserRepository {
       log.warn(`Refused to create pending user due to invalid password.`);
       return {
         success: false,
-        status: 400,
+        statusCode: 400,
         error: "Invalid password format."
       };
     }
@@ -64,7 +64,7 @@ export default class PendingUserRepository {
     log.info(`Created new pending user with username ${data.username}.`);
     return {
       success: true,
-      status: 200,
+      statusCode: 200,
       data: data
     };
   }

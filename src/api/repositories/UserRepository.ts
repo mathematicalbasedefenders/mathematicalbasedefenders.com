@@ -13,7 +13,7 @@ export default class UserRepository {
       );
       return {
         success: false,
-        status: 400,
+        statusCode: 400,
         error: "Invalid query."
       };
     }
@@ -27,7 +27,7 @@ export default class UserRepository {
       log.warn(`Can't find data from UserRepository: No query ${query}`);
       return {
         success: false,
-        status: 404,
+        statusCode: 404,
         error: "User not found."
       };
     }
@@ -35,7 +35,7 @@ export default class UserRepository {
     log.info(`Returned data from UserRepository with ${query}`);
     return {
       success: true,
-      status: 200,
+      statusCode: 200,
       data: data
     };
   }

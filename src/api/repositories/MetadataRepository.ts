@@ -12,7 +12,7 @@ export default class MetadataRepository {
       log.warn(`Can't find Metadata from MetadataRepository`);
       return {
         success: false,
-        status: 404,
+        statusCode: 404,
         error: "Metadata not found."
       };
     }
@@ -20,7 +20,7 @@ export default class MetadataRepository {
     log.info(`Returning data from MetadataRepository.`);
     return {
       success: true,
-      status: 200,
+      statusCode: 200,
       data: data
     };
   }

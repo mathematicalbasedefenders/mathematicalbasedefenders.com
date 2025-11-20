@@ -1,6 +1,6 @@
 type RepositoryResponse = {
   success: boolean;
-  status: number;
+  statusCode: number;
   error?: string;
   data?: object;
 };

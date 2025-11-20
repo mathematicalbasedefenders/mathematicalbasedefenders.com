@@ -6,7 +6,7 @@ router.get("/metadata", async function (request, response, next) {
   try {
     const metadataRepository = new MetadataRepository();
     const data = await metadataRepository.getMetadata();
-    response.status(data.status).json(data);
+    response.status(data.statusCode).json(data);
   } catch (error) {
     next(error);
   }
