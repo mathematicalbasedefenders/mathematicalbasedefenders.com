@@ -37,7 +37,6 @@ router.get("/leaderboards/:mode", limiter, async (request, response) => {
   );
   const responseJSON = await fetchResponse.json();
   const data = responseJSON.data;
-  console.debug(0, data);
   data.map((record: LeaderboardsRecord) => {
     record.statistics.time = millisecondsToTime(
       record.statistics.timeInMilliseconds
