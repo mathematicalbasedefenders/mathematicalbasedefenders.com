@@ -2,7 +2,7 @@ import log from "../core/log";
 import { User, UserInterface } from "../models/User";
 import RepositoryResponse from "../types/RepositoryResponse";
 
-const USERNAME_REGEX = /^[A-Za-z0-9_\-]{3,20}$/;
+const USERNAME_REGEX = /^[A-Za-z0-9_]{3,20}$/;
 const USER_ID_REGEX = /^[0-9a-f]{24}$/;
 
 export default class UserRepository {
