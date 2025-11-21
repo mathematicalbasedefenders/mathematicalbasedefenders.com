@@ -106,7 +106,7 @@ const UserSchema = new mongoose.Schema<UserInterface, UserModel>({
 });
 
 UserSchema.static("verboseFindByUsername", async function (username: string) {
-  return this.findOne({ username: username })
+  return this.findOne({ usernameInAllLowercase: username.toLowerCase() })
     .select({
       emailAddress: 0,
       hashedPassword: 0
