@@ -48,6 +48,14 @@ export default class UserRepository {
     return await User.findByUserID(userID);
   }
 
+  /**
+   * This should not be exposed to the end user.
+   * This should only be used for internal purposes.
+   */
+  async getUserDataByEmail(email: string): Promise<UserInterface> {
+    return await User.findByEmail(email);
+  }
+
   validateQuery(query: string) {
     return USERNAME_REGEX.test(query) || USER_ID_REGEX.test(query);
   }
