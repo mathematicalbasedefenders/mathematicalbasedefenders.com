@@ -6,7 +6,7 @@ import bcrypt from "bcrypt";
 import crypto from "crypto";
 import { sendMailToNewlyRegisteredUser } from "../services/mail";
 import UserRepository from "./UserRepository";
-import CAPTCHAData from "../types/CAPTCHA";
+import CAPTCHAData from "../types/CAPTCHAData";
 
 import { JSDOM } from "jsdom";
 import createDOMPurify from "dompurify";
