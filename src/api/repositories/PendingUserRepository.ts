@@ -4,6 +4,8 @@ import { PendingUser } from "../models/PendingUser";
 import RepositoryResponse from "../types/RepositoryResponse";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
+import { sendMailToNewlyRegisteredUser } from "../services/mail";
+import UserRepository from "./UserRepository";
 
 const EMAIL_REGEX =
   /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
@@ -18,38 +20,29 @@ type PendingUserData = {
 
 export default class PendingUserRepository {
   async createPendingUser(data: PendingUserData): Promise<RepositoryResponse> {
-    if (!this.validatePendingEmail(data)) {
-      log.warn(`Refused to create pending user due to invalid email.`);
+    const validationResult = await this.validateUserData(data);
+    if (!validationResult.success) {
       return {
         success: false,
-        statusCode: 400,
-        error: "Invalid e-mail format."
+        statusCode: validationResult.statusCode,
+        error: validationResult.error
       };
     }
 
-    if (!this.validatePendingUsername(data)) {
-      log.warn(
-        `Refused to create pending user due to invalid username: ${data.username}.`
-      );
-      return {
-        success: false,
-        statusCode: 400,
-        error: "Invalid username format."
-      };
-    }
-
-    if (!this.validatePendingPassword(data)) {
-      log.warn(`Refused to create pending user due to invalid password.`);
-      return {
-        success: false,
-        statusCode: 400,
-        error: "Invalid password format."
-      };
-    }
-
-    const hashedPassword = this.hashPassword(data);
+    const hashedPassword = await this.hashPassword(data);
     const emailConfirmationCode = this.createEmailConfirmationCode();
     const hashedEmailConfirmationCode = sha256(emailConfirmationCode);
+
+    const mailResult = await this.sendMailToUser(data, emailConfirmationCode);
+    if (!mailResult) {
+      log.error(`Refused to create pending user due to unable to send mail.`);
+      return {
+        success: false,
+        statusCode: 400,
+        error:
+          "Unable to send mail. (Contact the server administrator if this persists.)"
+      };
+    }
 
     const dataToSave = {
       username: data.username,
@@ -69,6 +62,73 @@ export default class PendingUserRepository {
     };
   }
 
+  async validateUserData(data: PendingUserData) {
+    try {
+      if (!this.validatePendingEmail(data)) {
+        log.warn(`Refused to create pending user due to invalid email.`);
+        return {
+          success: false,
+          statusCode: 400,
+          error: "Invalid e-mail format."
+        };
+      }
+
+      if (!this.validatePendingUsername(data)) {
+        log.warn(
+          `Refused to create pending user due to invalid username: ${data.username}.`
+        );
+        return {
+          success: false,
+          statusCode: 400,
+          error: "Invalid username format."
+        };
+      }
+
+      if (!this.validatePendingPassword(data)) {
+        log.warn(`Refused to create pending user due to invalid password.`);
+        return {
+          success: false,
+          statusCode: 400,
+          error: "Invalid password format."
+        };
+      }
+
+      const isUniqueEmail = await this.checkForDuplicateEmail(data);
+      if (!isUniqueEmail) {
+        log.warn(`Refused to create pending user due to duplicate email.`);
+        return {
+          success: false,
+          statusCode: 400,
+          error: "E-mail already exists."
+        };
+      }
+
+      const isUniqueUsername = await this.checkForDuplicateUsername(data);
+      if (!isUniqueUsername) {
+        log.warn(
+          `Refused to create pending user due to duplicate username: ${data.username}`
+        );
+        return {
+          success: false,
+          statusCode: 400,
+          error: "Username already exists."
+        };
+      }
+
+      return {
+        statusCode: 200,
+        success: true
+      };
+    } catch (error) {
+      log.error(`Error while validating user: ${error}`);
+      return {
+        statusCode: 500,
+        success: false,
+        error: "Internal Server Error."
+      };
+    }
+  }
+
   validatePendingEmail(data: PendingUserData) {
     const email = data.email;
     return EMAIL_REGEX.test(email);
@@ -84,8 +144,26 @@ export default class PendingUserRepository {
     return PASSWORD_REGEX.test(password);
   }
 
+  async checkForDuplicateEmail(data: PendingUserData) {
+    const userRepository = new UserRepository();
+    const existing = await userRepository.getUserDataByEmail(data.email);
+    const pendingExisting = await this.checkPendingUserExistenceByEmail(
+      data.email
+    );
+    return !existing && !pendingExisting;
+  }
+
+  async checkForDuplicateUsername(data: PendingUserData) {
+    const userRepository = new UserRepository();
+    const existing = await userRepository.getUserDataByUsername(data.username);
+    const pendingExisting = await this.checkPendingUserExistenceByUsername(
+      data.username
+    );
+    return !existing && !pendingExisting;
+  }
+
   createEmailConfirmationCode() {
-    const result = crypto.randomBytes(32).toString();
+    const result = crypto.randomUUID();
     return result;
   }
 
@@ -94,6 +172,27 @@ export default class PendingUserRepository {
     const salt = await bcrypt.genSalt(13);
     const hashedPassword = await bcrypt.hash(plaintextPassword, salt);
     return hashedPassword;
+  }
+
+  async sendMailToUser(data: PendingUserData, confirmationCode: string) {
+    if (process.env.CREDENTIAL_SET_USED !== "production") {
+      log.warn(`Using testing credentials when sending mail.`);
+      log.warn(`Mail to pending user ${data.username} not sent.`);
+      log.debug(`Confirmation code for ${data.username}: ${confirmationCode}`);
+      return true;
+    }
+    const result = sendMailToNewlyRegisteredUser(data.email, confirmationCode);
+    return result;
+  }
+
+  private async checkPendingUserExistenceByUsername(username: string) {
+    const existing = await PendingUser.findOne({ username: username }).count();
+    return existing > 0;
+  }
+
+  private async checkPendingUserExistenceByEmail(email: string) {
+    const existing = await PendingUser.findOne({ email: email }).count();
+    return existing > 0;
   }
 }
 
