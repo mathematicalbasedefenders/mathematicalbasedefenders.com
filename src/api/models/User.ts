@@ -52,6 +52,7 @@ interface UserModel extends mongoose.Model<UserInterface> {
   verboseFindByUserID(userID: string): Promise<UserInterface>;
   findByUsername(username: string): Promise<UserInterface>;
   findByUserID(userID: string): Promise<UserInterface>;
+  findByEmail(email: string): Promise<UserInterface>;
   getEasySingleplayerBestScores(limit: number): Promise<Array<UserInterface>>;
   getStandardSingleplayerBestScores(
     limit: number
@@ -135,6 +136,21 @@ UserSchema.static("findByUsername", async function (username: string) {
 
 UserSchema.static("findByUserID", async function (userID: string) {
   return this.findOne({ _id: userID })
+    .select({
+      username: 1,
+      creationDateAndTime: 1,
+      statistics: 1,
+      membership: 1
+    })
+    .clone();
+});
+
+/**
+ * This should not be exposed to the end user.
+ * This should only be used for internal purposes.
+ */
+UserSchema.static("findByEmail", async function (email: string) {
+  return this.findOne({ emailAddress: email })
     .select({
       username: 1,
       creationDateAndTime: 1,
