@@ -6,6 +6,12 @@ import bcrypt from "bcrypt";
 import crypto from "crypto";
 import { sendMailToNewlyRegisteredUser } from "../services/mail";
 import UserRepository from "./UserRepository";
+import CAPTCHAData from "../types/CAPTCHA";
+
+import { JSDOM } from "jsdom";
+import createDOMPurify from "dompurify";
+const window = new JSDOM("").window;
+const DOMPurify = createDOMPurify(window);
 
 const EMAIL_REGEX =
   /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
@@ -19,7 +25,20 @@ type PendingUserData = {
 };
 
 export default class PendingUserRepository {
-  async createPendingUser(data: PendingUserData): Promise<RepositoryResponse> {
+  async createPendingUser(
+    data: PendingUserData & CAPTCHAData
+  ): Promise<RepositoryResponse> {
+    const captchaResponse = data["g-recaptcha-response"] ?? "";
+    const captchaResult = await this.checkCAPTCHA(captchaResponse);
+    if (!captchaResult) {
+      log.warn(`Refused to create pending user due to incomplete CAPTCHA.`);
+      return {
+        success: false,
+        statusCode: 400,
+        error: "CAPTCHA not completed."
+      };
+    }
+
     const validationResult = await this.validateUserData(data);
     if (!validationResult.success) {
       return {
@@ -193,6 +212,18 @@ export default class PendingUserRepository {
   private async checkPendingUserExistenceByEmail(email: string) {
     const existing = await PendingUser.findOne({ email: email }).count();
     return existing > 0;
+  }
+
+  private async checkCAPTCHA(responseKey: string) {
+    const reCaptchaSecretKey = process.env.RECAPTCHA_SECRET_KEY as string;
+    const sanitizedResponseKey = DOMPurify.sanitize(responseKey);
+
+    const reCaptchaURL = `https://www.google.com/recaptcha/api/siteverify?secret=${reCaptchaSecretKey}&response=${sanitizedResponseKey}`;
+
+    const fetchResponse = await fetch(reCaptchaURL, { method: "POST" });
+    const fetchResponseJSON = await fetchResponse.json();
+
+    return fetchResponseJSON.success;
   }
 }
 
