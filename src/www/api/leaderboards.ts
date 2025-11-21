@@ -19,7 +19,7 @@ router.get("/api/leaderboards/:mode", limiter, async (request, response) => {
   if (!["easy", "standard"].includes(request.params.mode)) {
     response
       .status(400)
-      .json({ status: 400, error: "Invalid leaderboards mode." });
+      .json({ statusCode: 400, error: "Invalid leaderboards mode." });
     return;
   }
 
@@ -30,7 +30,9 @@ router.get("/api/leaderboards/:mode", limiter, async (request, response) => {
     response.status(200).json(condensedData);
   } catch (error) {
     log.error(`Error while fetching data through API: ${error}`);
-    response.status(500).json({ status: 500, error: "Internal Server Error." });
+    response
+      .status(500)
+      .json({ statusCode: 500, error: "Internal Server Error." });
   }
 });
 

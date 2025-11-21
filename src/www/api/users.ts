@@ -98,7 +98,7 @@ router.get("/api/users/:user", limiter, async (request, response) => {
     log.warn(`Invalid User Request: Missing user parameter.`);
     response
       .status(400)
-      .json({ status: 400, error: "Missing user parameter for lookup." });
+      .json({ statusCode: 400, error: "Missing user parameter for lookup." });
     return;
   }
 
@@ -110,7 +110,7 @@ router.get("/api/users/:user", limiter, async (request, response) => {
     log.warn(`Invalid User Request: Invalid user username/ID. (${sanitized})`);
     response
       .status(400)
-      .json({ status: 400, error: "Invalid user parameter for lookup." });
+      .json({ statusCode: 400, error: "Invalid user parameter for lookup." });
     return;
   }
 
