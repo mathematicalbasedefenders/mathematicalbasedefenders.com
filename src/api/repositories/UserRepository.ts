@@ -59,4 +59,32 @@ export default class UserRepository {
   validateQuery(query: string) {
     return USERNAME_REGEX.test(query) || USER_ID_REGEX.test(query);
   }
+
+  /**
+   * TODO: User number field is now gone!!!
+   */
+  async createUser(userData: { [key: string]: unknown }) {
+    const newUserData = {
+      username: userData["username"],
+      usernameInAllLowercase: userData["usernameInAllLowercase"],
+      emailAddress: userData["emailAddress"],
+      hashedPassword: userData["hashedPassword"],
+      creationDateAndTime: Date.now(),
+      statistics: {
+        gamesPlayed: 0
+      },
+      membership: {
+        isDeveloper: false,
+        isAdministrator: false,
+        isModerator: false,
+        isContributor: false,
+        isTester: false,
+        isDonator: false,
+        specialRank: ""
+      }
+    };
+
+    const newUser = new User(newUserData);
+    await newUser.save();
+  }
 }
