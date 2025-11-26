@@ -7,14 +7,16 @@ import crypto from "crypto";
 import { sendMailToNewlyRegisteredUser } from "../services/mail";
 import UserRepository from "./UserRepository";
 import CAPTCHAData from "../types/CAPTCHAData";
+import ExpressMongoSanitize from "express-mongo-sanitize";
 
 import { JSDOM } from "jsdom";
 import createDOMPurify from "dompurify";
+import MetadataRepository from "./MetadataRepository";
 const window = new JSDOM("").window;
 const DOMPurify = createDOMPurify(window);
 
 const EMAIL_REGEX =
-  /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+  /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+){1,256}$/;
 const USERNAME_REGEX = /^[A-Za-z0-9_\-]{3,20}$/;
 const PASSWORD_REGEX = /^[0-9a-zA-Z!"#$%&'()*+,-.:;<=>?@^_`{|}~]{8,48}$/;
 
@@ -83,6 +85,36 @@ export default class PendingUserRepository {
 
   async validateUserData(data: PendingUserData) {
     try {
+      if (!data.email) {
+        log.warn(`Refused to create pending user due to empty email.`);
+        return {
+          success: false,
+          statusCode: 400,
+          error: "Empty e-mail."
+        };
+      }
+
+      if (!data.username) {
+        log.warn(`Refused to create pending user due to empty username.`);
+        return {
+          success: false,
+          statusCode: 400,
+          error: "Empty username."
+        };
+      }
+
+      if (ExpressMongoSanitize.has([data.email], true)) {
+        log.warn(
+          `Refused to create pending user due to potentially insecure email.`
+        );
+        return {
+          success: false,
+          statusCode: 400,
+          error:
+            "Invalid e-mail format. E-mail contains special characters that may not work with implementation."
+        };
+      }
+
       if (!this.validatePendingEmail(data)) {
         log.warn(`Refused to create pending user due to invalid email.`);
         return {
@@ -204,6 +236,43 @@ export default class PendingUserRepository {
     return result;
   }
 
+  async verifyPendingUser(email: string, confirmationCode: string) {
+    const user = await this.getPendingUserDataByCredentials(
+      email,
+      confirmationCode
+    );
+    if (!user) {
+      log.warn(`Refused to verify user due to non-existent pending user.`);
+      return {
+        success: false,
+        statusCode: 400,
+        error: "User to verify's record not found or invalid."
+      };
+    }
+
+    try {
+      const userRepository = new UserRepository();
+      const metadataRepository = new MetadataRepository();
+
+      await this.deletePendingUser(email, confirmationCode);
+      await userRepository.createUser(user);
+      await metadataRepository.incrementUserCount();
+    } catch (error) {
+      log.error(`Error while validating user: ${error}`);
+      return {
+        statusCode: 500,
+        success: false,
+        error: "Internal Server Error."
+      };
+    }
+
+    console.log(`Verified new user: ${user.username}`);
+    return {
+      success: true,
+      statusCode: 200
+    };
+  }
+
   private async checkPendingUserExistenceByUsername(username: string) {
     const existing = await PendingUser.findOne({ username: username }).count();
     return existing > 0;
@@ -212,6 +281,40 @@ export default class PendingUserRepository {
   private async checkPendingUserExistenceByEmail(email: string) {
     const existing = await PendingUser.findOne({ email: email }).count();
     return existing > 0;
+  }
+
+  private async getPendingUserDataByCredentials(
+    email: string,
+    confirmationCode: string
+  ) {
+    const hashedEmailConfirmationCode = sha256(confirmationCode);
+    const pendingUser = await PendingUser.findOne({
+      $and: [
+        { email: email },
+        { emailConfirmationCode: hashedEmailConfirmationCode }
+      ]
+    })
+      .clone()
+      .lean();
+    return pendingUser;
+  }
+
+  /**
+   * Use when e.g. a pending user is verified.
+   */
+  private async deletePendingUser(email: string, confirmationCode: string) {
+    const hashedEmailConfirmationCode = sha256(confirmationCode);
+    await PendingUser.findOneAndDelete({
+      $and: [
+        { email: email },
+        { emailConfirmationCode: hashedEmailConfirmationCode }
+      ]
+    });
+
+    const emailPrefix = email.substring(0, 5);
+    console.log(
+      `Deleted pending user record with email starting with ${emailPrefix}.`
+    );
   }
 
   private async checkCAPTCHA(responseKey: string) {
