@@ -24,4 +24,16 @@ export default class MetadataRepository {
       data: data
     };
   }
+
+  async incrementUserCount() {
+    // TODO: Error handling???
+    const data = await Metadata.findOne({});
+    if (!data) {
+      log.warn(`Can't find Metadata from MetadataRepository`);
+      log.warn(`Will not increment user count.`);
+      return;
+    }
+    data.usersRegistered = data.usersRegistered + 1;
+    data.save();
+  }
 }
