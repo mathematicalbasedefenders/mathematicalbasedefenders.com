@@ -1,11 +1,50 @@
 import express from "express";
 import UserRepository from "../repositories/UserRepository";
+import PendingUserRepository from "../repositories/PendingUserRepository";
+import log from "../core/log";
 const router = express.Router();
 
 router.get("/users/:query", async function (request, response, next) {
   try {
     const userRepository = new UserRepository();
     const data = await userRepository.getUserData(request.params.query);
+    response.status(data.statusCode).json(data);
+  } catch (error) {
+    next(error);
+  }
+  return;
+});
+
+router.put("/users", async function (request, response, next) {
+  try {
+    const pendingUserRepository = new PendingUserRepository();
+    const email = request.query.email;
+    const confirmationCode = request.query.code;
+
+    if (typeof email !== "string") {
+      log.warn(`Request to verify user failed: Invalid e-mail type.`);
+      response.status(400).json({
+        success: false,
+        error: "Invalid credentials.",
+        statusCode: 400
+      });
+      return;
+    }
+
+    if (typeof confirmationCode !== "string") {
+      log.warn(`Request to verify user failed: Invalid code type.`);
+      response.status(400).json({
+        success: false,
+        error: "Invalid credentials.",
+        statusCode: 400
+      });
+      return;
+    }
+
+    const data = await pendingUserRepository.verifyPendingUser(
+      email,
+      confirmationCode
+    );
     response.status(data.statusCode).json(data);
   } catch (error) {
     next(error);
