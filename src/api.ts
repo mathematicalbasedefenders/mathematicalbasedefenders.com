@@ -7,31 +7,66 @@ import mongoose from "mongoose";
 import rateLimit from "express-rate-limit";
 import path from "path";
 import bodyParser from "body-parser";
-import { doubleCsrf } from "csrf-csrf";
-const {
-  invalidCsrfTokenError,
-  generateToken,
-  validateRequest,
-  doubleCsrfProtection
-} = doubleCsrf({
-  getSecret: () => process.env.CSRF_SECRET as string,
-  cookieName:
-    process.env.ENVIRONMENT === "production"
-      ? "__Host-psifi.x-csrf-token"
-      : "testing",
-  getTokenFromRequest: (request) => request.body?.["csrf-token"]
+import log from "./api/core/log";
+import crypto from "crypto";
+import { sha256 } from "js-sha256";
+
+const sessions: Set<string> = new Set();
+
+type Route = {
+  method: string;
+  path: string;
+};
+
+const exemptedFromCSRFCheck: Route[] = [];
+
+exemptedFromCSRFCheck.push({
+  method: "PUT",
+  path: "/users"
 });
 
-const setCSRFToken = async function (
-  request: express.Request,
-  response: express.Response,
+const createCSRFToken = async function (
+  request: Request,
+  response: Response,
   next: NextFunction
 ) {
-  const csrfToken = generateToken(response, request);
+  const csrfToken = sha256(crypto.randomBytes(48).toString());
+  sessions.add(csrfToken);
   request.csrfToken = () => {
     return csrfToken;
   };
   next();
+};
+
+const checkCSRFToken = function (
+  request: Request,
+  response: Response,
+  next: NextFunction
+) {
+  if (
+    exemptedFromCSRFCheck.some(
+      (route) => route.method == route.method && route.path == request.path
+    )
+  ) {
+    next();
+    return;
+  }
+
+  // no check needed if it's a GET or a HEAD or a OPTIONS request.
+  if (["GET", "HEAD", "OPTIONS"].includes(request.method)) {
+    next();
+    return;
+  }
+
+  const token = request.body["csrf-token"];
+  if (sessions.has(token)) {
+    sessions.delete(token);
+    next();
+  } else {
+    const error = new Error("Invalid CSRF Token.");
+    error.name = "ForbiddenError";
+    throw error;
+  }
 };
 
 require("@dotenvx/dotenvx").config({
@@ -46,8 +81,6 @@ const corsOptions = {
 
 const jsonParser = bodyParser.json();
 
-import log from "./api/core/log";
-import { brotliDecompress } from "zlib";
 const PORT = 9000;
 const DATABASE_URI: string | undefined = process.env.DATABASE_CONNECTION_URI;
 
@@ -58,9 +91,11 @@ const limiter = rateLimit({
   legacyHeaders: false,
   handler: function (request, response) {
     log.warn(`Rate limited IP ${request.ip}`);
-    response
-      .status(429)
-      .json({ success: false, error: "You are being rate limited." });
+    response.status(429).json({
+      statusCode: 429,
+      success: false,
+      error: "You are being rate limited."
+    });
     return;
   }
 });
@@ -83,8 +118,8 @@ app.use(
 );
 app.use(jsonParser);
 app.use(cookieParser());
-app.use(setCSRFToken);
-app.use(doubleCsrfProtection);
+app.use(createCSRFToken);
+app.use(checkCSRFToken);
 
 // mongoose
 if (!DATABASE_URI) {
@@ -107,24 +142,36 @@ require("fs")
 
 // PUT THIS LAST (404)
 app.get("*", function (request: Request, response: Response) {
-  response.status(404).json({ success: false, error: "Not Found." });
+  response
+    .status(404)
+    .json({ statusCode: 404, success: false, error: "Not Found." });
 });
 
 // stuff that needs to be at the end
 app.use(
   (error: Error, request: Request, response: Response, next: NextFunction) => {
     log.error(error.stack);
-    response.status(500).json({
-      success: false,
-      error:
-        "Internal Server Error. (Contact the server administrator if this persists.)"
-    });
+    if (error.name === "ForbiddenError") {
+      response.status(403).json({
+        statusCode: 403,
+        success: false,
+        error:
+          "Forbidden Error. You don't have access to perform this operation. (Contact the server administrator if this persists.)"
+      });
+    } else {
+      response.status(500).json({
+        statusCode: 500,
+        success: false,
+        error:
+          "Internal Server Error. (Contact the server administrator if this persists.)"
+      });
+    }
   }
 );
 
 app.listen(PORT, () => {
   log.info(`App listening at http://localhost:${PORT}`);
-  if (process.env.CREDENTIAL_SET_USED === "testing") {
+  if (process.env.CREDENTIAL_SET_USED !== "production") {
     log.warn(`Using testing credentials.`);
   }
 });
