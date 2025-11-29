@@ -18,8 +18,8 @@ router.get("/users/:query", async function (request, response, next) {
 router.put("/users", async function (request, response, next) {
   try {
     const pendingUserRepository = new PendingUserRepository();
-    const email = request.query.email;
-    const confirmationCode = request.query.code;
+    const email = request.body.email;
+    const confirmationCode = request.body.code;
 
     if (typeof email !== "string") {
       log.warn(`Request to verify user failed: Invalid e-mail type.`);
@@ -41,9 +41,12 @@ router.put("/users", async function (request, response, next) {
       return;
     }
 
+    const decodedEmail = decodeURIComponent(email);
+    const decodedCode = decodeURIComponent(confirmationCode);
+
     const data = await pendingUserRepository.verifyPendingUser(
-      email,
-      confirmationCode
+      decodedEmail,
+      decodedCode
     );
     response.status(data.statusCode).json(data);
   } catch (error) {
