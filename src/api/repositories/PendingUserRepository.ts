@@ -266,7 +266,7 @@ export default class PendingUserRepository {
       };
     }
 
-    console.log(`Verified new user: ${user.username}`);
+    log.info(`Verified new user: ${user.username}`);
     return {
       success: true,
       statusCode: 200
@@ -279,7 +279,7 @@ export default class PendingUserRepository {
   }
 
   private async checkPendingUserExistenceByEmail(email: string) {
-    const existing = await PendingUser.findOne({ email: email }).count();
+    const existing = await PendingUser.findOne({ emailAddress: email }).count();
     return existing > 0;
   }
 
@@ -290,7 +290,7 @@ export default class PendingUserRepository {
     const hashedEmailConfirmationCode = sha256(confirmationCode);
     const pendingUser = await PendingUser.findOne({
       $and: [
-        { email: email },
+        { emailAddress: email },
         { emailConfirmationCode: hashedEmailConfirmationCode }
       ]
     })
@@ -306,13 +306,13 @@ export default class PendingUserRepository {
     const hashedEmailConfirmationCode = sha256(confirmationCode);
     await PendingUser.findOneAndDelete({
       $and: [
-        { email: email },
+        { emailAddress: email },
         { emailConfirmationCode: hashedEmailConfirmationCode }
       ]
     });
 
     const emailPrefix = email.substring(0, 5);
-    console.log(
+    log.info(
       `Deleted pending user record with email starting with ${emailPrefix}.`
     );
   }
