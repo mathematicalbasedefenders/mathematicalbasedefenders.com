@@ -126,7 +126,10 @@ function constructConfirmationUrl(base: string, email: string, code: string) {
   if (process.env.CREDENTIAL_SET_USED === "production") {
     domain = "https://mathematicalbasedefenders.com";
   }
-  return `${domain}/${base}?code=${encodedCode}`;
+
+  // here because for some reason the `+`s in an emails are replaced with spaces.
+  const encodedEmail = email.replaceAll("+", "%2B");
+  return `${domain}/${base}?email=${encodedEmail}&code=${encodedCode}`;
 }
 
 function validateUrlParameters(base: string, email: string, code: string) {
