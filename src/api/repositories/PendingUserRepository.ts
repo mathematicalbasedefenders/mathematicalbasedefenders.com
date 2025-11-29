@@ -90,7 +90,7 @@ export default class PendingUserRepository {
         return {
           success: false,
           statusCode: 400,
-          error: "Empty e-mail."
+          error: "Empty e-mail field."
         };
       }
 
@@ -99,7 +99,7 @@ export default class PendingUserRepository {
         return {
           success: false,
           statusCode: 400,
-          error: "Empty username."
+          error: "Empty username field."
         };
       }
 
@@ -111,7 +111,7 @@ export default class PendingUserRepository {
           success: false,
           statusCode: 400,
           error:
-            "Invalid e-mail format. E-mail contains special characters that may not work with implementation."
+            "Invalid e-mail format. (E-mail contains special characters that may not work with implementation.)"
         };
       }
 
