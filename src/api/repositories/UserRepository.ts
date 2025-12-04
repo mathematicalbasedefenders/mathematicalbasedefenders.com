@@ -56,6 +56,36 @@ export default class UserRepository {
     return await User.findByEmail(email);
   }
 
+  /**
+   * This is for internal use as well.
+   */
+  async changePasswordForEmail(
+    email: string,
+    newHashedPassword: string
+  ): Promise<RepositoryResponse> {
+    const target = { emailAddress: email };
+    const data = { hashedPassword: newHashedPassword };
+    const result = await User.findOneAndUpdate(target, data);
+
+    if (!result) {
+      log.warn(
+        `Can't find data from UserRepository: No email ${email.substring(0, 5)}`
+      );
+      return {
+        success: false,
+        statusCode: 404,
+        error: "User to update password not found."
+      };
+    }
+
+    log.info(`Updated password for user with email ${email.substring(0, 5)}`);
+    return {
+      success: true,
+      statusCode: 200,
+      data: { message: "Successfully updated password." }
+    };
+  }
+
   validateQuery(query: string) {
     return USERNAME_REGEX.test(query) || USER_ID_REGEX.test(query);
   }
