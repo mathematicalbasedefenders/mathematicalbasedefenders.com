@@ -45,7 +45,7 @@ const checkCSRFToken = function (
 ) {
   if (
     exemptedFromCSRFCheck.some(
-      (route) => route.method == route.method && route.path == request.path
+      (route) => route.method == request.method && route.path == request.path
     )
   ) {
     next();
