@@ -46,4 +46,4 @@ const PendingPasswordReset = mongoose.model<
   PendingPasswordResetModel
 >("PendingPasswordReset", PendingPasswordResetSchema, "pendingPasswordResets");
 
-export default PendingPasswordReset;
+export { PendingPasswordReset };
