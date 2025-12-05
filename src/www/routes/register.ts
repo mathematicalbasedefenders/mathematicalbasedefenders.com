@@ -56,7 +56,7 @@ const renderRegisterPage = async (
       throw error;
     }
     response.render("pages/register", {
-      csrfToken: csrfTokenRequestJSON.csrfToken,
+      csrfToken: csrfTokenRequestJSON.data?.csrfToken,
       errorMessage: request.context?.error,
       recaptchaSiteKey: process.env.RECAPTCHA_SITE_KEY
     });
