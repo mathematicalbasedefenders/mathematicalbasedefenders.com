@@ -7,7 +7,7 @@ import mongoose from "mongoose";
 import rateLimit from "express-rate-limit";
 import path from "path";
 import bodyParser from "body-parser";
-import log from "./api/core/log";
+import log from "./core/log";
 import crypto from "crypto";
 import { sha256 } from "js-sha256";
 
@@ -63,14 +63,15 @@ const checkCSRFToken = function (
     sessions.delete(token);
     next();
   } else {
-    const error = new Error("Invalid CSRF Token.");
+    const routeName = `${request.method} ${request.path}`;
+    const error = new Error(`Invalid CSRF Token for ${routeName}.`);
     error.name = "ForbiddenError";
     throw error;
   }
 };
 
 require("@dotenvx/dotenvx").config({
-  path: path.join(__dirname, "../credentials/.env")
+  path: path.join(__dirname, "../../credentials/.env")
 });
 
 const cors = require("cors");
@@ -135,9 +136,9 @@ mongoose.connection.on("connected", () => {
 
 // Routes
 require("fs")
-  .readdirSync(path.join(__dirname, "./api/routes"))
+  .readdirSync(path.join(__dirname, "../api/routes"))
   .forEach((file: string) => {
-    app.use(require(path.join(__dirname, "./api/routes", file)).router);
+    app.use(require(path.join(__dirname, "../api/routes", file)).router);
   });
 
 // PUT THIS LAST (404)

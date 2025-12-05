@@ -9,7 +9,7 @@ import rateLimit from "express-rate-limit";
 import path from "path";
 
 require("@dotenvx/dotenvx").config({
-  path: path.join(__dirname, "../credentials/.env")
+  path: path.join(__dirname, "../../credentials/.env")
 });
 
 const cors = require("cors");
@@ -18,8 +18,8 @@ const corsOptions = {
   credentials: true
 };
 
-import { log } from "./www/core/log";
-import { getLicenses } from "./www/core/licenses";
+import { log } from "./core/log";
+import { getLicenses } from "./core/licenses";
 
 const PORT = 8000;
 const API_PORT = 9000;
@@ -35,10 +35,12 @@ const limiter = rateLimit({
 const app = express();
 app.set("trust proxy", 2);
 app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "www/views"));
-app.use(favicon(__dirname + "/www/public/assets/images/favicon.ico"));
+app.set("views", path.join(__dirname, "..", "www/views"));
+app.use(
+  favicon(path.join(__dirname, "..", "/www/public/assets/images/favicon.ico"))
+);
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(__dirname + "/www/public"));
+app.use(express.static(path.join(__dirname, "..", "/www/public")));
 app.use(mongoDBSanitize());
 app.use(limiter);
 app.use(cors(corsOptions));
@@ -116,22 +118,24 @@ mongoose.connection.on("connected", () => {
 
 // Routes
 require("fs")
-  .readdirSync(require("path").join(__dirname, "./www/routes"))
+  .readdirSync(require("path").join(__dirname, "../www/routes"))
   .forEach((file: string) => {
-    app.use(require("./www/routes/" + file).router);
+    app.use(require("../www/routes/" + file).router);
   });
 
 require("fs")
-  .readdirSync(require("path").join(__dirname, "./www/api"))
+  .readdirSync(require("path").join(__dirname, "../www/api"))
   .forEach((file: string) => {
-    app.use(require("./www/api/" + file).router);
+    app.use(require("../www/api/" + file).router);
   });
 
 // PUT THIS LAST (404 page)
 app.get("*", function (request: Request, response: Response) {
   response
     .status(404)
-    .render(__dirname + "/www/views/pages/404", { resourceName: "page" });
+    .render(path.join(__dirname, "..", "/www/views/pages/404"), {
+      resourceName: "page"
+    });
 });
 
 // stuff that needs to be at the end
@@ -141,10 +145,10 @@ app.use(
     log.error(error.stack);
     if (error.name === "ForbiddenError") {
       response.status(403);
-      response.render(path.join(__dirname, "www/views/pages/403.ejs"));
+      response.render(path.join(__dirname, "..", "www/views/pages/403.ejs"));
     } else {
       response.status(500);
-      response.render(path.join(__dirname, "www/views/pages/error.ejs"));
+      response.render(path.join(__dirname, "..", "www/views/pages/error.ejs"));
     }
   }
 );
