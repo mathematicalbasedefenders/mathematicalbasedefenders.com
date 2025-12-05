@@ -240,9 +240,30 @@ export default class PendingUserRepository {
   }
 
   async verifyPendingUser(email: string, confirmationCode: string) {
+    if (typeof email !== "string") {
+      log.warn(`Request to verify user failed: Invalid e-mail type.`);
+      return {
+        success: false,
+        error: "Invalid credentials.",
+        statusCode: 400
+      };
+    }
+
+    if (typeof confirmationCode !== "string") {
+      log.warn(`Request to verify user failed: Invalid code type.`);
+      return {
+        success: false,
+        error: "Invalid credentials.",
+        statusCode: 400
+      };
+    }
+
+    const decodedEmail = decodeURIComponent(email);
+    const decodedCode = decodeURIComponent(confirmationCode);
+
     const user = await this.getPendingUserDataByCredentials(
-      email,
-      confirmationCode
+      decodedEmail,
+      decodedCode
     );
     if (!user) {
       log.warn(`Refused to verify user due to non-existent pending user.`);
@@ -257,7 +278,7 @@ export default class PendingUserRepository {
       const userRepository = new UserRepository();
       const metadataRepository = new MetadataRepository();
 
-      await this.deletePendingUser(email, confirmationCode);
+      await this.deletePendingUser(decodedEmail, decodedCode);
       await userRepository.createUser(user);
       await metadataRepository.incrementUserCount();
     } catch (error) {
