@@ -20,4 +20,23 @@ router.post(
   }
 );
 
+router.get(
+  "/pending-password-resets/:email/:code",
+  async function (request, response, next) {
+    try {
+      const pendingPasswordResetRepository =
+        new PendingPasswordResetRepository();
+      const data =
+        await pendingPasswordResetRepository.checkPasswordResetRecordExistence(
+          request.params.email,
+          request.params.code
+        );
+      response.status(data.statusCode).json(data);
+    } catch (error) {
+      next(error);
+    }
+    return;
+  }
+);
+
 export { router };
