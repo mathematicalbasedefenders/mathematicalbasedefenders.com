@@ -7,7 +7,9 @@ router.get("/csrf", async function (request, response, next) {
     response.json({
       statusCode: 200,
       success: true,
-      csrfToken: request.csrfToken()
+      data: {
+        csrfToken: request.csrfToken()
+      }
     });
   } catch (error) {
     log.error(`Error while generating CSRF token.`);
