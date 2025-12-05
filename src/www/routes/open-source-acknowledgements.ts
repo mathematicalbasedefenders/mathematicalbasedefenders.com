@@ -7,7 +7,7 @@ const limiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false
 });
-import * as server from "../../server";
+import * as server from "../server";
 
 router.get(
   "/open-source-acknowledgements",

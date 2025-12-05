@@ -8,7 +8,7 @@ const limiter = rateLimit({
   legacyHeaders: false
 });
 
-import { apiBaseURL } from "../../server.js";
+import { apiBaseURL } from "../server.js";
 import { log } from "../core/log.js";
 
 router.get(

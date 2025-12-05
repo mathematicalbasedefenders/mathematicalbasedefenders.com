@@ -6,7 +6,7 @@ import {
   formatToRelativeTime,
   millisecondsToTime
 } from "../core/format-number";
-import { apiBaseURL } from "../../server";
+import { apiBaseURL } from "../server";
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,

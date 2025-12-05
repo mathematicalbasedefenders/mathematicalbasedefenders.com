@@ -24,7 +24,7 @@ const fetch = require("node-fetch");
 import { JSDOM } from "jsdom";
 import createDOMPurify from "dompurify";
 import { log } from "../core/log";
-import { apiBaseURL } from "../../server";
+import { apiBaseURL } from "../server";
 import path from "path";
 
 const window: any = new JSDOM("").window;
