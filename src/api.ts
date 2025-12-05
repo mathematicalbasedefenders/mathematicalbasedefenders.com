@@ -21,7 +21,7 @@ type Route = {
 const exemptedFromCSRFCheck: Route[] = [];
 
 exemptedFromCSRFCheck.push({
-  method: "PUT",
+  method: "POST",
   path: "/users"
 });
 
