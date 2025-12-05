@@ -1,7 +1,6 @@
 import express from "express";
 import UserRepository from "../repositories/UserRepository";
 import PendingUserRepository from "../repositories/PendingUserRepository";
-import log from "../core/log";
 import PendingPasswordResetRepository from "../repositories/PendingPasswordResetRepository";
 const router = express.Router();
 
@@ -23,32 +22,9 @@ router.post("/users", async function (request, response, next) {
     const email = request.body.email;
     const confirmationCode = request.body.code;
 
-    if (typeof email !== "string") {
-      log.warn(`Request to verify user failed: Invalid e-mail type.`);
-      response.status(400).json({
-        success: false,
-        error: "Invalid credentials.",
-        statusCode: 400
-      });
-      return;
-    }
-
-    if (typeof confirmationCode !== "string") {
-      log.warn(`Request to verify user failed: Invalid code type.`);
-      response.status(400).json({
-        success: false,
-        error: "Invalid credentials.",
-        statusCode: 400
-      });
-      return;
-    }
-
-    const decodedEmail = decodeURIComponent(email);
-    const decodedCode = decodeURIComponent(confirmationCode);
-
     const data = await pendingUserRepository.verifyPendingUser(
-      decodedEmail,
-      decodedCode
+      email,
+      confirmationCode
     );
     response.status(data.statusCode).json(data);
   } catch (error) {
@@ -59,43 +35,25 @@ router.post("/users", async function (request, response, next) {
 
 // Process reset password reset
 router.patch(
-  "/users/:query/password",
+  "/users/:userID/password",
   async function (request, response, next) {
     try {
       const pendingPasswordResetRepository =
         new PendingPasswordResetRepository();
+
+      const userID = request.params.userID;
       const email = request.body.email;
       const confirmationCode = request.body.code;
       const newPassword = request.body.newPassword;
-
-      if (typeof email !== "string") {
-        log.warn(`Request to verify user failed: Invalid e-mail type.`);
-        response.status(400).json({
-          success: false,
-          error: "Invalid credentials.",
-          statusCode: 400
-        });
-        return;
-      }
-
-      if (typeof confirmationCode !== "string") {
-        log.warn(`Request to verify user failed: Invalid code type.`);
-        response.status(400).json({
-          success: false,
-          error: "Invalid credentials.",
-          statusCode: 400
-        });
-        return;
-      }
-
-      const decodedEmail = decodeURIComponent(email);
-      const decodedCode = decodeURIComponent(confirmationCode);
+      const confirmNewPassword = request.body.confirmNewPassword;
 
       const data =
         await pendingPasswordResetRepository.verifyPendingPasswordReset(
-          decodedEmail,
-          decodedCode,
-          newPassword
+          userID,
+          email,
+          confirmationCode,
+          newPassword,
+          confirmNewPassword
         );
       response.status(data.statusCode).json(data);
     } catch (error) {
