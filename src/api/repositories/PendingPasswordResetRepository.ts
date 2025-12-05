@@ -53,6 +53,24 @@ export default class PendingPasswordResetRepository {
       };
     }
 
+    /**
+     *  Returns a successful response if there is no user with the e-mail `data.email`
+     *  for security reasons and to prevent abuse as well.
+     */
+    const userRepository = new UserRepository();
+    const existing = await userRepository.getUserDataByEmail(data.email);
+    if (!existing) {
+      const shortenedEmail = data.email.substring(0, 5);
+      log.info(
+        `Refused to create password reset request due to no user with email ${shortenedEmail}`
+      );
+      log.info(`But returning a fake successful 200 response.`);
+      return {
+        success: true,
+        statusCode: 200
+      };
+    }
+
     // const hashedPassword = await this.hashPassword(data);
     const emailConfirmationCode = this.createEmailConfirmationCode();
     const hashedEmailConfirmationCode = sha256(emailConfirmationCode);
