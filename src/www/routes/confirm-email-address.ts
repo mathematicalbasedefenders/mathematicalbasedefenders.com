@@ -37,7 +37,7 @@ router.get(
       };
 
       const verifyUserResult = await fetch(`${apiBaseURL}/users`, {
-        method: "PUT",
+        method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
