@@ -4,10 +4,7 @@ import { PendingPasswordReset } from "../models/PendingPasswordReset";
 import RepositoryResponse from "../types/RepositoryResponse";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
-import {
-  sendMailForPasswordReset,
-  sendMailToNewlyRegisteredUser
-} from "../services/mail";
+import { sendMailForPasswordReset } from "../services/mail";
 import UserRepository from "./UserRepository";
 import CAPTCHAData from "../types/CAPTCHAData";
 import ExpressMongoSanitize from "express-mongo-sanitize";
@@ -20,6 +17,7 @@ const DOMPurify = createDOMPurify(window);
 const EMAIL_REGEX =
   /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+){1,256}$/;
 const PASSWORD_REGEX = /^[0-9a-zA-Z!"#$%&'()*+,-.:;<=>?@^_`{|}~]{8,48}$/;
+const USER_ID_REGEX = /^[0-9a-f]{24}$/;
 
 type PendingPasswordResetData = {
   email: string;
@@ -54,8 +52,8 @@ export default class PendingPasswordResetRepository {
     }
 
     /**
-     *  Returns a successful response if there is no user with the e-mail `data.email`
-     *  for security reasons and to prevent abuse as well.
+     * Returns a (fake) successful response if there is no user with the e-mail
+     * `data.email` for security reasons and to prevent abuse as well.
      */
     const userRepository = new UserRepository();
     const existing = await userRepository.getUserDataByEmail(data.email);
@@ -63,6 +61,22 @@ export default class PendingPasswordResetRepository {
       const shortenedEmail = data.email.substring(0, 5);
       log.info(
         `Refused to create password reset request due to no user with email ${shortenedEmail}`
+      );
+      log.info(`But returning a fake successful 200 response.`);
+      return {
+        success: true,
+        statusCode: 200
+      };
+    }
+
+    /**
+     * Returns a (fake) successful response if there is already an active
+     * `data.email` for security reasons and to prevent abuse as well.
+     */
+    const isUniqueEmail = await this.checkForDuplicateEmail(data);
+    if (!isUniqueEmail) {
+      log.warn(
+        `Refused to create pending password reset record due to duplicate email.`
       );
       log.info(`But returning a fake successful 200 response.`);
       return {
@@ -93,6 +107,7 @@ export default class PendingPasswordResetRepository {
       emailAddress: data.email,
       passwordResetConfirmationLink: `https://mathematicalbasedefenders.com/change-password?email=${encodedEmail}&code=${emailConfirmationCode}`,
       passwordResetConfirmationCode: hashedEmailConfirmationCode,
+      userID: existing._id,
       expiresAt: new Date(Date.now() + 1800000).getTime()
     };
     PendingPasswordReset.create(dataToSave);
@@ -106,7 +121,33 @@ export default class PendingPasswordResetRepository {
     };
   }
 
-  async validateFormData(data: PendingPasswordResetData) {
+  async checkPasswordResetRecordExistence(email: string, code: string) {
+    const decodedEmail = decodeURIComponent(email);
+    const decodedCode = decodeURIComponent(code);
+
+    const record = await this.getPendingPasswordResetRecordDataByCredentials(
+      decodedEmail,
+      decodedCode
+    );
+
+    if (!record) {
+      return {
+        success: false,
+        statusCode: 404,
+        error: "Not Found"
+      };
+    }
+
+    return {
+      success: true,
+      statusCode: 200,
+      data: {
+        userID: record.userID
+      }
+    };
+  }
+
+  private async validateFormData(data: PendingPasswordResetData) {
     try {
       if (!data.email) {
         log.warn(
@@ -139,19 +180,6 @@ export default class PendingPasswordResetRepository {
           success: false,
           statusCode: 400,
           error: "Invalid e-mail format."
-        };
-      }
-
-      const isUniqueEmail = await this.checkForDuplicateEmail(data);
-      if (!isUniqueEmail) {
-        log.warn(
-          `Refused to create pending password reset record due to duplicate email.`
-        );
-        return {
-          success: false,
-          statusCode: 400,
-          error:
-            "E-mail already exists. Please check your e-mail for any pending password resets records you may have filed within the past 60 minutes."
         };
       }
 
@@ -195,7 +223,7 @@ export default class PendingPasswordResetRepository {
     return hashedPassword;
   }
 
-  async sendMailToUser(
+  private async sendMailToUser(
     data: PendingPasswordResetData,
     confirmationCode: string
   ) {
@@ -214,14 +242,47 @@ export default class PendingPasswordResetRepository {
 
   // This both verifies and processes the password reset request for some reason...
   async verifyPendingPasswordReset(
+    userID: string,
     email: string,
     confirmationCode: string,
-    newPassword: string
+    newPassword: string,
+    confirmNewPassword: string
   ) {
+    if (!USER_ID_REGEX.test(userID)) {
+      log.warn(`Request to change password failed: Invalid user ID.`);
+      return {
+        success: false,
+        error: "Invalid credentials.",
+        statusCode: 400
+      };
+    }
+
+    if (typeof email !== "string") {
+      log.warn(`Request to change password failed: Invalid e-mail type.`);
+      return {
+        success: false,
+        error: "Invalid credentials.",
+        statusCode: 400
+      };
+    }
+
+    if (typeof confirmationCode !== "string") {
+      log.warn(`Request to change password failed: Invalid code type.`);
+      return {
+        success: false,
+        error: "Invalid credentials.",
+        statusCode: 400
+      };
+    }
+
+    const decodedEmail = decodeURIComponent(email);
+    const decodedCode = decodeURIComponent(confirmationCode);
+
     const user = await this.getPendingPasswordResetRecordDataByCredentials(
       email,
       confirmationCode
     );
+
     if (!user) {
       log.warn(
         `Refused to verify password reset due to non-existent pending password reset record.`
@@ -230,6 +291,26 @@ export default class PendingPasswordResetRepository {
         success: false,
         statusCode: 400,
         error: "User to verify's record not found or invalid."
+      };
+    }
+
+    if (user.userID !== userID) {
+      log.warn(`Refused to verify password reset due user IDs not matching.`);
+      return {
+        success: false,
+        statusCode: 400,
+        error: "User to verify's record not found or invalid."
+      };
+    }
+
+    if (newPassword !== confirmNewPassword) {
+      log.warn(
+        `Refused to verify password reset due to passwords not matching.`
+      );
+      return {
+        success: false,
+        statusCode: 400,
+        error: "New password and confirmation doesn't match."
       };
     }
 
@@ -249,8 +330,8 @@ export default class PendingPasswordResetRepository {
 
     try {
       const userRepository = new UserRepository();
-      userRepository.changePasswordForEmail(email, hashedPassword);
-      this.deletePendingPasswordResetRecord(email, confirmationCode);
+      userRepository.changePasswordForEmail(decodedEmail, hashedPassword);
+      this.deletePendingPasswordResetRecord(decodedEmail, decodedCode);
     } catch (error) {
       log.error(`Error while fulfilling pending password reset: ${error}`);
       return {
@@ -282,7 +363,7 @@ export default class PendingPasswordResetRepository {
     const pendingPasswordResetRecord = await PendingPasswordReset.findOne({
       $and: [
         { emailAddress: email },
-        { emailConfirmationCode: hashedEmailConfirmationCode }
+        { passwordResetConfirmationCode: hashedEmailConfirmationCode }
       ]
     })
       .clone()
@@ -301,7 +382,7 @@ export default class PendingPasswordResetRepository {
     await PendingPasswordReset.findOneAndDelete({
       $and: [
         { emailAddress: email },
-        { emailConfirmationCode: hashedEmailConfirmationCode }
+        { passwordResetConfirmationCode: hashedEmailConfirmationCode }
       ]
     });
 
