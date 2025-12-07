@@ -16,6 +16,8 @@ const limiter = rateLimit({
 });
 
 interface LeaderboardsRecord {
+  membership: { [key: string]: boolean };
+  color: string;
   statistics: {
     timeInMilliseconds: number;
     scoreSubmissionDateAndTime: Date | string;
@@ -49,9 +51,33 @@ router.get("/leaderboards/:mode", limiter, async (request, response) => {
       1,
       false
     );
+    record.color = getRank(record.membership).color;
   });
   const mode = _.startCase(request.params.mode);
   response.render("pages/leaderboards", { data: data, mode: mode });
 });
+
+function getRank(membership: { [key: string]: boolean }) {
+  if (membership?.isDeveloper) {
+    return { title: "Developer", color: "#ff0000" };
+  }
+  if (membership?.isAdministrator) {
+    return { title: "Administrator", color: "#ff0000" };
+  }
+  if (membership?.isModerator) {
+    return { title: "Moderator", color: "#ff7f00" };
+  }
+  if (membership?.isContributor) {
+    return { title: "Contributor", color: "#01acff" };
+  }
+  if (membership?.isTester) {
+    return { title: "Tester", color: "#5bb1e0" };
+  }
+  if (membership?.isDonator) {
+    return { title: "Donator", color: "#26e02c" };
+  }
+  // No rank
+  return { title: "(No Rank)", color: "#000000" };
+}
 
 export { router };
