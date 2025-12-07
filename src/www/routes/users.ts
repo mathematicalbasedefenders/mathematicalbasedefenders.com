@@ -183,7 +183,6 @@ function getLevel(experiencePoints: number | undefined) {
 
 // TODO: change type
 function getRank(membership: { [key: string]: boolean }) {
-  // TODO: Refactor this stupid thing already
   if (membership?.isDeveloper) {
     return { title: "Developer", color: "#ff0000" };
   }
