@@ -32,15 +32,13 @@ export default class PendingUserRepository {
   ): Promise<RepositoryResponse> {
     const captchaResponse = data["g-recaptcha-response"] ?? "";
     const captchaResult = await this.checkCAPTCHA(captchaResponse);
-    if (process.env.CREDENTIAL_SET_USED === "production" && !captchaResult) {
+    if (!captchaResult) {
       log.warn(`Refused to create pending user due to incomplete CAPTCHA.`);
       return {
         success: false,
         statusCode: 400,
         error: "CAPTCHA not completed."
       };
-    } else {
-      log.warn(`Bypassing CAPTCHA check due to using testing credentials.`);
     }
 
     data.email = data.email.toLowerCase();
@@ -346,6 +344,11 @@ export default class PendingUserRepository {
   }
 
   private async checkCAPTCHA(responseKey: string) {
+    if (process.env.CREDENTIAL_SET_USED !== "production") {
+      log.warn(`Bypassing CAPTCHA check due to using testing credentials.`);
+      return true;
+    }
+
     const reCaptchaSecretKey = process.env.RECAPTCHA_SECRET_KEY as string;
     const sanitizedResponseKey = DOMPurify.sanitize(responseKey);
 
