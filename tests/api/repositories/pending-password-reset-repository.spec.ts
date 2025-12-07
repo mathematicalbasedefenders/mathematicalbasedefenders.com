@@ -64,7 +64,7 @@ describe("PendingPasswordResetRepository", function () {
     record.should.have.length(1);
   });
 
-  it("should return status code 400 if invalid email is given", async function () {
+  it("should return status code 400 if invalid email is given (doesn't match regex)", async function () {
     const data = {
       email: "??????"
     };
@@ -78,5 +78,192 @@ describe("PendingPasswordResetRepository", function () {
       );
     const statusCode = result.statusCode;
     statusCode.should.equal(400);
+  });
+
+  describe(".verifyPendingPasswordReset()", function () {
+    it("should return status code 200 if invalid email is given", async function () {
+      const data = {
+        email: getMockUserEmail(1)
+      };
+
+      const pendingPasswordResetRepository =
+        new PendingPasswordResetRepository();
+      await pendingPasswordResetRepository.createPendingPasswordResetRecord(
+        data
+      );
+
+      const record = await PendingPasswordReset.findOne({
+        emailAddress: data.email
+      });
+      const newPassword = "newPassword";
+
+      if (!record) {
+        should.fail("Record not created and unable to progress further.");
+        return;
+      }
+
+      const index = record.passwordResetConfirmationLink.indexOf("&code=");
+      const confirmationCode = record.passwordResetConfirmationLink.substring(
+        index + 6
+      );
+
+      const result =
+        await pendingPasswordResetRepository.verifyPendingPasswordReset(
+          record.userID,
+          data.email,
+          confirmationCode,
+          newPassword,
+          newPassword
+        );
+      const statusCode = result.statusCode;
+      statusCode.should.equal(200);
+    });
+
+    it("should return status code 400 if credentials don't match (email)", async function () {
+      const data = {
+        email: getMockUserEmail(1)
+      };
+
+      const pendingPasswordResetRepository =
+        new PendingPasswordResetRepository();
+      await pendingPasswordResetRepository.createPendingPasswordResetRecord(
+        data
+      );
+
+      const record = await PendingPasswordReset.findOne({
+        emailAddress: data.email
+      });
+      const newPassword = "newPassword";
+
+      if (!record) {
+        should.fail("Record not created and unable to progress further.");
+        return;
+      }
+
+      const index = record.passwordResetConfirmationLink.indexOf("&code=");
+      const confirmationCode = record.passwordResetConfirmationLink.substring(
+        index + 6
+      );
+
+      const result =
+        await pendingPasswordResetRepository.verifyPendingPasswordReset(
+          record.userID,
+          getMockUserEmail(2),
+          confirmationCode,
+          newPassword,
+          newPassword
+        );
+      const statusCode = result.statusCode;
+      statusCode.should.equal(400);
+    });
+
+    it("should return status code 400 if credentials don't match (confirmation code)", async function () {
+      const data = {
+        email: getMockUserEmail(1)
+      };
+
+      const pendingPasswordResetRepository =
+        new PendingPasswordResetRepository();
+      await pendingPasswordResetRepository.createPendingPasswordResetRecord(
+        data
+      );
+
+      const record = await PendingPasswordReset.findOne({
+        emailAddress: data.email
+      });
+      const newPassword = "newPassword";
+
+      if (!record) {
+        should.fail("Record not created and unable to progress further.");
+        return;
+      }
+
+      const result =
+        await pendingPasswordResetRepository.verifyPendingPasswordReset(
+          record.userID,
+          data.email,
+          "does-not-match",
+          newPassword,
+          newPassword
+        );
+      const statusCode = result.statusCode;
+      statusCode.should.equal(400);
+    });
+
+    it("should return status code 400 if new password and confirm new password don't match", async function () {
+      const data = {
+        email: getMockUserEmail(1)
+      };
+
+      const pendingPasswordResetRepository =
+        new PendingPasswordResetRepository();
+      await pendingPasswordResetRepository.createPendingPasswordResetRecord(
+        data
+      );
+
+      const record = await PendingPasswordReset.findOne({
+        emailAddress: data.email
+      });
+      const newPassword = "newPassword";
+
+      if (!record) {
+        should.fail("Record not created and unable to progress further.");
+        return;
+      }
+
+      const index = record.passwordResetConfirmationLink.indexOf("&code=");
+      const confirmationCode = record.passwordResetConfirmationLink.substring(
+        index + 6
+      );
+
+      const result =
+        await pendingPasswordResetRepository.verifyPendingPasswordReset(
+          record.userID,
+          data.email,
+          confirmationCode,
+          newPassword,
+          "abcd12345"
+        );
+      const statusCode = result.statusCode;
+      statusCode.should.equal(400);
+    });
+
+    it("should return status code 400 if new password doesn't follow format (doesn't match regex)", async function () {
+      const data = {
+        email: getMockUserEmail(1)
+      };
+
+      const pendingPasswordResetRepository =
+        new PendingPasswordResetRepository();
+      await pendingPasswordResetRepository.createPendingPasswordResetRecord(
+        data
+      );
+
+      const record = await PendingPasswordReset.findOne({
+        emailAddress: data.email
+      });
+      const newPassword = "newPassword";
+
+      if (!record) {
+        should.fail("Record not created and unable to progress further.");
+        return;
+      }
+
+      const index = record.passwordResetConfirmationLink.indexOf("&code=");
+      const confirmationCode = record.passwordResetConfirmationLink.substring(
+        index + 6
+      );
+
+      const result =
+        await pendingPasswordResetRepository.verifyPendingPasswordReset(
+          record.userID,
+          data.email,
+          confirmationCode,
+          "abc345",
+          "abc345"
+        );
+      const statusCode = result.statusCode;
+      statusCode.should.equal(400);
+    });
   });
 });
