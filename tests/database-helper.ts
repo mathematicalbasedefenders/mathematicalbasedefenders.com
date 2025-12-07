@@ -2,15 +2,25 @@ import mongoose from "mongoose";
 import { MongoMemoryServer } from "mongodb-memory-server";
 
 import { User } from "../src/api/models/User";
+import { PendingUser } from "../src/api/models/PendingUser";
+import {
+  getMockConfirmationCode,
+  getMockPendingUserEmail,
+  getMockPendingUserUsername,
+  getMockUserEmail,
+  getMockUserUsername
+} from "./mock-data-generator";
+
+const MOCK_USERS = 5;
+const MOCK_PENDING_USERS = 2;
 
 let mongoServer: MongoMemoryServer;
 
-function createNewUser(number: number) {
-  const id = number.toString().padStart(3, "0");
+function createNewMockUser(number: number) {
   const data: Object = {
-    username: `User${id}`,
-    usernameInAllLowercase: `user${id}`,
-    emailAddress: `user${id}@example.com`,
+    username: getMockUserUsername(number),
+    usernameInAllLowercase: getMockUserUsername(number).toLowerCase(),
+    emailAddress: getMockUserEmail(number),
     hashedPassword:
       "$2a$08$uK192t0g8B7NznispY4H8.Qow2WYYI5VuXehXasl5pViDXyVq7Y4.", // "password"
     creationDateAndTime: new Date(),
@@ -30,6 +40,32 @@ function createNewUser(number: number) {
   return data;
 }
 
+function createNewMockPendingUser(number: number) {
+  const data: Object = {
+    username: getMockPendingUserUsername(number),
+    usernameInAllLowercase: getMockPendingUserUsername(number).toLowerCase(),
+    emailAddress: getMockPendingUserEmail(number),
+    hashedPassword:
+      "$2a$08$uK192t0g8B7NznispY4H8.Qow2WYYI5VuXehXasl5pViDXyVq7Y4.", // "password"
+    emailConfirmationLink: "", // to be fair this is unused even in production
+    emailConfirmationCode: getMockConfirmationCode(number)
+  };
+  return data;
+}
+
+async function mockDatabaseData() {
+  for (let i = 1; i <= MOCK_USERS; i++) {
+    const mockUser = createNewMockUser(i);
+    const newMockUser = new User(mockUser);
+    await newMockUser.save();
+  }
+  for (let i = 1; i <= MOCK_PENDING_USERS; i++) {
+    const mockPendingUser = createNewMockPendingUser(i);
+    const newMockPendingUser = new PendingUser(mockPendingUser);
+    await newMockPendingUser.save();
+  }
+}
+
 const connectToDatabase = async () => {
   mongoServer = await MongoMemoryServer.create();
   const uri = mongoServer.getUri();
@@ -44,12 +80,7 @@ const disconnectFromDatabase = async () => {
 
 const resetDatabase = async () => {
   await mongoose.connection.dropDatabase();
-  const MOCK_USERS = 5;
-  for (let i = 1; i <= MOCK_USERS; i++) {
-    const mockUser = createNewUser(i);
-    const newMockUser = new User(mockUser);
-    await newMockUser.save();
-  }
+  await mockDatabaseData();
 };
 
 export { connectToDatabase, disconnectFromDatabase, resetDatabase };
