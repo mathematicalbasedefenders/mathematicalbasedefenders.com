@@ -10,6 +10,7 @@ import {
   getMockUserEmail,
   getMockUserUsername
 } from "./mock-data-generator";
+import { sha256 } from "js-sha256";
 
 const MOCK_USERS = 5;
 const MOCK_PENDING_USERS = 2;
@@ -48,7 +49,7 @@ function createNewMockPendingUser(number: number) {
     hashedPassword:
       "$2a$08$uK192t0g8B7NznispY4H8.Qow2WYYI5VuXehXasl5pViDXyVq7Y4.", // "password"
     emailConfirmationLink: "", // to be fair this is unused even in production
-    emailConfirmationCode: getMockConfirmationCode(number)
+    emailConfirmationCode: sha256(getMockConfirmationCode(number))
   };
   return data;
 }
