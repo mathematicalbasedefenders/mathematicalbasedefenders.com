@@ -51,6 +51,8 @@ export default class PendingPasswordResetRepository {
       };
     }
 
+    data.email = data.email.toLowerCase();
+
     /**
      * Returns a (fake) successful response if there is no user with the e-mail
      * `data.email` for security reasons and to prevent abuse as well.
@@ -122,7 +124,7 @@ export default class PendingPasswordResetRepository {
   }
 
   async checkPasswordResetRecordExistence(email: string, code: string) {
-    const decodedEmail = decodeURIComponent(email);
+    const decodedEmail = decodeURIComponent(email).toLowerCase();
     const decodedCode = decodeURIComponent(code);
 
     const record = await this.getPendingPasswordResetRecordDataByCredentials(
@@ -275,11 +277,11 @@ export default class PendingPasswordResetRepository {
       };
     }
 
-    const decodedEmail = decodeURIComponent(email);
+    const decodedEmail = decodeURIComponent(email).toLowerCase();
     const decodedCode = decodeURIComponent(confirmationCode);
 
     const user = await this.getPendingPasswordResetRecordDataByCredentials(
-      email,
+      email.toLowerCase(),
       confirmationCode
     );
 
@@ -290,7 +292,7 @@ export default class PendingPasswordResetRepository {
       return {
         success: false,
         statusCode: 400,
-        error: "User to verify's record not found or invalid."
+        error: "User to reset password's record not found or invalid."
       };
     }
 
@@ -299,7 +301,7 @@ export default class PendingPasswordResetRepository {
       return {
         success: false,
         statusCode: 400,
-        error: "User to verify's record not found or invalid."
+        error: "User to reset password's record not found or invalid."
       };
     }
 

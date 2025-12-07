@@ -43,6 +43,8 @@ export default class PendingUserRepository {
       log.warn(`Bypassing CAPTCHA check due to using testing credentials.`);
     }
 
+    data.email = data.email.toLowerCase();
+
     const validationResult = await this.validateUserData(data);
     if (!validationResult.success) {
       return {
@@ -260,7 +262,7 @@ export default class PendingUserRepository {
       };
     }
 
-    const decodedEmail = decodeURIComponent(email);
+    const decodedEmail = decodeURIComponent(email).toLowerCase();
     const decodedCode = decodeURIComponent(confirmationCode);
 
     const user = await this.getPendingUserDataByCredentials(
