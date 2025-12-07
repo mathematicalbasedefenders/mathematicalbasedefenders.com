@@ -1,7 +1,6 @@
 import express, { Request } from "express";
 var router = express.Router();
 import rateLimit from "express-rate-limit";
-import { MembershipInterface } from "../typings/MembershipInterface";
 import {
   formatToRelativeTime,
   millisecondsToTime
@@ -14,8 +13,6 @@ const limiter = rateLimit({
   legacyHeaders: false
 });
 const fetch = require("node-fetch");
-const userRegEx = /[A-Za-z0-9_]{3,20}/;
-const userIDRegEx = /[0-9a-f]{24}/g;
 
 // TODO: Make a better placeholder
 const scorePlaceholder = {
@@ -29,7 +26,7 @@ const scorePlaceholder = {
 };
 
 router.get("/users/:query", limiter, async (request, response) => {
-  let data = await getData(request);
+  const data = await getData(request);
   if (typeof data === "undefined" || data == null) {
     response.render("pages/404");
     return;
@@ -38,15 +35,7 @@ router.get("/users/:query", limiter, async (request, response) => {
 });
 
 async function getData(request: Request) {
-  let query = request.params.query;
-  if (
-    !(
-      (userRegEx.test(query) && query.length >= 3 && query.length <= 20) ||
-      (userIDRegEx.test(query) && query.length == 24)
-    )
-  ) {
-    return;
-  }
+  const query = request.params.query;
   const fetchResponse = await fetch(`${apiBaseURL}/users/${query}`);
   const responseJSON = await fetchResponse.json();
   const data = responseJSON.data;
@@ -193,7 +182,7 @@ function getLevel(experiencePoints: number | undefined) {
 }
 
 // TODO: change type
-function getRank(membership: MembershipInterface) {
+function getRank(membership: { [key: string]: boolean }) {
   // TODO: Refactor this stupid thing already
   if (membership?.isDeveloper) {
     return { title: "Developer", color: "#ff0000" };
