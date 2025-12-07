@@ -15,7 +15,7 @@ function getMockUserUsername(number: number) {
 
 function getMockPendingUserUsername(number: number) {
   const id = number.toString().padStart(3, "0");
-  return `User${id}`;
+  return `PendingUser${id}`;
 }
 
 function getMockConfirmationCode(number: number) {
