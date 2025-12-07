@@ -4,6 +4,12 @@ import {
   resetDatabase
 } from "./database-helper";
 
+import path from "path";
+
+require("@dotenvx/dotenvx").config({
+  path: path.join(__dirname, "../credentials/.env")
+});
+
 exports.mochaHooks = {
   async beforeAll() {
     if (process.env.CREDENTIAL_SET_USED === "production") {
