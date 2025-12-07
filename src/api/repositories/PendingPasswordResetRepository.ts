@@ -21,8 +21,6 @@ const USER_ID_REGEX = /^[0-9a-f]{24}$/;
 
 type PendingPasswordResetData = {
   email: string;
-  username: string;
-  password: string;
 };
 
 export default class PendingPasswordResetRepository {
