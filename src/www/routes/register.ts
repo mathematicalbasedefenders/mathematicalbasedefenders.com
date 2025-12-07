@@ -72,51 +72,6 @@ const processRegistrationInformation = async (
   response: Response,
   next: NextFunction
 ) => {
-  // process registration
-  // is response good?
-
-  // // check captcha
-  // if (!(await checkCAPTCHA(request))) {
-  //   response.redirect("?errorID=captchaIncomplete");
-  //   return;
-  // }
-
-  // const [username, email, password] = getUserDetails(request);
-  // const validationResult = await UserService.validateNewUser(
-  //   username,
-  //   email,
-  //   password
-  // );
-
-  // if (!validationResult.success) {
-  //   // TODO: Redo URLs
-  //   response.redirect(validationResult.redirectTo);
-  //   return;
-  // }
-  // // Add User
-  // let addUserResult = await UserService.addUnverifiedUser(
-  //   username,
-  //   email,
-  //   password
-  // );
-  // if (!addUserResult.success) {
-  //   response.redirect(addUserResult.redirectTo);
-  //   return;
-  // }
-  // // Send Mail
-
-  // const mailResult = await MailService.sendMailToUnverifiedUser(
-  //   username,
-  //   email,
-  //   addUserResult.emailConfirmationCode
-  // );
-  // if (!mailResult.success) {
-  //   response.redirect(mailResult.redirectTo);
-  //   return;
-  // }
-
-  // Finish
-
   try {
     const body = request.body;
     const addUserResult = await fetch(`${apiBaseURL}/pending-users`, {
