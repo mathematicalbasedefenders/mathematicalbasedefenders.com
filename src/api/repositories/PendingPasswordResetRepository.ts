@@ -393,6 +393,11 @@ export default class PendingPasswordResetRepository {
   }
 
   private async checkCAPTCHA(responseKey: string) {
+    if (process.env.CREDENTIAL_SET_USED !== "production") {
+      log.warn(`Bypassing CAPTCHA check due to using testing credentials.`);
+      return true;
+    }
+
     const reCaptchaSecretKey = process.env.RECAPTCHA_SECRET_KEY as string;
     const sanitizedResponseKey = DOMPurify.sanitize(responseKey);
 
