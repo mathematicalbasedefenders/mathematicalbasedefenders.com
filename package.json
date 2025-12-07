@@ -13,9 +13,6 @@
   "private": true,
   "author": "mistertfy64",
   "license": "AGPL-3.0-or-later",
-  "overrides": {
-    "semver": "^7.5.2"
-  },
   "dependencies": {
     "@dotenvx/dotenvx": "^1.44.1",
     "@types/isomorphic-fetch": "^0.0.36",
@@ -93,6 +90,7 @@
     "eslint-plugin-n": "^15.3.0",
     "eslint-plugin-promise": "^6.0.1",
     "mocha": "^10.7.3",
+    "mongodb-memory-server": "^10.4.1",
     "tsx": "^4.19.1"
   }
 }
