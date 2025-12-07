@@ -7,7 +7,7 @@ import {
   getMockPendingUserEmail
 } from "../../mock-data-generator";
 
-describe("UserRepository", function () {
+describe("PendingUserRepository", function () {
   describe(".createPendingUser()", function () {
     it("should return status code 200 if data is valid", async function () {
       const data = {
