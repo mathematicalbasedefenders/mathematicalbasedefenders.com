@@ -104,18 +104,6 @@ app.use(cookieParser());
 let licenses;
 let apiBaseURL: string = "";
 
-// mongoose
-if (!DATABASE_URI) {
-  log.error("DATABASE_CONNECTION_URI environment variable is not set");
-  throw new Error("DATABASE_CONNECTION_URI environment variable is not set");
-}
-if (typeof DATABASE_URI === "string") {
-  mongoose.connect(DATABASE_URI);
-}
-mongoose.connection.on("connected", () => {
-  log.info("Connected to mongoose.");
-});
-
 // Routes
 require("fs")
   .readdirSync(require("path").join(__dirname, "../www/routes"))
