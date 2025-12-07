@@ -1,6 +1,3 @@
-import * as chai from "chai";
-chai.should();
-
 import PendingUserRepository from "../../../src/api/repositories/PendingUserRepository";
 import {
   getMockConfirmationCode,

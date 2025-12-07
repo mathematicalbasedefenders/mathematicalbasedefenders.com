@@ -1,6 +1,3 @@
-import * as chai from "chai";
-chai.should();
-
 import UserRepository from "../../../src/api/repositories/UserRepository";
 
 describe("UserRepository", function () {
