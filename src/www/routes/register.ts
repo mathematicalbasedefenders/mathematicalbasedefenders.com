@@ -2,45 +2,16 @@ import express, { NextFunction, Request, Response } from "express";
 var router = express.Router();
 import bodyParser from "body-parser";
 import rateLimit from "express-rate-limit";
-import { doubleCsrf } from "csrf-csrf";
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
   standardHeaders: true,
   legacyHeaders: false
 });
-const UserService = require("../../www/services/user.js");
-const MailService = require("../../www/services/mail.js");
 const parseForm = bodyParser.urlencoded({ extended: false });
-const { generateToken, doubleCsrfProtection } = doubleCsrf({
-  getSecret: () => "Secret",
-  cookieName: "x-csrf-token",
-  getTokenFromRequest: function (req) {
-    return req.body["csrf-token"];
-  }
-});
-import mongoDBSanitize from "express-mongo-sanitize";
 const fetch = require("node-fetch");
-import { JSDOM } from "jsdom";
-import createDOMPurify from "dompurify";
 import { log } from "../core/log";
 import { apiBaseURL } from "../server";
-import path from "path";
-
-const window: any = new JSDOM("").window;
-const DOMPurify = createDOMPurify(window);
-
-const ERROR_MESSAGES: { [key: string]: string } = {
-  "captchaIncomplete": "Complete the CAPTCHA to register!",
-  "usernameUnavailable": "Username is already taken!",
-  "usernameInvalid": "Username is invalid!",
-  "emailUnavailable": "E-mail is already taken!",
-  "emailInvalid": "E-mail is invalid!",
-  "passwordInvalid": "Password is invalid!",
-  "internalError":
-    "An internal error has occurred! If this persists, please contact the administrator!",
-  "none": ""
-};
 
 const renderRegisterPage = async (
   request: Request & { context?: { error: string } },
