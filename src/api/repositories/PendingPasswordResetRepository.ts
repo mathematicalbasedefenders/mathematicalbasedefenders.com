@@ -110,7 +110,9 @@ export default class PendingPasswordResetRepository {
       userID: existing._id,
       expiresAt: new Date(Date.now() + 1800000).getTime()
     };
-    PendingPasswordReset.create(dataToSave);
+
+    await PendingPasswordReset.create(dataToSave);
+
     const truncatedEmail = data.email.substring(0, 5);
     log.info(
       `Created new pending password reset request for ${truncatedEmail}.`

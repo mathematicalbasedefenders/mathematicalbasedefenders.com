@@ -79,7 +79,9 @@ export default class PendingUserRepository {
       emailConfirmationCode: hashedEmailConfirmationCode,
       expiresAt: new Date(Date.now() + 1800000).getTime()
     };
-    PendingUser.create(dataToSave);
+
+    await PendingUser.create(dataToSave);
+
     log.info(`Created new pending user with username ${data.username}.`);
     return {
       success: true,
