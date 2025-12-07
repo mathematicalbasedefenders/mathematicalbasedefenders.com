@@ -3,31 +3,33 @@ chai.should();
 
 import UserRepository from "../../../src/api/repositories/UserRepository";
 
-describe("UserRepository ", function () {
-  it("should return 400 when find by if invalid user is given", async function () {
-    const query = "???";
+describe("UserRepository", function () {
+  describe(".getUserData()", function () {
+    it("should return status code 400 if invalid user is given", async function () {
+      const query = "???";
 
-    const userRepository = new UserRepository();
-    const result = await userRepository.getUserData(query);
-    const statusCode = result.statusCode;
-    statusCode.should.equal(400);
-  });
+      const userRepository = new UserRepository();
+      const result = await userRepository.getUserData(query);
+      const statusCode = result.statusCode;
+      statusCode.should.equal(400);
+    });
 
-  it("should return 404 when find by if non-existent user is given", async function () {
-    const query = "userDoesNotExist";
+    it("should return status code 404 if non-existent user is given", async function () {
+      const query = "userDoesNotExist";
 
-    const userRepository = new UserRepository();
-    const result = await userRepository.getUserData(query);
-    const statusCode = result.statusCode;
-    statusCode.should.equal(404);
-  });
+      const userRepository = new UserRepository();
+      const result = await userRepository.getUserData(query);
+      const statusCode = result.statusCode;
+      statusCode.should.equal(404);
+    });
 
-  it("should return 200 when find by if existing user is given", async function () {
-    const query = "User001";
+    it("should return status code 200 if existing user is given", async function () {
+      const query = "User001";
 
-    const userRepository = new UserRepository();
-    const result = await userRepository.getUserData(query);
-    const statusCode = result.statusCode;
-    statusCode.should.equal(200);
+      const userRepository = new UserRepository();
+      const result = await userRepository.getUserData(query);
+      const statusCode = result.statusCode;
+      statusCode.should.equal(200);
+    });
   });
 });
