@@ -2,6 +2,10 @@ import * as chai from "chai";
 chai.should();
 
 import PendingUserRepository from "../../../src/api/repositories/PendingUserRepository";
+import {
+  getMockConfirmationCode,
+  getMockPendingUserEmail
+} from "../../mock-data-generator";
 
 describe("UserRepository", function () {
   describe(".createPendingUser()", function () {
@@ -159,6 +163,38 @@ describe("UserRepository", function () {
       const pendingUserRepository = new PendingUserRepository();
       await pendingUserRepository.createPendingUser(firstData);
       const result = await pendingUserRepository.createPendingUser(secondData);
+      const statusCode = result.statusCode;
+      statusCode.should.equal(400);
+    });
+  });
+
+  describe(".verifyPendingUser()", function () {
+    it("should return status code 200 if email and code is correct", async function () {
+      const email = getMockPendingUserEmail(1);
+      const code = getMockConfirmationCode(1);
+
+      const pendingUserRepository = new PendingUserRepository();
+      const result = await pendingUserRepository.verifyPendingUser(email, code);
+      const statusCode = result.statusCode;
+      statusCode.should.equal(200);
+    });
+
+    it("should return status code 400 if email is correct but code is incorrect", async function () {
+      const email = getMockPendingUserEmail(1);
+      const code = getMockConfirmationCode(3);
+
+      const pendingUserRepository = new PendingUserRepository();
+      const result = await pendingUserRepository.verifyPendingUser(email, code);
+      const statusCode = result.statusCode;
+      statusCode.should.equal(400);
+    });
+
+    it("should return status code 400 if email is incorrect but code is correct", async function () {
+      const email = getMockPendingUserEmail(3);
+      const code = getMockConfirmationCode(1);
+
+      const pendingUserRepository = new PendingUserRepository();
+      const result = await pendingUserRepository.verifyPendingUser(email, code);
       const statusCode = result.statusCode;
       statusCode.should.equal(400);
     });
