@@ -21,7 +21,7 @@ function getMockPendingUserUsername(number: number) {
 function getMockConfirmationCode(number: number) {
   const MOD = 1000000007;
   const result = Math.floor(Math.pow(number, 4)) % MOD;
-  return result;
+  return result.toString();
 }
 
 export {
