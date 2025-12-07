@@ -6,10 +6,23 @@ import {
 
 exports.mochaHooks = {
   async beforeAll() {
+    if (process.env.CREDENTIAL_SET_USED === "production") {
+      console.error(
+        "Skipping tests because environment variable is set to production mode."
+      );
+      process.exit(1);
+    }
     await connectToDatabase();
   },
 
   async beforeEach() {
+    // for good measure
+    if (process.env.CREDENTIAL_SET_USED === "production") {
+      console.error(
+        "Skipping tests because environment variable is set to production mode."
+      );
+      process.exit(1);
+    }
     await resetDatabase();
   },
 
