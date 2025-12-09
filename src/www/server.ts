@@ -26,9 +26,16 @@ const API_PORT = 9000;
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 100,
+  max: 15 * 60 * 10,
   standardHeaders: true,
-  legacyHeaders: false
+  legacyHeaders: false,
+  handler: function (request, response) {
+    log.warn(`Rate limited IP ${request.ip}`);
+    response
+      .status(429)
+      .render(path.join(__dirname, "..", "www/views/pages/429.ejs"));
+    return;
+  }
 });
 
 const app = express();
