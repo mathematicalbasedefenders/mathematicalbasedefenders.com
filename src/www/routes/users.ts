@@ -39,7 +39,7 @@ async function getData(request: Request) {
   const fetchResponse = await fetch(`${apiBaseURL}/users/${query}`);
   const responseJSON = await fetchResponse.json();
   const data = responseJSON.data;
-  if (data.statusCode === 404) {
+  if (!data || data.statusCode === 404) {
     return null;
   }
   //
