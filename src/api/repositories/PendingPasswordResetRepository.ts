@@ -103,9 +103,14 @@ export default class PendingPasswordResetRepository {
     // here because for some reason the `+`s in an emails are replaced with spaces.
     const hashedEmail = sha256(data.email);
 
+    const domain =
+      process.env.CREDENTIAL_SET_USED === "production"
+        ? "https://mathematicalbasedefenders.com"
+        : "http://localhost:8000";
+
     const dataToSave = {
       emailAddress: data.email,
-      passwordResetConfirmationLink: `https://mathematicalbasedefenders.com/change-password?email=${hashedEmail}&code=${emailConfirmationCode}`,
+      passwordResetConfirmationLink: `${domain}/change-password?email=${hashedEmail}&code=${emailConfirmationCode}`,
       passwordResetConfirmationCode: hashedEmailConfirmationCode,
       userID: existing._id,
       expiresAt: new Date(Date.now() + 1800000).getTime(),
