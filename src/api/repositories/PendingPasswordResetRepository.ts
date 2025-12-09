@@ -302,7 +302,7 @@ export default class PendingPasswordResetRepository {
       };
     }
 
-    if (user.userID !== userID) {
+    if (user.userID?.toString() !== userID.toString()) {
       log.warn(`Refused to verify password reset due user IDs not matching.`);
       return {
         success: false,
@@ -340,7 +340,15 @@ export default class PendingPasswordResetRepository {
 
     try {
       const userRepository = new UserRepository();
-      await userRepository.changePasswordForEmail(email, hashedPassword);
+      const changePasswordResult = await userRepository.changePasswordForEmail(
+        email,
+        hashedPassword
+      );
+
+      if (!changePasswordResult.success) {
+        throw new Error(changePasswordResult.error);
+      }
+
       await this.deletePendingPasswordResetRecord(email, decodedCode);
     } catch (error) {
       log.error(`Error while fulfilling pending password reset: ${error}`);
