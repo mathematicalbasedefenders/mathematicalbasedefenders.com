@@ -1,6 +1,7 @@
 import log from "../core/log";
 import { User, UserInterface } from "../models/User";
 import RepositoryResponse from "../types/RepositoryResponse";
+import LeaderboardsRepository from "./LeaderboardsRepository";
 
 const USERNAME_REGEX = /^[A-Za-z0-9_]{3,20}$/;
 const USER_ID_REGEX = /^[0-9a-f]{24}$/;
@@ -19,7 +20,7 @@ export default class UserRepository {
     }
 
     const isUserID = USER_ID_REGEX.test(query);
-    const data = isUserID
+    const data: UserInterface = isUserID
       ? await this.getUserDataByUserID(query)
       : await this.getUserDataByUsername(query);
 
@@ -30,6 +31,47 @@ export default class UserRepository {
         statusCode: 404,
         error: "User not found."
       };
+    }
+
+    const userID = data._id;
+    const leaderboardsRepository = new LeaderboardsRepository();
+
+    const easyLeaderboardsRequest =
+      await leaderboardsRepository.getEasySingleplayerLeaderboards();
+
+    if (
+      easyLeaderboardsRequest.data &&
+      easyLeaderboardsRequest.statusCode === 200
+    ) {
+      const easyLeaderboardsData = easyLeaderboardsRequest.data;
+      if (Array.isArray(easyLeaderboardsData)) {
+        const playerRecord = easyLeaderboardsData.find(
+          (e) => e._id.toString() === userID.toString()
+        );
+        if (playerRecord) {
+          data.statistics.personalBestScoreOnEasySingleplayerMode.globalRank =
+            playerRecord.rank;
+        }
+      }
+    }
+
+    const standardLeaderboardsRequest =
+      await leaderboardsRepository.getStandardSingleplayerLeaderboards();
+
+    if (
+      standardLeaderboardsRequest.data &&
+      standardLeaderboardsRequest.statusCode === 200
+    ) {
+      const standardLeaderboardsData = standardLeaderboardsRequest.data;
+      if (Array.isArray(standardLeaderboardsData)) {
+        const playerRecord = standardLeaderboardsData.find(
+          (e) => e._id.toString() === userID.toString()
+        );
+        if (playerRecord) {
+          data.statistics.personalBestScoreOnStandardSingleplayerMode.globalRank =
+            playerRecord.rank;
+        }
+      }
     }
 
     log.info(`Returned data from UserRepository with ${query}`);
