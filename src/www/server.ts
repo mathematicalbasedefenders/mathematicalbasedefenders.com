@@ -25,8 +25,8 @@ const PORT = 8000;
 const API_PORT = 9000;
 
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 15 * 60 * 10,
+  windowMs: 60 * 1000,
+  max: 120,
   standardHeaders: true,
   legacyHeaders: false,
   handler: function (request, response) {
