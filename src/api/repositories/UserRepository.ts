@@ -49,8 +49,10 @@ export default class UserRepository {
           (e) => e._id.toString() === userID.toString()
         );
         if (playerRecord) {
-          data.statistics.personalBestScoreOnEasySingleplayerMode.globalRank =
-            playerRecord.rank;
+          if (data?.statistics?.personalBestScoreOnEasySingleplayerMode) {
+            data.statistics.personalBestScoreOnEasySingleplayerMode.globalRank =
+              playerRecord.rank;
+          }
         }
       }
     }
@@ -68,8 +70,10 @@ export default class UserRepository {
           (e) => e._id.toString() === userID.toString()
         );
         if (playerRecord) {
-          data.statistics.personalBestScoreOnStandardSingleplayerMode.globalRank =
-            playerRecord.rank;
+          if (data?.statistics?.personalBestScoreOnStandardSingleplayerMode) {
+            data.statistics.personalBestScoreOnStandardSingleplayerMode.globalRank =
+              playerRecord.rank;
+          }
         }
       }
     }
