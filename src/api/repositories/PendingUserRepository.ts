@@ -51,6 +51,7 @@ export default class PendingUserRepository {
     }
 
     data.email = data.email.toLowerCase();
+    const hashedEmailAddress = sha256(data.email);
 
     const hashedPassword = await this.hashPassword(data);
     const emailConfirmationCode = this.createEmailConfirmationCode();
@@ -67,9 +68,6 @@ export default class PendingUserRepository {
       };
     }
 
-    // here because for some reason the `+`s in an emails are replaced with spaces.
-    const encodedEmail = data.email.replaceAll("+", "%2B");
-
     const domain =
       process.env.CREDENTIAL_SET_USED === "production"
         ? "https://mathematicalbasedefenders.com"
@@ -80,9 +78,10 @@ export default class PendingUserRepository {
       usernameInAllLowercase: data.username.toLowerCase(),
       emailAddress: data.email,
       hashedPassword: hashedPassword,
-      emailConfirmationLink: `${domain}/confirm-email-address?email=${encodedEmail}&code=${emailConfirmationCode}`,
+      emailConfirmationLink: `${domain}/confirm-email-address?email=${hashedEmailAddress}&code=${emailConfirmationCode}`,
       emailConfirmationCode: hashedEmailConfirmationCode,
-      expiresAt: new Date(Date.now() + 1800000).getTime()
+      expiresAt: new Date(Date.now() + 1800000).getTime(),
+      hashedEmailAddress: hashedEmailAddress
     };
 
     await PendingUser.create(dataToSave);
@@ -253,8 +252,8 @@ export default class PendingUserRepository {
     return result;
   }
 
-  async verifyPendingUser(email: string, confirmationCode: string) {
-    if (typeof email !== "string") {
+  async verifyPendingUser(hashedEmail: string, confirmationCode: string) {
+    if (typeof hashedEmail !== "string") {
       log.warn(`Request to verify user failed: Invalid e-mail type.`);
       return {
         success: false,
@@ -272,11 +271,10 @@ export default class PendingUserRepository {
       };
     }
 
-    const decodedEmail = decodeURIComponent(email).toLowerCase();
     const decodedCode = decodeURIComponent(confirmationCode);
 
-    const user = await this.getPendingUserDataByCredentials(
-      decodedEmail,
+    const user = await this.getPendingUserDataByHashedCredentials(
+      hashedEmail,
       decodedCode
     );
     if (!user) {
@@ -294,7 +292,7 @@ export default class PendingUserRepository {
 
       await userRepository.createUser(user);
       await metadataRepository.incrementUserCount();
-      await this.deletePendingUser(decodedEmail, decodedCode);
+      await this.deletePendingUser(user.emailAddress, decodedCode);
     } catch (error) {
       log.error(`Error while validating user: ${error}`);
       return {
@@ -329,6 +327,22 @@ export default class PendingUserRepository {
     const pendingUser = await PendingUser.findOne({
       $and: [
         { emailAddress: email },
+        { emailConfirmationCode: hashedEmailConfirmationCode }
+      ]
+    })
+      .clone()
+      .lean();
+    return pendingUser;
+  }
+
+  private async getPendingUserDataByHashedCredentials(
+    email: string,
+    confirmationCode: string
+  ) {
+    const hashedEmailConfirmationCode = sha256(confirmationCode);
+    const pendingUser = await PendingUser.findOne({
+      $and: [
+        { hashedEmailAddress: email },
         { emailConfirmationCode: hashedEmailConfirmationCode }
       ]
     })
