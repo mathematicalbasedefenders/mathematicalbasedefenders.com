@@ -4,6 +4,7 @@ interface PendingPasswordResetInterface {
   emailAddress: string;
   passwordResetConfirmationLink: string;
   passwordResetConfirmationCode: string;
+  hashedEmailAddress: string;
   userID: string;
   expiresAt: {
     type: Date;
@@ -24,6 +25,7 @@ const PendingPasswordResetSchema = new mongoose.Schema<
     passwordResetConfirmationLink: String,
     passwordResetConfirmationCode: String,
     userID: String,
+    hashedEmailAddress: String,
     expiresAt: {
       type: Date,
       default: new Date(Date.now() + 1800000).getTime(),
