@@ -332,8 +332,8 @@ export default class PendingPasswordResetRepository {
 
     try {
       const userRepository = new UserRepository();
-      userRepository.changePasswordForEmail(decodedEmail, hashedPassword);
-      this.deletePendingPasswordResetRecord(decodedEmail, decodedCode);
+      await userRepository.changePasswordForEmail(decodedEmail, hashedPassword);
+      await this.deletePendingPasswordResetRecord(decodedEmail, decodedCode);
     } catch (error) {
       log.error(`Error while fulfilling pending password reset: ${error}`);
       return {
