@@ -50,6 +50,12 @@ button {
   color: #ffffff;
   border: 2px #108800 solid;
   font-size: 225%;
+  transition-duration: var(--transition-duration-regular);
+}
+
+.button--play:hover {
+  background-color: #129e00;
+  border: 2px #129e00 solid;
 }
 
 .preview__content {
@@ -286,6 +292,10 @@ h1 .icon {
 
 .feature-card__container:hover .feature-card {
   transform: rotateY(180deg);
+}
+
+.feature-card__container:hover .feature-card__front {
+  opacity: 0;
 }
 
 .feature-card {
