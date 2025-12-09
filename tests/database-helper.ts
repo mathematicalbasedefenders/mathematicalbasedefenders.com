@@ -49,7 +49,8 @@ function createNewMockPendingUser(number: number) {
     hashedPassword:
       "$2a$08$uK192t0g8B7NznispY4H8.Qow2WYYI5VuXehXasl5pViDXyVq7Y4.", // "password"
     emailConfirmationLink: "", // to be fair this is unused even in production
-    emailConfirmationCode: sha256(getMockConfirmationCode(number))
+    emailConfirmationCode: sha256(getMockConfirmationCode(number)),
+    hashedEmailAddress: sha256(getMockPendingUserEmail(number))
   };
   return data;
 }

@@ -1,3 +1,4 @@
+import { sha256 } from "js-sha256";
 import PendingUserRepository from "../../../src/api/repositories/PendingUserRepository";
 import {
   getMockConfirmationCode,
@@ -168,10 +169,14 @@ describe("PendingUserRepository", function () {
   describe(".verifyPendingUser()", function () {
     it("should return status code 200 if email and code is correct", async function () {
       const email = getMockPendingUserEmail(1);
+      const hashedEmail = sha256(email);
       const code = getMockConfirmationCode(1);
 
       const pendingUserRepository = new PendingUserRepository();
-      const result = await pendingUserRepository.verifyPendingUser(email, code);
+      const result = await pendingUserRepository.verifyPendingUser(
+        hashedEmail,
+        code
+      );
       const statusCode = result.statusCode;
       statusCode.should.equal(200);
     });
