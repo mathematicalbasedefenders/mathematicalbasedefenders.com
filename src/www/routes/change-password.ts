@@ -134,6 +134,7 @@ const processPasswordChange = async (
     }
 
     response.render("pages/change-password-change-complete");
+    return;
   } catch (error) {
     next(error);
   }
