@@ -361,7 +361,7 @@ export default class PendingPasswordResetRepository {
   private async checkPendingPasswordResetRecordExistenceByEmail(email: string) {
     const existing = await PendingPasswordReset.findOne({
       emailAddress: email
-    }).count();
+    }).countDocuments();
     return existing > 0;
   }
 
