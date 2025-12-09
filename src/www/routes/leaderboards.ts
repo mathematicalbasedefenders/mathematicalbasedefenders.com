@@ -26,6 +26,7 @@ router.get("/leaderboards", async (request, response) => {
 
 router.get("/leaderboards/:mode", async (request, response) => {
   if (request.params.mode !== "easy" && request.params.mode !== "standard") {
+    response.status(404).render("pages/404");
     return;
   }
   const fetchResponse = await fetch(
