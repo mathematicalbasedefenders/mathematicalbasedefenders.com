@@ -4,7 +4,6 @@ import express, { NextFunction, Request, Response } from "express";
 import favicon from "serve-favicon";
 import helmet from "helmet";
 import mongoDBSanitize from "express-mongo-sanitize";
-import mongoose from "mongoose";
 import rateLimit from "express-rate-limit";
 import path from "path";
 
