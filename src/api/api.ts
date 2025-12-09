@@ -45,6 +45,8 @@ const createCSRFToken = async function (
   next: NextFunction
 ) {
   const csrfToken = sha256(crypto.randomBytes(48).toString());
+  const tokenPrefix = csrfToken.substring(0, 8);
+  log.info(`Created new CSRF token beginning with ${tokenPrefix}.`);
   sessions.set(csrfToken, Date.now());
   request.csrfToken = () => {
     return csrfToken;
