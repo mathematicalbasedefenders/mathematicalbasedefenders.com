@@ -37,7 +37,15 @@ router.get("/leaderboards/:mode", limiter, async (request, response) => {
   const fetchResponse = await fetch(
     `${apiBaseURL}/leaderboards/${request.params.mode}`
   );
+  if (!fetchResponse.ok) {
+    response.status(fetchResponse.status).render("pages/error");
+    return;
+  }
   const responseJSON = await fetchResponse.json();
+  if (!responseJSON.success || !responseJSON.data) {
+    response.status(500).render("pages/error");
+    return;
+  }
   const data = responseJSON.data;
   data.map((record: LeaderboardsRecord) => {
     record.statistics.time = millisecondsToTime(
