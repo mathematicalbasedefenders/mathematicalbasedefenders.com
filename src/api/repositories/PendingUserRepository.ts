@@ -284,9 +284,9 @@ export default class PendingUserRepository {
       const userRepository = new UserRepository();
       const metadataRepository = new MetadataRepository();
 
-      await this.deletePendingUser(decodedEmail, decodedCode);
       await userRepository.createUser(user);
       await metadataRepository.incrementUserCount();
+      await this.deletePendingUser(decodedEmail, decodedCode);
     } catch (error) {
       log.error(`Error while validating user: ${error}`);
       return {
