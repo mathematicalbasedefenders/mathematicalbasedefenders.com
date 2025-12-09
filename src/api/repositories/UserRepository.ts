@@ -93,7 +93,9 @@ export default class UserRepository {
   /**
    * TODO: User number field is now gone!!!
    */
-  async createUser(userData: { [key: string]: unknown }) {
+  async createUser(userData: {
+    [key: string]: unknown;
+  }): Promise<RepositoryResponse> {
     const newUserData = {
       username: userData["username"],
       usernameInAllLowercase: userData["usernameInAllLowercase"],
