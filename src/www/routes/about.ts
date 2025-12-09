@@ -1,8 +1,7 @@
 import express, { Request, Response } from "express";
 const router = express.Router();
-
-import https from "https";
 import { marked } from "marked";
+import { log } from "../core/log";
 
 router.get("/about", async (request: Request, response: Response) => {
   response.render("pages/about", {
@@ -11,20 +10,18 @@ router.get("/about", async (request: Request, response: Response) => {
 });
 
 async function loadAboutText() {
-  return new Promise((resolve) => {
-    let data = "";
-    https.get(
-      "https://raw.githubusercontent.com/mathematicalbasedefenders/information/main/ABOUT.md",
-      (response) => {
-        response.on("data", (chunk) => {
-          data += chunk.toString("utf-8");
-        });
-        response.on("end", function () {
-          resolve(marked.parse(data));
-        });
-      }
-    );
-  });
+  const url =
+    "https://raw.githubusercontent.com/mathematicalbasedefenders/information/main/ABOUT.md";
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    log.error(`Failed to load about text! (HTTP ${response.status})`);
+    return "Failed to load about text!";
+  }
+
+  const text = await response.text();
+
+  return marked.parse(text);
 }
 
 export { router };
