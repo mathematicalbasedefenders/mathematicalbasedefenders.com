@@ -3,6 +3,7 @@ import createDOMPurify from "dompurify";
 const window: any = new JSDOM("").window;
 const DOMPurify = createDOMPurify(window);
 import log from "../core/log.js";
+import { sha256 } from "js-sha256/index.js";
 
 const { SendMailClient } = require("zeptomail");
 
@@ -86,7 +87,7 @@ async function sendMailToNewlyRegisteredUser(
 function generateNewUserMail(email: string, code: string) {
   const confirmationLink = constructConfirmationUrl(
     "confirm-email-address",
-    email,
+    sha256(email),
     code
   );
   const text = `
@@ -103,7 +104,7 @@ function generateNewUserMail(email: string, code: string) {
 function generatePasswordChangeMail(email: string, code: string) {
   const confirmationLink = constructConfirmationUrl(
     "change-password",
-    email,
+    sha256(email),
     code
   );
   const text = `
