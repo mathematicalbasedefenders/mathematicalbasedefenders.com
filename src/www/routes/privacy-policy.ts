@@ -6,7 +6,7 @@ import { marked } from "marked";
 
 router.get("/privacy-policy", async (request, response) => {
   response.render("pages/privacy-policy", {
-    data: { privacyPolicy: marked.parse((await loadPrivacyPolicy()) as string) }
+    data: { privacyPolicy: await loadPrivacyPolicy() }
   });
 });
 
