@@ -17,7 +17,7 @@ const DOMPurify = createDOMPurify(window);
 
 const EMAIL_REGEX =
   /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+){1,256}$/;
-const USERNAME_REGEX = /^[A-Za-z0-9_-]{3,20}$/;
+const USERNAME_REGEX = /^[A-Za-z0-9_]{3,20}$/;
 const PASSWORD_REGEX = /^[0-9a-zA-Z!"#$%&'()*+,-.:;<=>?@^_`{|}~]{8,48}$/;
 
 type PendingUserData = {
