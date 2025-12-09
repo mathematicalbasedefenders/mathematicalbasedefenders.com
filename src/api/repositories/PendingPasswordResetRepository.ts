@@ -281,8 +281,8 @@ export default class PendingPasswordResetRepository {
     const decodedCode = decodeURIComponent(confirmationCode);
 
     const user = await this.getPendingPasswordResetRecordDataByCredentials(
-      email.toLowerCase(),
-      confirmationCode
+      decodedEmail,
+      decodedCode
     );
 
     if (!user) {
