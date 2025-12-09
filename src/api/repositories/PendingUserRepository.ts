@@ -70,12 +70,17 @@ export default class PendingUserRepository {
     // here because for some reason the `+`s in an emails are replaced with spaces.
     const encodedEmail = data.email.replaceAll("+", "%2B");
 
+    const domain =
+      process.env.CREDENTIAL_SET_USED === "production"
+        ? "https://mathematicalbasedefenders.com"
+        : "http://localhost:8000";
+
     const dataToSave = {
       username: data.username,
       usernameInAllLowercase: data.username.toLowerCase(),
       emailAddress: data.email,
       hashedPassword: hashedPassword,
-      emailConfirmationLink: `https://mathematicalbasedefenders.com/confirm-email-address?email=${encodedEmail}&code=${emailConfirmationCode}`,
+      emailConfirmationLink: `${domain}/confirm-email-address?email=${encodedEmail}&code=${emailConfirmationCode}`,
       emailConfirmationCode: hashedEmailConfirmationCode,
       expiresAt: new Date(Date.now() + 1800000).getTime()
     };
