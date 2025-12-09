@@ -53,9 +53,9 @@ async function loadText(service: string) {
       return "";
     }
   }
-  return new Promise(async (resolve, reject) => {
+  return new Promise((resolve) => {
     let data = "";
-    await https.get(fileURL, (response) => {
+    https.get(fileURL, (response) => {
       response.on("data", (chunk) => {
         data += chunk.toString("utf-8");
       });
