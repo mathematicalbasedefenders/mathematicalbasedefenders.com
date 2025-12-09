@@ -33,6 +33,10 @@ main h3 {
   height: auto;
 }
 
+#user-data-box__profile img {
+  user-select: none;
+}
+
 /* TODO: May break later */
 #user-data-box__username {
   display: flex;
