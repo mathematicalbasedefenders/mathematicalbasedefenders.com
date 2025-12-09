@@ -114,7 +114,21 @@ export default class UserRepository {
       }
     };
 
-    const newUser = new User(newUserData);
-    await newUser.save();
+    try {
+      const newUser = new User(newUserData);
+      await newUser.save();
+      log.info(`Created new user: ${userData["username"]}`);
+      return {
+        success: true,
+        statusCode: 201
+      };
+    } catch (error) {
+      log.error(`Failed to create user: ${userData["username"]}`);
+      return {
+        success: false,
+        statusCode: 500,
+        error: "Failed to create user."
+      };
+    }
   }
 }
