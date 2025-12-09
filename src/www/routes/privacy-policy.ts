@@ -1,16 +1,10 @@
 import express from "express";
-var router = express.Router();
-import rateLimit from "express-rate-limit";
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
-  standardHeaders: true,
-  legacyHeaders: false
-});
+const router = express.Router();
+
 import https from "https";
 import { marked } from "marked";
 
-router.get("/privacy-policy", limiter, async (request, response) => {
+router.get("/privacy-policy", async (request, response) => {
   response.render("pages/privacy-policy", {
     data: { privacyPolicy: marked.parse((await loadPrivacyPolicy()) as string) }
   });

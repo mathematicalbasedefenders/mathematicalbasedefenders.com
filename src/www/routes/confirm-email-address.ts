@@ -1,19 +1,12 @@
 import express from "express";
 const router = express.Router();
-import rateLimit from "express-rate-limit";
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
-  standardHeaders: true,
-  legacyHeaders: false
-});
 
 import { apiBaseURL } from "../server.js";
 import { log } from "../core/log.js";
 
 router.get(
   "/confirm-email-address",
-  limiter,
+
   async (request, response, next) => {
     try {
       const email = request.query?.email;

@@ -1,19 +1,13 @@
 import express from "express";
-var router = express.Router();
+const router = express.Router();
 const fetch = require("node-fetch");
-import rateLimit from "express-rate-limit";
+
 import _ from "lodash";
 import {
   formatToRelativeTime,
   millisecondsToTime
 } from "../core/format-number";
 import { apiBaseURL } from "../server";
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
-  standardHeaders: true,
-  legacyHeaders: false
-});
 
 interface LeaderboardsRecord {
   membership: { [key: string]: boolean };
@@ -26,11 +20,11 @@ interface LeaderboardsRecord {
   };
 }
 
-router.get("/leaderboards", limiter, async (request, response) => {
+router.get("/leaderboards", async (request, response) => {
   response.redirect("/leaderboards/standard");
 });
 
-router.get("/leaderboards/:mode", limiter, async (request, response) => {
+router.get("/leaderboards/:mode", async (request, response) => {
   if (request.params.mode !== "easy" && request.params.mode !== "standard") {
     return;
   }

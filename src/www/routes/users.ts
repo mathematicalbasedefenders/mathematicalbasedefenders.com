@@ -1,17 +1,10 @@
 import express, { Request } from "express";
-var router = express.Router();
-import rateLimit from "express-rate-limit";
+const router = express.Router();
 import {
   formatToRelativeTime,
   millisecondsToTime
 } from "../core/format-number";
 import { apiBaseURL } from "../server";
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
-  standardHeaders: true,
-  legacyHeaders: false
-});
 const fetch = require("node-fetch");
 
 // TODO: Make a better placeholder
@@ -25,7 +18,7 @@ const scorePlaceholder = {
   "globalRank": ""
 };
 
-router.get("/users/:query", limiter, async (request, response) => {
+router.get("/users/:query", async (request, response) => {
   const data = await getData(request);
   if (typeof data === "undefined" || data == null) {
     response.render("pages/404");

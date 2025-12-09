@@ -1,13 +1,6 @@
 import express, { NextFunction, Request, Response } from "express";
-var router = express.Router();
+const router = express.Router();
 import bodyParser from "body-parser";
-import rateLimit from "express-rate-limit";
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
-  standardHeaders: true,
-  legacyHeaders: false
-});
 const parseForm = bodyParser.urlencoded({ extended: false });
 const fetch = require("node-fetch");
 import { log } from "../core/log";
@@ -83,11 +76,11 @@ const processRegistrationInformation = async (
   }
 };
 
-router.get("/register", limiter, renderRegisterPage);
+router.get("/register", renderRegisterPage);
 
 router.post(
   "/register",
-  [parseForm, limiter],
+  parseForm,
   processRegistrationInformation,
   renderRegisterPage
 );

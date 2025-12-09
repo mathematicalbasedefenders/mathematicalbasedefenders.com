@@ -1,14 +1,8 @@
 import express, { NextFunction, Request, Response } from "express";
-var router = express.Router();
+const router = express.Router();
 import bodyParser from "body-parser";
 const parseForm = bodyParser.urlencoded({ extended: false });
-import rateLimit from "express-rate-limit";
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
-  standardHeaders: true,
-  legacyHeaders: false
-});
+
 const fetch = require("node-fetch");
 import { log } from "../core/log";
 import { apiBaseURL } from "../server";
@@ -145,11 +139,11 @@ const processPasswordChange = async (
   }
 };
 
-router.get("/change-password", limiter, renderChangePasswordPage);
+router.get("/change-password", renderChangePasswordPage);
 
 router.post(
   "/change-password",
-  [parseForm, limiter],
+  parseForm,
   processPasswordChange,
   renderChangePasswordPage
 );

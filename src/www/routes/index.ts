@@ -1,15 +1,8 @@
 import express from "express";
-var router = express.Router();
+const router = express.Router();
 
-import rateLimit from "express-rate-limit";
 import { log } from "../core/log";
 const VERSION_URL = "https://storage.mistertfy64.com/mbd-versions.json";
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
-  standardHeaders: true,
-  legacyHeaders: false
-});
 
 const PLACEHOLDER_VERSION_DATA = {
   "game": {
@@ -60,7 +53,7 @@ async function getVersions() {
   }
 }
 
-router.get("/", limiter, async (request, response) => {
+router.get("/", async (request, response) => {
   response.render("pages/index", { versions: await getVersions() });
 });
 

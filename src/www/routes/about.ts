@@ -1,16 +1,10 @@
 import express, { Request, Response } from "express";
-var router = express.Router();
-import rateLimit from "express-rate-limit";
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
-  standardHeaders: true,
-  legacyHeaders: false
-});
+const router = express.Router();
+
 import https from "https";
 import { marked } from "marked";
 
-router.get("/about", limiter, async (request: Request, response: Response) => {
+router.get("/about", async (request: Request, response: Response) => {
   response.render("pages/about", {
     data: { aboutText: marked.parse((await loadAboutText()) as string) }
   });

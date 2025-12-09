@@ -1,12 +1,6 @@
 import express from "express";
-var router = express.Router();
-import rateLimit from "express-rate-limit";
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
-  standardHeaders: true,
-  legacyHeaders: false
-});
+const router = express.Router();
+
 import https from "https";
 import { marked } from "marked";
 
@@ -15,11 +9,11 @@ interface ChangelogContent {
   part: string;
 }
 
-router.get("/changelog", limiter, async (request, response) => {
+router.get("/changelog", async (request, response) => {
   response.redirect("/changelog/game");
 });
 
-router.get("/changelog/:service", limiter, async (request, response) => {
+router.get("/changelog/:service", async (request, response) => {
   let data = <ChangelogContent>{};
   // data.gameChangelog = marked.parse((await loadText("game")) as string);
   switch (request.params.service) {
