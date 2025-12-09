@@ -339,6 +339,11 @@ h1 .icon {
   height: 100%;
 }
 
+#call-to-action__message h1 {
+  font-size: 400%;
+  padding-bottom: 32px;
+}
+
 #call-to-action__button {
   display: flex;
   flex-direction: column;
