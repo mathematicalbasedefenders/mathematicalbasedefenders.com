@@ -1,28 +1,38 @@
-const mongoose = require("mongoose");
-const dotenv = require("dotenv");
-const path = require("path");
+import {
+  connectToDatabase,
+  disconnectFromDatabase,
+  resetDatabase
+} from "./database-helper";
 
-dotenv.config({ path: path.join("./credentials/.env") });
+import path from "path";
+
+require("@dotenvx/dotenvx").config({
+  path: path.join(__dirname, "../credentials/.env")
+});
 
 exports.mochaHooks = {
   async beforeAll() {
-    try {
-      const DATABASE_URI = process.env.DATABASE_CONNECTION_URI;
-      if (!DATABASE_URI) {
-        throw new Error("DATABASE_CONNECTION_URI is not defined");
-      }
-      await mongoose.connect(DATABASE_URI);
-    } catch (error) {
-      console.error("Failed to connect to database:", error);
-      throw error;
+    if (process.env.CREDENTIAL_SET_USED === "production") {
+      console.error(
+        "Skipping tests because environment variable is set to production mode."
+      );
+      process.exit(1);
     }
+    await connectToDatabase();
   },
-  async afterAll() {
-    try {
-      await mongoose.disconnect();
-    } catch (error) {
-      console.error("Failed to disconnect from database:", error);
-      throw error;
+
+  async beforeEach() {
+    // for good measure
+    if (process.env.CREDENTIAL_SET_USED === "production") {
+      console.error(
+        "Skipping tests because environment variable is set to production mode."
+      );
+      process.exit(1);
     }
+    await resetDatabase();
+  },
+
+  async afterAll() {
+    await disconnectFromDatabase();
   }
 };
