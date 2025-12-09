@@ -122,6 +122,8 @@ export default class PendingUserRepository {
         };
       }
 
+      data.email = data.email.toLowerCase();
+
       if (!this.validatePendingEmail(data)) {
         log.warn(`Refused to create pending user due to invalid email.`);
         return {
