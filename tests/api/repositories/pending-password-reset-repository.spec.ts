@@ -81,7 +81,7 @@ describe("PendingPasswordResetRepository", function () {
   });
 
   describe(".verifyPendingPasswordReset()", function () {
-    it("should return status code 200 if invalid email is given", async function () {
+    it("should return status code 200 if correct credentials are given", async function () {
       const data = {
         email: getMockUserEmail(1)
       };
