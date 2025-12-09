@@ -9,7 +9,7 @@ const fetch = require("node-fetch");
 
 // TODO: Make a better placeholder
 const scorePlaceholder = {
-  "score": "N/A",
+  "score": null,
   "timeInMilliseconds": "",
   "scoreSubmissionDateAndTime": "",
   "actionsPerformed": "",
@@ -121,13 +121,13 @@ async function getData(request: Request) {
     timeSinceStandardBest: formatToRelativeTime(timeSinceStandardPB, 1, false),
     formattedStandardBestTime: millisecondsToTime(
       data?.statistics?.personalBestScoreOnStandardSingleplayerMode
-        .timeInMilliseconds || 0
+        ?.timeInMilliseconds || 0
     ),
     // easy
     timeSinceEasyBest: formatToRelativeTime(timeSinceEasyPB, 1, false),
     formattedEasyBestTime: millisecondsToTime(
       data?.statistics?.personalBestScoreOnEasySingleplayerMode
-        .timeInMilliseconds || 0
+        ?.timeInMilliseconds || 0
     )
   };
   return formattedData;
