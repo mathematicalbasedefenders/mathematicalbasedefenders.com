@@ -4,6 +4,7 @@ const should = chai.should();
 import PendingPasswordResetRepository from "../../../src/api/repositories/PendingPasswordResetRepository";
 import { getMockUserEmail } from "../../mock-data-generator";
 import { PendingPasswordReset } from "../../../src/api/models/PendingPasswordReset";
+import { sha256 } from "js-sha256";
 
 describe("PendingPasswordResetRepository", function () {
   describe(".createPendingPasswordResetRecord()", function () {
@@ -116,7 +117,7 @@ describe("PendingPasswordResetRepository", function () {
       const result =
         await pendingPasswordResetRepository.verifyPendingPasswordReset(
           record.userID,
-          data.email,
+          sha256(data.email),
           confirmationCode,
           newPassword,
           newPassword
@@ -154,7 +155,7 @@ describe("PendingPasswordResetRepository", function () {
       const result =
         await pendingPasswordResetRepository.verifyPendingPasswordReset(
           record.userID,
-          getMockUserEmail(2),
+          sha256(getMockUserEmail(2)),
           confirmationCode,
           newPassword,
           newPassword
@@ -187,7 +188,7 @@ describe("PendingPasswordResetRepository", function () {
       const result =
         await pendingPasswordResetRepository.verifyPendingPasswordReset(
           record.userID,
-          data.email,
+          sha256(data.email),
           "does-not-match",
           newPassword,
           newPassword
@@ -225,7 +226,7 @@ describe("PendingPasswordResetRepository", function () {
       const result =
         await pendingPasswordResetRepository.verifyPendingPasswordReset(
           record.userID,
-          data.email,
+          sha256(data.email),
           confirmationCode,
           newPassword,
           "abcd12345"
@@ -263,7 +264,7 @@ describe("PendingPasswordResetRepository", function () {
       const result =
         await pendingPasswordResetRepository.verifyPendingPasswordReset(
           record.userID,
-          data.email,
+          sha256(data.email),
           confirmationCode,
           "abc345",
           "abc345"
