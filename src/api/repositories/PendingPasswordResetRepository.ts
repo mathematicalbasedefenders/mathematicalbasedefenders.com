@@ -403,9 +403,17 @@ export default class PendingPasswordResetRepository {
     const reCaptchaSecretKey = process.env.RECAPTCHA_SECRET_KEY as string;
     const sanitizedResponseKey = DOMPurify.sanitize(responseKey);
 
-    const reCaptchaURL = `https://www.google.com/recaptcha/api/siteverify?secret=${reCaptchaSecretKey}&response=${sanitizedResponseKey}`;
+    const reCaptchaURL = "https://www.google.com/recaptcha/api/siteverify";
+    const params = new URLSearchParams();
+    params.append("secret", reCaptchaSecretKey);
+    params.append("response", sanitizedResponseKey);
 
-    const fetchResponse = await fetch(reCaptchaURL, { method: "POST" });
+    const fetchResponse = await fetch(reCaptchaURL, {
+      method: "POST",
+      body: params,
+      headers: { "Content-Type": "application/x-www-form-urlencoded" }
+    });
+
     const fetchResponseJSON = await fetchResponse.json();
 
     return fetchResponseJSON.success;
