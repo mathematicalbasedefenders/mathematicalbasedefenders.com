@@ -246,7 +246,10 @@ export default class PendingUserRepository {
       log.debug(`Confirmation code for ${data.username}: ${confirmationCode}`);
       return true;
     }
-    const result = sendMailToNewlyRegisteredUser(data.email, confirmationCode);
+    const result = await sendMailToNewlyRegisteredUser(
+      data.email,
+      confirmationCode
+    );
     return result;
   }
 
