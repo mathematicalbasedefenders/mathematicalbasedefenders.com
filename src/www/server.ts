@@ -119,12 +119,14 @@ let apiBaseURL: string =
 // Routes
 require("fs")
   .readdirSync(require("path").join(__dirname, "../www/routes"))
+  .filter((file: string) => file.endsWith(".ts") || file.endsWith(".js"))
   .forEach((file: string) => {
     app.use(require("../www/routes/" + file).router);
   });
 
 require("fs")
   .readdirSync(require("path").join(__dirname, "../www/api"))
+  .filter((file: string) => file.endsWith(".ts") || file.endsWith(".js"))
   .forEach((file: string) => {
     app.use(require("../www/api/" + file).router);
   });
