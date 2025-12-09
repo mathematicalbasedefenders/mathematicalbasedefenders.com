@@ -42,42 +42,48 @@ describe("PendingPasswordResetRepository", function () {
       });
       should.not.exist(record);
     });
-  });
 
-  it("should return status code 200 but only have exactly 1 record in database to the same email if duplicate email is given", async function () {
-    const data = {
-      email: getMockUserEmail(1)
-    };
-    const pendingPasswordResetRepository = new PendingPasswordResetRepository();
+    it("should return status code 200 but only have exactly 1 record in database to the same email if duplicate email is given", async function () {
+      const data = {
+        email: getMockUserEmail(1)
+      };
+      const pendingPasswordResetRepository =
+        new PendingPasswordResetRepository();
 
-    await pendingPasswordResetRepository.createPendingPasswordResetRecord(data);
-
-    const result =
       await pendingPasswordResetRepository.createPendingPasswordResetRecord(
         data
       );
-    const statusCode = result.statusCode;
-    statusCode.should.equal(200);
-    const record = await PendingPasswordReset.find({
-      emailAddress: data.email
+
+      const result =
+        await pendingPasswordResetRepository.createPendingPasswordResetRecord(
+          data
+        );
+      const statusCode = result.statusCode;
+      statusCode.should.equal(200);
+      const record = await PendingPasswordReset.find({
+        emailAddress: data.email
+      });
+      record.should.have.length(1);
     });
-    record.should.have.length(1);
-  });
 
-  it("should return status code 400 if invalid email is given (doesn't match regex)", async function () {
-    const data = {
-      email: "??????"
-    };
-    const pendingPasswordResetRepository = new PendingPasswordResetRepository();
+    it("should return status code 400 if invalid email is given (doesn't match regex)", async function () {
+      const data = {
+        email: "??????"
+      };
+      const pendingPasswordResetRepository =
+        new PendingPasswordResetRepository();
 
-    await pendingPasswordResetRepository.createPendingPasswordResetRecord(data);
-
-    const result =
       await pendingPasswordResetRepository.createPendingPasswordResetRecord(
         data
       );
-    const statusCode = result.statusCode;
-    statusCode.should.equal(400);
+
+      const result =
+        await pendingPasswordResetRepository.createPendingPasswordResetRecord(
+          data
+        );
+      const statusCode = result.statusCode;
+      statusCode.should.equal(400);
+    });
   });
 
   describe(".verifyPendingPasswordReset()", function () {
