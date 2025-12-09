@@ -11,7 +11,7 @@ import log from "./core/log";
 import crypto from "crypto";
 import { sha256 } from "js-sha256";
 
-const sessions: Set<string> = new Set();
+const sessions: Map<string, number> = new Map();
 
 type Route = {
   method: string;
@@ -25,13 +25,27 @@ exemptedFromCSRFCheck.push({
   path: "/users"
 });
 
+const CSRF_TOKEN_TIME_TO_LIVE = 60 * 60 * 1000; // 1 hour
+const CSRF_TOKEN_CHECK_INTERVAL = 15 * 60 * 1000; // 15 minutes
+
+setInterval(() => {
+  const now = Date.now();
+  for (const [token, timestamp] of sessions) {
+    if (now - timestamp > CSRF_TOKEN_TIME_TO_LIVE) {
+      sessions.delete(token);
+      const tokenPrefix = token.substring(0, 8);
+      log.info(`Deleted expired CSRF token beginning with ${tokenPrefix}.`);
+    }
+  }
+}, CSRF_TOKEN_CHECK_INTERVAL);
+
 const createCSRFToken = async function (
   request: Request,
   response: Response,
   next: NextFunction
 ) {
   const csrfToken = sha256(crypto.randomBytes(48).toString());
-  sessions.add(csrfToken);
+  sessions.set(csrfToken, Date.now());
   request.csrfToken = () => {
     return csrfToken;
   };
