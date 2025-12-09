@@ -141,6 +141,7 @@ app.all("*", function (request: Request, response: Response) {
 });
 
 // stuff that needs to be at the end
+// eslint-disable-line no-unused-vars
 app.use(
   (error: Error, request: Request, response: Response, next: NextFunction) => {
     log.error(`${error.name}: ${error.message}`);
