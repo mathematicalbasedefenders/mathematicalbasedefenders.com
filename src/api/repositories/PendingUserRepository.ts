@@ -310,16 +310,16 @@ export default class PendingUserRepository {
   }
 
   private async checkPendingUserExistenceByUsername(username: string) {
-    const existing = await PendingUser.findOne({
+    const existing = await PendingUser.countDocuments({
       username: username
-    }).countDocuments();
+    });
     return existing > 0;
   }
 
   private async checkPendingUserExistenceByEmail(email: string) {
-    const existing = await PendingUser.findOne({
+    const existing = await PendingUser.countDocuments({
       emailAddress: email
-    }).countDocuments();
+    });
     return existing > 0;
   }
 
