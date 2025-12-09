@@ -4,30 +4,26 @@ const log: {
   info: Function;
   debug: Function;
 } = {
-  error: (message: string, disablePrefix?: boolean) => {
+  error: (...message: string[]) => {
     console.error(
-      `${
-        disablePrefix || "[" + new Date().toISOString() + " ERROR]"
-      } ${message}`
+      `${"[" + new Date().toISOString() + " ERROR]"} ${message.join(" ")}`
     );
   },
-  warn: (message: string, disablePrefix?: boolean) => {
+  warn: (...message: string[]) => {
     console.warn(
-      `${disablePrefix || "[" + new Date().toISOString() + " WARN]"} ${message}`
+      `${"[" + new Date().toISOString() + " WARN]"} ${message.join(" ")}`
     );
   },
-  info: (message: string, disablePrefix?: boolean) => {
+  info: (...message: string[]) => {
     console.info(
-      `${disablePrefix || "[" + new Date().toISOString() + " INFO]"} ${message}`
+      `${"[" + new Date().toISOString() + " INFO]"} ${message.join(" ")}`
     );
   },
-  debug: (message: string, disablePrefix?: boolean) => {
+  debug: (...message: string[]) => {
     console.debug(
-      `${
-        disablePrefix || "[" + new Date().toISOString() + " DEBUG]"
-      } ${message}`
+      `${"[" + new Date().toISOString() + " DEBUG]"} ${message.join(" ")}`
     );
   }
 };
 
-export { log };
+export default log;
