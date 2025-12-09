@@ -101,14 +101,15 @@ export default class PendingPasswordResetRepository {
     }
 
     // here because for some reason the `+`s in an emails are replaced with spaces.
-    const encodedEmail = data.email.replaceAll("+", "%2B");
+    const hashedEmail = sha256(data.email);
 
     const dataToSave = {
       emailAddress: data.email,
-      passwordResetConfirmationLink: `https://mathematicalbasedefenders.com/change-password?email=${encodedEmail}&code=${emailConfirmationCode}`,
+      passwordResetConfirmationLink: `https://mathematicalbasedefenders.com/change-password?email=${hashedEmail}&code=${emailConfirmationCode}`,
       passwordResetConfirmationCode: hashedEmailConfirmationCode,
       userID: existing._id,
-      expiresAt: new Date(Date.now() + 1800000).getTime()
+      expiresAt: new Date(Date.now() + 1800000).getTime(),
+      hashedEmailAddress: hashedEmail
     };
 
     await PendingPasswordReset.create(dataToSave);
@@ -123,14 +124,14 @@ export default class PendingPasswordResetRepository {
     };
   }
 
-  async checkPasswordResetRecordExistence(email: string, code: string) {
-    const decodedEmail = decodeURIComponent(email).toLowerCase();
+  async checkPasswordResetRecordExistence(hashedEmail: string, code: string) {
     const decodedCode = decodeURIComponent(code);
 
-    const record = await this.getPendingPasswordResetRecordDataByCredentials(
-      decodedEmail,
-      decodedCode
-    );
+    const record =
+      await this.getPendingPasswordResetRecordDataByHashedCredentials(
+        hashedEmail,
+        decodedCode
+      );
 
     if (!record) {
       return {
@@ -229,6 +230,7 @@ export default class PendingPasswordResetRepository {
     data: PendingPasswordResetData,
     confirmationCode: string
   ) {
+    console.debug(generatePasswordChangeMail(data.email, confirmationCode));
     if (process.env.CREDENTIAL_SET_USED !== "production") {
       const truncatedEmail = data.email.substring(0, 5);
       log.warn(`Using testing credentials when sending mail.`);
@@ -245,7 +247,7 @@ export default class PendingPasswordResetRepository {
   // This both verifies and processes the password reset request for some reason...
   async verifyPendingPasswordReset(
     userID: string,
-    email: string,
+    hashedEmail: string,
     confirmationCode: string,
     newPassword: string,
     confirmNewPassword: string
@@ -259,7 +261,7 @@ export default class PendingPasswordResetRepository {
       };
     }
 
-    if (typeof email !== "string") {
+    if (typeof hashedEmail !== "string") {
       log.warn(`Request to change password failed: Invalid e-mail type.`);
       return {
         success: false,
@@ -277,13 +279,13 @@ export default class PendingPasswordResetRepository {
       };
     }
 
-    const decodedEmail = decodeURIComponent(email).toLowerCase();
     const decodedCode = decodeURIComponent(confirmationCode);
 
-    const user = await this.getPendingPasswordResetRecordDataByCredentials(
-      decodedEmail,
-      decodedCode
-    );
+    const user =
+      await this.getPendingPasswordResetRecordDataByHashedCredentials(
+        hashedEmail,
+        decodedCode
+      );
 
     if (!user) {
       log.warn(
@@ -330,10 +332,12 @@ export default class PendingPasswordResetRepository {
 
     const hashedPassword = await this.hashPassword(newPassword);
 
+    const email = user.emailAddress;
+
     try {
       const userRepository = new UserRepository();
-      await userRepository.changePasswordForEmail(decodedEmail, hashedPassword);
-      await this.deletePendingPasswordResetRecord(decodedEmail, decodedCode);
+      await userRepository.changePasswordForEmail(email, hashedPassword);
+      await this.deletePendingPasswordResetRecord(email, decodedCode);
     } catch (error) {
       log.error(`Error while fulfilling pending password reset: ${error}`);
       return {
@@ -365,6 +369,22 @@ export default class PendingPasswordResetRepository {
     const pendingPasswordResetRecord = await PendingPasswordReset.findOne({
       $and: [
         { emailAddress: email },
+        { passwordResetConfirmationCode: hashedEmailConfirmationCode }
+      ]
+    })
+      .clone()
+      .lean();
+    return pendingPasswordResetRecord;
+  }
+
+  private async getPendingPasswordResetRecordDataByHashedCredentials(
+    email: string,
+    confirmationCode: string
+  ) {
+    const hashedEmailConfirmationCode = sha256(confirmationCode);
+    const pendingPasswordResetRecord = await PendingPasswordReset.findOne({
+      $and: [
+        { hashedEmailAddress: email },
         { passwordResetConfirmationCode: hashedEmailConfirmationCode }
       ]
     })
