@@ -120,7 +120,7 @@ require("fs")
   });
 
 // PUT THIS LAST (404 page)
-app.get("*", function (request: Request, response: Response) {
+app.all("*", function (request: Request, response: Response) {
   response
     .status(404)
     .render(path.join(__dirname, "..", "/www/views/pages/404"), {

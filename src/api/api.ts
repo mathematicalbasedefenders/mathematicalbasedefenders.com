@@ -160,7 +160,7 @@ require("fs")
   });
 
 // PUT THIS LAST (404)
-app.get("*", function (request: Request, response: Response) {
+app.all("*", function (request: Request, response: Response) {
   response
     .status(404)
     .json({ statusCode: 404, success: false, error: "Not Found." });
