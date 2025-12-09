@@ -29,35 +29,42 @@ router.get("/leaderboards/:mode", async (request, response) => {
     response.status(404).render("pages/404");
     return;
   }
-  const fetchResponse = await fetch(
-    `${apiBaseURL}/leaderboards/${request.params.mode}`
-  );
-  if (!fetchResponse.ok) {
-    response.status(fetchResponse.status).render("pages/error");
-    return;
-  }
-  const responseJSON = await fetchResponse.json();
-  if (!responseJSON.success || !responseJSON.data) {
+  try {
+    const fetchResponse = await fetch(
+      `${apiBaseURL}/leaderboards/${request.params.mode}`
+    );
+    if (!fetchResponse.ok) {
+      response.status(fetchResponse.status).render("pages/error");
+      return;
+    }
+
+    const responseJSON = await fetchResponse.json();
+    if (!responseJSON.success || !responseJSON.data) {
+      response.status(500).render("pages/error");
+      return;
+    }
+
+    const data = responseJSON.data;
+    data.map((record: LeaderboardsRecord) => {
+      record.statistics.time = millisecondsToTime(
+        record.statistics.timeInMilliseconds
+      );
+      const recordSetOn = new Date(
+        record.statistics.scoreSubmissionDateAndTime
+      ).getTime();
+      record.statistics.timeSinceRecord = formatToRelativeTime(
+        Date.now() - recordSetOn,
+        1,
+        false
+      );
+      record.color = getRank(record.membership).color;
+    });
+    const mode = _.startCase(request.params.mode);
+    response.render("pages/leaderboards", { data: data, mode: mode });
+  } catch (error) {
     response.status(500).render("pages/error");
     return;
   }
-  const data = responseJSON.data;
-  data.map((record: LeaderboardsRecord) => {
-    record.statistics.time = millisecondsToTime(
-      record.statistics.timeInMilliseconds
-    );
-    const recordSetOn = new Date(
-      record.statistics.scoreSubmissionDateAndTime
-    ).getTime();
-    record.statistics.timeSinceRecord = formatToRelativeTime(
-      Date.now() - recordSetOn,
-      1,
-      false
-    );
-    record.color = getRank(record.membership).color;
-  });
-  const mode = _.startCase(request.params.mode);
-  response.render("pages/leaderboards", { data: data, mode: mode });
 });
 
 function getRank(membership: { [key: string]: boolean }) {
