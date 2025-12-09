@@ -23,7 +23,6 @@ import { getLicenses } from "./core/licenses";
 
 const PORT = 8000;
 const API_PORT = 9000;
-const DATABASE_URI: string | undefined = process.env.DATABASE_CONNECTION_URI;
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
