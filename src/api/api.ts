@@ -75,6 +75,8 @@ const checkCSRFToken = function (
   const token = request.body["csrf-token"];
   if (sessions.has(token)) {
     sessions.delete(token);
+    const tokenPrefix = token.substring(0, 8);
+    log.info(`Deleted used CSRF token beginning with ${tokenPrefix}.`);
     next();
   } else {
     const routeName = `${request.method} ${request.path}`;
