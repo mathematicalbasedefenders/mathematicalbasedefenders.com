@@ -19,11 +19,11 @@ router.get("/users/:query", async function (request, response, next) {
 router.post("/users", async function (request, response, next) {
   try {
     const pendingUserRepository = new PendingUserRepository();
-    const email = request.body.email;
+    const hashedEmail = request.body.email;
     const confirmationCode = request.body.code;
 
     const data = await pendingUserRepository.verifyPendingUser(
-      email,
+      hashedEmail,
       confirmationCode
     );
     response.status(data.statusCode).json(data);
