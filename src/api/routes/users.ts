@@ -33,7 +33,7 @@ router.post("/users", async function (request, response, next) {
   return;
 });
 
-// Process reset password reset
+// Process password reset
 router.patch(
   "/users/:userID/password",
   async function (request, response, next) {
