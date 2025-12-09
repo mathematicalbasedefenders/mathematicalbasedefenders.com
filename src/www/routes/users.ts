@@ -39,8 +39,7 @@ async function getData(request: Request) {
   const fetchResponse = await fetch(`${apiBaseURL}/users/${query}`);
   const responseJSON = await fetchResponse.json();
   const data = responseJSON.data;
-  // TODO: Find a better way instead of just comparing for "Not Found."
-  if (data.status === 404 || data === "Not Found.") {
+  if (data.statusCode === 404) {
     return null;
   }
   //
