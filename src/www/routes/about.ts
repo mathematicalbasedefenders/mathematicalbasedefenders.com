@@ -6,7 +6,7 @@ import { marked } from "marked";
 
 router.get("/about", async (request: Request, response: Response) => {
   response.render("pages/about", {
-    data: { aboutText: marked.parse((await loadAboutText()) as string) }
+    data: { aboutText: await loadAboutText() }
   });
 });
 
