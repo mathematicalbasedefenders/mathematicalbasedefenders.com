@@ -37,6 +37,7 @@ button {
   align-items: center;
   justify-content: center;
   column-gap: 8px;
+  flex-wrap: wrap;
 }
 
 .button--call-to-action {
