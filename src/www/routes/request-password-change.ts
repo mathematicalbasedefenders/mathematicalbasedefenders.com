@@ -42,14 +42,14 @@ const processPasswordResetInformation = async (
 
       if (requestPasswordResetResultJSON.statusCode === 403) {
         const error = new Error(
-          "Unable to add user for register page (forbidden error)"
+          "Unable to add request password reset (forbidden error)"
         );
         error.name = "ForbiddenError";
         throw error;
       }
 
       const error = new Error(
-        "Unable to add user for register page (internal error)"
+        "Unable to add request password reset (internal error)"
       );
       error.name = "InternalError";
       throw error;
