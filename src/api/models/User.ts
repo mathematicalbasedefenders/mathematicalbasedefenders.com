@@ -1,4 +1,4 @@
-import mongoose, { SchemaTypes } from "mongoose";
+import mongoose from "mongoose";
 
 interface UserInterface {
   _id: string;
@@ -9,6 +9,8 @@ interface UserInterface {
   userNumber: number;
   creationDateAndTime: Date;
   statistics: {
+    easyModePersonalBestScore: number;
+    standardModePersonalBestScore: number;
     gamesPlayed: number;
     totalExperiencePoints: number;
     personalBestScoreOnEasySingleplayerMode: {
@@ -19,7 +21,6 @@ interface UserInterface {
       enemiesKilled: number;
       enemiesCreated: number;
       globalRank: number;
-      replayID: mongoose.Types.ObjectId;
     };
     personalBestScoreOnStandardSingleplayerMode: {
       score: number;
@@ -29,7 +30,6 @@ interface UserInterface {
       enemiesKilled: number;
       enemiesCreated: number;
       globalRank: number;
-      replayID: mongoose.Types.ObjectId;
     };
     multiplayer: {
       gamesPlayed: number;
@@ -67,6 +67,8 @@ const UserSchema = new mongoose.Schema<UserInterface, UserModel>({
   userNumber: Number,
   creationDateAndTime: Date,
   statistics: {
+    easyModePersonalBestScore: Number,
+    standardModePersonalBestScore: Number,
     gamesPlayed: Number,
     totalExperiencePoints: Number,
     personalBestScoreOnEasySingleplayerMode: {
@@ -76,8 +78,7 @@ const UserSchema = new mongoose.Schema<UserInterface, UserModel>({
       actionsPerformed: Number,
       enemiesKilled: Number,
       enemiesCreated: Number,
-      globalRank: Number,
-      replayID: SchemaTypes.ObjectId
+      globalRank: Number
     },
     personalBestScoreOnStandardSingleplayerMode: {
       score: Number,
@@ -86,8 +87,7 @@ const UserSchema = new mongoose.Schema<UserInterface, UserModel>({
       actionsPerformed: Number,
       enemiesKilled: Number,
       enemiesCreated: Number,
-      globalRank: Number,
-      replayID: SchemaTypes.ObjectId
+      globalRank: Number
     },
     multiplayer: {
       gamesPlayed: Number,
