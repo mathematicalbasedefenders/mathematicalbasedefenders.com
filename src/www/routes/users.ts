@@ -5,6 +5,7 @@ import {
   millisecondsToTime
 } from "../core/format-number";
 import { apiBaseURL } from "../server";
+import { log } from "../core/log";
 const fetch = require("node-fetch");
 
 // TODO: Make a better placeholder
@@ -29,10 +30,17 @@ router.get("/users/:query", async (request, response) => {
 
 async function getData(request: Request) {
   const query = request.params.query;
-  const fetchResponse = await fetch(`${apiBaseURL}/users/${query}`);
-  const responseJSON = await fetchResponse.json();
-  const data = responseJSON.data;
-  if (!data || data.statusCode === 404) {
+  let data;
+
+  try {
+    const fetchResponse = await fetch(`${apiBaseURL}/users/${query}`);
+    const responseJSON = await fetchResponse.json();
+    data = responseJSON.data;
+    if (!data || data.statusCode === 404) {
+      return null;
+    }
+  } catch (error) {
+    log.error(`Error while fetching for API: ${error}`);
     return null;
   }
   //
