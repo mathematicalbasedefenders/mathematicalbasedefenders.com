@@ -165,7 +165,10 @@ UserSchema.static(
   async function (limit: number) {
     const loaded: Array<object> = [];
     const cursor = this.find({
-      "statistics.personalBestScoreOnEasySingleplayerMode": { $ne: null }
+      "statistics.personalBestScoreOnEasySingleplayerMode": {
+        $exists: true,
+        $ne: null
+      }
     })
       .select({
         _id: 1,
@@ -202,7 +205,10 @@ UserSchema.static(
   async function (limit: number) {
     const loaded: Array<object> = [];
     const cursor = this.find({
-      "statistics.personalBestScoreOnStandardSingleplayerMode": { $ne: null }
+      "statistics.personalBestScoreOnStandardSingleplayerMode": {
+        $exists: true,
+        $ne: null
+      }
     })
       .select({
         _id: 1,
