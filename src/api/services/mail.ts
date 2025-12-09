@@ -3,7 +3,7 @@ import createDOMPurify from "dompurify";
 const window: any = new JSDOM("").window;
 const DOMPurify = createDOMPurify(window);
 import log from "../core/log.js";
-import { sha256 } from "js-sha256/index.js";
+import { sha256 } from "js-sha256";
 
 const { SendMailClient } = require("zeptomail");
 
