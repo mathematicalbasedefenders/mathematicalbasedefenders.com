@@ -238,7 +238,7 @@ export default class PendingPasswordResetRepository {
       log.debug(`Confirmation code is: ${confirmationCode}`);
       return true;
     }
-    const result = sendMailForPasswordReset(data.email, confirmationCode);
+    const result = await sendMailForPasswordReset(data.email, confirmationCode);
     return result;
   }
 
