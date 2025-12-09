@@ -187,12 +187,15 @@ UserSchema.static(
       .clone()
       .lean(true)
       .cursor();
+    let rank = 0;
     for await (const player of cursor) {
+      rank++;
       const formattedPlayer = {
         _id: player._id,
         username: player.username,
         membership: player.membership,
-        statistics: player.statistics.personalBestScoreOnEasySingleplayerMode
+        statistics: player.statistics.personalBestScoreOnEasySingleplayerMode,
+        rank: rank
       };
       loaded.push(formattedPlayer);
     }
@@ -227,13 +230,16 @@ UserSchema.static(
       .clone()
       .lean(true)
       .cursor();
+    let rank = 0;
     for await (const player of cursor) {
+      rank++;
       const formattedPlayer = {
         _id: player._id,
         username: player.username,
         membership: player.membership,
         statistics:
-          player.statistics.personalBestScoreOnStandardSingleplayerMode
+          player.statistics.personalBestScoreOnStandardSingleplayerMode,
+        rank: rank
       };
       loaded.push(formattedPlayer);
     }
