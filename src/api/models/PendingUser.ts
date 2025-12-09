@@ -7,11 +7,7 @@ interface PendingUserInterface {
   hashedPassword: string;
   emailConfirmationLink: string;
   emailConfirmationCode: string;
-  // expiresAt: {
-  //   type: Date,
-  //   default: new Date(Date.now() + 1800000).getTime(),
-  //   expires: 1800
-  // }
+  hashedEmailAddress: string;
   expiresAt: {
     type: Date;
     default: Date;
@@ -32,6 +28,7 @@ const PendingUserSchema = new mongoose.Schema<
     hashedPassword: String,
     emailConfirmationLink: String,
     emailConfirmationCode: String,
+    hashedEmailAddress: String,
     expiresAt: {
       type: Date,
       default: new Date(Date.now() + 1800000).getTime(),
