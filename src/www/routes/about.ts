@@ -11,7 +11,7 @@ router.get("/about", async (request: Request, response: Response) => {
 });
 
 async function loadAboutText() {
-  return new Promise(async (resolve, reject) => {
+  return new Promise((resolve) => {
     let data = "";
     https.get(
       "https://raw.githubusercontent.com/mathematicalbasedefenders/information/main/ABOUT.md",
