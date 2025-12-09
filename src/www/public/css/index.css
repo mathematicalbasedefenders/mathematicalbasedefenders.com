@@ -290,7 +290,7 @@ h1 .icon {
 .feature-card {
   position: relative;
   text-align: center;
-  transition: transform 500ms;
+  transition: transform 0ms;
   transform-style: preserve-3d;
   background-color: #d4d4d4;
   width: 40vw;
