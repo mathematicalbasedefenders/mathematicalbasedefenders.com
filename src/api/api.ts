@@ -84,7 +84,7 @@ const checkCSRFToken = function (
     const routeName = `${request.method} ${request.path}`;
     const error = new Error(`Invalid CSRF Token for ${routeName}.`);
     error.name = "ForbiddenError";
-    throw error;
+    next(error);
   }
 };
 
