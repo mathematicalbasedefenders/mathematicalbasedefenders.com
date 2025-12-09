@@ -41,8 +41,6 @@ export default class PendingUserRepository {
       };
     }
 
-    data.email = data.email.toLowerCase();
-
     const validationResult = await this.validateUserData(data);
     if (!validationResult.success) {
       return {
@@ -51,6 +49,8 @@ export default class PendingUserRepository {
         error: validationResult.error
       };
     }
+
+    data.email = data.email.toLowerCase();
 
     const hashedPassword = await this.hashPassword(data);
     const emailConfirmationCode = this.createEmailConfirmationCode();
