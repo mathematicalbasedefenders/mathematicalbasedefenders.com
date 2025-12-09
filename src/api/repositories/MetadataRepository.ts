@@ -34,6 +34,6 @@ export default class MetadataRepository {
       return;
     }
     data.usersRegistered = data.usersRegistered + 1;
-    data.save();
+    await data.save();
   }
 }
