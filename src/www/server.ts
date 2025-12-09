@@ -141,17 +141,19 @@ app.all("*", function (request: Request, response: Response) {
 });
 
 // stuff that needs to be at the end
-app.use((error: Error, request: Request, response: Response) => {
-  log.error(`${error.name}: ${error.message}`);
-  log.error(error.stack);
-  if (error.name === "ForbiddenError") {
-    response.status(403);
-    response.render(path.join(__dirname, "..", "www/views/pages/403.ejs"));
-  } else {
-    response.status(500);
-    response.render(path.join(__dirname, "..", "www/views/pages/error.ejs"));
+app.use(
+  (error: Error, request: Request, response: Response, next: NextFunction) => {
+    log.error(`${error.name}: ${error.message}`);
+    log.error(error.stack);
+    if (error.name === "ForbiddenError") {
+      response.status(403);
+      response.render(path.join(__dirname, "..", "www/views/pages/403.ejs"));
+    } else {
+      response.status(500);
+      response.render(path.join(__dirname, "..", "www/views/pages/error.ejs"));
+    }
   }
-});
+);
 
 // load licenses
 async function loadLicenses() {
