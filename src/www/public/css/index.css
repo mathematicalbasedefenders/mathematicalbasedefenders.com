@@ -1,0 +1,485 @@
+/* GLOBAL */
+
+body {
+  overflow-x: hidden;
+  margin: 0;
+}
+
+button {
+  font-family: "Noto Sans";
+  font-variant-ligatures: none;
+}
+
+.preview__video,
+.preview__image {
+  user-select: none;
+  pointer-events: none;
+}
+
+.no-text-decoration {
+  text-decoration: none;
+}
+
+.text-align--left {
+  text-align: left;
+}
+
+.text-align--right {
+  text-align: right;
+}
+
+.text--small {
+  font-size: 75%;
+}
+
+.header-with-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  column-gap: 8px;
+  flex-wrap: wrap;
+}
+
+.button--call-to-action {
+  width: 270px;
+  height: 60px;
+}
+
+.button--play {
+  background-color: #108800;
+  color: #ffffff;
+  border: 2px #108800 solid;
+  font-size: 225%;
+  transition-duration: var(--transition-duration-regular);
+}
+
+.button--play:hover {
+  background-color: #129e00;
+  border: 2px #129e00 solid;
+}
+
+.preview__content {
+  width: 60vw;
+}
+
+/* ICONS */
+
+.icon {
+  font-size: 125% !important;
+}
+
+h1 .icon {
+  vertical-align: -12px; /* to make icon align (almost) perfectly */
+}
+
+/* HEADER */
+
+#header {
+  width: 100vw;
+}
+
+#header #header__content {
+  text-align: center;
+  min-height: 100vh;
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#header h1 {
+  font-size: 300%;
+  font-weight: bold;
+}
+
+#header h2 {
+  font-size: 200%;
+}
+
+#header h3 {
+  margin: 0;
+}
+
+#header a,
+#call-to-action a {
+  color: black;
+}
+
+#header #header__latest-versions {
+  display: flex;
+  justify-content: space-around;
+  flex-direction: row;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#header .version-indicator {
+  background-color: #cccccc;
+  padding: 8px;
+  width: 250px;
+}
+
+#header .version-number {
+  font-size: 200%;
+}
+
+/* PREVIEW */
+
+.preview {
+  text-align: center;
+}
+
+.preview #video-preview {
+  width: 100%;
+  height: auto;
+}
+
+#video-preview__container__container {
+  display: flex;
+  justify-content: center;
+}
+
+#video-preview__container {
+  width: 1024px;
+}
+
+/* GAMEPLAY INFORMATION */
+
+#gameplay-information {
+  background-color: #dddddd;
+  padding: 8px;
+  width: 100vw;
+  min-height: 50vh;
+}
+
+#gameplay-information h2 {
+  font-size: 300%;
+  font-weight: 500;
+  text-align: center;
+}
+
+#gameplay-information #gameplay-information__preview {
+  width: 75%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#gameplay-information #gameplay-information__content {
+  padding: 16px;
+  text-align: center;
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#single-player-previews {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+#single-player-previews .preview__image--singleplayer {
+  width: 20vw;
+  height: auto;
+}
+
+/* CUSTOMIZATION INFORMATION */
+
+#customization-information h2 {
+  font-size: 300%;
+  font-weight: 500;
+  text-align: center;
+}
+
+#customization-information #customization-information__content {
+  padding: 16px;
+  text-align: center;
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#customization-information {
+  padding: 8px;
+  min-height: 50vh;
+  width: 75%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#customization-previews {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+#customization-previews .preview__image--customization {
+  width: 20vw;
+  height: auto;
+}
+
+/* MISC. INFORMATION */
+
+#miscellaneous-information h2 {
+  font-size: 300%;
+  font-weight: 500;
+  text-align: center;
+}
+
+#miscellaneous-information {
+  background-color: #dddddd;
+  padding: 8px;
+  width: 100vw;
+  min-height: 50vh;
+}
+
+#miscellaneous-information #miscellaneous-information__content {
+  padding: 16px;
+  text-align: center;
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#miscellaneous-information__card-container {
+  display: grid;
+  width: 80vw;
+  margin-left: auto;
+  margin-right: auto;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  grid-column-gap: 4px;
+  grid-row-gap: 4px;
+}
+
+#miscellaneous-information__card-container-container {
+  width: fit-content;
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  margin: auto;
+}
+
+#feature-card-1 {
+  grid-area: 1 / 1 / 2 / 2;
+}
+#feature-card-2 {
+  grid-area: 1 / 2 / 2 / 3;
+}
+#feature-card-3 {
+  grid-area: 2 / 1 / 3 / 2;
+}
+#feature-card-4 {
+  grid-area: 2 / 2 / 3 / 3;
+}
+
+/* adapted from https://www.w3schools.com/howto/howto_css_flip_card.asp */
+
+.feature-card .icon {
+  vertical-align: -24px;
+  font-size: 300% !important;
+}
+
+.feature-card h3 {
+  font-size: 200%;
+}
+
+.feature-card__container {
+  background-color: transparent;
+  width: fit-content;
+  height: fit-content;
+  perspective: 1000px;
+}
+
+.feature-card__container:hover .feature-card {
+  transform: rotateY(180deg);
+}
+
+.feature-card__container:hover .feature-card__front {
+  opacity: 0;
+}
+
+.feature-card {
+  position: relative;
+  text-align: center;
+  transition: transform 0ms;
+  transform-style: preserve-3d;
+  background-color: #d4d4d4;
+  width: 40vw;
+  height: 10vw;
+}
+
+.feature-card__front {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.feature-card__front,
+.feature-card__back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+.feature-card__back {
+  transform: rotateY(180deg);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.feature-card__back p {
+  padding: 8px;
+}
+
+/* CALL TO ACTION */
+#call-to-action {
+  width: 100vw;
+  height: 20vh;
+}
+
+#call-to-action #call-to-action__content {
+  padding: 16px;
+  text-align: center;
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+  height: 100%;
+}
+
+#call-to-action__message {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+}
+
+#call-to-action__message h1 {
+  font-size: 275%;
+  padding-bottom: 32px;
+}
+
+#call-to-action__button {
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+}
+
+@media only screen and (max-width: 1280px) {
+  #miscellaneous-information__card-container {
+    width: 80vw;
+    height: 80vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  .feature-card__container {
+    width: 100%;
+    height: 25%;
+  }
+
+  .feature-card {
+    width: 100%;
+    height: 100%;
+  }
+
+  .feature-card__back p {
+    font-size: 100%;
+  }
+
+  .preview__content {
+    display: flex;
+    flex-direction: column !important;
+    align-items: center;
+  }
+
+  .preview__image img {
+    width: auto !important;
+    height: 50vh !important;
+  }
+
+  #video-preview__container {
+    display: flex;
+    flex-direction: column !important;
+    align-items: center;
+  }
+
+  #video-preview {
+    width: 1024px;
+  }
+  /*
+  .feature-card__back,
+  .text-small {
+    font-size: 50% !important;
+  } */
+}
+
+@media only screen and (max-width: 768px) {
+  #header__latest-versions {
+    flex-direction: column !important;
+    align-items: center;
+  }
+
+  .version-indicator {
+    margin: 8px 0;
+  }
+
+  .preview__content {
+    display: flex;
+    flex-direction: column !important;
+    align-items: center;
+  }
+
+  .preview__content div {
+    margin: 8px 0;
+  }
+
+  #video-preview__container {
+    display: flex;
+    flex-direction: column !important;
+    align-items: center;
+  }
+
+  #video-preview__container div {
+    margin: 8px 0;
+  }
+
+  .preview__image img {
+    width: auto !important;
+    height: 50vh !important;
+  }
+
+  .feature-card__back p {
+    font-size: 100% !important;
+  }
+
+  #miscellaneous-information__card-container {
+    width: 80vw;
+    height: 160vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  .feature-card__container {
+    width: 100%;
+    height: 25%;
+  }
+
+  #call-to-action__message {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  #call-to-action {
+    width: 100vw;
+    height: calc(20vh + 64px);
+  }
+}
