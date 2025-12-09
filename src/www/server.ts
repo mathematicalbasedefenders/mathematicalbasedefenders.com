@@ -13,7 +13,11 @@ require("@dotenvx/dotenvx").config({
 
 const cors = require("cors");
 const corsOptions = {
-  origin: ["https://mathematicalbasedefenders.com", "http://localhost:8000"],
+  origin: [
+    "https://mathematicalbasedefenders.com",
+    "http://localhost:8000",
+    "http://localhost:9000"
+  ],
   credentials: true
 };
 
