@@ -104,8 +104,8 @@ const PORT = 9000;
 const DATABASE_URI: string | undefined = process.env.DATABASE_CONNECTION_URI;
 
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 15 * 60 * 50,
+  windowMs: 60 * 1000,
+  max: 250,
   standardHeaders: true,
   legacyHeaders: false,
   handler: function (request, response) {
