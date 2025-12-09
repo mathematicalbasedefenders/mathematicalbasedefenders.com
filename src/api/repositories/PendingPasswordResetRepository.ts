@@ -230,7 +230,6 @@ export default class PendingPasswordResetRepository {
     data: PendingPasswordResetData,
     confirmationCode: string
   ) {
-    console.debug(generatePasswordChangeMail(data.email, confirmationCode));
     if (process.env.CREDENTIAL_SET_USED !== "production") {
       const truncatedEmail = data.email.substring(0, 5);
       log.warn(`Using testing credentials when sending mail.`);
