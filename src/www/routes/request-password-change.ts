@@ -23,8 +23,18 @@ const processPasswordResetInformation = async (
         body: JSON.stringify(body)
       }
     );
+
+    if (!requestPasswordResetResult.ok) {
+      const error = new Error(
+        "Unable to add request password reset (internal error)"
+      );
+      error.name = "InternalError";
+      throw error;
+    }
+
     const requestPasswordResetResultJSON =
       await requestPasswordResetResult.json();
+
     if (!requestPasswordResetResultJSON.success) {
       if (requestPasswordResetResultJSON.statusCode === 400) {
         request.context = {
