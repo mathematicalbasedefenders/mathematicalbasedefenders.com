@@ -1,6 +1,7 @@
 # mathematicalbasedefenders.com
 [![CodeFactor](https://www.codefactor.io/repository/github/mathematicalbasedefenders/mathematicalbasedefenders.com/badge)](https://www.codefactor.io/repository/github/mathematicalbasedefenders/mathematicalbasedefenders.com)
-<img src="https://img.shields.io/badge/dynamic/json?label=Registered Users on Official Server&query=usersRegistered&url=https%3A%2F%2Fmathematicalbasedefenders.com%2Fapi%2Fmetadata">
+<img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.mathematicalbasedefenders.com%2Fmetadata&query=%24.data.usersRegistered&style=flat-square&label=Registered%20Players&color=%23eeeeee
+">
 
 **2022-09-23: Mathematical Base Defenders is now open source\*!**
 
