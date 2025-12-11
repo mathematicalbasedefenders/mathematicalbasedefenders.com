@@ -1,5 +1,6 @@
 User-agent: *
 Allow: /
+Disallow: /confirm-email-address
 Disallow: /change-password
 Disallow: /register
 Disallow: /request-password-change
