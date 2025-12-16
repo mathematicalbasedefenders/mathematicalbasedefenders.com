@@ -171,24 +171,26 @@ app.all("*", function (request: Request, response: Response) {
 });
 
 // stuff that needs to be at the end
-app.use((error: Error, request: Request, response: Response) => {
-  log.error(error.stack);
-  if (error.name === "ForbiddenError") {
-    response.status(403).json({
-      statusCode: 403,
-      success: false,
-      error:
-        "Forbidden Error. You don't have access to perform this operation. (Contact the server administrator if this persists.)"
-    });
-  } else {
-    response.status(500).json({
-      statusCode: 500,
-      success: false,
-      error:
-        "Internal Server Error. (Contact the server administrator if this persists.)"
-    });
+app.use(
+  (error: Error, request: Request, response: Response, next: NextFunction) => {
+    log.error(error.stack);
+    if (error.name === "ForbiddenError") {
+      response.status(403).json({
+        statusCode: 403,
+        success: false,
+        error:
+          "Forbidden Error. You don't have access to perform this operation. (Contact the server administrator if this persists.)"
+      });
+    } else {
+      response.status(500).json({
+        statusCode: 500,
+        success: false,
+        error:
+          "Internal Server Error. (Contact the server administrator if this persists.)"
+      });
+    }
   }
-});
+);
 
 app.listen(PORT, () => {
   log.info(`App listening at http://localhost:${PORT}`);

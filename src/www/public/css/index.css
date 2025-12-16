@@ -1,4 +1,7 @@
 /* GLOBAL */
+html {
+  overflow-x: hidden;
+}
 
 body {
   overflow-x: hidden;
@@ -446,7 +449,7 @@ h1 .icon {
 
   #miscellaneous-information__card-container {
     width: 80vw;
-    height: 125vh;
+    height: 175vh;
     display: flex;
     justify-content: center;
     align-items: center;
