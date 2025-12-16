@@ -26,14 +26,15 @@ export default class MetadataRepository {
   }
 
   async incrementUserCount() {
-    // TODO: Error handling???
-    const data = await Metadata.findOne({});
+    const data = await Metadata.findOne(
+      { "documentIsMetadata": true },
+      { $inc: { "usersRegistered": 1 } },
+      { new: true }
+    );
     if (!data) {
       log.warn(`Can't find Metadata from MetadataRepository`);
-      log.warn(`Will not increment user count.`);
+      log.warn(`Did not increment user count.`);
       return;
     }
-    data.usersRegistered = data.usersRegistered + 1;
-    await data.save();
   }
 }
