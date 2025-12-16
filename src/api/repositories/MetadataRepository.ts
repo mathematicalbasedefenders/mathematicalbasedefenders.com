@@ -26,7 +26,7 @@ export default class MetadataRepository {
   }
 
   async incrementUserCount() {
-    const data = await Metadata.findOne(
+    const data = await Metadata.findOneAndUpdate(
       { "documentIsMetadata": true },
       { $inc: { "usersRegistered": 1 } },
       { new: true }
