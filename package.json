@@ -1,6 +1,6 @@
 {
   "name": "mathematicalbasedefenders.com",
-  "version": "0.7.3",
+  "version": "0.7.4",
   "description": "Website for Mathematical Base Defenders.",
   "main": "app.js",
   "scripts": {
@@ -16,7 +16,7 @@
   "dependencies": {
     "@dotenvx/dotenvx": "^1.44.1",
     "@types/isomorphic-fetch": "^0.0.36",
-    "bcrypt": "^5.0.1",
+    "bcrypt": "^6.0.0",
     "body-parser": "^1.19.1",
     "chai": "^5.1.1",
     "chai-as-promised": "^8.0.0",
