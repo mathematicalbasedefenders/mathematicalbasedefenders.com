@@ -288,7 +288,7 @@ h1 .icon {
   background-color: #c5c5c5;
   width: 17.5vw;
   height: 35vh;
-  margin: 8px;
+  margin: 8px 8px 8px 0;
 }
 
 .feature-card__front {
