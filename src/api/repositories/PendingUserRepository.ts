@@ -89,7 +89,7 @@ export default class PendingUserRepository {
     log.info(`Created new pending user with username ${data.username}.`);
     return {
       success: true,
-      statusCode: 200,
+      statusCode: 201,
       data: data
     };
   }
@@ -305,7 +305,7 @@ export default class PendingUserRepository {
     log.info(`Verified new user: ${user.username}`);
     return {
       success: true,
-      statusCode: 200
+      statusCode: 201
     };
   }
 
