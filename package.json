@@ -38,7 +38,7 @@
     "jsdom": "^19.0.0",
     "license-checker": "^8.0.1",
     "lodash": "^4.17.21",
-    "markdown-it": "^13.0.1",
+    "markdown-it": "^14.1.1",
     "marked": "^4.0.10",
     "mongo-sanitize": "^1.1.0",
     "mongodb": "^3.7.4",
