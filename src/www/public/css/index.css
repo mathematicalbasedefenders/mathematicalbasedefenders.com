@@ -74,6 +74,7 @@ h1 .icon {
 
 #header {
   width: 100vw;
+  box-sizing: border-box;
 }
 
 #header #header__content {
@@ -147,6 +148,7 @@ h1 .icon {
   padding: 8px;
   width: 100vw;
   min-height: 50vh;
+  box-sizing: border-box;
 }
 
 #gameplay-information h2 {
@@ -201,6 +203,7 @@ h1 .icon {
   width: 75%;
   margin-left: auto;
   margin-right: auto;
+  box-sizing: border-box;
 }
 
 #customization-previews {
@@ -225,6 +228,7 @@ h1 .icon {
   background-color: #dddddd;
   padding: 8px;
   width: 100vw;
+  box-sizing: border-box;
 }
 
 #miscellaneous-information #miscellaneous-information__content {
@@ -318,6 +322,7 @@ h1 .icon {
 #call-to-action {
   width: 100vw;
   height: 20vh;
+  box-sizing: border-box;
 }
 
 #call-to-action #call-to-action__content {
