@@ -62,10 +62,10 @@ export default class PendingPasswordResetRepository {
       log.info(
         `Refused to create password reset request due to no user with email ${shortenedEmail}`
       );
-      log.info(`But returning a fake successful 200 response.`);
+      log.info(`But returning a fake successful 201 response.`);
       return {
         success: true,
-        statusCode: 200
+        statusCode: 201
       };
     }
 
@@ -78,10 +78,10 @@ export default class PendingPasswordResetRepository {
       log.warn(
         `Refused to create pending password reset record due to duplicate email.`
       );
-      log.info(`But returning a fake successful 200 response.`);
+      log.info(`But returning a fake successful 201 response.`);
       return {
         success: true,
-        statusCode: 200
+        statusCode: 201
       };
     }
 
@@ -125,7 +125,7 @@ export default class PendingPasswordResetRepository {
     );
     return {
       success: true,
-      statusCode: 200
+      statusCode: 201
     };
   }
 

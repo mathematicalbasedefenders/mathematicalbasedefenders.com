@@ -7,7 +7,7 @@ import {
 
 describe("PendingUserRepository", function () {
   describe(".createPendingUser()", function () {
-    it("should return status code 200 if data is valid", async function () {
+    it("should return status code 201 if data is valid", async function () {
       const data = {
         email: "PendingUserToCreate@example.com",
         username: "pendingUserToCreate",
@@ -17,7 +17,7 @@ describe("PendingUserRepository", function () {
       const pendingUserRepository = new PendingUserRepository();
       const result = await pendingUserRepository.createPendingUser(data);
       const statusCode = result.statusCode;
-      statusCode.should.equal(200);
+      statusCode.should.equal(201);
     });
 
     it("should return status code 400 if email is empty", async function () {
@@ -167,7 +167,7 @@ describe("PendingUserRepository", function () {
   });
 
   describe(".verifyPendingUser()", function () {
-    it("should return status code 200 if email and code is correct", async function () {
+    it("should return status code 201 if email and code is correct", async function () {
       const email = getMockPendingUserEmail(1);
       const hashedEmail = sha256(email);
       const code = getMockConfirmationCode(1);
@@ -178,7 +178,7 @@ describe("PendingUserRepository", function () {
         code
       );
       const statusCode = result.statusCode;
-      statusCode.should.equal(200);
+      statusCode.should.equal(201);
     });
 
     it("should return status code 400 if email is correct but code is incorrect", async function () {
