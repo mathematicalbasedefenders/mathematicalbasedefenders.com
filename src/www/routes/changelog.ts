@@ -1,7 +1,9 @@
 import express from "express";
 const router = express.Router();
-import { marked } from "marked";
+import MarkdownIt from "markdown-it";
 import { log } from "../core/log";
+
+const md = MarkdownIt();
 
 interface ChangelogContent {
   text: string;
@@ -14,16 +16,15 @@ router.get("/changelog", async (request, response) => {
 
 router.get("/changelog/:service", async (request, response) => {
   let data = <ChangelogContent>{};
-  // data.gameChangelog = marked.parse((await loadText("game")) as string);
   switch (request.params.service) {
     case "website": {
-      data.text = marked.parse((await loadText("website")) as string);
+      data.text = md.render((await loadText("website")) as string);
       data.part = "Website";
       response.render("pages/changelog", { data: data });
       return;
     }
     case "game": {
-      data.text = marked.parse((await loadText("game")) as string);
+      data.text = md.render((await loadText("game")) as string);
       data.part = "Game";
       response.render("pages/changelog", { data: data });
       return;
@@ -62,7 +63,7 @@ async function loadText(service: string) {
 
   const text = await response.text();
 
-  return marked.parse(text);
+  return text;
 }
 
 export { router };

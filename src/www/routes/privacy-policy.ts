@@ -1,9 +1,10 @@
 import express from "express";
 const router = express.Router();
+import MarkdownIt from "markdown-it";
 
-import https from "https";
-import { marked } from "marked";
 import { log } from "../core/log";
+
+const md = MarkdownIt();
 
 router.get("/privacy-policy", async (request, response) => {
   response.render("pages/privacy-policy", {
@@ -23,6 +24,6 @@ async function loadPrivacyPolicy() {
 
   const text = await response.text();
 
-  return marked.parse(text);
+  return md.render(text);
 }
 export { router };

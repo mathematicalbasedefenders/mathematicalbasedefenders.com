@@ -1,7 +1,9 @@
 import express, { Request, Response } from "express";
 const router = express.Router();
-import { marked } from "marked";
 import { log } from "../core/log";
+import MarkdownIt from "markdown-it";
+
+const md = MarkdownIt();
 
 router.get("/about", async (request: Request, response: Response) => {
   response.render("pages/about", {
@@ -21,7 +23,7 @@ async function loadAboutText() {
 
   const text = await response.text();
 
-  return marked.parse(text);
+  return md.render(text);
 }
 
 export { router };
