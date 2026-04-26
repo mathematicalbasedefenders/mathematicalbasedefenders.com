@@ -159,10 +159,8 @@ loadLicenses();
 app.listen(PORT, () => {
   log.info(`App listening at http://localhost:${PORT}`);
   if (process.env.CREDENTIAL_SET_USED !== "production") {
-    apiBaseURL = `http://localhost:${API_PORT}`;
     log.warn(`Using testing credentials.`);
   } else {
-    apiBaseURL = `https://api.mathematicalbasedefenders.com`;
     log.info(`Using production credentials.`);
   }
 });
