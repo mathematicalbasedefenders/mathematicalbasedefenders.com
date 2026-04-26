@@ -111,7 +111,7 @@ app.use(
 app.use(cookieParser());
 
 let licenses;
-let apiBaseURL: string = "http://localhost:9000";
+const apiBaseURL: string = "http://localhost:9000";
 
 // Routes
 require("fs")
