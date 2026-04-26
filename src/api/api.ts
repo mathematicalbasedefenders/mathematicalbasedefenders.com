@@ -124,7 +124,9 @@ const limiter = rateLimit({
       error: "You are being rate limited."
     });
     return;
-  }
+  },
+  skip: (request, response) =>
+    typeof request.ip === "string" && allowlist.includes(request.ip)
 });
 
 const app = express();
