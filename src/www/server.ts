@@ -111,10 +111,7 @@ app.use(
 app.use(cookieParser());
 
 let licenses;
-let apiBaseURL: string =
-  process.env.CREDENTIAL_SET_USED !== "production"
-    ? "http://localhost:9000"
-    : "https://api.mathematicalbasedefenders.com";
+let apiBaseURL: string = "http://localhost:9000";
 
 // Routes
 require("fs")
