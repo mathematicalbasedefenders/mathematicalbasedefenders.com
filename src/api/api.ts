@@ -11,6 +11,10 @@ import log from "./core/log";
 import crypto from "crypto";
 import { sha256 } from "js-sha256";
 
+// Allowlist for local IPs
+// 127.0.0.1, ::ffff:127.0.0.1, and ::1
+const allowlist = ["127.0.0.1", "::ffff:127.0.0.1", "::1"];
+
 const sessions: Map<string, number> = new Map();
 
 type Route = {
@@ -120,7 +124,11 @@ const limiter = rateLimit({
       error: "You are being rate limited."
     });
     return;
-  }
+  },
+  // here so eslint won't complain
+  // eslint-disable-line no-unused-vars
+  skip: (request, response) =>
+    typeof request.ip === "string" && allowlist.includes(request.ip)
 });
 
 const app = express();

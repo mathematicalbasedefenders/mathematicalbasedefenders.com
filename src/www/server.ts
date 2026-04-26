@@ -111,10 +111,7 @@ app.use(
 app.use(cookieParser());
 
 let licenses;
-let apiBaseURL: string =
-  process.env.CREDENTIAL_SET_USED !== "production"
-    ? "http://localhost:9000"
-    : "https://api.mathematicalbasedefenders.com";
+const apiBaseURL: string = `http://localhost:${API_PORT}`;
 
 // Routes
 require("fs")
@@ -162,10 +159,8 @@ loadLicenses();
 app.listen(PORT, () => {
   log.info(`App listening at http://localhost:${PORT}`);
   if (process.env.CREDENTIAL_SET_USED !== "production") {
-    apiBaseURL = `http://localhost:${API_PORT}`;
     log.warn(`Using testing credentials.`);
   } else {
-    apiBaseURL = `https://api.mathematicalbasedefenders.com`;
     log.info(`Using production credentials.`);
   }
 });
