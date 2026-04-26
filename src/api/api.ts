@@ -125,6 +125,8 @@ const limiter = rateLimit({
     });
     return;
   },
+  // here so eslint won't complain
+  // eslint-disable-line no-unused-vars
   skip: (request, response) =>
     typeof request.ip === "string" && allowlist.includes(request.ip)
 });
