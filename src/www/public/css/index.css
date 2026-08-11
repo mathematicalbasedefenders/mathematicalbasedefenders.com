@@ -64,6 +64,10 @@ button {
   width: 60vw;
 }
 
+.subtitle {
+  margin: 4px 0;
+}
+
 /* ICONS */
 
 h1 .icon {
