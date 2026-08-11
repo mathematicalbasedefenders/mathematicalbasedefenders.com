@@ -5,8 +5,8 @@
   "main": "app.js",
   "scripts": {
     "test": "mocha 'tests/**/*.spec.*'",
-    "build": "tsc && npm run copyStaticFiles",
-    "copyStaticFiles": "copyfiles --up 1 \"src/**/*\" -e \"**/*.ts\" dist",
+    "build": "tsc && npm run copy-static-files",
+    "copy-static-files": "copyfiles --up 1 \"src/**/*\" -e \"**/*.ts\" dist",
     "start-www": "node ./dist/www/server.js",
     "start-api": "node ./dist/api/api.js"
   },
