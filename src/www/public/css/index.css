@@ -178,6 +178,7 @@ h1 .icon {
 #single-player-previews {
   display: flex;
   justify-content: space-evenly;
+  gap: 8px 64px;
 }
 
 #single-player-previews .preview__image--singleplayer {
@@ -213,6 +214,7 @@ h1 .icon {
 #customization-previews {
   display: flex;
   justify-content: space-evenly;
+  gap: 8px 64px;
 }
 
 #customization-previews .preview__image--customization {
