@@ -56,6 +56,7 @@ describe("MetadataRepository", function () {
       await metadataRepository.incrementUserCount();
 
       const metadata = await Metadata.findOne({ documentIsMetadata: true });
+      chai.expect(metadata).to.exist;
       metadata?.usersRegistered.should.equal(6);
     });
 
@@ -70,6 +71,7 @@ describe("MetadataRepository", function () {
       );
 
       const metadata = await Metadata.findOne({ documentIsMetadata: true });
+      chai.expect(metadata).to.exist;
       metadata?.usersRegistered.should.equal(15);
     });
 
