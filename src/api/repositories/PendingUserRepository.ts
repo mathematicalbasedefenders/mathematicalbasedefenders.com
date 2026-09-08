@@ -57,17 +57,6 @@ export default class PendingUserRepository {
     const emailConfirmationCode = this.createEmailConfirmationCode();
     const hashedEmailConfirmationCode = sha256(emailConfirmationCode);
 
-    const mailResult = await this.sendMailToUser(data, emailConfirmationCode);
-    if (!mailResult) {
-      log.error(`Refused to create pending user due to unable to send mail.`);
-      return {
-        success: false,
-        statusCode: 400,
-        error:
-          "Unable to send mail. (Contact the server administrator if this persists.)"
-      };
-    }
-
     const domain =
       process.env.CREDENTIAL_SET_USED === "production"
         ? "https://mathematicalbasedefenders.com"
@@ -87,6 +76,18 @@ export default class PendingUserRepository {
     await PendingUser.create(dataToSave);
 
     log.info(`Created new pending user with username ${data.username}.`);
+
+    const mailResult = await this.sendMailToUser(data, emailConfirmationCode);
+    if (!mailResult) {
+      log.error(`Refused to create pending user due to unable to send mail.`);
+      return {
+        success: false,
+        statusCode: 400,
+        error:
+          "Unable to send mail. (Contact the server administrator if this persists.)"
+      };
+    }
+
     return {
       success: true,
       statusCode: 201,
