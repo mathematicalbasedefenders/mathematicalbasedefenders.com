@@ -178,7 +178,74 @@ describe("PendingUserRepository", function () {
 
       const secondData = {
         email: "PendingUserToCreate2@example.com",
-        username: "pendingUserToCreate1",
+        username: "unverified_user1",
+        password: "password123"
+      };
+
+      const pendingUserRepository = new PendingUserRepository();
+      await pendingUserRepository.createPendingUser(firstData);
+      const result = await pendingUserRepository.createPendingUser(secondData);
+      const statusCode = result.statusCode;
+      statusCode.should.equal(400);
+    });
+
+    it("should return status code 400 if it's a duplicate email, even if case doesn't match (verified user)", async function () {
+      const data = {
+        email: "USer001@EXAMPLE.com",
+        username: "unverified_user",
+        password: "password123"
+      };
+
+      const pendingUserRepository = new PendingUserRepository();
+      const result = await pendingUserRepository.createPendingUser(data);
+      const statusCode = result.statusCode;
+      statusCode.should.equal(400);
+    });
+
+    it("should return status code 400 if it's a duplicate username, even if case doesn't match (verified user)", async function () {
+      const data = {
+        email: "PendingUserToCreate@example.com",
+        username: "USER001",
+        password: "password123"
+      };
+
+      const pendingUserRepository = new PendingUserRepository();
+      const result = await pendingUserRepository.createPendingUser(data);
+      const statusCode = result.statusCode;
+      statusCode.should.equal(400);
+    });
+
+    it("should return status code 400 if it's a duplicate email, even if case doesn't match (another pending user)", async function () {
+      const firstData = {
+        email: "PENDINGUSERTOCREATE@example.com",
+        username: "pendingUser21",
+        password: "password123"
+      };
+
+      const secondData = {
+        email: "PendingUserToCreate@example.com",
+        username: "pendingUser72",
+        password: "password123"
+      };
+
+      const pendingUserRepository = new PendingUserRepository();
+      await pendingUserRepository.createPendingUser(firstData);
+      const result = await pendingUserRepository.createPendingUser(secondData);
+
+      const statusCode = result.statusCode;
+      statusCode.should.equal(400);
+    });
+
+    it("should return status code 400 if it's a duplicate username, even if case doesn't match (another pending user)", async function () {
+      const firstData = {
+        email: "PendingUserToCreate1@example.com",
+        username: "unverified222",
+        password: "password123"
+      };
+
+      const secondData = {
+        email: "PendingUserToCreate2@example.com",
+        username: "UNVERIFIED222",
         password: "password123"
       };
 
