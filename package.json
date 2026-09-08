@@ -1,12 +1,12 @@
 {
   "name": "mathematicalbasedefenders.com",
-  "version": "0.7.6",
+  "version": "0.7.7",
   "description": "Website for Mathematical Base Defenders.",
   "main": "app.js",
   "scripts": {
     "test": "mocha 'tests/**/*.spec.*'",
-    "build": "tsc && npm run copyStaticFiles",
-    "copyStaticFiles": "copyfiles --up 1 \"src/**/*\" -e \"**/*.ts\" dist",
+    "build": "tsc && npm run copy-static-files",
+    "copy-static-files": "copyfiles --up 1 \"src/**/*\" -e \"**/*.ts\" dist",
     "start-www": "node ./dist/www/server.js",
     "start-api": "node ./dist/api/api.js"
   },
@@ -42,7 +42,7 @@
     "node-fetch": "^2.6.9",
     "serve-favicon": "^2.5.0",
     "typescript": "^4.8.4",
-    "uuid": "^8.3.2",
+    "uuid": "^11.1.1",
     "zeptomail": "^6.2.0"
   },
   "repository": {

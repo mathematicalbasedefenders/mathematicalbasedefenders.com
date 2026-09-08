@@ -64,6 +64,10 @@ button {
   width: 60vw;
 }
 
+.subtitle {
+  margin: 4px 0;
+}
+
 /* ICONS */
 
 h1 .icon {
@@ -145,7 +149,7 @@ h1 .icon {
 
 #gameplay-information {
   background-color: #dddddd;
-  padding: 8px;
+  padding: 8px 0;
   width: 100vw;
   min-height: 50vh;
   box-sizing: border-box;
@@ -174,6 +178,7 @@ h1 .icon {
 #single-player-previews {
   display: flex;
   justify-content: space-evenly;
+  gap: 8px 64px;
 }
 
 #single-player-previews .preview__image--singleplayer {
@@ -198,7 +203,7 @@ h1 .icon {
 }
 
 #customization-information {
-  padding: 8px;
+  padding: 8px 0;
   min-height: 50vh;
   width: 75%;
   margin-left: auto;
@@ -209,6 +214,7 @@ h1 .icon {
 #customization-previews {
   display: flex;
   justify-content: space-evenly;
+  gap: 8px 64px;
 }
 
 #customization-previews .preview__image--customization {
@@ -226,7 +232,7 @@ h1 .icon {
 
 #miscellaneous-information {
   background-color: #dddddd;
-  padding: 8px;
+  padding: 8px 0;
   width: 100vw;
   box-sizing: border-box;
 }

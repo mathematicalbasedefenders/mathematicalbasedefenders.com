@@ -60,9 +60,18 @@ interface UserModel extends mongoose.Model<UserInterface> {
 }
 
 const UserSchema = new mongoose.Schema<UserInterface, UserModel>({
-  username: String,
-  usernameInAllLowercase: String,
-  emailAddress: String,
+  username: {
+    type: String,
+    unique: true
+  },
+  usernameInAllLowercase: {
+    type: String,
+    unique: true
+  },
+  emailAddress: {
+    type: String,
+    unique: true
+  },
   hashedPassword: String,
   userNumber: Number,
   creationDateAndTime: Date,
