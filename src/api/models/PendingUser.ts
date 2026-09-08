@@ -22,9 +22,9 @@ const PendingUserSchema = new mongoose.Schema<
   PendingUserModel
 >(
   {
-    username: String,
-    usernameInAllLowercase: String,
-    emailAddress: String,
+    username: { type: String, unique: true },
+    usernameInAllLowercase: { type: String, unique: true },
+    emailAddress: { type: String, unique: true },
     hashedPassword: String,
     emailConfirmationLink: String,
     emailConfirmationCode: String,

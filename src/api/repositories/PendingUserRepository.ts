@@ -312,14 +312,14 @@ export default class PendingUserRepository {
   private async checkPendingUserExistenceByUsername(username: string) {
     const existing = await PendingUser.countDocuments({
       username: username
-    });
+    }).collation({ locale: "en", strength: 2 });
     return existing > 0;
   }
 
   private async checkPendingUserExistenceByEmail(email: string) {
     const existing = await PendingUser.countDocuments({
       emailAddress: email
-    });
+    }).collation({ locale: "en", strength: 2 });
     return existing > 0;
   }
 
