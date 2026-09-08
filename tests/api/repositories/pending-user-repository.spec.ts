@@ -282,7 +282,7 @@ describe("PendingUserRepository", function () {
       should.not.exist(pendingUser);
       should.exist(user);
       user?.username.should.equal("PendingUser001");
-      chai.expect(metadata).to.exist;
+      should.exist(metadata);
       metadata?.usersRegistered.should.equal(6);
     });
 

@@ -130,6 +130,7 @@ describe("UserRepository", function () {
       const updatedUser = await User.findOne({
         emailAddress: getMockUserEmail(1)
       });
+      should.exist(updatedUser);
       updatedUser?.hashedPassword.should.equal(newHashedPassword);
     });
   });

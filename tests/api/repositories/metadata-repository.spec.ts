@@ -1,5 +1,5 @@
 import * as chai from "chai";
-chai.should();
+const should = chai.should();
 
 import mongoose from "mongoose";
 import Metadata from "../../../src/api/models/Metadata";
@@ -56,7 +56,7 @@ describe("MetadataRepository", function () {
       await metadataRepository.incrementUserCount();
 
       const metadata = await Metadata.findOne({ documentIsMetadata: true });
-      chai.expect(metadata).to.exist;
+      should.exist(metadata);
       metadata?.usersRegistered.should.equal(6);
     });
 
@@ -71,7 +71,7 @@ describe("MetadataRepository", function () {
       );
 
       const metadata = await Metadata.findOne({ documentIsMetadata: true });
-      chai.expect(metadata).to.exist;
+      should.exist(metadata);
       metadata?.usersRegistered.should.equal(15);
     });
 
