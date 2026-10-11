@@ -42,17 +42,14 @@ button {
   flex-wrap: wrap;
 }
 
-.button--call-to-action {
-  width: 270px;
-  height: 60px;
-}
 
 .button--play {
   background-color: #108800;
   color: #ffffff;
   border: 2px #108800 solid;
-  font-size: 225%;
+  padding: 4px 12px;
   transition-duration: var(--transition-duration-regular);
+  font-size: 150%;
 }
 
 .button--play:hover {
@@ -82,11 +79,29 @@ h1 .icon {
 }
 
 #header #header__content {
-  text-align: center;
-  min-height: 100vh;
+  max-width: 1024px;
   width: 80%;
   margin-left: auto;
   margin-right: auto;
+}
+
+#header #header__call-to-action {
+  margin-top: 1rem;
+  max-width: 1024px;
+  width: 80%;
+  display: flex;
+  margin-left: auto;
+  margin-right: auto;
+  justify-content: space-between;
+}
+
+#header__call-to-action #header__call-to-action__left {
+  width: 60%;
+}
+
+#header__call-to-action #header__call-to-action__right {
+  width: 30%;
+  text-align: right;
 }
 
 #header h1 {
@@ -170,6 +185,7 @@ h1 .icon {
 #gameplay-information #gameplay-information__content {
   padding: 16px;
   text-align: center;
+  max-width: 1024px;
   width: 80%;
   margin-left: auto;
   margin-right: auto;
@@ -198,6 +214,7 @@ h1 .icon {
   padding: 16px;
   text-align: center;
   width: 80%;
+  max-width: 1024px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -334,6 +351,7 @@ h1 .icon {
 #call-to-action #call-to-action__content {
   padding: 16px;
   text-align: center;
+  max-width: 1024px;
   width: 80%;
   margin-left: auto;
   margin-right: auto;
@@ -414,7 +432,7 @@ h1 .icon {
   } */
 }
 
-@media only screen and (max-width: 768px) {
+@media only screen and (max-width: 1024px) {
   #header__latest-versions {
     flex-direction: column !important;
     align-items: center;

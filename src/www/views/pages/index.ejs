@@ -12,48 +12,34 @@
 <body>
   <main>
     <%- include("../partials/header.ejs") %>
-    <br><br>
+    <br>
     <div id="header">
       <div id="header__content">
-        <h1>A competitive multiplayer mental math game.</h1>
-        <h2>
-          Test your speed math skills by yourself in three modes
-          or with others in a fast-paced environment.
-        </h2>
-        <br>
-        <a href="https://play.mathematicalbasedefenders.com">
-          <button class="button--call-to-action button--play">
-            <span>Play</span>
-          </button>
-        </a>
-        <br>
-        <a href="/register">...or register for an account</a>
-        <br><br>
-        <div id="header__latest-versions">
-          <a class="no-text-decoration" href="/changelog/game">
-            <div class="version-indicator">
-              <h3>Latest Game Version</h3>
-              <div class="version-number"><%= versions.game.version %></div>
-              <div>Released <%= versions.game.releaseDate %></div>
+      <strong>Welcome (back) to Mathematical Base Defenders!</strong>
+      <br>
+      Mathematical Base Defenders is a mental math game where you solve math problems to kill enemies, and that's pretty much it.
+      It's easy to get to know the rules, but hard to master! With both easy and hard modes, as well as singleplayer and multiplayer modes,
+      there's sure to be something that suits you or your group's need for mental math games!
+      <br>
+      </div>
+      <div id="header__call-to-action">
+        <div id="header__call-to-action__left">
+          <div class="preview" id="video-preview__container__container">
+            <div id="video-preview__container">
+              <video id="video-preview" class="preview__video" muted="" autoplay="" loop="" style="pointer-events: none;">
+                It seems like your browser doesn't support embedded videos.
+                <br>Here's a <a href="/assets/videos/mathematicalbasedefenders.com-preview.mp4">link to the gameplay preview</a> instead.
+                <source src="/assets/videos/mathematicalbasedefenders.com-preview.mp4" type="video/mp4">
+              </video>
             </div>
-          </a>
-          <a class="no-text-decoration" href="/changelog/website">
-            <div class="version-indicator">
-              <h3>Latest Website Version</h3>
-              <div class="version-number"><%= versions.website.version %></div>
-              <div>Released <%= versions.website.releaseDate %></div>
-            </div>
-          </a>
-        </div>
-        <br><br>
-        <div class="preview" id="video-preview__container__container">
-          <div id="video-preview__container">
-            <video id="video-preview" class="preview__video" muted autoplay loop style="pointer-events: none;">
-              It seems like your browser doesn't support embedded videos.
-              <br>Here's a <a href="/assets/videos/mathematicalbasedefenders.com-preview.mp4">link to the gameplay preview</a> instead.
-              <source src="/assets/videos/mathematicalbasedefenders.com-preview.mp4" type="video/mp4">
-            </video>
           </div>
+        </div>
+        <div id="header__call-to-action__right">
+          <button class="button--call-to-action button--play">
+            Play Now!
+          </button>
+          <br>
+          <a href="/register">...or register for an account</a>
         </div>
       </div>
     </div>
