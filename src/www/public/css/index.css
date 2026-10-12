@@ -160,122 +160,6 @@ h1 .icon {
   width: 1024px;
 }
 
-/* GAMEPLAY INFORMATION */
-
-#gameplay-information {
-  padding: 8px 0;
-  width: 100vw;
-  min-height: 50vh;
-  box-sizing: border-box;
-}
-
-#gameplay-information h2 {
-  font-size: 200%;
-  font-weight: 500;
-  text-align: center;
-}
-
-#gameplay-information #gameplay-information__preview {
-  width: 75%;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-#gameplay-information #gameplay-information__content {
-  padding: 16px;
-  text-align: center;
-  max-width: 1024px;
-  width: 80%;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-#single-player-previews {
-  display: flex;
-  justify-content: space-evenly;
-  gap: 8px 64px;
-}
-
-#single-player-previews .preview__image--singleplayer {
-  width: 20vw;
-  height: auto;
-}
-
-/* CUSTOMIZATION INFORMATION */
-
-#customization-information h2 {
-  font-size: 200%;
-  font-weight: 500;
-  text-align: center;
-}
-
-#customization-information #customization-information__content {
-  padding: 16px;
-  text-align: center;
-  width: 80%;
-  max-width: 1024px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-#customization-information {
-  padding: 8px 0;
-  min-height: 50vh;
-  width: 75%;
-  margin-left: auto;
-  margin-right: auto;
-  box-sizing: border-box;
-}
-
-#customization-previews {
-  display: flex;
-  justify-content: space-evenly;
-  gap: 8px 64px;
-}
-
-#customization-previews .preview__image--customization {
-  width: 20vw;
-  height: auto;
-}
-
-/* MISC. INFORMATION */
-
-#miscellaneous-information h2 {
-  font-size: 200%;
-  font-weight: 500;
-  text-align: center;
-}
-
-#miscellaneous-information {
-  padding: 8px 0;
-  width: 100vw;
-  box-sizing: border-box;
-}
-
-#miscellaneous-information #miscellaneous-information__content {
-  padding: 16px;
-  text-align: center;
-  width: 80%;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-#miscellaneous-information__card-container {
-  display: flex;
-  margin-left: auto;
-  margin-right: auto;
-  justify-content: space-evenly;
-}
-
-#miscellaneous-information__card-container-container {
-  width: fit-content;
-  height: fit-content;
-  display: flex;
-  flex-direction: column;
-  text-align: center;
-  margin: auto;
-}
-
 /* adapted from https://www.w3schools.com/howto/howto_css_flip_card.asp */
 
 .feature-card .icon {
@@ -375,6 +259,19 @@ h1 .icon {
 }
 
 @media only screen and (max-width: 768px) {
+  #header__call-to-action {
+    flex-direction: column-reverse;
+  }
+
+  #header__call-to-action__left {
+    width: 100% !important;
+  }
+
+  #header__call-to-action__right {
+    width: 100% !important;
+    text-align: left !important;
+    margin-bottom: 1rem;
+  }
   #header__latest-versions {
     flex-direction: column !important;
     align-items: center;
