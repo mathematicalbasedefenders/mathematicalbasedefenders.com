@@ -42,7 +42,6 @@ button {
   flex-wrap: wrap;
 }
 
-
 .button--play {
   background-color: #108800;
   color: #ffffff;
@@ -107,8 +106,7 @@ h1 .icon {
 }
 
 #header h1 {
-  font-size: 300%;
-  font-weight: bold;
+  font-weight: 500;
 }
 
 #header h2 {
