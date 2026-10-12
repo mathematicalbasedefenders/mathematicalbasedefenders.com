@@ -376,63 +376,7 @@ h1 .icon {
   justify-content: end;
 }
 
-@media only screen and (max-width: 1280px) {
-  #miscellaneous-information__card-container {
-    display: grid;
-    margin-left: auto;
-    margin-right: auto;
-    justify-content: space-evenly;
-    width: 80vw;
-    height: 60vh;
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(2, 1fr);
-    grid-column-gap: 4px;
-    grid-row-gap: 4px;
-  }
-
-  .feature-card__container {
-    width: 100%;
-    height: 100%;
-  }
-
-  .feature-card {
-    width: 100%;
-    background-color: #c5c5c5;
-    height: 100%;
-  }
-
-  .feature-card__back p {
-    font-size: 100%;
-  }
-
-  .preview__content {
-    display: flex;
-    flex-direction: column !important;
-    align-items: center;
-  }
-
-  .preview__image img {
-    width: auto !important;
-    height: 50vh !important;
-  }
-
-  #video-preview__container {
-    display: flex;
-    flex-direction: column !important;
-    align-items: center;
-  }
-
-  #video-preview {
-    width: 1024px;
-  }
-  /*
-  .feature-card__back,
-  .text-small {
-    font-size: 50% !important;
-  } */
-}
-
-@media only screen and (max-width: 1024px) {
+@media only screen and (max-width: 768px) {
   #header__latest-versions {
     flex-direction: column !important;
     align-items: center;
