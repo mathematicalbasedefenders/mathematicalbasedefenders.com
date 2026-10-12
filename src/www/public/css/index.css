@@ -65,6 +65,13 @@ button {
   margin: 4px 0;
 }
 
+.content {
+  max-width: 1024px;
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 /* ICONS */
 
 h1 .icon {
@@ -76,13 +83,8 @@ h1 .icon {
 #header {
   width: 100vw;
   box-sizing: border-box;
-}
-
-#header #header__content {
-  max-width: 1024px;
-  width: 80%;
-  margin-left: auto;
-  margin-right: auto;
+  background-color: #dddddd;
+  padding: 1rem 0;
 }
 
 #header #header__call-to-action {
@@ -163,7 +165,6 @@ h1 .icon {
 /* GAMEPLAY INFORMATION */
 
 #gameplay-information {
-  background-color: #dddddd;
   padding: 8px 0;
   width: 100vw;
   min-height: 50vh;
@@ -248,7 +249,6 @@ h1 .icon {
 }
 
 #miscellaneous-information {
-  background-color: #dddddd;
   padding: 8px 0;
   width: 100vw;
   box-sizing: border-box;
