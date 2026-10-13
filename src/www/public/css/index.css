@@ -185,7 +185,7 @@ h1 .icon {
 #call-to-action {
   box-sizing: border-box;
   background-color: #dddddd;
-  height: 20vh;
+  padding: 2rem 0;
 }
 
 #call-to-action #call-to-action__content {
