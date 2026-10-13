@@ -158,8 +158,8 @@ h1 .icon {
 
 .data__right img {
   max-width: 100%;
-  height:auto;
-  display:block;
+  height: auto;
+  display: block;
 }
 /* PREVIEW */
 
@@ -185,17 +185,18 @@ h1 .icon {
 #call-to-action {
   box-sizing: border-box;
   background-color: #dddddd;
+  height: 20vh;
 }
 
 #call-to-action #call-to-action__content {
   margin-left: auto;
   margin-right: auto;
-  height: 100%;
   max-width: 1024px;
-  height: 20vh;
-  display: flex;
-  justify-content: center;
   width: 80%;
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  justify-content: center;
 }
 
 #call-to-action__button {
@@ -203,7 +204,6 @@ h1 .icon {
   flex-direction: column;
   text-align: right;
 }
-
 
 @media only screen and (max-width: 768px) {
   #header__call-to-action {
@@ -224,25 +224,25 @@ h1 .icon {
     align-items: center;
   }
 
-#information .data {
-  flex-direction: column;
-}
+  #information .data {
+    flex-direction: column;
+  }
 
-#information .data .data__left {
-  width: 100%;
-}
+  #information .data .data__left {
+    width: 100%;
+  }
 
-#information .data .data__right {
-  width: 80%;
-  margin-left: auto;
-  margin-right: auto;
-}
+  #information .data .data__right {
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+  }
 
-.data__right img {
-  max-width: 100%;
-  height:auto;
-  display:block;
-}
+  .data__right img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
   .version-indicator {
     margin: 8px 0;
   }
@@ -276,15 +276,6 @@ h1 .icon {
     font-size: 100% !important;
   }
 
-  #miscellaneous-information__card-container {
-    width: 80vw;
-    height: 175vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-  }
-
   .feature-card__container {
     width: 100%;
     height: 25%;
@@ -293,18 +284,12 @@ h1 .icon {
   #call-to-action__message {
     display: flex;
     justify-content: center;
-    align-items: center;
+    width: 100%;
     flex-direction: column;
   }
 
   #call-to-action {
     width: 100vw;
-    height: calc(25vh + 64px);
-  }
-
-  #call-to-action__message h1 {
-    padding-bottom: 0px;
-    font-size: 200%;
   }
 
   #call-to-action__content {
