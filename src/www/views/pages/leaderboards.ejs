@@ -10,10 +10,14 @@
 <body>
   <%- include("../partials/header.ejs") %>
   <main>
-    <div>
-      <br>
+    <div id="leaderboards">
       <h1>Leaderboards: <%-mode%> Singleplayer </h1>
-      <p class="center-align"><a href="/leaderboards/easy">Easy Singleplayer</a> | <a href="/leaderboards/standard">Standard Singleplayer</a></p>
+      <div class="center-align">
+        <a href="/leaderboards/easy">Easy Singleplayer</a>
+        |
+        <a href="/leaderboards/standard">Standard Singleplayer</a>
+      </div>
+      <hr>
       <table id="leaderboards-table">
         <thead>
           <tr>
