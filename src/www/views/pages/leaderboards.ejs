@@ -18,27 +18,29 @@
         <a href="/leaderboards/standard">Standard Singleplayer</a>
       </div>
       <hr>
-      <table id="leaderboards-table">
-        <thead>
-          <tr>
-            <th scope="col">Rank</th>
-            <th scope="col">Username</th>
-            <th scope="col">Time Since Record</th>
-            <th scope="col">In Game Time</th>
-            <th scope="col">Enemies Killed</th>
-            <th scope="col">Speed</th>
-            <th scope="col">Score</th>
-            <th scope="col">Replay</th>
-          </tr>
-        </thead>
-        <% for (let i = 0; i < 100; i++) { %>
-        <% if (i < data.length) { %>
-        <%- include("../partials/leaderboards-record.ejs", {record:data[i],rank:i+1}) %>
-        <% } else { %>
-        <%- include("../partials/leaderboards-record.ejs", {record:null,rank:i+1}) %>
-        <% } %>
-        <% } %>
-      </table>
+      <div id="leaderboards-table__container">
+        <table id="leaderboards-table">
+          <thead>
+            <tr>
+              <th scope="col">Rank</th>
+              <th scope="col">Username</th>
+              <th scope="col">Time Since Record</th>
+              <th scope="col">In Game Time</th>
+              <th scope="col">Enemies Killed</th>
+              <th scope="col">Speed</th>
+              <th scope="col">Score</th>
+              <th scope="col">Replay</th>
+            </tr>
+          </thead>
+          <% for (let i = 0; i < 100; i++) { %>
+          <% if (i < data.length) { %>
+          <%- include("../partials/leaderboards-record.ejs", {record:data[i],rank:i+1}) %>
+          <% } else { %>
+          <%- include("../partials/leaderboards-record.ejs", {record:null,rank:i+1}) %>
+          <% } %>
+          <% } %>
+        </table>
+        </div>
     </div>
     <br>
   </main>
