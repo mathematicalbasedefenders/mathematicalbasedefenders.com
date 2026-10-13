@@ -195,8 +195,8 @@ h1 .icon {
   height: 20vh;
   display: flex;
   justify-content: center;
+  width: 80%;
 }
-
 
 #call-to-action__button {
   display: flex;
