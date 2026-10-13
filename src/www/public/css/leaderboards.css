@@ -1,9 +1,19 @@
 main h1,
 main h2,
 main h3 {
-  font-weight: normal;
   margin-top: 4px;
   margin-bottom: 4px;
+}
+
+h1 {
+  font-weight: 500;
+}
+
+#leaderboards {
+  width: 80%;
+  margin-top: 8px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 #leaderboards-table {
