@@ -6,6 +6,13 @@ main h3 {
   margin-bottom: 4px;
 }
 
+main > div {
+  width: 80%;
+  margin-top: 8px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .register-form__text-input {
   width: 100%;
   font-size: 125%;
