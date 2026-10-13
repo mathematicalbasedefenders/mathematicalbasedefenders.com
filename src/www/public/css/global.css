@@ -28,6 +28,12 @@ main {
   text-align: center;
 }
 
+hr {
+  border-width: 1px;
+  border-style: solid;
+  color: #11111122;
+}
+
 /*
   TODO: viewport for smaller devices
 */
