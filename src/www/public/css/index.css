@@ -85,6 +85,10 @@ h1 .icon {
   padding: 0.5rem 0;
 }
 
+#header__content {
+  margin-top: 0;
+}
+
 #header #header__call-to-action {
   margin-top: 1rem;
   max-width: 1024px;
