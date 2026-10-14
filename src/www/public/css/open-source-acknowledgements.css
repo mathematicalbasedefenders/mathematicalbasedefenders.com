@@ -1,3 +1,7 @@
-html {
-  overflow-x: initial !important;
+main > div {
+  max-width: 1024px;
+  width: 80%;
+  margin-top: 8px;
+  margin-left: auto;
+  margin-right: auto;
 }
