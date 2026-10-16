@@ -24,7 +24,6 @@
             <br>You may also use plus addressing if you wish.
             <br>Currently, these can not be changed. A future update will allow such functionality.
           </p>
-
           <h2>Username</h2>
           <input type="text" name="username" class="register-form__text-input">
           <p>Put the username that you want to use for your account here.
@@ -44,10 +43,10 @@
           By registering, you agree to the <a href="/privacy-policy">Privacy Policy</a>.
           <br>
           <% if (errorMessage) { %>
-          <span style="color:#ff0000"><%= errorMessage ?? "" %></span>
+            <span style="color:#ff0000"><%= errorMessage ?? "" %></span>
+            <br>
           <% } %>
           <input type="hidden" name="csrf-token" value=<%-csrfToken%>>
-          <br>
           <input type="submit" value="Register" class="register-button">
         </form>
         <br>
