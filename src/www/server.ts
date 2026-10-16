@@ -143,7 +143,7 @@ app.use(
       response.render(path.join(__dirname, "..", "www/views/pages/403.ejs"));
     } else {
       response.status(500);
-      response.render(path.join(__dirname, "..", "www/views/pages/error.ejs"));
+      response.render(path.join(__dirname, "..", "www/views/pages/500.ejs"));
     }
   }
 );
