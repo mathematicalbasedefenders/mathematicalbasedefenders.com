@@ -59,7 +59,7 @@ main > div {
 }
 
 #user-data-box__username h1 {
-  font-size: 250%;
+  font-size: 2.5rem;
 }
 
 #user-data-box__rank {
@@ -68,7 +68,7 @@ main > div {
   color: #ffffff;
   text-align: center;
   margin: 4px 0;
-  font-size: 125%;
+  font-size: 1.25rem;
 }
 
 .user-data-box__gamemode {
@@ -77,7 +77,7 @@ main > div {
 }
 
 .user-data-box__gamemode h2 {
-  font-size: 175%;
+  font-size: 1.75rem;
   margin-left: 2px;
 }
 
@@ -94,7 +94,7 @@ main > div {
 }
 
 .large-font {
-  font-size: 225%;
+  font-size: 2.25rem;
 }
 
 #user-data-box__statistics {
@@ -104,7 +104,7 @@ main > div {
 .user-data-box__stat {
   display: flex;
   justify-content: space-between;
-  font-size: 125%;
+  font-size: 1.25rem;
 }
 
 .user-data-box__gamemode .user-data-box__stat.user-data-box__stat--gold,
@@ -112,7 +112,7 @@ main > div {
 .user-data-box__gamemode .user-data-box__stat.user-data-box__stat--bronze,
 .user-data-box__gamemode .user-data-box__stat.user-data-box__stat--top10,
 .user-data-box__gamemode .user-data-box__stat.user-data-box__stat--top100 {
-  font-size: 150%;
+  font-size: 1.5rem;
   margin: -4px -8px;
   padding: 8px;
 }
@@ -171,16 +171,16 @@ main > div {
 }
 
 .text--large {
-  font-size: 250%;
+  font-size: 2.5rem;
 }
 
 .user-statistics-box__detailed {
   margin: 0px 8px;
-  font-size: 125%;
+  font-size: 1.25rem;
 }
 
 .user-statistics-box__field--extra-detailed {
-  font-size: 100%;
+  font-size: 1rem;
 }
 
 .user-statistics-box__field--detailed {
@@ -205,7 +205,7 @@ main > div {
 #level-bar-container {
   display: flex;
   flex-direction: row;
-  font-size: 12px;
+  font-size: 0.75rem;
   align-items: center;
 }
 
@@ -224,7 +224,7 @@ main > div {
 }
 
 .user-statistics-box__rank {
-  font-size: 200%;
+  font-size: 2rem;
 }
 
 .user-statistics-box h2 {

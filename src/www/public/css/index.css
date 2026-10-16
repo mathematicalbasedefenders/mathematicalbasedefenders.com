@@ -32,7 +32,7 @@ button {
 }
 
 .text--small {
-  font-size: 75%;
+  font-size: 0.75rem;
 }
 
 .header-with-icon {
@@ -48,7 +48,7 @@ button {
   border: 2px #108800 solid;
   padding: 4px 12px;
   transition-duration: var(--transition-duration-regular);
-  font-size: 150%;
+  font-size: 1.5rem;
 }
 
 .button--play:hover {
@@ -113,7 +113,7 @@ h1 .icon {
 }
 
 #header h2 {
-  font-size: 200%;
+  font-size: 2rem;
 }
 
 #header h3 {
@@ -140,7 +140,7 @@ h1 .icon {
 }
 
 #header .version-number {
-  font-size: 200%;
+  font-size: 2rem;
 }
 
 /* INFORMATION */
@@ -277,7 +277,7 @@ h1 .icon {
   }
 
   .feature-card__back p {
-    font-size: 100% !important;
+    font-size: 1rem !important;
   }
 
   .feature-card__container {

@@ -62,7 +62,7 @@ th {
 }
 
 .leaderboards__record td {
-  font-size: 125%;
+  font-size: 1.25rem;
   text-align: center;
   white-space: nowrap;
   padding: 4px;

@@ -9,7 +9,7 @@
 #top-navbar nav a {
   text-decoration: none !important;
   color: var(--color-text-light);
-  font-size: 150%;
+  font-size: 1.5rem;
   padding: 12px;
   text-align: center;
 }

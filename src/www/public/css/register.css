@@ -16,7 +16,7 @@ main > div {
 
 .register-form__text-input {
   width: 100%;
-  font-size: 125%;
+  font-size: 1.25rem;
   font-family: "Noto Sans";
 }
 
@@ -27,7 +27,7 @@ main > div {
   transition-duration: var(--transition-duration-regular);
   width: 320px;
   height: 64px;
-  font-size: 175%;
+  font-size: 1.75rem;
   font-family: "Noto Sans";
 }
 
