@@ -25,8 +25,8 @@ main > div {
   color: #ffffff;
   border: 2px #0185d1 solid;
   transition-duration: var(--transition-duration-regular);
-  width: 320px;
-  height: 64px;
+  padding: 4px 12px;
+  margin: 4px 0;
   font-size: 1.75rem;
   font-family: "Noto Sans";
 }
