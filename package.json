@@ -1,6 +1,6 @@
 {
   "name": "mathematicalbasedefenders.com",
-  "version": "0.7.8",
+  "version": "0.7.9",
   "description": "Website for Mathematical Base Defenders.",
   "main": "app.js",
   "scripts": {
@@ -82,7 +82,7 @@
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-n": "^15.3.0",
     "eslint-plugin-promise": "^6.0.1",
-    "mocha": "^10.7.3",
+    "mocha": "^12.0.3",
     "mongodb-memory-server": "^10.4.1",
     "tsx": "^4.19.1"
   }
